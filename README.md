@@ -1,4 +1,154 @@
-# React + TypeScript + Vite
+# Anoma Pay Interface
+
+A modern React application built with Vite, TypeScript, and Tailwind CSS.
+
+## 🚀 Tech Stack
+
+- **Build Tool**: Vite 7.x
+- **Framework**: React 19.x
+- **Language**: TypeScript 5.x
+- **Compiler**: SWC (Fast Refresh)
+- **Styling**: Tailwind CSS 4.x
+- **Component Development**: Storybook 10.x
+- **State Management**: Jotai
+- **Data Fetching**: TanStack React Query
+- **Routing**: React Router 7.x (declarative)
+
+## 📦 Installation
+
+```bash
+npm install
+```
+
+## 🛠️ Development
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+The application will be available at `http://localhost:5173/`
+
+### Storybook
+
+Run Storybook for component development:
+
+```bash
+npm run storybook
+```
+
+Storybook will be available at `http://localhost:6006/`
+
+## 🏗️ Build
+
+Build the application for production:
+
+```bash
+npm run build
+```
+
+Preview the production build:
+
+```bash
+npm run preview
+```
+
+Build Storybook:
+
+```bash
+npm run build-storybook
+```
+
+## 🧪 Linting
+
+Run ESLint:
+
+```bash
+npm run lint
+```
+
+## 📁 Project Structure
+
+```
+src/
+├── components/          # React components
+│   ├── AccountSelector.tsx
+│   ├── Balance.tsx
+│   ├── Button.tsx
+│   ├── Checkbox.tsx
+│   ├── CircleButton.tsx
+│   ├── Token.tsx
+│   ├── TokenBadge.tsx
+│   ├── TokenSelector.tsx
+│   ├── WalletSelector.tsx
+│   ├── index.ts        # Component exports
+│   └── stories/        # Storybook stories for components
+├── config/             # Configuration files
+│   ├── atoms.ts        # Jotai atoms
+│   ├── queryClient.ts  # React Query client
+│   └── router.tsx      # React Router configuration
+├── App.tsx
+├── main.tsx
+└── index.css           # Tailwind imports
+```
+
+## 🎨 Components
+
+All components are located in `src/components/` and follow a minimal base template:
+
+```typescript
+export const ComponentName = () => {
+  /** base */
+  return null;
+};
+```
+
+Each component has a corresponding Storybook story in `src/components/stories/`.
+
+## 📚 Libraries Usage
+
+### React Query
+
+```typescript
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from './config/queryClient';
+
+<QueryClientProvider client={queryClient}>
+  <App />
+</QueryClientProvider>
+```
+
+### React Router
+
+```typescript
+import { RouterProvider } from 'react-router';
+import { router } from './config/router';
+
+<RouterProvider router={router} />
+```
+
+### Jotai
+
+```typescript
+import { useAtom } from 'jotai';
+import { exampleAtom } from './config/atoms';
+
+function MyComponent() {
+  const [value, setValue] = useAtom(exampleAtom);
+  return <div>{value}</div>;
+}
+```
+
+## 🔧 Configuration
+
+- **Vite**: `vite.config.ts`
+- **TypeScript**: `tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json`
+- **Tailwind CSS**: `tailwind.config.js`, `postcss.config.js`
+- **ESLint**: `eslint.config.js`
+- **Storybook**: `.storybook/main.ts`, `.storybook/preview.ts`
+
+## React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
