@@ -5,8 +5,8 @@ import {
   WalletIcon,
   ExchangeIcon,
   NetworkIcon,
-  type IconComponentProps,
-} from "@web3icons/react";
+} from "@web3icons/react/dynamic";
+import type { IconComponent } from "@web3icons/react";
 import type { ReactElement } from "react";
 
 export const cn = (...inputs: ClassValue[]) => {
@@ -19,7 +19,7 @@ export const shortenAddress = (address: string, head = 6, tail = 4) => {
 
 export const checkForWeb3Icons = (
   el: ReactElement
-): el is ReactElement<IconComponentProps> => {
+): el is ReactElement<IconComponent> => {
   if (!el || typeof el !== "object") return false;
   return (
     el.type === TokenIcon ||
