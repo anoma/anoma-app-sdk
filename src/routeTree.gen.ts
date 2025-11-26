@@ -10,33 +10,43 @@
 
 import { Route as rootRouteImport } from "./routes/__root";
 import { Route as IndexRouteImport } from "./routes/index";
+import { Route as SignUpWalletRouteImport } from "./routes/sign-up/wallet";
 
 const IndexRoute = IndexRouteImport.update({
   id: "/",
   path: "/",
   getParentRoute: () => rootRouteImport,
 } as any);
+const SignUpWalletRoute = SignUpWalletRouteImport.update({
+  id: "/sign-up/wallet",
+  path: "/sign-up/wallet",
+  getParentRoute: () => rootRouteImport,
+} as any);
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
+  "/sign-up/wallet": typeof SignUpWalletRoute;
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
+  "/sign-up/wallet": typeof SignUpWalletRoute;
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
   "/": typeof IndexRoute;
+  "/sign-up/wallet": typeof SignUpWalletRoute;
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/";
+  fullPaths: "/" | "/sign-up/wallet";
   fileRoutesByTo: FileRoutesByTo;
-  to: "/";
-  id: "__root__" | "/";
+  to: "/" | "/sign-up/wallet";
+  id: "__root__" | "/" | "/sign-up/wallet";
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
+  SignUpWalletRoute: typeof SignUpWalletRoute;
 }
 
 declare module "@tanstack/react-router" {
@@ -48,11 +58,19 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof IndexRouteImport;
       parentRoute: typeof rootRouteImport;
     };
+    "/sign-up/wallet": {
+      id: "/sign-up/wallet";
+      path: "/sign-up/wallet";
+      fullPath: "/sign-up/wallet";
+      preLoaderRoute: typeof SignUpWalletRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SignUpWalletRoute: SignUpWalletRoute,
 };
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
