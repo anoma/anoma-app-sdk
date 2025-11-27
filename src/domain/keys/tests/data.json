@@ -1,0 +1,28 @@
+{
+  "userKey": {
+    "cnk": "12dd91f7579fdf4e2df70d5ca267087a4a78c44a1152e7b9999316b50cfcb9da",
+    "sepk": "0302e05779d35a33b944f5e4c334f3126f17e09ef71e194cd96dd36583f71b199e",
+    "sdpk": "0283a1580fd8ce1b7643e7bbb78147b1b71b273f8701ecb84460797dc8b80a0d7a",
+    "signature": "9AFH/9CwKWbvX7yi96j32H+swhozXPVLQh5VPgXwKyxOOkcm+ygNL+47aAdf8PaXArbSw+jdtD5b5ZpNTpXKfQ=="
+  },
+  "serializedUserKey": "{\"cnk\":\"12dd91f7579fdf4e2df70d5ca267087a4a78c44a1152e7b9999316b50cfcb9da\",\"sdpk\":\"0283a1580fd8ce1b7643e7bbb78147b1b71b273f8701ecb84460797dc8b80a0d7a\",\"sepk\":\"0302e05779d35a33b944f5e4c334f3126f17e09ef71e194cd96dd36583f71b199e\",\"signature\":\"f40147ffd0b02966ef5fbca2f7a8f7d87facc21a335cf54b421e553e05f02b2c4e3a4726fb280d2fee3b68075ff0f69702b6d2c3e8ddb43e5be59a4d4e95ca7d\"}",
+  "serializedKeyPair": "{\"privateKey\":\"750d8d1613d1e87b4ac2513b46199e79fc3a52a73aeb50c9e8229c2d64608fb2\",\"publicKey\":\"0223ecb23a61c27e045ab462102ea518055b9be3ec5da98f7a613bb69f459fcf16\"}",
+  "serializedNullifierKeyPair": "{\"nk\":\"141432d2319640bd8f1965f26e56c78417e02baf44f7698b9cab63a6ebe9d6bb\",\"cnk\":\"45c845573f11cc38a69a3ae8da935e006953967e26ef531f81e15c85c664eeb9\"}",
+  "nullifierKeyPair": {
+    "nk": "141432d2319640bd8f1965f26e56c78417e02baf44f7698b9cab63a6ebe9d6bb",
+    "cnk": "45c845573f11cc38a69a3ae8da935e006953967e26ef531f81e15c85c664eeb9"
+  },
+  "staticEncryptionKeyPair": {
+    "sesk": "a62d025cced560101e4b47c59025855c44ec93f60b6b21a5e72208842c38c8ce",
+    "sepk": "0302e05779d35a33b944f5e4c334f3126f17e09ef71e194cd96dd36583f71b199e"
+  },
+  "staticDiscoverKeyPair": {
+    "sdsk": "41ded996f9834c5afe54818eb3b2f5a4249fb7bc28820735811f12a868347841",
+    "sdpk": "0283a1580fd8ce1b7643e7bbb78147b1b71b273f8701ecb84460797dc8b80a0d7a"
+  },
+  "authorityKeyPair": {
+    "ask": "750d8d1613d1e87b4ac2513b46199e79fc3a52a73aeb50c9e8229c2d64608fb2",
+    "apk": "0223ecb23a61c27e045ab462102ea518055b9be3ec5da98f7a613bb69f459fcf16"
+  },
+  "seed": "DBPykoK/RrW0ZjOPbAMRou2iQwjl+hmY4tA8oYSytgE="
+}
