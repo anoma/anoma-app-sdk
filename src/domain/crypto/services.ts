@@ -13,7 +13,7 @@ export const CURRENT_VAULT_VERSION = 1;
  * @returns A CryptoKey that can be used as HKDF input material
  */
 const wrapSignatureAsCryptoKey = (
-  signature: Uint8Array
+  signature: Uint8Array<ArrayBuffer>
 ): Promise<CryptoKey> => {
   return window.crypto.subtle.importKey(
     "raw",
@@ -54,7 +54,7 @@ const deriveKeyEncryptionKey = (key: CryptoKey): Promise<CryptoKey> => {
 export const encrypt = async (
   inputKeyMaterial: CryptoKey,
   serializedKeyring: string
-): Promise<{ iv: Uint8Array; ciphertext: ArrayBuffer }> => {
+): Promise<{ iv: Uint8Array<ArrayBuffer>; ciphertext: ArrayBuffer }> => {
   const iv = generateRandomBytes(12);
   const kek = await deriveKeyEncryptionKey(inputKeyMaterial);
   const ciphertext = await window.crypto.subtle.encrypt(
@@ -81,7 +81,7 @@ export const encrypt = async (
 export const decrypt = async (
   inputKeyMaterial: CryptoKey,
   ciphertext: ArrayBuffer,
-  iv: Uint8Array
+  iv: Uint8Array<ArrayBuffer>
 ): Promise<string> => {
   const kek = await deriveKeyEncryptionKey(inputKeyMaterial);
   let encodedOutput: ArrayBuffer;
@@ -113,7 +113,7 @@ export const decrypt = async (
 export const createVaultAccount = async (
   id: string,
   keyring: UserKeyring,
-  signature: Uint8Array,
+  signature: Uint8Array<ArrayBuffer>,
   version: number = CURRENT_VAULT_VERSION
 ): Promise<VaultEntry> => {
   const inputKeyMaterial = await wrapSignatureAsCryptoKey(signature);
@@ -137,7 +137,7 @@ export const createVaultAccount = async (
  */
 export const unlockVault = async (
   vault: VaultEntry,
-  signature: Uint8Array
+  signature: Uint8Array<ArrayBuffer>
 ): Promise<UserKeyring> => {
   const inputKeyMaterial = await wrapSignatureAsCryptoKey(signature);
   const serializedKeyring = await decrypt(

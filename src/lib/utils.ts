@@ -141,7 +141,7 @@ export function promiseWithResolvers<T>(): [
   return [promise, resolver!, rejecter!];
 }
 
-export const generateRandomBytes = (size = 32): Uint8Array => {
+export const generateRandomBytes = (size = 32): Uint8Array<ArrayBuffer> => {
   const uint8Array = new Uint8Array(size);
   crypto.getRandomValues(uint8Array);
   return uint8Array;
