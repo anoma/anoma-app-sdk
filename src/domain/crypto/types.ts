@@ -5,7 +5,7 @@ export type Vault = Record<Address, VaultEntry>;
 
 export type VaultEntry = {
   id: string;
-  iv: Uint8Array;
+  iv: Uint8Array<ArrayBuffer>;
   ciphertext: ArrayBuffer;
   keyring?: UserKeyring;
   createdAt: number;
