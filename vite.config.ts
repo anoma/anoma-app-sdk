@@ -11,6 +11,7 @@ export default defineConfig({
       target: "react",
       autoCodeSplitting: true,
       quoteStyle: "double",
+      semicolons: true,
     }),
     react(),
     tsconfigPaths(),
