@@ -5,10 +5,10 @@ import {
   SecretKey,
   type EncodedResource,
 } from "@anoma/lib";
-import type { ResourcesWithBalance, ResourceWithMetadata } from "types";
-import type { EnvioClient, IndexerResourceResponse } from "api";
-import { fromHex, normalizeHex } from "lib/utils";
+import type { EnvioClient, IndexerResource } from "api";
 import { SIMPLE_TRANSFER_ID } from "app-constants";
+import { fromHex, normalizeHex } from "lib/utils";
+import type { ResourcesWithBalance, ResourceWithMetadata } from "types";
 
 /** Convert an Envio nullifier list into a normalized hex set. */
 async function buildNullifierSet(
@@ -33,7 +33,7 @@ export function deserializeResourcePayload(
 }
 
 export const parseIndexerResourceResponse = (
-  resourceResponseCollection: IndexerResourceResponse[],
+  resourceResponseCollection: IndexerResource[],
   encryptionPrivateKey: Uint8Array
 ): ResourceWithMetadata[] => {
   return resourceResponseCollection
@@ -42,7 +42,7 @@ export const parseIndexerResourceResponse = (
         return [
           {
             resource: deserializeResourcePayload(
-              item.resource[0].blob,
+              item.resource_payload.blob,
               encryptionPrivateKey
             ),
             tag: item.tag || "",

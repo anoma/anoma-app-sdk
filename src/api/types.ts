@@ -71,11 +71,18 @@ export type IndexerBlob = {
   id: string;
 };
 
-export type IndexerResourceResponse = {
+export type IndexerResource = {
+  id: string;
   tag: string;
-  resource: IndexerBlob[];
-  discovery: IndexerBlob[];
+  public_key: string;
+  resource_payload: IndexerBlob;
+  discovery_payload: IndexerBlob;
   is_consumed: boolean;
+};
+
+export type IndexerResourceResponse = {
+  status: "ok";
+  resources: IndexerResource[];
 };
 
 export type MerkleProofResponse = {
