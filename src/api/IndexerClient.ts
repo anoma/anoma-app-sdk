@@ -1,5 +1,5 @@
-import { ApiClient } from "./ApiClient";
 import type { EncodedKeypair } from "@anoma/lib";
+import { ApiClient } from "./ApiClient";
 import { IndexerPaths } from "./paths";
 import { type IndexerResourceResponse, type ResponseJson } from "./types";
 
@@ -8,8 +8,8 @@ export class IndexerClient extends ApiClient {
     this.post<EncodedKeypair, string>(IndexerPaths.AddKeys, keypair);
   }
 
-  async resources(publicKey: string): Promise<IndexerResourceResponse[]> {
-    return this.get<IndexerResourceResponse[]>(
+  async resources(publicKey: string): Promise<IndexerResourceResponse> {
+    return this.get<IndexerResourceResponse>(
       `${IndexerPaths.Tags}/${publicKey}`
     );
   }
