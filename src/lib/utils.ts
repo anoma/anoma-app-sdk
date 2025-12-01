@@ -1,14 +1,14 @@
-import { formatUnits } from "viem";
-import { twMerge } from "tailwind-merge";
-import clsx, { type ClassValue } from "clsx";
+import type { IconComponent } from "@web3icons/react";
 import {
-  TokenIcon,
-  WalletIcon,
   ExchangeIcon,
   NetworkIcon,
+  TokenIcon,
+  WalletIcon,
 } from "@web3icons/react/dynamic";
-import type { IconComponent } from "@web3icons/react";
+import clsx, { type ClassValue } from "clsx";
 import type { ReactElement } from "react";
+import { twMerge } from "tailwind-merge";
+import { formatUnits } from "viem";
 
 export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));
@@ -32,7 +32,7 @@ export const checkForWeb3Icons = (
 
 export const formatBalance = (
   amount: bigint,
-  tokenDenom = 18,
+  tokenDenom = 6,
   decimals = 2
 ): string => {
   const balance = Number(formatUnits(amount, tokenDenom));
