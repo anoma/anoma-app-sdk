@@ -1,11 +1,15 @@
+import { sha256 } from "@noble/hashes/sha2";
+import {
+  VAULT_VERSION,
+  VAULT_DOMAIN_INFO,
+  VAULT_DOMAIN_SALT,
+} from "app-constants";
 import {
   convertUserKeyringToJson,
   converUserKeyringFromJson,
 } from "domain/keys/services";
-import { generateRandomBytes } from "lib/utils";
+import { generateRandomBytes, toHex } from "lib/utils";
 import type { UserKeyring, VaultEntry } from "types";
-
-export const CURRENT_VAULT_VERSION = 1;
 
 /**
  * Imports the user signature so it can be used as input material for HKDF.
@@ -35,8 +39,8 @@ const deriveKeyEncryptionKey = (key: CryptoKey): Promise<CryptoKey> => {
     {
       name: "HKDF",
       hash: "SHA-256",
-      salt: encoder.encode("anoma-pay"),
-      info: encoder.encode("anoma-pay:vault-aes-key"),
+      salt: encoder.encode(VAULT_DOMAIN_SALT),
+      info: encoder.encode(VAULT_DOMAIN_INFO),
     },
     key,
     { name: "AES-GCM", length: 256 },
@@ -52,17 +56,16 @@ const deriveKeyEncryptionKey = (key: CryptoKey): Promise<CryptoKey> => {
  * @returns The resulting IV and ciphertext
  */
 export const encrypt = async (
-  inputKeyMaterial: CryptoKey,
+  keyEncryptionKey: CryptoKey,
   serializedKeyring: string
 ): Promise<{ iv: Uint8Array<ArrayBuffer>; ciphertext: ArrayBuffer }> => {
   const iv = generateRandomBytes(12);
-  const kek = await deriveKeyEncryptionKey(inputKeyMaterial);
   const ciphertext = await window.crypto.subtle.encrypt(
     {
       name: "AES-GCM",
       iv,
     },
-    kek,
+    keyEncryptionKey,
     new TextEncoder().encode(serializedKeyring)
   );
   return {
@@ -79,11 +82,10 @@ export const encrypt = async (
  * @returns Serialized string containing the decoded data
  */
 export const decrypt = async (
-  inputKeyMaterial: CryptoKey,
+  keyEncryptionKey: CryptoKey,
   ciphertext: ArrayBuffer,
   iv: Uint8Array<ArrayBuffer>
 ): Promise<string> => {
-  const kek = await deriveKeyEncryptionKey(inputKeyMaterial);
   let encodedOutput: ArrayBuffer;
   try {
     encodedOutput = await window.crypto.subtle.decrypt(
@@ -91,7 +93,7 @@ export const decrypt = async (
         name: "AES-GCM",
         iv,
       },
-      kek,
+      keyEncryptionKey,
       ciphertext
     );
   } catch {
@@ -102,23 +104,27 @@ export const decrypt = async (
   return new TextDecoder().decode(encodedOutput);
 };
 
+export const hashVaultId = (id: string) =>
+  toHex(sha256(id) as Uint8Array<ArrayBuffer>);
+
 /**
  * Creates a vault entry storing an encrypted keyring using a user signature.
  * @param id Identifier for the vault entry (ex: wallet address, uuid)
  * @param keyring User keyring to persist
  * @param signature Uint8Array user signature used to derive the encryption key
- * @param version Vault schema version, defaults to {@link CURRENT_VAULT_VERSION}
+ * @param version Vault schema version, defaults to {@link VAULT_VERSION}
  * @returns Vault entry ready to be persisted
  */
 export const createVaultAccount = async (
   id: string,
   keyring: UserKeyring,
   signature: Uint8Array<ArrayBuffer>,
-  version: number = CURRENT_VAULT_VERSION
+  version: number = VAULT_VERSION
 ): Promise<VaultEntry> => {
   const inputKeyMaterial = await wrapSignatureAsCryptoKey(signature);
+  const kek = await deriveKeyEncryptionKey(inputKeyMaterial);
   const serializedKeyring = convertUserKeyringToJson(keyring);
-  const { iv, ciphertext } = await encrypt(inputKeyMaterial, serializedKeyring);
+  const { iv, ciphertext } = await encrypt(kek, serializedKeyring);
   return {
     id,
     version,
@@ -140,10 +146,7 @@ export const unlockVault = async (
   signature: Uint8Array<ArrayBuffer>
 ): Promise<UserKeyring> => {
   const inputKeyMaterial = await wrapSignatureAsCryptoKey(signature);
-  const serializedKeyring = await decrypt(
-    inputKeyMaterial,
-    vault.ciphertext,
-    vault.iv
-  );
+  const kek = await deriveKeyEncryptionKey(inputKeyMaterial);
+  const serializedKeyring = await decrypt(kek, vault.ciphertext, vault.iv);
   return converUserKeyringFromJson(serializedKeyring);
 };

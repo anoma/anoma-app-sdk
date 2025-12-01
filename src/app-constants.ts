@@ -10,3 +10,13 @@ export const SIMPLE_TRANSFER_ID =
 
 // Authorization signature domain
 export const AUTH_SIGNATURE_DOMAIN = "SimpleTransferAuthorization";
+
+// Constants related to vault creation
+// Defines the current version of the Vault. Should be incremented on every
+// update of the vault structure, so users can migrate from old versions to the
+// current one without the need of recreating the vault
+export const VAULT_VERSION = 1;
+
+// Separate the encryption of the vault into separate domains
+export const VAULT_DOMAIN_SALT = "anoma-pay";
+export const VAULT_DOMAIN_INFO = "anoma-pay:vault-aes-key";

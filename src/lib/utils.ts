@@ -60,7 +60,7 @@ export function toBase64(bytes: Uint8Array): string {
  * @param base64 - base64-encoded string
  * @returns Uint8Array
  */
-export function fromBase64(base64: string): Uint8Array {
+export function fromBase64(base64: string): Uint8Array<ArrayBuffer> {
   const binaryString = atob(base64);
   const bytes = new Uint8Array(binaryString.length);
   for (let i = 0; i < binaryString.length; i++) {
@@ -74,7 +74,7 @@ export function fromBase64(base64: string): Uint8Array {
  * @param hex - string
  * @returns Uint8Array
  */
-export function fromHex(hexString: string): Uint8Array {
+export function fromHex(hexString: string): Uint8Array<ArrayBuffer> {
   const bytes = [];
   const hex = hexString.replace(/^0x/, "");
   for (let c = 0; c < hex.length; c += 2)
@@ -87,7 +87,7 @@ export function fromHex(hexString: string): Uint8Array {
  * @param bytes - Uint8Array
  * @returns string
  */
-export function toHex(bytes: Uint8Array): string {
+export function toHex(bytes: Uint8Array<ArrayBuffer>): string {
   const hex = [];
   for (let i = 0; i < bytes.length; i++) {
     const current = bytes[i] < 0 ? bytes[i] + 256 : bytes[i];

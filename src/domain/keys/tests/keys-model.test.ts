@@ -2,7 +2,7 @@ import { hmac } from "@noble/hashes/hmac";
 import { sha256 } from "@noble/hashes/sha2";
 import * as secp256k1 from "@noble/secp256k1";
 import {
-  KeyDerivation,
+  createUserKeyring,
   KeyPair,
   KeyPairSerializer,
   NullifierKeyPair,
@@ -27,62 +27,53 @@ describe("Key functions", () => {
       hmac(sha256, key, msg);
   });
 
-  it("Can recreate an Identity Keypair", () => {
+  it("Can recreate a keyring", () => {
     const seedBytes = fromBase64(seed);
-    const derivedAuthorityKeyPair =
-      KeyDerivation.deriveAuthorityKeyPair(seedBytes);
-    const { publicKey, privateKey } = derivedAuthorityKeyPair;
+    const keyring = createUserKeyring(seedBytes);
 
-    expect(derivedAuthorityKeyPair).toBeInstanceOf(KeyPair);
-    expect(authorityKeyPair.ask).toBe(toHex(privateKey));
-    expect(authorityKeyPair.apk).toBe(toHex(publicKey));
-  });
+    expect(keyring.authorityKeyPair).toBeInstanceOf(KeyPair);
+    expect(keyring.discoveryKeyPair).toBeInstanceOf(KeyPair);
+    expect(keyring.encryptionKeyPair).toBeInstanceOf(KeyPair);
+    expect(keyring.nullifierKeyPair).toBeInstanceOf(NullifierKeyPair);
 
-  it("Can recreate Nullifier Key and Nullifier Key Commitment", () => {
-    const seedBytes = fromBase64(seed);
-    const derivedNullifierKeyPair =
-      KeyDerivation.deriveNullifierKeyPair(seedBytes);
-    const { nk, cnk } = derivedNullifierKeyPair;
+    // Authority Keypair
+    expect(authorityKeyPair.ask).toBe(
+      toHex(keyring.authorityKeyPair.privateKey)
+    );
+    expect(authorityKeyPair.apk).toBe(
+      toHex(keyring.authorityKeyPair.publicKey)
+    );
 
-    expect(derivedNullifierKeyPair).toBeInstanceOf(NullifierKeyPair);
-    expect(nullifierKeyPair.nk).toBe(toHex(nk));
-    expect(nullifierKeyPair.cnk).toBe(toHex(cnk));
-  });
+    // Discovery Keypair
+    expect(staticDiscoverKeyPair.sdsk).toBe(
+      toHex(keyring.discoveryKeyPair.privateKey)
+    );
+    expect(staticDiscoverKeyPair.sdpk).toBe(
+      toHex(keyring.discoveryKeyPair.publicKey)
+    );
 
-  it("Can recreate a Static Encryption Keypair", () => {
-    const seedBytes = fromBase64(seed);
-    const derivedEncryptionKeyPair =
-      KeyDerivation.deriveStaticEncryptionKeyPair(seedBytes);
-    const { publicKey, privateKey } = derivedEncryptionKeyPair;
+    // Encryption Keypair
+    expect(staticEncryptionKeyPair.sesk).toBe(
+      toHex(keyring.encryptionKeyPair.privateKey)
+    );
+    expect(staticEncryptionKeyPair.sepk).toBe(
+      toHex(keyring.encryptionKeyPair.publicKey)
+    );
 
-    expect(derivedEncryptionKeyPair).toBeInstanceOf(KeyPair);
-    expect(staticEncryptionKeyPair.sesk).toBe(toHex(privateKey));
-    expect(staticEncryptionKeyPair.sepk).toBe(toHex(publicKey));
-  });
-
-  it("Can recreate a Static Discovery Keypair", () => {
-    const seedBytes = fromBase64(seed);
-    const derivedDiscoveryKeyPair =
-      KeyDerivation.deriveStaticDiscoveryKeyPair(seedBytes);
-    const { publicKey, privateKey } = derivedDiscoveryKeyPair;
-
-    expect(derivedDiscoveryKeyPair).toBeInstanceOf(KeyPair);
-    expect(staticDiscoverKeyPair.sdsk).toBe(toHex(privateKey));
-    expect(staticDiscoverKeyPair.sdpk).toBe(toHex(publicKey));
+    // NullifierKeyPair
+    expect(nullifierKeyPair.nk).toBe(toHex(keyring.nullifierKeyPair.nk));
+    expect(nullifierKeyPair.cnk).toBe(toHex(keyring.nullifierKeyPair.cnk));
   });
 
   it("Can serialize KeyPair", () => {
-    const keypair = KeyDerivation.deriveAuthorityKeyPair(fromBase64(seed));
-    const json = KeyPairSerializer.toJson(keypair);
-
+    const keyring = createUserKeyring(fromBase64(seed));
+    const json = KeyPairSerializer.toJson(keyring.authorityKeyPair);
     expect(json).toBe(serializedKeyPair);
   });
 
   it("Can serialize NullifierKeyPair", () => {
-    const nullifierKeyPair = KeyDerivation.deriveNullifierKeyPair(
-      fromBase64(seed)
-    );
-    const json = KeyPairSerializer.toJson(nullifierKeyPair);
+    const keyring = createUserKeyring(fromBase64(seed));
+    const json = KeyPairSerializer.toJson(keyring.nullifierKeyPair);
     expect(json).toBe(serializedNullifierKeyPair);
   });
 

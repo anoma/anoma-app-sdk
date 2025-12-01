@@ -14,7 +14,6 @@ export const PRFDomainMap = {
   Nullifier: "ANOMA_NULLIFIER_KEY",
   Encryption: "ANOMA_STATIC_ENCRYPTION_KEY",
   Discovery: "ANOMA_STATIC_DISCOVERY_KEY",
-  NullifierKeyCommitment: "ANOMA_NULLIFIER_KEY_COMMITMENT",
 } as const;
 
 export type PRFDomain = typeof PRFDomainMap;
