@@ -6,7 +6,10 @@ import { fromHex, toHex } from "lib/utils";
 import { generateRandomBytes } from "lib/utils";
 
 type KeyPairConstructor<T extends KeyPairBase> = {
-  new (privateKey: Uint8Array, publicKey: Uint8Array): T;
+  new (
+    privateKey: Uint8Array<ArrayBuffer>,
+    publicKey: Uint8Array<ArrayBuffer>
+  ): T;
   keysName: { privateKey: string; publicKey: string };
 };
 
@@ -69,7 +72,10 @@ type KeyNames = {
  * Base class for key pairs that encapsulates shared helpers.
  */
 abstract class KeyPairBase {
-  readonly keys: { privateKey: Uint8Array; publicKey: Uint8Array };
+  readonly keys: {
+    privateKey: Uint8Array<ArrayBuffer>;
+    publicKey: Uint8Array<ArrayBuffer>;
+  };
 
   static readonly keysName: KeyNames = {
     privateKey: "privateKey",
@@ -80,11 +86,16 @@ abstract class KeyPairBase {
     return (this.constructor as typeof KeyPairBase).keysName;
   }
 
-  static derivePublicKey(_privateKey: Uint8Array): Uint8Array {
+  static derivePublicKey(
+    _privateKey: Uint8Array<ArrayBuffer>
+  ): Uint8Array<ArrayBuffer> {
     throw Error("Not implemented");
   }
 
-  static create(_seed?: Uint8Array, _domain?: keyof PRFDomain): KeyPairBase {
+  static create(
+    _seed?: Uint8Array<ArrayBuffer>,
+    _domain?: keyof PRFDomain
+  ): KeyPairBase {
     throw new Error("Not implemented");
   }
 
@@ -95,13 +106,13 @@ abstract class KeyPairBase {
    * @returns Derived 32-byte private key
    */
   static generatePrivateKey(
-    seed?: Uint8Array,
+    seed?: Uint8Array<ArrayBuffer>,
     domain?: keyof typeof PRFDomainMap
   ) {
     const actualSeed = seed ?? generateRandomBytes();
     const domainString = domain ? PRFDomainMap[domain] : "";
     const domainBytes = new TextEncoder().encode(domainString);
-    return hmac(sha256, actualSeed, domainBytes);
+    return hmac(sha256, actualSeed, domainBytes) as Uint8Array<ArrayBuffer>;
   }
 
   /**
@@ -109,7 +120,10 @@ abstract class KeyPairBase {
    * @param privateKey Private key bytes
    * @param publicKey Public key bytes
    */
-  constructor(privateKey: Uint8Array, publicKey: Uint8Array) {
+  constructor(
+    privateKey: Uint8Array<ArrayBuffer>,
+    publicKey: Uint8Array<ArrayBuffer>
+  ) {
     this.keys = { privateKey: privateKey, publicKey: publicKey };
   }
 }
@@ -130,8 +144,8 @@ export class KeyPair extends KeyPairBase {
    * Derives the compressed secp256k1 public key for the provided private key.
    * @param privateKey Private key bytes
    */
-  static override derivePublicKey(privateKey: Uint8Array) {
-    return secp256k1.getPublicKey(privateKey, true);
+  static override derivePublicKey(privateKey: Uint8Array<ArrayBuffer>) {
+    return secp256k1.getPublicKey(privateKey, true) as Uint8Array<ArrayBuffer>;
   }
 
   /**
@@ -139,7 +153,7 @@ export class KeyPair extends KeyPairBase {
    * @param seed Optional seed to deterministically derive the key pair
    * @param domain Domain identifier from {@link PRFDomain}
    */
-  static create(seed?: Uint8Array, domain?: keyof PRFDomain) {
+  static create(seed?: Uint8Array<ArrayBuffer>, domain?: keyof PRFDomain) {
     const privateKey = this.generatePrivateKey(seed, domain);
     const publicKey = this.derivePublicKey(privateKey);
     return new KeyPair(privateKey, publicKey);
@@ -167,19 +181,15 @@ export class NullifierKeyPair extends KeyPairBase {
    * Deterministically derives the nullifier commitment from the private key.
    * @param nk Nullifier private key bytes
    */
-  static override derivePublicKey(nk: Uint8Array) {
-    return hmac(
-      sha256,
-      nk,
-      new TextEncoder().encode(PRFDomainMap.NullifierKeyCommitment)
-    );
+  static override derivePublicKey(nk: Uint8Array<ArrayBuffer>) {
+    return sha256(nk) as Uint8Array<ArrayBuffer>;
   }
 
   /**
    * Creates a nullifier key pair
    * @param seed Optional seed to deterministically derive the key pair
    */
-  static override create(seed?: Uint8Array) {
+  static override create(seed?: Uint8Array<ArrayBuffer>) {
     const privateKey = this.generatePrivateKey(seed, "Nullifier");
     const publicKey = this.derivePublicKey(privateKey);
     return new NullifierKeyPair(privateKey, publicKey);

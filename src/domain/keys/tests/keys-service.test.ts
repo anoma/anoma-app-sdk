@@ -1,11 +1,8 @@
 import { expect, test } from "vitest";
-import {
-  createVaultAccount,
-  CURRENT_VAULT_VERSION,
-  unlockVault,
-} from "domain/crypto";
+import { createVaultAccount, unlockVault } from "domain/crypto";
 import { createUserKeyring } from "domain/keys";
 import { generateRandomBytes } from "lib/utils";
+import { VAULT_VERSION } from "app-constants";
 
 test("should create user keyring correctly", () => {
   const keyring = createUserKeyring();
@@ -33,7 +30,7 @@ test("should encrypt and decrypt user vault correctly", async () => {
   expect(vault.id).toBe(walletAddress);
   // expect(vault.ciphertext).toBeInstanceOf(ArrayBuffer);
   expect(vault.ciphertext.byteLength).toBeGreaterThan(0);
-  expect(vault.version).toBe(CURRENT_VAULT_VERSION);
+  expect(vault.version).toBe(VAULT_VERSION);
   expect(vault.iv.length).toBeGreaterThan(0);
   expect(vault.createdAt).toBeLessThanOrEqual(Date.now());
   expect(vault.modifiedAt).toBeLessThanOrEqual(Date.now());

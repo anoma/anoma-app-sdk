@@ -5,49 +5,39 @@ import {
 } from "domain/keys/models";
 import type { UserKeyring } from "types";
 
-export const KeyDerivation = {
-  /**
-   * Used to authorise actions and express ownership over resources for
-   * applications that have a notion of ownership and require explicit authorisation of the owner
-   * @param seed Optional seed to deterministically derive the key pair
-   */
-  deriveAuthorityKeyPair: (seed?: Uint8Array): KeyPair => {
-    return KeyPair.create(seed, "Authority");
-  },
-  /**
-   * These keys are used to reflect the right to nullify
-   * @param seed Optional seed to deterministically derive the key pair
-   */
-  deriveNullifierKeyPair: (seed?: Uint8Array): NullifierKeyPair => {
-    return NullifierKeyPair.create(seed);
-  },
-  /**
-   * This static key pair is used to produce resource encryption keys
-   * @param seed Optional seed to deterministically derive the key pair
-   */
-  deriveStaticEncryptionKeyPair: (seed?: Uint8Array): KeyPair => {
-    return KeyPair.create(seed, "Encryption");
-  },
-  /**
-   * This static key pair is used to produce discovery encryption keys
-   * @param seed Optional seed to deterministically derive the key pair
-   */
-  deriveStaticDiscoveryKeyPair: (seed?: Uint8Array): KeyPair => {
-    return KeyPair.create(seed, "Discovery");
-  },
-};
-
 /**
  * Derives all key pairs that make up a user keyring.
  * @param seed Optional 32-byte seed to deterministically derive the keys
  * @returns Object containing authority, nullifier, discovery, and encryption pairs
  */
-export const createUserKeyring = (seed?: Uint8Array): UserKeyring => {
+export const createUserKeyring = (
+  seed?: Uint8Array<ArrayBuffer>
+): UserKeyring => {
   return {
-    authorityKeyPair: KeyDerivation.deriveAuthorityKeyPair(seed),
-    nullifierKeyPair: KeyDerivation.deriveNullifierKeyPair(seed),
-    discoveryKeyPair: KeyDerivation.deriveStaticDiscoveryKeyPair(seed),
-    encryptionKeyPair: KeyDerivation.deriveStaticEncryptionKeyPair(seed),
+    /**
+     * Used to authorise actions and express ownership over resources for
+     * applications that have a notion of ownership and require explicit authorisation of the owner
+     * @param seed Optional seed to deterministically derive the key pair
+     */
+    authorityKeyPair: KeyPair.create(seed),
+
+    /**
+     * These keys are used to reflect the right to nullify
+     * @param seed Optional seed to deterministically derive the key pair
+     */
+    nullifierKeyPair: NullifierKeyPair.create(seed),
+
+    /**
+     * This static key pair is used to produce resource encryption keys
+     * @param seed Optional seed to deterministically derive the key pair
+     */
+    encryptionKeyPair: KeyPair.create(seed),
+
+    /**
+     * This static key pair is used to produce discovery encryption keys
+     * @param seed Optional seed to deterministically derive the key pair
+     */
+    discoveryKeyPair: KeyPair.create(seed),
   };
 };
 
