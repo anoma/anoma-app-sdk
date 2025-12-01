@@ -26,8 +26,8 @@ export type UserKeyring = {
 };
 
 export type UserPublicKeys = {
-  authorityPublicKey: Uint8Array;
-  nullifierKeyCommitment: Uint8Array;
-  discoveryPublicKey: Uint8Array;
-  encryptionPublicKey: Uint8Array;
+  authorityPublicKey: Uint8Array<ArrayBuffer>;
+  nullifierKeyCommitment: Uint8Array<ArrayBuffer>;
+  discoveryPublicKey: Uint8Array<ArrayBuffer>;
+  encryptionPublicKey: Uint8Array<ArrayBuffer>;
 };
