@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from "./routes/__root";
+import { Route as DepositRouteImport } from "./routes/deposit";
 import { Route as DashboardRouteImport } from "./routes/dashboard";
 import { Route as IndexRouteImport } from "./routes/index";
 import { Route as SignUpWalletRouteImport } from "./routes/sign-up/wallet";
 
+const DepositRoute = DepositRouteImport.update({
+  id: "/deposit",
+  path: "/deposit",
+  getParentRoute: () => rootRouteImport,
+} as any);
 const DashboardRoute = DashboardRouteImport.update({
   id: "/dashboard",
   path: "/dashboard",
@@ -32,35 +38,46 @@ const SignUpWalletRoute = SignUpWalletRouteImport.update({
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
   "/dashboard": typeof DashboardRoute;
+  "/deposit": typeof DepositRoute;
   "/sign-up/wallet": typeof SignUpWalletRoute;
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
   "/dashboard": typeof DashboardRoute;
+  "/deposit": typeof DepositRoute;
   "/sign-up/wallet": typeof SignUpWalletRoute;
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
   "/": typeof IndexRoute;
   "/dashboard": typeof DashboardRoute;
+  "/deposit": typeof DepositRoute;
   "/sign-up/wallet": typeof SignUpWalletRoute;
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/" | "/dashboard" | "/sign-up/wallet";
+  fullPaths: "/" | "/dashboard" | "/deposit" | "/sign-up/wallet";
   fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "/dashboard" | "/sign-up/wallet";
-  id: "__root__" | "/" | "/dashboard" | "/sign-up/wallet";
+  to: "/" | "/dashboard" | "/deposit" | "/sign-up/wallet";
+  id: "__root__" | "/" | "/dashboard" | "/deposit" | "/sign-up/wallet";
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
   DashboardRoute: typeof DashboardRoute;
+  DepositRoute: typeof DepositRoute;
   SignUpWalletRoute: typeof SignUpWalletRoute;
 }
 
 declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
+    "/deposit": {
+      id: "/deposit";
+      path: "/deposit";
+      fullPath: "/deposit";
+      preLoaderRoute: typeof DepositRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     "/dashboard": {
       id: "/dashboard";
       path: "/dashboard";
@@ -88,6 +105,7 @@ declare module "@tanstack/react-router" {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
+  DepositRoute: DepositRoute,
   SignUpWalletRoute: SignUpWalletRoute,
 };
 export const routeTree = rootRouteImport

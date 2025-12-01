@@ -16,3 +16,8 @@ export const getTokenByAddress = (address?: Address): TokenRegistry =>
 export const getTokenByLabel = (label?: string): TokenRegistry =>
   tokenRegistry.find(token => token.label === label) ??
   getNotFoundToken({ label });
+
+export const getTokenBySymbol = (symbol?: string): TokenRegistry =>
+  tokenRegistry.find(
+    token => token.symbol.toLowerCase() === symbol?.toLowerCase()
+  ) ?? getNotFoundToken({ symbol });
