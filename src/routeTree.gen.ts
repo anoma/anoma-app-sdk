@@ -9,19 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from "./routes/__root";
-import { Route as DepositRouteImport } from "./routes/deposit";
-import { Route as DashboardRouteImport } from "./routes/dashboard";
+import { Route as AppRouteRouteImport } from "./routes/_app/route";
 import { Route as IndexRouteImport } from "./routes/index";
 import { Route as SignUpWalletRouteImport } from "./routes/sign-up/wallet";
+import { Route as AppWithdrawRouteImport } from "./routes/_app/withdraw";
+import { Route as AppSendRouteImport } from "./routes/_app/send";
+import { Route as AppRequestRouteImport } from "./routes/_app/request";
+import { Route as AppDepositRouteImport } from "./routes/_app/deposit";
+import { Route as AppDashboardRouteImport } from "./routes/_app/dashboard";
 
-const DepositRoute = DepositRouteImport.update({
-  id: "/deposit",
-  path: "/deposit",
-  getParentRoute: () => rootRouteImport,
-} as any);
-const DashboardRoute = DashboardRouteImport.update({
-  id: "/dashboard",
-  path: "/dashboard",
+const AppRouteRoute = AppRouteRouteImport.update({
+  id: "/_app",
   getParentRoute: () => rootRouteImport,
 } as any);
 const IndexRoute = IndexRouteImport.update({
@@ -34,55 +32,105 @@ const SignUpWalletRoute = SignUpWalletRouteImport.update({
   path: "/sign-up/wallet",
   getParentRoute: () => rootRouteImport,
 } as any);
+const AppWithdrawRoute = AppWithdrawRouteImport.update({
+  id: "/withdraw",
+  path: "/withdraw",
+  getParentRoute: () => AppRouteRoute,
+} as any);
+const AppSendRoute = AppSendRouteImport.update({
+  id: "/send",
+  path: "/send",
+  getParentRoute: () => AppRouteRoute,
+} as any);
+const AppRequestRoute = AppRequestRouteImport.update({
+  id: "/request",
+  path: "/request",
+  getParentRoute: () => AppRouteRoute,
+} as any);
+const AppDepositRoute = AppDepositRouteImport.update({
+  id: "/deposit",
+  path: "/deposit",
+  getParentRoute: () => AppRouteRoute,
+} as any);
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: "/dashboard",
+  path: "/dashboard",
+  getParentRoute: () => AppRouteRoute,
+} as any);
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
-  "/dashboard": typeof DashboardRoute;
-  "/deposit": typeof DepositRoute;
+  "/dashboard": typeof AppDashboardRoute;
+  "/deposit": typeof AppDepositRoute;
+  "/request": typeof AppRequestRoute;
+  "/send": typeof AppSendRoute;
+  "/withdraw": typeof AppWithdrawRoute;
   "/sign-up/wallet": typeof SignUpWalletRoute;
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
-  "/dashboard": typeof DashboardRoute;
-  "/deposit": typeof DepositRoute;
+  "/dashboard": typeof AppDashboardRoute;
+  "/deposit": typeof AppDepositRoute;
+  "/request": typeof AppRequestRoute;
+  "/send": typeof AppSendRoute;
+  "/withdraw": typeof AppWithdrawRoute;
   "/sign-up/wallet": typeof SignUpWalletRoute;
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
   "/": typeof IndexRoute;
-  "/dashboard": typeof DashboardRoute;
-  "/deposit": typeof DepositRoute;
+  "/_app": typeof AppRouteRouteWithChildren;
+  "/_app/dashboard": typeof AppDashboardRoute;
+  "/_app/deposit": typeof AppDepositRoute;
+  "/_app/request": typeof AppRequestRoute;
+  "/_app/send": typeof AppSendRoute;
+  "/_app/withdraw": typeof AppWithdrawRoute;
   "/sign-up/wallet": typeof SignUpWalletRoute;
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/" | "/dashboard" | "/deposit" | "/sign-up/wallet";
+  fullPaths:
+    | "/"
+    | "/dashboard"
+    | "/deposit"
+    | "/request"
+    | "/send"
+    | "/withdraw"
+    | "/sign-up/wallet";
   fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "/dashboard" | "/deposit" | "/sign-up/wallet";
-  id: "__root__" | "/" | "/dashboard" | "/deposit" | "/sign-up/wallet";
+  to:
+    | "/"
+    | "/dashboard"
+    | "/deposit"
+    | "/request"
+    | "/send"
+    | "/withdraw"
+    | "/sign-up/wallet";
+  id:
+    | "__root__"
+    | "/"
+    | "/_app"
+    | "/_app/dashboard"
+    | "/_app/deposit"
+    | "/_app/request"
+    | "/_app/send"
+    | "/_app/withdraw"
+    | "/sign-up/wallet";
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
-  DashboardRoute: typeof DashboardRoute;
-  DepositRoute: typeof DepositRoute;
+  AppRouteRoute: typeof AppRouteRouteWithChildren;
   SignUpWalletRoute: typeof SignUpWalletRoute;
 }
 
 declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    "/deposit": {
-      id: "/deposit";
-      path: "/deposit";
-      fullPath: "/deposit";
-      preLoaderRoute: typeof DepositRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/dashboard": {
-      id: "/dashboard";
-      path: "/dashboard";
-      fullPath: "/dashboard";
-      preLoaderRoute: typeof DashboardRouteImport;
+    "/_app": {
+      id: "/_app";
+      path: "";
+      fullPath: "";
+      preLoaderRoute: typeof AppRouteRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/": {
@@ -99,13 +147,67 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof SignUpWalletRouteImport;
       parentRoute: typeof rootRouteImport;
     };
+    "/_app/withdraw": {
+      id: "/_app/withdraw";
+      path: "/withdraw";
+      fullPath: "/withdraw";
+      preLoaderRoute: typeof AppWithdrawRouteImport;
+      parentRoute: typeof AppRouteRoute;
+    };
+    "/_app/send": {
+      id: "/_app/send";
+      path: "/send";
+      fullPath: "/send";
+      preLoaderRoute: typeof AppSendRouteImport;
+      parentRoute: typeof AppRouteRoute;
+    };
+    "/_app/request": {
+      id: "/_app/request";
+      path: "/request";
+      fullPath: "/request";
+      preLoaderRoute: typeof AppRequestRouteImport;
+      parentRoute: typeof AppRouteRoute;
+    };
+    "/_app/deposit": {
+      id: "/_app/deposit";
+      path: "/deposit";
+      fullPath: "/deposit";
+      preLoaderRoute: typeof AppDepositRouteImport;
+      parentRoute: typeof AppRouteRoute;
+    };
+    "/_app/dashboard": {
+      id: "/_app/dashboard";
+      path: "/dashboard";
+      fullPath: "/dashboard";
+      preLoaderRoute: typeof AppDashboardRouteImport;
+      parentRoute: typeof AppRouteRoute;
+    };
   }
 }
 
+interface AppRouteRouteChildren {
+  AppDashboardRoute: typeof AppDashboardRoute;
+  AppDepositRoute: typeof AppDepositRoute;
+  AppRequestRoute: typeof AppRequestRoute;
+  AppSendRoute: typeof AppSendRoute;
+  AppWithdrawRoute: typeof AppWithdrawRoute;
+}
+
+const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppDashboardRoute: AppDashboardRoute,
+  AppDepositRoute: AppDepositRoute,
+  AppRequestRoute: AppRequestRoute,
+  AppSendRoute: AppSendRoute,
+  AppWithdrawRoute: AppWithdrawRoute,
+};
+
+const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
+  AppRouteRouteChildren,
+);
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DashboardRoute: DashboardRoute,
-  DepositRoute: DepositRoute,
+  AppRouteRoute: AppRouteRouteWithChildren,
   SignUpWalletRoute: SignUpWalletRoute,
 };
 export const routeTree = rootRouteImport
