@@ -1,35 +1,34 @@
 import {
-  NullifierKey,
-  Digest,
   AuthorizationSigningKey,
+  AuthorizationVerifyingKey,
+  Digest,
   MerkleTree,
-  CallType,
+  NullifierKey,
   Resource,
   randomBytes,
-  AuthorizationVerifyingKey,
 } from "@anoma/lib";
-import type {
-  AuthorizedResources,
-  CreateBurnProps,
-  CreateTransferProps,
-  EphemeralMintProps,
-  CreateMintProps,
-  CreatedResources,
-  PersistentMintProps,
-  SplitResources,
-} from "types";
-import {
-  calculateLabelRef,
-  calculateValueRefCalltypeUser,
-  calculateValueRefFromAuth,
-} from "domain/transfer/services";
-import { Client, initClient } from "wasm/client";
-import { toBase64 } from "lib/utils";
 import {
   AUTH_SIGNATURE_DOMAIN,
   PADDING_LOGIC_VK,
   SIMPLE_TRANSFER_ID,
 } from "app-constants";
+import {
+  calculateLabelRef,
+  calculateValueRefFromAuth,
+  calculateValueRefFromUserAddress,
+} from "domain/transfer/services";
+import { toBase64 } from "lib/utils";
+import type {
+  AuthorizedResources,
+  CreateBurnProps,
+  CreateMintProps,
+  CreateTransferProps,
+  CreatedResources,
+  EphemeralMintProps,
+  PersistentMintProps,
+  SplitResources,
+} from "types";
+import { Client, initClient } from "wasm/client";
 
 /**
  * Transfer client which provies the necessary resource logic for
@@ -46,10 +45,7 @@ export class TransferLogic extends Client {
     const logicRef = Digest.fromHex(this.digest);
     const nonce = randomBytes();
     const labelRefConsumed = calculateLabelRef(forwarderAddress, token);
-    const valueRefConsumed = calculateValueRefCalltypeUser(
-      CallType.Wrap,
-      userAddress
-    );
+    const valueRefConsumed = calculateValueRefFromUserAddress(userAddress);
 
     return Resource.create(
       logicRef,
@@ -65,6 +61,7 @@ export class TransferLogic extends Client {
   createPersistentMintResource(props: PersistentMintProps): Resource {
     const {
       authVerifyingKey,
+      encryptionPublicKey,
       forwarderAddress,
       token,
       quantity,
@@ -74,7 +71,8 @@ export class TransferLogic extends Client {
     const logicRef = Digest.fromHex(this.digest);
     const labelRefCreated = calculateLabelRef(forwarderAddress, token);
     const valueRefCreated = calculateValueRefFromAuth(
-      AuthorizationVerifyingKey.fromHex(authVerifyingKey)
+      AuthorizationVerifyingKey.fromHex(authVerifyingKey),
+      encryptionPublicKey
     );
 
     return Resource.create(
@@ -92,8 +90,14 @@ export class TransferLogic extends Client {
     const nk = new NullifierKey(props.nullifierKeypair.nk);
     const nkCommitment = nk.commit();
 
-    const { authVerifyingKey, userAddress, forwarderAddress, token, quantity } =
-      props;
+    const {
+      authVerifyingKey,
+      encryptionPublicKey,
+      userAddress,
+      forwarderAddress,
+      token,
+      quantity,
+    } = props;
 
     const consumedResource = this.createEphemeralMintResource({
       userAddress,
@@ -109,6 +113,7 @@ export class TransferLogic extends Client {
 
     const createdResource = this.createPersistentMintResource({
       authVerifyingKey,
+      encryptionPublicKey,
       consumedResourceNullifier,
       forwarderAddress,
       token,
@@ -132,6 +137,7 @@ export class TransferLogic extends Client {
   createTransferResource(props: CreateTransferProps): AuthorizedResources {
     const {
       authKeypair,
+      encryptionPublicKey,
       forwarderAddress,
       quantity,
       receiverNullifierCommitment,
@@ -148,7 +154,10 @@ export class TransferLogic extends Client {
 
     const logicRef = Digest.fromHex(this.digest);
     const labelRef = calculateLabelRef(forwarderAddress, token);
-    const createdValueRef = calculateValueRefFromAuth(receiverAuthVerifyingKey);
+    const createdValueRef = calculateValueRefFromAuth(
+      receiverAuthVerifyingKey,
+      encryptionPublicKey
+    );
     const createdResource = Resource.create(
       logicRef,
       labelRef,
@@ -187,10 +196,7 @@ export class TransferLogic extends Client {
 
     const logicRef = Digest.fromHex(this.digest);
     const labelRef = calculateLabelRef(forwarderAddress, token);
-    const valueRef = calculateValueRefCalltypeUser(
-      CallType.Unwrap,
-      burnAddress
-    );
+    const valueRef = calculateValueRefFromUserAddress(burnAddress);
     const burnNk = new NullifierKey(burnNullifierKeypair.nk);
     const burnResourceNullifier = burnResource.nullifier(burnNk);
     const authSigningKey = AuthorizationSigningKey.fromBytes(
@@ -229,6 +235,7 @@ export class TransferLogic extends Client {
       transferredResourceNullifier,
       receiverNullifierCommitment,
       receiverVerifyingKey,
+      encryptionPublicKey,
       resource,
       token,
     } = props;
@@ -259,7 +266,7 @@ export class TransferLogic extends Client {
       Digest.fromHex(this.digest),
       calculateLabelRef(forwarderAddress, token),
       quantity,
-      calculateValueRefFromAuth(receiverAuthVerifyingKey),
+      calculateValueRefFromAuth(receiverAuthVerifyingKey, encryptionPublicKey),
       false,
       transferredResourceNullifier,
       receiverNullifierCommitment

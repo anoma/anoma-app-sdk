@@ -1,3 +1,5 @@
+import { type Resource } from "@anoma/lib";
+import { toBase64, toHex } from "lib/utils";
 import type {
   ConsumedEphemeralProps,
   ConsumedWitnessData,
@@ -10,8 +12,6 @@ import type {
   Parameters,
 } from "types";
 import { TransferLogic } from "./TransferLogic";
-import { toHex, toBase64 } from "lib/utils";
-import { type Resource } from "@anoma/lib";
 
 /**
  * Build required backend Parameters request for mint, transfer, split, burn
@@ -52,11 +52,13 @@ export class TransferBuilder {
     const {
       permit2Data: permit2_data,
       senderWalletAddress: sender_wallet_address,
-      tokenContractAddress: token_contract_address,
+      tokenContractAddress: consumed_token_contract_address,
     } = consumedWitnessProps;
     const {
       receiverDiscoveryPublicKey: receiver_discovery_public_key,
       receiverEncryptionPublicKey: receiver_encryption_public_key,
+      authorityPublicKey: receiver_authorization_verifying_key,
+      tokenContractAddress: created_token_contract_address,
     } = createdWitnessProps;
 
     return {
@@ -68,7 +70,7 @@ export class TransferBuilder {
             Ephemeral: {
               permit2_data,
               sender_wallet_address,
-              token_contract_address,
+              token_contract_address: consumed_token_contract_address,
             },
           },
         },
@@ -80,6 +82,8 @@ export class TransferBuilder {
             Persistent: {
               receiver_discovery_public_key,
               receiver_encryption_public_key,
+              receiver_authorization_verifying_key,
+              token_contract_address: created_token_contract_address,
             },
           },
         },
@@ -98,6 +102,8 @@ export class TransferBuilder {
     const {
       receiverDiscoveryPublicKey: receiver_discovery_public_key,
       receiverEncryptionPublicKey: receiver_encryption_public_key,
+      authorityPublicKey: receiver_authorization_verifying_key,
+      tokenContractAddress: token_contract_address,
     } = createdWitnessProps;
 
     const consumedWitnessData: ConsumedWitnessData["Persistent"] = {
@@ -109,6 +115,8 @@ export class TransferBuilder {
     const createdWitnessData: CreatedWitnessData["Persistent"] = {
       receiver_discovery_public_key,
       receiver_encryption_public_key,
+      receiver_authorization_verifying_key,
+      token_contract_address,
     };
 
     return {

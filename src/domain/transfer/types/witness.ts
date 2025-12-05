@@ -17,6 +17,8 @@ type CreatedEphemeral = Record<string, never>;
 type TokenTransferCreatedPersistent = {
   receiver_discovery_public_key: string;
   receiver_encryption_public_key: string;
+  receiver_authorization_verifying_key: string;
+  token_contract_address: string;
 };
 
 /**

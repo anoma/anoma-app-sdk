@@ -28,6 +28,7 @@ export type EphemeralMintProps = {
 
 export type PersistentMintProps = {
   authVerifyingKey: string;
+  encryptionPublicKey: string;
   forwarderAddress: string;
   token: string;
   quantity: bigint;
@@ -40,6 +41,7 @@ export type PersistentMintProps = {
  */
 export type CreateMintProps = {
   authVerifyingKey: string;
+  encryptionPublicKey: string;
   userAddress: string;
   nullifierKeypair: NullifierKeyProps;
   forwarderAddress: string;
@@ -51,6 +53,7 @@ export type CreateMintProps = {
 export type CreateTransferProps = {
   resource: Resource;
   authKeypair: KeyPair;
+  encryptionPublicKey: string;
   transferredResourceNullifier: Digest;
   receiverNullifierCommitment: NullifierKeyCommitment;
   receiverVerifyingKey: string;
@@ -104,6 +107,8 @@ export type ConsumedPersistentProps = {
 export type CreatedPersistentProps = {
   receiverDiscoveryPublicKey: string;
   receiverEncryptionPublicKey: string;
+  authorityPublicKey: string;
+  tokenContractAddress: Address;
 };
 
 /**
