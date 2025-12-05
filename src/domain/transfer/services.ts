@@ -1,10 +1,5 @@
-import {
-  AuthorizationVerifyingKey,
-  Digest,
-  hashBytes,
-  CallType,
-} from "@anoma/lib";
-import { fromHex } from "lib/utils";
+import { AuthorizationVerifyingKey, Digest, hashBytes } from "@anoma/lib";
+import { fromHex, normalizeHex } from "lib/utils";
 
 export function calculateLabelRef(
   forwarderAddress: string,
@@ -16,15 +11,19 @@ export function calculateLabelRef(
 }
 
 export function calculateValueRefFromAuth(
-  pk: AuthorizationVerifyingKey
+  authorizationVerifyingKey: AuthorizationVerifyingKey,
+  encryptionPublicKey: string
 ): Digest {
-  return hashBytes(pk.toBytes());
+  return hashBytes(
+    new Uint8Array([
+      ...authorizationVerifyingKey.toBytes(),
+      ...fromHex(encryptionPublicKey),
+    ])
+  );
 }
 
-export function calculateValueRefCalltypeUser(
-  callType: CallType,
-  userAddress: string
-): Digest {
-  const userAddressBytes = fromHex(userAddress);
-  return hashBytes(new Uint8Array([...callType.toVec(), ...userAddressBytes]));
+export function calculateValueRefFromUserAddress(userAddress: string): Digest {
+  // Padding with zero to fill the 32 bytes required by value_ref
+  const paddedAddress = normalizeHex(userAddress).padEnd(64, "0");
+  return Digest.fromHex(paddedAddress);
 }

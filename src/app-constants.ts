@@ -2,11 +2,11 @@
 
 // Verifying Key for TrivialLogicWitness
 export const PADDING_LOGIC_VK =
-  "d67cdd850ca9eb834fb0a7ca49489d88a3301ffdd31462f502280c906bffaf75";
+  "83d603b23e090c1400b018adb61f516386e9f2d523f983c3c417ab49b2037585";
 
 // ID for Simple Transfer Logic
 export const SIMPLE_TRANSFER_ID =
-  "81f8104fe367f5018a4bb0b259531be9ab35d3f1d51dea46c204bee154d5ee9e";
+  "e751cb8fb403db5bf7838ef434e952652c5e197fe61bd9d7a907e67c4f9d9725";
 
 // Authorization signature domain
 export const AUTH_SIGNATURE_DOMAIN = "SimpleTransferAuthorization";
