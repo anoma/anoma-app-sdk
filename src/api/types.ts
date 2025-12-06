@@ -1,4 +1,4 @@
-import type { EncodedResource } from "@anoma/lib";
+import type { EncodedResource } from "wasm";
 
 export type ApiConfig = {
   baseUrl: string;

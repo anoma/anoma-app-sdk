@@ -1,9 +1,9 @@
-import type { Resource } from "@anoma/lib";
 import type { ApiConfig } from "api";
 import type { Address } from "viem";
+import type { Resource } from "wasm";
 
-export * from "domain/keys/types";
 export * from "domain/crypto/types";
+export * from "domain/keys/types";
 export * from "domain/transfer/types";
 
 export type ResourceBalance = {

@@ -1,5 +1,5 @@
-import { AuthorizationVerifyingKey, Digest, hashBytes } from "@anoma/lib";
 import { fromHex, normalizeHex } from "lib/utils";
+import { AuthorizationVerifyingKey, Digest, hashBytes } from "wasm";
 
 export function calculateLabelRef(
   forwarderAddress: string,

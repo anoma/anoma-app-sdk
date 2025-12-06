@@ -1,4 +1,4 @@
-import type { EncodedKeypair } from "@anoma/lib";
+import type { EncodedKeypair } from "wasm";
 import { ApiClient } from "./ApiClient";
 import { IndexerPaths } from "./paths";
 import { type IndexerResourceResponse, type ResponseJson } from "./types";

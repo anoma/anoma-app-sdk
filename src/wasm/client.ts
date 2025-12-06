@@ -1,6 +1,6 @@
-import { initWasm } from "wasm";
 import { validHexBytes, validHexString } from "lib/utils";
 import invariant from "tiny-invariant";
+import { initWasm } from "wasm";
 
 const DIGEST_BYTES_LENGTH = 32;
 const DIGEST_HEX_LENGTH = DIGEST_BYTES_LENGTH * 2;
@@ -9,7 +9,7 @@ const DIGEST_HEX_LENGTH = DIGEST_BYTES_LENGTH * 2;
  * Generic Anoma App Client
  *
  * Requires instance of Digest (of identifying hash), which in turn requires the wasm module
- * from @anoma/lib to first be initialized.
+ * from arm-bindings to first be initialized.
  */
 export abstract class Client {
   digest: string;
@@ -34,7 +34,7 @@ export abstract class Client {
 }
 
 /**
- * Client initializer properly instantiates wasm module from `@anoma/lib` so
+ * Client initializer properly instantiates wasm module from `arm-bindings` so
  * that it may then utilize WebAssembly memory. This Digest
  * represents the hash identifier of the Guest program compiled for this type of
  * resource logic (the bytes of this digest produce the `logic_ref`).

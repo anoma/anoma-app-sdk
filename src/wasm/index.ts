@@ -1,5 +1,5 @@
-import { default as initLib, initSync as initLibSync } from "@anoma/lib";
 import { promiseWithResolvers } from "lib/utils";
+import { default as initLib, initSync as initLibSync } from "./arm_bindings";
 
 /**
  * Provide reference to single wasm init promise
@@ -22,3 +22,4 @@ export const initWasm = async (): Promise<WebAssembly.Module> => {
  * Re-export initSync
  */
 export const initSync = (wasmBytes: Uint8Array) => initLibSync(wasmBytes);
+export * from "./arm_bindings";

@@ -1,14 +1,14 @@
+import type { EnvioClient, IndexerResource } from "api";
+import { SIMPLE_TRANSFER_ID } from "app-constants";
+import { fromHex, normalizeHex } from "lib/utils";
+import type { ResourcesWithBalance, ResourceWithMetadata } from "types";
 import {
   Ciphertext,
   NullifierKey,
   Resource,
   SecretKey,
   type EncodedResource,
-} from "@anoma/lib";
-import type { EnvioClient, IndexerResource } from "api";
-import { SIMPLE_TRANSFER_ID } from "app-constants";
-import { fromHex, normalizeHex } from "lib/utils";
-import type { ResourcesWithBalance, ResourceWithMetadata } from "types";
+} from "wasm";
 
 /** Convert an Envio nullifier list into a normalized hex set. */
 async function buildNullifierSet(

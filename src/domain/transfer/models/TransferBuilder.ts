@@ -1,4 +1,3 @@
-import { type Resource } from "@anoma/lib";
 import { toBase64, toHex } from "lib/utils";
 import type {
   ConsumedEphemeralProps,
@@ -11,6 +10,7 @@ import type {
   CreatedWitnessData,
   Parameters,
 } from "types";
+import { type Resource } from "wasm";
 import { TransferLogic } from "./TransferLogic";
 
 /**
