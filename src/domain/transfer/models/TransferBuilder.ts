@@ -10,7 +10,7 @@ import type {
   CreatedWitnessData,
   Parameters,
 } from "types";
-import { type Resource } from "wasm";
+import { PublicKey, type Resource } from "wasm";
 import { TransferLogic } from "./TransferLogic";
 
 /**
@@ -108,8 +108,13 @@ export class TransferBuilder {
 
     const consumedWitnessData: ConsumedWitnessData["Persistent"] = {
       sender_authorization_signature: toBase64(authSig.toBytes()),
-      sender_authorization_verifying_key: toHex(
-        transferProps.authKeypair.publicKey
+      sender_authorization_verifying_key: toBase64(
+        PublicKey.fromHex(
+          toHex(transferProps.authKeypair.publicKey)
+        ).serialize() // serialize() returns the serde-serialized AffinePoint
+      ),
+      sender_encryption_public_key: toBase64(
+        PublicKey.fromHex(transferProps.encryptionPublicKey).serialize() // serialize() returns the serde-serialized AffinePoint
       ),
     };
     const createdWitnessData: CreatedWitnessData["Persistent"] = {
@@ -149,6 +154,7 @@ export class TransferBuilder {
     const consumedWitnessData: ConsumedWitnessData["Persistent"] = {
       sender_authorization_signature: toBase64(authSig.toBytes()),
       sender_authorization_verifying_key: "",
+      sender_encryption_public_key: "",
     };
 
     return {

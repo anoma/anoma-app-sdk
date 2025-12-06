@@ -41,6 +41,7 @@ type TokenTransferConsumedEphemeral = {
 type TokenTransferConsumedPersistent = {
   sender_authorization_verifying_key: string;
   sender_authorization_signature: string;
+  sender_encryption_public_key: string;
 };
 
 //************************************************************************

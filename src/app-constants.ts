@@ -9,7 +9,7 @@ export const SIMPLE_TRANSFER_ID =
   "e751cb8fb403db5bf7838ef434e952652c5e197fe61bd9d7a907e67c4f9d9725";
 
 // Authorization signature domain
-export const AUTH_SIGNATURE_DOMAIN = "SimpleTransferAuthorization";
+export const AUTH_SIGNATURE_DOMAIN = "TokenTransferAuthorization";
 
 // Constants related to vault creation
 // Defines the current version of the Vault. Should be incremented on every
