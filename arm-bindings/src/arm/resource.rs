@@ -1,18 +1,14 @@
 use crate::arm::{
     digest::Digest,
+    encryption::{Ciphertext, SecretKey},
     nullifier_key::{NullifierKey, NullifierKeyCommitment},
 };
 use arm::{nullifier_key::NullifierKeyCommitment as NKC, resource::Resource as R};
-use serde::{self, Deserialize, Serialize};
-
-#[cfg(feature = "wasm")]
 use base64::{Engine as _, engine::general_purpose::STANDARD as b64};
-#[cfg(feature = "wasm")]
+use serde::{self, Deserialize, Serialize};
 use tsify::Tsify;
-#[cfg(feature = "wasm")]
 use wasm_bindgen::{JsError, prelude::wasm_bindgen};
 
-#[cfg(feature = "wasm")]
 #[derive(Tsify, Debug, Serialize, Deserialize)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
 #[serde(rename_all = "camelCase")]
@@ -27,7 +23,7 @@ pub struct ResourceProps {
     nk_commitment: String,
 }
 
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
+#[wasm_bindgen]
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Resource(pub(crate) R);
 
@@ -37,7 +33,6 @@ impl Resource {
     }
 }
 
-#[cfg(feature = "wasm")]
 #[wasm_bindgen]
 impl Resource {
     #[wasm_bindgen(constructor)]
@@ -160,7 +155,6 @@ impl Resource {
     }
 }
 
-#[cfg(feature = "wasm")]
 #[derive(Tsify, Debug, Serialize, Deserialize)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct EncodedResource {
@@ -172,4 +166,49 @@ pub struct EncodedResource {
     pub nonce: String,
     pub rand_seed: String,
     pub nk_commitment: String,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct ResourceWithLabel {
+    pub resource: R,
+    pub forwarder: Vec<u8>,
+    pub erc20_token_addr: Vec<u8>,
+}
+
+#[wasm_bindgen(js_name = "ResourceWithLabel")]
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct JsResourceWithLabel(ResourceWithLabel);
+
+#[wasm_bindgen(js_class = "ResourceWithLabel")]
+impl JsResourceWithLabel {
+    #[wasm_bindgen(js_name = "fromEncrypted")]
+    pub fn from_encrypted(
+        payload: Vec<u8>,
+        sk_bytes: Vec<u8>,
+    ) -> Result<JsResourceWithLabel, JsError> {
+        let ciphertext = Ciphertext::from_bytes(payload);
+        let sk = SecretKey::from_bytes(sk_bytes)?;
+        let plaintext_bytes = ciphertext.decrypt(&sk)?;
+        let payload_plaintext: ResourceWithLabel = bincode::deserialize(&plaintext_bytes)?;
+
+        Ok(JsResourceWithLabel(payload_plaintext))
+    }
+
+    /// Get resource instance
+    #[wasm_bindgen(getter)]
+    pub fn resource(&self) -> Resource {
+        Resource(self.0.resource)
+    }
+
+    /// Get forwarder as hex
+    #[wasm_bindgen(getter)]
+    pub fn forwarder(&self) -> String {
+        format!("0x{}", hex::encode(&self.0.forwarder))
+    }
+
+    /// Get erc20_token_addr as hex
+    #[wasm_bindgen(getter, js_name = "erc20TokenAddress")]
+    pub fn erc20_token_addr(&self) -> String {
+        format!("0x{}", hex::encode(&self.0.erc20_token_addr))
+    }
 }

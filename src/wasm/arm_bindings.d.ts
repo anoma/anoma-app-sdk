@@ -5,11 +5,6 @@ export interface EncodedKeypair {
   public_key: string;
 }
 
-export interface EncodedNullifierKeyPair {
-  nk: string;
-  cnk: string;
-}
-
 export interface ResourceProps {
   isEphemeral: boolean;
   quantity: bigint;
@@ -30,6 +25,11 @@ export interface EncodedResource {
   nonce: string;
   rand_seed: string;
   nk_commitment: string;
+}
+
+export interface EncodedNullifierKeyPair {
+  nk: string;
+  cnk: string;
 }
 
 export class AuthorizationSignature {
@@ -203,6 +203,28 @@ export class Resource {
   static fromBytes(bytes: Uint8Array): Resource;
 }
 
+export class ResourceWithLabel {
+  private constructor();
+  free(): void;
+  [Symbol.dispose](): void;
+  static fromEncrypted(
+    payload: Uint8Array,
+    sk_bytes: Uint8Array
+  ): ResourceWithLabel;
+  /**
+   * Get resource instance
+   */
+  readonly resource: Resource;
+  /**
+   * Get forwarder as hex
+   */
+  readonly forwarder: string;
+  /**
+   * Get erc20_token_addr as hex
+   */
+  readonly erc20TokenAddress: string;
+}
+
 export class SecretKey {
   free(): void;
   [Symbol.dispose](): void;
@@ -317,6 +339,56 @@ export interface InitOutput {
     b: number
   ) => [number, number, number, number];
   readonly ciphertext_toJson: (a: number) => [number, number, number];
+  readonly __wbg_resource_free: (a: number, b: number) => void;
+  readonly resource_new: (a: any) => [number, number, number];
+  readonly resource_create: (
+    a: number,
+    b: number,
+    c: bigint,
+    d: bigint,
+    e: number,
+    f: number,
+    g: number,
+    h: number
+  ) => number;
+  readonly resource_encode: (a: number) => any;
+  readonly resource_decode: (a: any) => [number, number, number];
+  readonly resource_commitment: (a: number) => number;
+  readonly resource_nullifier: (
+    a: number,
+    b: number
+  ) => [number, number, number];
+  readonly resource_fromBytes: (
+    a: number,
+    b: number
+  ) => [number, number, number];
+  readonly __wbg_resourcewithlabel_free: (a: number, b: number) => void;
+  readonly resourcewithlabel_fromEncrypted: (
+    a: number,
+    b: number,
+    c: number,
+    d: number
+  ) => [number, number, number];
+  readonly resourcewithlabel_resource: (a: number) => number;
+  readonly resourcewithlabel_forwarder: (a: number) => [number, number];
+  readonly resourcewithlabel_erc20TokenAddress: (a: number) => [number, number];
+  readonly __wbg_merkletree_free: (a: number, b: number) => void;
+  readonly merkletree_new: (a: number, b: number) => number;
+  readonly merkletree_root: (a: number) => [number, number, number];
+  readonly merkletree_toWitness: (
+    a: number
+  ) => [number, number, number, number];
+  readonly __wbg_digest_free: (a: number, b: number) => void;
+  readonly digest_new: (a: number, b: number) => [number, number, number];
+  readonly digest_fromBytes: (a: number, b: number) => [number, number, number];
+  readonly digest_toBytes: (a: number) => [number, number];
+  readonly digest_toHex: (a: number) => [number, number];
+  readonly digest_fromHex: (a: number, b: number) => [number, number, number];
+  readonly digest_default: () => number;
+  readonly hashBytes: (a: number, b: number) => number;
+  readonly hashTwo: (a: number, b: number) => number;
+  readonly bytesToWords: (a: number, b: number) => [number, number];
+  readonly wordsToBytes: (a: number, b: number) => [number, number];
   readonly __wbg_nullifierkey_free: (a: number, b: number) => void;
   readonly nullifierkey_new: (a: number, b: number) => [number, number, number];
   readonly nullifierkey_commit: (a: number) => number;
@@ -349,29 +421,6 @@ export interface InitOutput {
   readonly nullifierkeypair_fromJson: (a: any) => [number, number, number];
   readonly nullifierkeypair_encode: (a: number) => any;
   readonly nullifierkeypair_decode: (a: any) => [number, number, number];
-  readonly __wbg_resource_free: (a: number, b: number) => void;
-  readonly resource_new: (a: any) => [number, number, number];
-  readonly resource_create: (
-    a: number,
-    b: number,
-    c: bigint,
-    d: bigint,
-    e: number,
-    f: number,
-    g: number,
-    h: number
-  ) => number;
-  readonly resource_encode: (a: number) => any;
-  readonly resource_decode: (a: any) => [number, number, number];
-  readonly resource_commitment: (a: number) => number;
-  readonly resource_nullifier: (
-    a: number,
-    b: number
-  ) => [number, number, number];
-  readonly resource_fromBytes: (
-    a: number,
-    b: number
-  ) => [number, number, number];
   readonly __wbg_authorizationsigningkey_free: (a: number, b: number) => void;
   readonly authorizationsigningkey_new: () => number;
   readonly authorizationsigningkey_sign: (
@@ -421,23 +470,6 @@ export interface InitOutput {
   readonly calltype_Unwrap: () => number;
   readonly convertCounterToValueRef: (a: bigint, b: bigint) => [number, number];
   readonly randomBytes: () => [number, number];
-  readonly __wbg_merkletree_free: (a: number, b: number) => void;
-  readonly merkletree_new: (a: number, b: number) => number;
-  readonly merkletree_root: (a: number) => [number, number, number];
-  readonly merkletree_toWitness: (
-    a: number
-  ) => [number, number, number, number];
-  readonly __wbg_digest_free: (a: number, b: number) => void;
-  readonly digest_new: (a: number, b: number) => [number, number, number];
-  readonly digest_fromBytes: (a: number, b: number) => [number, number, number];
-  readonly digest_toBytes: (a: number) => [number, number];
-  readonly digest_toHex: (a: number) => [number, number];
-  readonly digest_fromHex: (a: number, b: number) => [number, number, number];
-  readonly digest_default: () => number;
-  readonly hashBytes: (a: number, b: number) => number;
-  readonly hashTwo: (a: number, b: number) => number;
-  readonly bytesToWords: (a: number, b: number) => [number, number];
-  readonly wordsToBytes: (a: number, b: number) => [number, number];
   readonly sys_verify_integrity: (a: number, b: number) => void;
   readonly sys_verify_integrity2: (a: number, b: number) => void;
   readonly sys_read: (a: number, b: number, c: number) => number;

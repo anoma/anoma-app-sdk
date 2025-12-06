@@ -1,6 +1,6 @@
 import type { ApiConfig } from "api";
 import type { Address } from "viem";
-import type { Resource } from "wasm";
+import type { ResourceWithLabel } from "wasm";
 
 export * from "domain/crypto/types";
 export * from "domain/keys/types";
@@ -17,7 +17,7 @@ export type ResourcesWithBalance = {
 };
 
 export type ResourceWithMetadata = {
-  resource: Resource;
+  resourceWithLabel: ResourceWithLabel;
   tag: string;
   isConsumed: boolean;
 };
