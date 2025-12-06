@@ -13,7 +13,7 @@ export class ApiClient<P extends string = string> {
 
   get url(): string {
     const { baseUrl, port, endpoint } = this.config;
-    return `${baseUrl}${port ? `:${port}` : ""}${endpoint}`;
+    return `${baseUrl}${port ? `:${port}` : ""}${endpoint ?? ""}`;
   }
 
   private _endpoint(path: P | `${P}/${string}`): string {
