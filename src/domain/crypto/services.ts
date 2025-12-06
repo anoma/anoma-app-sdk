@@ -1,15 +1,15 @@
 import { sha256 } from "@noble/hashes/sha2";
 import {
-  VAULT_VERSION,
   VAULT_DOMAIN_INFO,
   VAULT_DOMAIN_SALT,
+  VAULT_VERSION,
 } from "app-constants";
 import {
   convertUserKeyringToJson,
   converUserKeyringFromJson,
 } from "domain/keys/services";
 import { generateRandomBytes, toHex } from "lib/utils";
-import type { UserKeyring, VaultEntry } from "types";
+import type { UserKeyring, VaultEncryptionType, VaultEntry } from "types";
 
 /**
  * Imports the user signature so it can be used as input material for HKDF.
@@ -119,6 +119,7 @@ export const createVaultAccount = async (
   id: string,
   keyring: UserKeyring,
   signature: Uint8Array<ArrayBuffer>,
+  encryptionType: VaultEncryptionType,
   version: number = VAULT_VERSION
 ): Promise<VaultEntry> => {
   const inputKeyMaterial = await wrapSignatureAsCryptoKey(signature);
@@ -130,6 +131,7 @@ export const createVaultAccount = async (
     version,
     ciphertext,
     iv,
+    encryptionType,
     createdAt: Date.now(),
     modifiedAt: Date.now(),
   };

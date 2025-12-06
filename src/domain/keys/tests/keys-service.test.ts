@@ -1,8 +1,8 @@
-import { expect, test } from "vitest";
+import { VAULT_VERSION } from "app-constants";
 import { createVaultAccount, unlockVault } from "domain/crypto";
 import { createUserKeyring } from "domain/keys";
 import { generateRandomBytes } from "lib/utils";
-import { VAULT_VERSION } from "app-constants";
+import { expect, test } from "vitest";
 
 test("should create user keyring correctly", () => {
   const keyring = createUserKeyring();
@@ -24,7 +24,12 @@ test("should encrypt and decrypt user vault correctly", async () => {
   const keyring = createUserKeyring();
   const fakeSignature = generateRandomBytes(18);
   const walletAddress = "0xA707526e8DF54A7658bD4c19C1db46D6DA2F5157";
-  const vault = await createVaultAccount(walletAddress, keyring, fakeSignature);
+  const vault = await createVaultAccount(
+    walletAddress,
+    keyring,
+    fakeSignature,
+    "wallet"
+  );
 
   // Checking if vault was created correclty
   expect(vault.id).toBe(walletAddress);

@@ -51,7 +51,9 @@ export const openKeysDatabase = async (): Promise<IDBDatabase> => {
  * @param vaultEntry - {@link VaultEntry} to be stored
  * @returns Promise resolving to the stored entry after it's insterted successfully
  */
-export const insertVaultEntry = async (vaultEntry: VaultEntry) => {
+export const insertVaultEntry = async (
+  vaultEntry: VaultEntry
+): Promise<VaultEntry> => {
   const db = await openKeysDatabase();
   return new Promise((resolve, reject) => {
     const vault = db.transaction("vault", "readwrite").objectStore("vault");
