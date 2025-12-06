@@ -5,7 +5,7 @@ import type {
   MerkleTree,
   NullifierKeyCommitment,
   Resource,
-} from "@anoma/lib";
+} from "wasm";
 
 import type {
   KeyPair,

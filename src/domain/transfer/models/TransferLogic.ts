@@ -1,13 +1,4 @@
 import {
-  AuthorizationSigningKey,
-  AuthorizationVerifyingKey,
-  Digest,
-  MerkleTree,
-  NullifierKey,
-  Resource,
-  randomBytes,
-} from "@anoma/lib";
-import {
   AUTH_SIGNATURE_DOMAIN,
   PADDING_LOGIC_VK,
   SIMPLE_TRANSFER_ID,
@@ -28,6 +19,16 @@ import type {
   PersistentMintProps,
   SplitResources,
 } from "types";
+import {
+  AuthorizationSigningKey,
+  AuthorizationVerifyingKey,
+  Digest,
+  MerkleTree,
+  NullifierKey,
+  Resource,
+  randomBytes,
+} from "wasm";
+
 import { Client, initClient } from "wasm/client";
 
 /**

@@ -16,10 +16,11 @@
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "prepare": "husky"
+    "prepare": "husky",
+    "build:wasm": "node ./scripts/build.mjs --release",
+    "build:wasm:dev": "node ./scripts/build.mjs"
   },
   "dependencies": {
-    "@anoma/lib": "./packages/anoma-lib-latest.tgz",
     "@fontsource-variable/nata-sans": "5.2.2",
     "@fontsource/roboto": "5.2.9",
     "@gsap/react": "2.1.2",
