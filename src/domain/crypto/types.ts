@@ -3,7 +3,7 @@ import type { Address } from "viem";
 
 export type Vault = Record<Address, VaultEntry>;
 
-export type VaultEncryptionType = "wallet" | "passkey" | "seedphrase";
+export type VaultEncryptionType = "wallet" | "passkey";
 
 export type VaultEntry = {
   id: string;
