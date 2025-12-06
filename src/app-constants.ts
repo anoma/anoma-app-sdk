@@ -20,3 +20,6 @@ export const VAULT_VERSION = 1;
 // Separate the encryption of the vault into separate domains
 export const VAULT_DOMAIN_SALT = "anoma-pay";
 export const VAULT_DOMAIN_INFO = "anoma-pay:vault-aes-key";
+
+export const WEBSITE_URL = "https://anoma.money";
+export const WEBSITE_DOMAIN = "anoma.money";
