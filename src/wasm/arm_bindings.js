@@ -326,6 +326,13 @@ const ResourceFinalization =
     { register: () => {}, unregister: () => {} }
   : new FinalizationRegistry(ptr => wasm.__wbg_resource_free(ptr >>> 0, 1));
 
+const ResourceWithLabelFinalization =
+  typeof FinalizationRegistry === "undefined" ?
+    { register: () => {}, unregister: () => {} }
+  : new FinalizationRegistry(ptr =>
+      wasm.__wbg_resourcewithlabel_free(ptr >>> 0, 1)
+    );
+
 const SecretKeyFinalization =
   typeof FinalizationRegistry === "undefined" ?
     { register: () => {}, unregister: () => {} }
@@ -1566,6 +1573,85 @@ export class Resource {
 }
 if (Symbol.dispose)
   Resource.prototype[Symbol.dispose] = Resource.prototype.free;
+
+export class ResourceWithLabel {
+  static __wrap(ptr) {
+    ptr = ptr >>> 0;
+    const obj = Object.create(ResourceWithLabel.prototype);
+    obj.__wbg_ptr = ptr;
+    ResourceWithLabelFinalization.register(obj, obj.__wbg_ptr, obj);
+    return obj;
+  }
+  __destroy_into_raw() {
+    const ptr = this.__wbg_ptr;
+    this.__wbg_ptr = 0;
+    ResourceWithLabelFinalization.unregister(this);
+    return ptr;
+  }
+  free() {
+    const ptr = this.__destroy_into_raw();
+    wasm.__wbg_resourcewithlabel_free(ptr, 0);
+  }
+  /**
+   * @param {Uint8Array} payload
+   * @param {Uint8Array} sk_bytes
+   * @returns {ResourceWithLabel}
+   */
+  static fromEncrypted(payload, sk_bytes) {
+    const ptr0 = passArray8ToWasm0(payload, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ptr1 = passArray8ToWasm0(sk_bytes, wasm.__wbindgen_malloc);
+    const len1 = WASM_VECTOR_LEN;
+    const ret = wasm.resourcewithlabel_fromEncrypted(ptr0, len0, ptr1, len1);
+    if (ret[2]) {
+      throw takeFromExternrefTable0(ret[1]);
+    }
+    return ResourceWithLabel.__wrap(ret[0]);
+  }
+  /**
+   * Get resource instance
+   * @returns {Resource}
+   */
+  get resource() {
+    const ret = wasm.resourcewithlabel_resource(this.__wbg_ptr);
+    return Resource.__wrap(ret);
+  }
+  /**
+   * Get forwarder as hex
+   * @returns {string}
+   */
+  get forwarder() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+      const ret = wasm.resourcewithlabel_forwarder(this.__wbg_ptr);
+      deferred1_0 = ret[0];
+      deferred1_1 = ret[1];
+      return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+      wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+  }
+  /**
+   * Get erc20_token_addr as hex
+   * @returns {string}
+   */
+  get erc20TokenAddress() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+      const ret = wasm.resourcewithlabel_erc20TokenAddress(this.__wbg_ptr);
+      deferred1_0 = ret[0];
+      deferred1_1 = ret[1];
+      return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+      wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+  }
+}
+if (Symbol.dispose)
+  ResourceWithLabel.prototype[Symbol.dispose] =
+    ResourceWithLabel.prototype.free;
 
 export class SecretKey {
   static __wrap(ptr) {

@@ -2,13 +2,7 @@ import type { EnvioClient, IndexerResource } from "api";
 import { SIMPLE_TRANSFER_ID } from "app-constants";
 import { fromHex, normalizeHex } from "lib/utils";
 import type { ResourcesWithBalance, ResourceWithMetadata } from "types";
-import {
-  Ciphertext,
-  NullifierKey,
-  Resource,
-  SecretKey,
-  type EncodedResource,
-} from "wasm";
+import { NullifierKey, ResourceWithLabel, type EncodedResource } from "wasm";
 
 /** Convert an Envio nullifier list into a normalized hex set. */
 async function buildNullifierSet(
@@ -24,12 +18,9 @@ async function buildNullifierSet(
 export function deserializeResourcePayload(
   blobHex: string,
   encryptionPrivateKey: Uint8Array
-): Resource {
-  const bytes = fromHex(blobHex);
-  const userSecretKey = new SecretKey(encryptionPrivateKey);
-  const ciphertext = Ciphertext.fromBytes(bytes);
-  const decryptedBytes = ciphertext.decrypt(userSecretKey);
-  return Resource.fromBytes(decryptedBytes);
+): ResourceWithLabel {
+  const payload = fromHex(blobHex);
+  return ResourceWithLabel.fromEncrypted(payload, encryptionPrivateKey);
 }
 
 export const parseIndexerResourceResponse = (
@@ -41,7 +32,7 @@ export const parseIndexerResourceResponse = (
       try {
         return [
           {
-            resource: deserializeResourcePayload(
+            resourceWithLabel: deserializeResourcePayload(
               item.resource_payload.blob,
               encryptionPrivateKey
             ),
@@ -54,7 +45,7 @@ export const parseIndexerResourceResponse = (
         return [];
       }
     })
-    .filter(item => !item.resource.encode().is_ephemeral);
+    .filter(item => !item.resourceWithLabel.resource.encode().is_ephemeral);
 };
 
 export async function calculateResourceBalanceWithNullifiers(
@@ -75,7 +66,9 @@ export async function calculateResourceBalanceWithNullifiers(
 
   // Step 1: Compute optimistic balance from all decrypted resources quantities
   for (const resourceWithMetadata of resources) {
-    const { resource } = resourceWithMetadata;
+    const {
+      resourceWithLabel: { resource },
+    } = resourceWithMetadata;
     const { quantity, label_ref, nonce } = resource.encode();
 
     // Step 2: Compute nullifier for each resource
