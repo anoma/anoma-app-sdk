@@ -148,13 +148,17 @@ export class TransferBuilder {
       this.client.createBurnResource(burnProps);
 
     const createdWitnessData: CreatedWitnessData["Ephemeral"] = {
-      token_contract_address: "",
-      receiver_wallet_address: "",
+      token_contract_address: burnProps.token,
+      receiver_wallet_address: burnProps.burnAddress,
     };
     const consumedWitnessData: ConsumedWitnessData["Persistent"] = {
       sender_authorization_signature: toBase64(authSig.toBytes()),
-      sender_authorization_verifying_key: "",
-      sender_encryption_public_key: "",
+      sender_authorization_verifying_key: toBase64(
+        PublicKey.fromHex(toHex(burnProps.authKeypair.publicKey)).serialize() // serialize() returns the serde-serialized AffinePoint
+      ),
+      sender_encryption_public_key: toBase64(
+        PublicKey.fromHex(burnProps.encryptionPublicKey).serialize() // serialize() returns the serde-serialized AffinePoint
+      ),
     };
 
     return {

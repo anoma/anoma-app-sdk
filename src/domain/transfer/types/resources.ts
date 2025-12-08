@@ -66,6 +66,7 @@ export type CreateBurnProps = {
   burnResource: Resource;
   burnAddress: string;
   authKeypair: KeyPair;
+  encryptionPublicKey: string;
   burnNullifierKeypair: NullifierKeyProps;
   forwarderAddress: string;
   token: string;
