@@ -22,12 +22,6 @@ export type ResourceWithMetadata = {
   isConsumed: boolean;
 };
 
-export type TokenBalance = {
-  tokenSymbol: string;
-  amount: bigint;
-  network?: string;
-};
-
 export const TRANSACTION_STATUS = [
   "sent",
   "sending",
@@ -41,6 +35,20 @@ export const TRANSACTION_STATUS = [
 ] as const;
 
 export type TransactionStatus = (typeof TRANSACTION_STATUS)[number];
+
+export type TokenRegistry = {
+  symbol: string;
+  address: Address;
+  label: string;
+  decimals: number;
+  network: string;
+};
+
+export type TokenBalance = {
+  symbol: string;
+  amount: bigint;
+  network?: string;
+};
 
 /**
  * Represents the runtime configuration of Transfer Example
