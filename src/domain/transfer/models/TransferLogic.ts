@@ -138,12 +138,12 @@ export class TransferLogic extends Client {
   createTransferResource(props: CreateTransferProps): AuthorizedResources {
     const {
       authKeypair,
-      encryptionPublicKey,
       forwarderAddress,
       quantity,
       receiverNullifierCommitment,
       transferredResourceNullifier,
       receiverVerifyingKey,
+      receiverEncryptionPublicKey,
       token,
       resource,
     } = props;
@@ -157,7 +157,7 @@ export class TransferLogic extends Client {
     const labelRef = calculateLabelRef(forwarderAddress, token);
     const createdValueRef = calculateValueRefFromAuth(
       receiverAuthVerifyingKey,
-      encryptionPublicKey
+      receiverEncryptionPublicKey
     );
     const createdResource = Resource.create(
       logicRef,
@@ -236,7 +236,7 @@ export class TransferLogic extends Client {
       transferredResourceNullifier,
       receiverNullifierCommitment,
       receiverVerifyingKey,
-      encryptionPublicKey,
+      receiverEncryptionPublicKey,
       resource,
       token,
     } = props;
@@ -267,7 +267,10 @@ export class TransferLogic extends Client {
       Digest.fromHex(this.digest),
       calculateLabelRef(forwarderAddress, token),
       quantity,
-      calculateValueRefFromAuth(receiverAuthVerifyingKey, encryptionPublicKey),
+      calculateValueRefFromAuth(
+        receiverAuthVerifyingKey,
+        receiverEncryptionPublicKey
+      ),
       false,
       transferredResourceNullifier,
       receiverNullifierCommitment
