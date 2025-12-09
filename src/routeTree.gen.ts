@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from "./routes/__root";
 import { Route as AppRouteRouteImport } from "./routes/_app/route";
+import { Route as IndexRouteImport } from "./routes/index";
 import { Route as SignUpIndexRouteImport } from "./routes/sign-up/index";
 import { Route as LoginIndexRouteImport } from "./routes/login/index";
 import { Route as SignUpWalletRouteImport } from "./routes/sign-up/wallet";
@@ -23,6 +24,11 @@ import { Route as AppDashboardRouteImport } from "./routes/_app/dashboard";
 
 const AppRouteRoute = AppRouteRouteImport.update({
   id: "/_app",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const IndexRoute = IndexRouteImport.update({
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRouteImport,
 } as any);
 const SignUpIndexRoute = SignUpIndexRouteImport.update({
@@ -77,6 +83,7 @@ const AppDashboardRoute = AppDashboardRouteImport.update({
 } as any);
 
 export interface FileRoutesByFullPath {
+  "/": typeof IndexRoute;
   "/dashboard": typeof AppDashboardRoute;
   "/deposit": typeof AppDepositRoute;
   "/request": typeof AppRequestRoute;
@@ -89,6 +96,7 @@ export interface FileRoutesByFullPath {
   "/sign-up": typeof SignUpIndexRoute;
 }
 export interface FileRoutesByTo {
+  "/": typeof IndexRoute;
   "/dashboard": typeof AppDashboardRoute;
   "/deposit": typeof AppDepositRoute;
   "/request": typeof AppRequestRoute;
@@ -102,6 +110,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
+  "/": typeof IndexRoute;
   "/_app": typeof AppRouteRouteWithChildren;
   "/_app/dashboard": typeof AppDashboardRoute;
   "/_app/deposit": typeof AppDepositRoute;
@@ -117,6 +126,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
+    | "/"
     | "/dashboard"
     | "/deposit"
     | "/request"
@@ -129,6 +139,7 @@ export interface FileRouteTypes {
     | "/sign-up";
   fileRoutesByTo: FileRoutesByTo;
   to:
+    | "/"
     | "/dashboard"
     | "/deposit"
     | "/request"
@@ -141,6 +152,7 @@ export interface FileRouteTypes {
     | "/sign-up";
   id:
     | "__root__"
+    | "/"
     | "/_app"
     | "/_app/dashboard"
     | "/_app/deposit"
@@ -155,6 +167,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute;
   AppRouteRoute: typeof AppRouteRouteWithChildren;
   LoginWalletRoute: typeof LoginWalletRoute;
   SignUpPasskeysRoute: typeof SignUpPasskeysRoute;
@@ -170,6 +183,13 @@ declare module "@tanstack/react-router" {
       path: "";
       fullPath: "";
       preLoaderRoute: typeof AppRouteRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/sign-up/": {
@@ -266,6 +286,7 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
 );
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   AppRouteRoute: AppRouteRouteWithChildren,
   LoginWalletRoute: LoginWalletRoute,
   SignUpPasskeysRoute: SignUpPasskeysRoute,

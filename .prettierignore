@@ -7,3 +7,4 @@ coverage
 build
 *.local
 package-lock.json
+routeTree.gen.ts
