@@ -57,6 +57,7 @@ export type CreateTransferProps = {
   transferredResourceNullifier: Digest;
   receiverNullifierCommitment: NullifierKeyCommitment;
   receiverVerifyingKey: string;
+  receiverEncryptionPublicKey: string;
   forwarderAddress: string;
   token: string;
   quantity: bigint;
