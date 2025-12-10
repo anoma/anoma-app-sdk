@@ -228,6 +228,77 @@ export class TransferLogic extends Client {
     };
   }
 
+  createSplitBurnResources(props: CreateBurnProps): SplitResources {
+    const {
+      burnResource,
+      burnAddress,
+      authKeypair,
+      burnNullifierKeypair,
+      forwarderAddress,
+      token,
+      quantity,
+    } = props;
+
+    const encodedSplitResource = burnResource.encode();
+    const logicRef = Digest.fromHex(this.digest);
+    const labelRef = calculateLabelRef(forwarderAddress, token);
+    const valueRef = calculateValueRefFromUserAddress(burnAddress);
+    const burnNk = new NullifierKey(burnNullifierKeypair.nk);
+    const burnResourceNullifier = burnResource.nullifier(burnNk);
+    const authSigningKey = AuthorizationSigningKey.fromBytes(
+      authKeypair.keys.privateKey
+    );
+
+    const createdResource = Resource.create(
+      logicRef,
+      labelRef,
+      quantity,
+      valueRef,
+      true,
+      burnResourceNullifier,
+      burnNk.commit()
+    );
+    const createdResourceCommitment = createdResource.commitment();
+
+    // Padding resource
+    const paddingResource = Resource.create(
+      Digest.fromHex(PADDING_LOGIC_VK),
+      Digest.default(),
+      0n,
+      Digest.default(),
+      true,
+      Digest.fromBytes(randomBytes()),
+      NullifierKey.default().commit()
+    );
+    const paddingResourceNullifier = paddingResource.nullifier(
+      NullifierKey.default()
+    );
+    const remainder = encodedSplitResource.quantity - quantity;
+    const remainderResource = Resource.decode({
+      ...encodedSplitResource,
+      quantity: remainder,
+      nonce: toBase64(paddingResourceNullifier.toBytes()),
+    });
+
+    const actionTree = new MerkleTree([
+      burnResourceNullifier,
+      createdResourceCommitment,
+      paddingResourceNullifier,
+      remainderResource.commitment(),
+    ]);
+
+    const authSig = authSigningKey.authorize(AUTH_SIGNATURE_DOMAIN, actionTree);
+
+    return {
+      authSig,
+      actionTree,
+      paddingResource,
+      remainderResource,
+      createdResource,
+      consumedResource: burnResource,
+    };
+  }
+
   createSplitTransfer(props: CreateTransferProps): SplitResources {
     const {
       authKeypair,

@@ -1,7 +1,11 @@
 import type { EnvioClient, IndexerResource } from "api";
 import { SIMPLE_TRANSFER_ID } from "app-constants";
 import { fromHex, normalizeHex } from "lib/utils";
-import type { ResourcesWithBalance, ResourceWithMetadata } from "types";
+import type {
+  Parameters,
+  ResourcesWithBalance,
+  ResourceWithMetadata,
+} from "types";
 import { NullifierKey, ResourceWithLabel, type EncodedResource } from "wasm";
 
 /** Convert an Envio nullifier list into a normalized hex set. */
@@ -106,24 +110,166 @@ export async function calculateResourceBalanceWithNullifiers(
 }
 
 /**
- * Simple method that accepts resources and a quantity,
- * finds the first resource who's quantity is >= to the
- * requested quantity.Returns tuple of matched resource
- * and remainder. If remainder is 0, there is no need
- * to split!
+ * Given a collection of Resources, return an array of the fewest resources
+ * whose quantities sum to the exact target quantity
  */
-export const getSplitResource = (
+export function findMinResourceQuantitySum(
   resources: EncodedResource[],
-  quantity: bigint
-): [EncodedResource | undefined, bigint] => {
+  targetQuantity: bigint
+): EncodedResource[] | undefined {
+  if (resources.length === 0) return undefined;
+
+  let min: EncodedResource[] | undefined;
+  for (let i = 0; i < resources.length; i++) {
+    // If a quantity equals the targetQuantity, it is the shortest set of length 1
+    if (resources[i].quantity === targetQuantity) return [resources[i]];
+
+    // Recursively call on subset with sum adjusted for removed element
+    const next = findMinResourceQuantitySum(
+      resources.slice(i + 1),
+      targetQuantity - resources[i].quantity
+    );
+
+    if (next) {
+      if (min === undefined || next.length < min.length) {
+        min = [resources[i], ...next];
+      }
+    }
+  }
+  return min;
+}
+
+/**
+ * Return first resource which can fulfill a transfer either with exact
+ * quantity or by splitting
+ */
+export function findMinTransferResource(
+  resources: EncodedResource[],
+  targetQuantity: bigint
+): TransferResources | undefined {
+  // Sort by ascending quantity to find first resource which might fulfill targetQuantity
   const sortedResources = resources.sort((a, b) =>
     Number(a.quantity - b.quantity)
   );
-  const splitResource = sortedResources.find(
-    resource => resource.quantity >= quantity
+
+  // return first matching resource which can provide target amount
+  const match = sortedResources.find(
+    ({ quantity }) => quantity >= targetQuantity
   );
-  return [
-    splitResource,
-    splitResource ? splitResource.quantity - quantity : 0n,
-  ];
+  if (match) {
+    const remainder = match.quantity - targetQuantity;
+    // Check if a split is required
+    if (remainder) {
+      return {
+        transfers: [],
+        split: {
+          resource: match,
+          remainder,
+        },
+      };
+    }
+    // Exact quantity match
+    return { transfers: [match] };
+  }
+}
+
+/**
+ * A collection of transfer resources with optional split resource & remainder
+ */
+export type TransferResources = {
+  transfers: EncodedResource[];
+  split?: {
+    resource: EncodedResource;
+    remainder: bigint;
+  };
 };
+
+/**
+ * If we know that there is not an exact quantity match, or subset of resources
+ * whose quantities sum to an exact target quantity, iterate through resources
+ * until we have enough summed quantities plus a split to fulfill transfer
+ */
+export function findTransferResourcesWithSplit(
+  resources: EncodedResource[],
+  targetQuantity: bigint
+): TransferResources {
+  const transferResources: TransferResources = {
+    transfers: [],
+  };
+
+  // Sort by descending quantity to find *fewest* number of resources for transfer
+  const sortedResources = resources.sort((a, b) =>
+    Number(b.quantity - a.quantity)
+  );
+  const r: EncodedResource[] = [];
+  let sum = 0n;
+  for (let i = 0; i < sortedResources.length; i++) {
+    const resource = resources[i];
+    sum += resource.quantity;
+    if (sum > targetQuantity) {
+      transferResources.transfers.push(...r);
+      transferResources.split = {
+        resource,
+        remainder: sum - targetQuantity,
+      };
+      break;
+    } else {
+      r.push(resource);
+    }
+  }
+  return transferResources;
+}
+
+/**
+ * Determine what resources are needed to fulfill a transfer, either by resources
+ * to sum, a resource to split, or both
+ */
+export const selectTransferResources = (
+  resources: EncodedResource[],
+  targetQuantity: bigint
+): TransferResources => {
+  if (resources.length === 0) {
+    throw new Error("No resources provided!");
+  }
+  if (targetQuantity === 0n) {
+    throw new Error("Must specify a quantity greater than 0");
+  }
+
+  // Check if a single resource can provide target amount
+  const match = findMinTransferResource(resources, targetQuantity);
+
+  if (match) {
+    // Either a resource with matched quantity or a split resource
+    return match;
+  }
+
+  // Check if summing can provide target quantity
+  const summedResources =
+    findMinResourceQuantitySum(resources, targetQuantity) || [];
+
+  if (summedResources.length > 0) {
+    // Resources whose quantities sum to exact targetQuantity
+    return { transfers: summedResources };
+  }
+
+  // Resources to sum plus a split resource
+  return findTransferResourcesWithSplit(resources, targetQuantity);
+};
+
+/**
+ * Given multiple Parameters objects. merge into one in order received
+ */
+export const mergeParameters = (parameters: Parameters[]): Parameters =>
+  parameters.reduce(
+    (mergedParameters, parameters) => ({
+      consumed_resources: [
+        ...mergedParameters.consumed_resources,
+        ...parameters.consumed_resources,
+      ],
+      created_resources: [
+        ...mergedParameters.created_resources,
+        ...parameters.created_resources,
+      ],
+    }),
+    { consumed_resources: [], created_resources: [] }
+  );

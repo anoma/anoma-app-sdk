@@ -1,9 +1,6 @@
 export const TransferBackendPaths = {
-  // TODO: DELETE
-  Split: "/split",
-
-  // TODO: KEEP
   SendTransaction: "/send_transaction",
+  EstimateFee: "/estimate_fee",
 } as const;
 
 export const IndexerPaths = {
