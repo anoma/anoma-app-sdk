@@ -1,5 +1,3 @@
-import type { EncodedResource } from "wasm";
-
 export type ApiConfig = {
   baseUrl: string;
   port?: number;
@@ -41,26 +39,8 @@ export class ResponseError extends Error {
 }
 
 /**
- * REQUESTS
- */
-export type SplitRequest = {
-  to_split_resource: EncodedResource;
-  created_resource: EncodedResource;
-  remainder_resource: EncodedResource;
-  padding_resource: EncodedResource;
-  sender_nf_key: string; // base64
-  sender_verifying_key: string; // hex
-  auth_signature: string; // base64
-  owner_discovery_pk: string; // hex
-  owner_encryption_pk: string; // hex
-  receiver_discovery_pk: string; // hex
-  receiver_encryption_pk: string; // hex
-};
-
-/**
  *  RESPONSES
  */
-
 export type NullifierResponse = {
   nullifier: string;
   index: string;

@@ -92,7 +92,7 @@ export type SplitResources = AuthorizedResources & {
   remainderResource: Resource;
 };
 
-type Address = `0x${string}`; // TODO: Is this correct? Or is it base64-encoded?
+type Address = `0x${string}`;
 
 // Props to construct consumed ephemeral resource
 export type ConsumedEphemeralProps = {
@@ -145,4 +145,23 @@ export type Parameters = {
 export type ResourcePair = {
   consumed: ConsumedResource;
   created: CreatedResource;
+};
+
+/**
+ * Fees
+ */
+export const FeeCompatibleERC20Tokens = ["WETH", "USDC", "XAN"] as const;
+export type FeeCompatibleERC20 = (typeof FeeCompatibleERC20Tokens)[number];
+export type NativeToken = "ETH";
+export type FeeToken = FeeCompatibleERC20 | NativeToken;
+
+/**
+ * Fees request & response
+ */
+export type FeeRequest = {
+  fee_token: FeeToken;
+  transaction: Parameters;
+};
+export type FeeResponse = {
+  fee: bigint;
 };
