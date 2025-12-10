@@ -7,8 +7,8 @@ export const getSenderValidationMessages = (
   transferAmount?: string,
   availableBalance?: TokenBalance
 ) => {
-  if (!token) return "Select a token to deposit";
-  if (!transferAmount) return "Enter deposit amount";
+  if (!token) return "Start by selecting a token";
+  if (!transferAmount) return "Enter amount";
 
   const result = transferSchema.safeParse({
     minDenomAmountToTransfer: parseUnits(transferAmount, token.decimals),
