@@ -21,6 +21,7 @@ import { Route as AppSendRouteImport } from "./routes/_app/send";
 import { Route as AppRequestRouteImport } from "./routes/_app/request";
 import { Route as AppDepositRouteImport } from "./routes/_app/deposit";
 import { Route as AppDashboardRouteImport } from "./routes/_app/dashboard";
+import { Route as AppPayReceiverRouteImport } from "./routes/_app/pay.$receiver";
 
 const AppRouteRoute = AppRouteRouteImport.update({
   id: "/_app",
@@ -81,6 +82,11 @@ const AppDashboardRoute = AppDashboardRouteImport.update({
   path: "/dashboard",
   getParentRoute: () => AppRouteRoute,
 } as any);
+const AppPayReceiverRoute = AppPayReceiverRouteImport.update({
+  id: "/pay/$receiver",
+  path: "/pay/$receiver",
+  getParentRoute: () => AppRouteRoute,
+} as any);
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
@@ -94,6 +100,7 @@ export interface FileRoutesByFullPath {
   "/sign-up/wallet": typeof SignUpWalletRoute;
   "/login": typeof LoginIndexRoute;
   "/sign-up": typeof SignUpIndexRoute;
+  "/pay/$receiver": typeof AppPayReceiverRoute;
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
@@ -107,6 +114,7 @@ export interface FileRoutesByTo {
   "/sign-up/wallet": typeof SignUpWalletRoute;
   "/login": typeof LoginIndexRoute;
   "/sign-up": typeof SignUpIndexRoute;
+  "/pay/$receiver": typeof AppPayReceiverRoute;
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
@@ -122,6 +130,7 @@ export interface FileRoutesById {
   "/sign-up/wallet": typeof SignUpWalletRoute;
   "/login/": typeof LoginIndexRoute;
   "/sign-up/": typeof SignUpIndexRoute;
+  "/_app/pay/$receiver": typeof AppPayReceiverRoute;
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
@@ -136,7 +145,8 @@ export interface FileRouteTypes {
     | "/sign-up/passkeys"
     | "/sign-up/wallet"
     | "/login"
-    | "/sign-up";
+    | "/sign-up"
+    | "/pay/$receiver";
   fileRoutesByTo: FileRoutesByTo;
   to:
     | "/"
@@ -149,7 +159,8 @@ export interface FileRouteTypes {
     | "/sign-up/passkeys"
     | "/sign-up/wallet"
     | "/login"
-    | "/sign-up";
+    | "/sign-up"
+    | "/pay/$receiver";
   id:
     | "__root__"
     | "/"
@@ -163,7 +174,8 @@ export interface FileRouteTypes {
     | "/sign-up/passkeys"
     | "/sign-up/wallet"
     | "/login/"
-    | "/sign-up/";
+    | "/sign-up/"
+    | "/_app/pay/$receiver";
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
@@ -262,6 +274,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AppDashboardRouteImport;
       parentRoute: typeof AppRouteRoute;
     };
+    "/_app/pay/$receiver": {
+      id: "/_app/pay/$receiver";
+      path: "/pay/$receiver";
+      fullPath: "/pay/$receiver";
+      preLoaderRoute: typeof AppPayReceiverRouteImport;
+      parentRoute: typeof AppRouteRoute;
+    };
   }
 }
 
@@ -271,6 +290,7 @@ interface AppRouteRouteChildren {
   AppRequestRoute: typeof AppRequestRoute;
   AppSendRoute: typeof AppSendRoute;
   AppWithdrawRoute: typeof AppWithdrawRoute;
+  AppPayReceiverRoute: typeof AppPayReceiverRoute;
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
@@ -279,6 +299,7 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppRequestRoute: AppRequestRoute,
   AppSendRoute: AppSendRoute,
   AppWithdrawRoute: AppWithdrawRoute,
+  AppPayReceiverRoute: AppPayReceiverRoute,
 };
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
