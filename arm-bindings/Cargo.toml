@@ -19,26 +19,10 @@ bincode = "1.3.3"
 risc0-zkvm = { version = "3.0.3", features = ["std", "unstable"], default-features = false }
 k256 = { version = "=0.13.3", features = ["arithmetic", "serde", "expose-field", "std", "ecdsa", "hash2curve"], default-features = false }
 hex = "0.4.3"
-getrandom = { version = "0.3", default-features = false, features = ["std"] }
-getrandom-v2 = { version = "0.2", package = "getrandom", default-features = false, features = ["std"] }
-
-# Support wasm feature
-# TODO: Remove wasm feature, only support wasm-pack build
-wasm-bindgen = { version = "0.2.100", optional = true }
-console_error_panic_hook = { version = "0.1.7", optional = true }
-serde-wasm-bindgen = { version = "0.6.5", optional = true }
-tsify = { version = "0.5.5", optional = true }
+getrandom = { version = "0.3", default-features = false, features = ["std", "wasm_js"] }
+getrandom-v2 = { version = "0.2", package = "getrandom", default-features = false, features = ["std", "js"] }
+wasm-bindgen = { version = "0.2.100" }
+console_error_panic_hook = { version = "0.1.7" }
+serde-wasm-bindgen = { version = "0.6.5" }
+tsify = { version = "0.5.5", features = ["js", "json", "wasm-bindgen" ] }
 alloy-sol-types = "1.4.1"
-
-[features]
-default = ["wasm"]
-wasm = [
-  "console_error_panic_hook",
-  "getrandom/wasm_js",
-  "getrandom-v2/js",
-  "serde-wasm-bindgen",
-  "tsify/js",
-  "tsify/json",
-  "tsify/wasm-bindgen",
-  "wasm-bindgen",
-]

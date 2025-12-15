@@ -282,6 +282,11 @@ const DigestFinalization =
     { register: () => {}, unregister: () => {} }
   : new FinalizationRegistry(ptr => wasm.__wbg_digest_free(ptr >>> 0, 1));
 
+const HeliaxKeysFinalization =
+  typeof FinalizationRegistry === "undefined" ?
+    { register: () => {}, unregister: () => {} }
+  : new FinalizationRegistry(ptr => wasm.__wbg_heliaxkeys_free(ptr >>> 0, 1));
+
 const InitialRootFinalization =
   typeof FinalizationRegistry === "undefined" ?
     { register: () => {}, unregister: () => {} }
@@ -498,6 +503,20 @@ export class AuthorizationVerifyingKey {
   free() {
     const ptr = this.__destroy_into_raw();
     wasm.__wbg_authorizationverifyingkey_free(ptr, 0);
+  }
+  /**
+   * @param {Uint8Array} pk_bytes
+   */
+  constructor(pk_bytes) {
+    const ptr0 = passArray8ToWasm0(pk_bytes, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.authorizationverifyingkey_new(ptr0, len0);
+    if (ret[2]) {
+      throw takeFromExternrefTable0(ret[1]);
+    }
+    this.__wbg_ptr = ret[0] >>> 0;
+    AuthorizationVerifyingKeyFinalization.register(this, this.__wbg_ptr, this);
+    return this;
   }
   /**
    * @param {AuthorizationSigningKey} signing_key
@@ -817,6 +836,141 @@ export class Digest {
   }
 }
 if (Symbol.dispose) Digest.prototype[Symbol.dispose] = Digest.prototype.free;
+
+export class HeliaxKeys {
+  __destroy_into_raw() {
+    const ptr = this.__wbg_ptr;
+    this.__wbg_ptr = 0;
+    HeliaxKeysFinalization.unregister(this);
+    return ptr;
+  }
+  free() {
+    const ptr = this.__destroy_into_raw();
+    wasm.__wbg_heliaxkeys_free(ptr, 0);
+  }
+  /**
+   * @returns {string}
+   */
+  static get HELIAX_FEE_LOGIC_REF() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+      const ret = wasm.heliaxkeys_HELIAX_FEE_LOGIC_REF();
+      deferred1_0 = ret[0];
+      deferred1_1 = ret[1];
+      return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+      wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+  }
+  /**
+   * @returns {string}
+   */
+  static get HELIAX_FEE_LABEL_REF_WETH() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+      const ret = wasm.heliaxkeys_HELIAX_FEE_LABEL_REF_WETH();
+      deferred1_0 = ret[0];
+      deferred1_1 = ret[1];
+      return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+      wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+  }
+  /**
+   * @returns {string}
+   */
+  static get HELIAX_FEE_LABEL_REF_USDC() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+      const ret = wasm.heliaxkeys_HELIAX_FEE_LABEL_REF_USDC();
+      deferred1_0 = ret[0];
+      deferred1_1 = ret[1];
+      return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+      wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+  }
+  /**
+   * @returns {string}
+   */
+  static get HELIAX_FEE_LABEL_REF_XAN() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+      const ret = wasm.heliaxkeys_HELIAX_FEE_LABEL_REF_XAN();
+      deferred1_0 = ret[0];
+      deferred1_1 = ret[1];
+      return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+      wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+  }
+  /**
+   * @returns {string}
+   */
+  static get HELIAX_FEE_VALUE_REF() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+      const ret = wasm.heliaxkeys_HELIAX_FEE_VALUE_REF();
+      deferred1_0 = ret[0];
+      deferred1_1 = ret[1];
+      return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+      wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+  }
+  /**
+   * @returns {string}
+   */
+  static get HELIAX_FEE_NULLIFIER_KEY_COMMITMENT() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+      const ret = wasm.heliaxkeys_HELIAX_FEE_NULLIFIER_KEY_COMMITMENT();
+      deferred1_0 = ret[0];
+      deferred1_1 = ret[1];
+      return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+      wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+  }
+  /**
+   * @returns {string}
+   */
+  static get HELIAX_FEE_DISCOVERY_PK() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+      const ret = wasm.heliaxkeys_HELIAX_FEE_DISCOVERY_PK();
+      deferred1_0 = ret[0];
+      deferred1_1 = ret[1];
+      return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+      wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+  }
+  /**
+   * @returns {string}
+   */
+  static get HELIAX_FEE_ENCRYPTION_PK() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+      const ret = wasm.heliaxkeys_HELIAX_FEE_ENCRYPTION_PK();
+      deferred1_0 = ret[0];
+      deferred1_1 = ret[1];
+      return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+      wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+  }
+}
+if (Symbol.dispose)
+  HeliaxKeys.prototype[Symbol.dispose] = HeliaxKeys.prototype.free;
 
 export class InitialRoot {
   __destroy_into_raw() {
@@ -1416,8 +1570,8 @@ export class PublicKey {
   /**
    * @returns {Uint8Array}
    */
-  serialize() {
-    const ret = wasm.publickey_serialize(this.__wbg_ptr);
+  toAffinePointBytes() {
+    const ret = wasm.publickey_toAffinePointBytes(this.__wbg_ptr);
     if (ret[3]) {
       throw takeFromExternrefTable0(ret[2]);
     }
@@ -1429,10 +1583,10 @@ export class PublicKey {
    * @param {Uint8Array} bytes
    * @returns {PublicKey}
    */
-  static deserialize(bytes) {
+  static fromAffinePointBytes(bytes) {
     const ptr0 = passArray8ToWasm0(bytes, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.publickey_deserialize(ptr0, len0);
+    const ret = wasm.publickey_fromAffinePointBytes(ptr0, len0);
     if (ret[2]) {
       throw takeFromExternrefTable0(ret[1]);
     }

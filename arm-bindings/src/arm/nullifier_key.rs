@@ -1,17 +1,12 @@
 use arm::nullifier_key::{NullifierKey as NK, NullifierKeyCommitment as NKCommitment};
-use serde::{self, Deserialize, Serialize};
-
-#[cfg(feature = "wasm")]
 use base64::{Engine as _, engine::general_purpose::STANDARD as b64};
-#[cfg(feature = "wasm")]
+use serde::{self, Deserialize, Serialize};
 use tsify::Tsify;
-use wasm_bindgen::JsValue;
-#[cfg(feature = "wasm")]
-use wasm_bindgen::{JsError, prelude::wasm_bindgen};
+use wasm_bindgen::{JsError, JsValue, prelude::wasm_bindgen};
 
 use crate::arm::digest::Digest;
 
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
+#[wasm_bindgen]
 #[derive(Clone, Serialize, Deserialize)]
 pub struct NullifierKey(pub(crate) NK);
 
@@ -21,9 +16,8 @@ impl NullifierKey {
     }
 }
 
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
+#[wasm_bindgen]
 impl NullifierKey {
-    #[cfg(feature = "wasm")]
     #[wasm_bindgen(constructor)]
     pub fn new(nk_bytes: &[u8]) -> Result<NullifierKey, JsError> {
         let bytes: [u8; 32] = nk_bytes.try_into()?;
@@ -47,13 +41,11 @@ impl NullifierKey {
         }
     }
 
-    #[cfg(feature = "wasm")]
     #[wasm_bindgen(js_name = "toBase64")]
     pub fn to_base64(&self) -> String {
         b64.encode(self.inner())
     }
 
-    #[cfg(feature = "wasm")]
     #[wasm_bindgen(js_name = "fromBase64")]
     pub fn from_base64(encoded: &str) -> Result<NullifierKey, JsError> {
         NullifierKey::new(&b64.decode(encoded)?)
@@ -65,7 +57,7 @@ impl NullifierKey {
     }
 }
 
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
+#[wasm_bindgen]
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct NullifierKeyCommitment(pub(crate) NKCommitment);
 
@@ -75,9 +67,9 @@ impl NullifierKeyCommitment {
     }
 }
 
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
+#[wasm_bindgen]
 impl NullifierKeyCommitment {
-    #[cfg_attr(feature = "wasm", wasm_bindgen(constructor))]
+    #[wasm_bindgen(constructor)]
     pub fn new(nk_cmt_bytes: &[u8]) -> Result<NullifierKeyCommitment, JsError> {
         Ok(NullifierKeyCommitment(NKCommitment::from_bytes(
             nk_cmt_bytes,
@@ -88,29 +80,26 @@ impl NullifierKeyCommitment {
         Digest(self.0.inner())
     }
 
-    #[cfg(feature = "wasm")]
     #[wasm_bindgen(js_name = "toBase64")]
     pub fn to_base64(&self) -> String {
         b64.encode(self.inner().to_bytes())
     }
 
-    #[cfg(feature = "wasm")]
     #[wasm_bindgen(js_name = "fromBase64")]
     pub fn from_base64(encoded: &str) -> Result<NullifierKeyCommitment, JsError> {
         NullifierKeyCommitment::new(&b64.decode(encoded)?)
     }
 }
 
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
+#[wasm_bindgen]
 #[derive(Clone, Serialize, Deserialize)]
 pub struct NullifierKeyPair {
-    #[cfg_attr(feature = "wasm", wasm_bindgen(getter_with_clone))]
+    #[wasm_bindgen(getter_with_clone)]
     pub nk: NullifierKey,
-    #[cfg_attr(feature = "wasm", wasm_bindgen(getter_with_clone))]
+    #[wasm_bindgen(getter_with_clone)]
     pub cnk: NullifierKeyCommitment,
 }
 
-#[cfg(feature = "wasm")]
 #[wasm_bindgen]
 impl NullifierKeyPair {
     #[wasm_bindgen(constructor)]
@@ -143,7 +132,6 @@ impl NullifierKeyPair {
     }
 }
 
-#[cfg(feature = "wasm")]
 #[derive(Tsify, Debug, Serialize, Deserialize)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct EncodedNullifierKeyPair {

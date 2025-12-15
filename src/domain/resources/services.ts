@@ -140,13 +140,21 @@ export function findMinResourceQuantitySum(
 }
 
 /**
+ * A collection of transfer resources with the amount to transfer.
+ * NOTE: Amount may be less than resource quantity, in this case,
+ * we have a split:
+ */
+export type TransferResourceWithAmount = [EncodedResource, bigint];
+export type TransferResources = TransferResourceWithAmount[];
+
+/**
  * Return first resource which can fulfill a transfer either with exact
  * quantity or by splitting
  */
 export function findMinTransferResource(
   resources: EncodedResource[],
   targetQuantity: bigint
-): TransferResources | undefined {
+): TransferResourceWithAmount | undefined {
   // Sort by ascending quantity to find first resource which might fulfill targetQuantity
   const sortedResources = resources.sort((a, b) =>
     Number(a.quantity - b.quantity)
@@ -156,34 +164,11 @@ export function findMinTransferResource(
   const match = sortedResources.find(
     ({ quantity }) => quantity >= targetQuantity
   );
+
   if (match) {
-    const remainder = match.quantity - targetQuantity;
-    // Check if a split is required
-    if (remainder) {
-      return {
-        transfers: [],
-        split: {
-          resource: match,
-          remainder,
-        },
-      };
-    }
-    // Exact quantity match
-    return { transfers: [match] };
+    return [match, targetQuantity];
   }
 }
-
-/**
- * A collection of transfer resources with optional split resource & remainder
- */
-export type TransferResources = {
-  transfers: EncodedResource[];
-  split?: {
-    resource: EncodedResource;
-    remainder: bigint;
-  };
-};
-
 /**
  * If we know that there is not an exact quantity match, or subset of resources
  * whose quantities sum to an exact target quantity, iterate through resources
@@ -193,30 +178,24 @@ export function findTransferResourcesWithSplit(
   resources: EncodedResource[],
   targetQuantity: bigint
 ): TransferResources {
-  const transferResources: TransferResources = {
-    transfers: [],
-  };
+  const transferResources: TransferResources = [];
 
   // Sort by descending quantity to find *fewest* number of resources for transfer
   const sortedResources = resources.sort((a, b) =>
     Number(b.quantity - a.quantity)
   );
-  const r: EncodedResource[] = [];
   let sum = 0n;
   for (let i = 0; i < sortedResources.length; i++) {
     const resource = resources[i];
     sum += resource.quantity;
+    transferResources.push([resource, targetQuantity]);
+
     if (sum > targetQuantity) {
-      transferResources.transfers.push(...r);
-      transferResources.split = {
-        resource,
-        remainder: sum - targetQuantity,
-      };
+      // This is the last item we want, and is a split, so break
       break;
-    } else {
-      r.push(resource);
     }
   }
+
   return transferResources;
 }
 
@@ -240,7 +219,7 @@ export const selectTransferResources = (
 
   if (match) {
     // Either a resource with matched quantity or a split resource
-    return match;
+    return [match];
   }
 
   // Check if summing can provide target quantity
@@ -249,7 +228,10 @@ export const selectTransferResources = (
 
   if (summedResources.length > 0) {
     // Resources whose quantities sum to exact targetQuantity
-    return { transfers: summedResources };
+    return summedResources.map(summedResource => [
+      summedResource,
+      summedResource.quantity,
+    ]);
   }
 
   // Resources to sum plus a split resource

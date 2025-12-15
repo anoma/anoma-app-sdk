@@ -5,6 +5,11 @@ export interface EncodedKeypair {
   public_key: string;
 }
 
+export interface EncodedNullifierKeyPair {
+  nk: string;
+  cnk: string;
+}
+
 export interface ResourceProps {
   isEphemeral: boolean;
   quantity: bigint;
@@ -27,11 +32,6 @@ export interface EncodedResource {
   nk_commitment: string;
 }
 
-export interface EncodedNullifierKeyPair {
-  nk: string;
-  cnk: string;
-}
-
 export class AuthorizationSignature {
   private constructor();
   free(): void;
@@ -51,9 +51,9 @@ export class AuthorizationSigningKey {
 }
 
 export class AuthorizationVerifyingKey {
-  private constructor();
   free(): void;
   [Symbol.dispose](): void;
+  constructor(pk_bytes: Uint8Array);
   static fromSigningKey(
     signing_key: AuthorizationSigningKey
   ): AuthorizationVerifyingKey;
@@ -101,6 +101,20 @@ export class Digest {
   toHex(): string;
   static fromHex(hex: string): Digest;
   static default(): Digest;
+}
+
+export class HeliaxKeys {
+  private constructor();
+  free(): void;
+  [Symbol.dispose](): void;
+  static readonly HELIAX_FEE_LOGIC_REF: string;
+  static readonly HELIAX_FEE_LABEL_REF_WETH: string;
+  static readonly HELIAX_FEE_LABEL_REF_USDC: string;
+  static readonly HELIAX_FEE_LABEL_REF_XAN: string;
+  static readonly HELIAX_FEE_VALUE_REF: string;
+  static readonly HELIAX_FEE_NULLIFIER_KEY_COMMITMENT: string;
+  static readonly HELIAX_FEE_DISCOVERY_PK: string;
+  static readonly HELIAX_FEE_ENCRYPTION_PK: string;
 }
 
 export class InitialRoot {
@@ -178,8 +192,8 @@ export class PublicKey {
   static fromHex(pk_hex: string): PublicKey;
   toHex(): string;
   toBytes(): Uint8Array;
-  serialize(): Uint8Array;
-  static deserialize(bytes: Uint8Array): PublicKey;
+  toAffinePointBytes(): Uint8Array;
+  static fromAffinePointBytes(bytes: Uint8Array): PublicKey;
   encode(): Uint8Array;
 }
 
@@ -298,8 +312,10 @@ export interface InitOutput {
   ) => [number, number, number];
   readonly publickey_toHex: (a: number) => [number, number];
   readonly publickey_toBytes: (a: number) => [number, number];
-  readonly publickey_serialize: (a: number) => [number, number, number, number];
-  readonly publickey_deserialize: (
+  readonly publickey_toAffinePointBytes: (
+    a: number
+  ) => [number, number, number, number];
+  readonly publickey_fromAffinePointBytes: (
     a: number,
     b: number
   ) => [number, number, number];
@@ -339,6 +355,71 @@ export interface InitOutput {
     b: number
   ) => [number, number, number, number];
   readonly ciphertext_toJson: (a: number) => [number, number, number];
+  readonly convertCounterToValueRef: (a: bigint, b: bigint) => [number, number];
+  readonly randomBytes: () => [number, number];
+  readonly __wbg_initialroot_free: (a: number, b: number) => void;
+  readonly initialroot_bytes: () => [number, number];
+  readonly __wbg_digest_free: (a: number, b: number) => void;
+  readonly digest_new: (a: number, b: number) => [number, number, number];
+  readonly digest_fromBytes: (a: number, b: number) => [number, number, number];
+  readonly digest_toBytes: (a: number) => [number, number];
+  readonly digest_toHex: (a: number) => [number, number];
+  readonly digest_fromHex: (a: number, b: number) => [number, number, number];
+  readonly digest_default: () => number;
+  readonly __wbg_merkletree_free: (a: number, b: number) => void;
+  readonly merkletree_new: (a: number, b: number) => number;
+  readonly merkletree_root: (a: number) => [number, number, number];
+  readonly merkletree_toWitness: (
+    a: number
+  ) => [number, number, number, number];
+  readonly __wbg_heliaxkeys_free: (a: number, b: number) => void;
+  readonly heliaxkeys_HELIAX_FEE_LOGIC_REF: () => [number, number];
+  readonly heliaxkeys_HELIAX_FEE_LABEL_REF_WETH: () => [number, number];
+  readonly heliaxkeys_HELIAX_FEE_LABEL_REF_USDC: () => [number, number];
+  readonly heliaxkeys_HELIAX_FEE_LABEL_REF_XAN: () => [number, number];
+  readonly heliaxkeys_HELIAX_FEE_VALUE_REF: () => [number, number];
+  readonly heliaxkeys_HELIAX_FEE_NULLIFIER_KEY_COMMITMENT: () => [
+    number,
+    number,
+  ];
+  readonly heliaxkeys_HELIAX_FEE_DISCOVERY_PK: () => [number, number];
+  readonly heliaxkeys_HELIAX_FEE_ENCRYPTION_PK: () => [number, number];
+  readonly __wbg_nullifierkey_free: (a: number, b: number) => void;
+  readonly nullifierkey_new: (a: number, b: number) => [number, number, number];
+  readonly nullifierkey_commit: (a: number) => number;
+  readonly nullifierkey_inner: (a: number) => [number, number];
+  readonly nullifierkey_random: () => number;
+  readonly nullifierkey_toBase64: (a: number) => [number, number];
+  readonly nullifierkey_fromBase64: (
+    a: number,
+    b: number
+  ) => [number, number, number];
+  readonly nullifierkey_default: () => number;
+  readonly __wbg_nullifierkeycommitment_free: (a: number, b: number) => void;
+  readonly nullifierkeycommitment_new: (
+    a: number,
+    b: number
+  ) => [number, number, number];
+  readonly nullifierkeycommitment_inner: (a: number) => number;
+  readonly nullifierkeycommitment_toBase64: (a: number) => [number, number];
+  readonly nullifierkeycommitment_fromBase64: (
+    a: number,
+    b: number
+  ) => [number, number, number];
+  readonly __wbg_nullifierkeypair_free: (a: number, b: number) => void;
+  readonly __wbg_get_nullifierkeypair_nk: (a: number) => number;
+  readonly __wbg_set_nullifierkeypair_nk: (a: number, b: number) => void;
+  readonly __wbg_get_nullifierkeypair_cnk: (a: number) => number;
+  readonly __wbg_set_nullifierkeypair_cnk: (a: number, b: number) => void;
+  readonly nullifierkeypair_new: (a: number, b: number) => number;
+  readonly nullifierkeypair_toJson: (a: number) => [number, number, number];
+  readonly nullifierkeypair_fromJson: (a: any) => [number, number, number];
+  readonly nullifierkeypair_encode: (a: number) => any;
+  readonly nullifierkeypair_decode: (a: any) => [number, number, number];
+  readonly hashBytes: (a: number, b: number) => number;
+  readonly hashTwo: (a: number, b: number) => number;
+  readonly bytesToWords: (a: number, b: number) => [number, number];
+  readonly wordsToBytes: (a: number, b: number) => [number, number];
   readonly __wbg_resource_free: (a: number, b: number) => void;
   readonly resource_new: (a: any) => [number, number, number];
   readonly resource_create: (
@@ -372,55 +453,6 @@ export interface InitOutput {
   readonly resourcewithlabel_resource: (a: number) => number;
   readonly resourcewithlabel_forwarder: (a: number) => [number, number];
   readonly resourcewithlabel_erc20TokenAddress: (a: number) => [number, number];
-  readonly __wbg_merkletree_free: (a: number, b: number) => void;
-  readonly merkletree_new: (a: number, b: number) => number;
-  readonly merkletree_root: (a: number) => [number, number, number];
-  readonly merkletree_toWitness: (
-    a: number
-  ) => [number, number, number, number];
-  readonly __wbg_digest_free: (a: number, b: number) => void;
-  readonly digest_new: (a: number, b: number) => [number, number, number];
-  readonly digest_fromBytes: (a: number, b: number) => [number, number, number];
-  readonly digest_toBytes: (a: number) => [number, number];
-  readonly digest_toHex: (a: number) => [number, number];
-  readonly digest_fromHex: (a: number, b: number) => [number, number, number];
-  readonly digest_default: () => number;
-  readonly hashBytes: (a: number, b: number) => number;
-  readonly hashTwo: (a: number, b: number) => number;
-  readonly bytesToWords: (a: number, b: number) => [number, number];
-  readonly wordsToBytes: (a: number, b: number) => [number, number];
-  readonly __wbg_nullifierkey_free: (a: number, b: number) => void;
-  readonly nullifierkey_new: (a: number, b: number) => [number, number, number];
-  readonly nullifierkey_commit: (a: number) => number;
-  readonly nullifierkey_inner: (a: number) => [number, number];
-  readonly nullifierkey_random: () => number;
-  readonly nullifierkey_toBase64: (a: number) => [number, number];
-  readonly nullifierkey_fromBase64: (
-    a: number,
-    b: number
-  ) => [number, number, number];
-  readonly nullifierkey_default: () => number;
-  readonly __wbg_nullifierkeycommitment_free: (a: number, b: number) => void;
-  readonly nullifierkeycommitment_new: (
-    a: number,
-    b: number
-  ) => [number, number, number];
-  readonly nullifierkeycommitment_inner: (a: number) => number;
-  readonly nullifierkeycommitment_toBase64: (a: number) => [number, number];
-  readonly nullifierkeycommitment_fromBase64: (
-    a: number,
-    b: number
-  ) => [number, number, number];
-  readonly __wbg_nullifierkeypair_free: (a: number, b: number) => void;
-  readonly __wbg_get_nullifierkeypair_nk: (a: number) => number;
-  readonly __wbg_set_nullifierkeypair_nk: (a: number, b: number) => void;
-  readonly __wbg_get_nullifierkeypair_cnk: (a: number) => number;
-  readonly __wbg_set_nullifierkeypair_cnk: (a: number, b: number) => void;
-  readonly nullifierkeypair_new: (a: number, b: number) => number;
-  readonly nullifierkeypair_toJson: (a: number) => [number, number, number];
-  readonly nullifierkeypair_fromJson: (a: any) => [number, number, number];
-  readonly nullifierkeypair_encode: (a: number) => any;
-  readonly nullifierkeypair_decode: (a: any) => [number, number, number];
   readonly __wbg_authorizationsigningkey_free: (a: number, b: number) => void;
   readonly authorizationsigningkey_new: () => number;
   readonly authorizationsigningkey_sign: (
@@ -448,6 +480,10 @@ export interface InitOutput {
     b: number
   ) => [number, number, number];
   readonly __wbg_authorizationverifyingkey_free: (a: number, b: number) => void;
+  readonly authorizationverifyingkey_new: (
+    a: number,
+    b: number
+  ) => [number, number, number];
   readonly authorizationverifyingkey_fromSigningKey: (a: number) => number;
   readonly authorizationverifyingkey_verify: (
     a: number,
@@ -462,14 +498,10 @@ export interface InitOutput {
     b: number
   ) => [number, number, number];
   readonly authorizationverifyingkey_toBytes: (a: number) => [number, number];
-  readonly __wbg_initialroot_free: (a: number, b: number) => void;
-  readonly initialroot_bytes: () => [number, number];
   readonly __wbg_calltype_free: (a: number, b: number) => void;
   readonly calltype_toVec: (a: number) => [number, number];
   readonly calltype_Wrap: () => number;
   readonly calltype_Unwrap: () => number;
-  readonly convertCounterToValueRef: (a: bigint, b: bigint) => [number, number];
-  readonly randomBytes: () => [number, number];
   readonly sys_verify_integrity: (a: number, b: number) => void;
   readonly sys_verify_integrity2: (a: number, b: number) => void;
   readonly sys_read: (a: number, b: number, c: number) => number;

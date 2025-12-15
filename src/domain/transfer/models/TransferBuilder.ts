@@ -1,23 +1,24 @@
 import { toBase64, toHex } from "lib/utils";
 import type {
-  ConsumedEphemeralProps,
   ConsumedWitnessData,
   CreateBurnProps,
-  CreateMintProps,
+  CreateFeeTransferProps,
   CreateTransferProps,
-  CreatedPersistentProps,
-  CreatedResources,
   CreatedWitnessData,
   Parameters,
+  Permit2Data,
+  UserKeyring,
 } from "types";
-import { NullifierKey, PublicKey, type Resource } from "wasm";
+import type { Address } from "viem";
+import { HeliaxKeys, PublicKey, type Resource } from "wasm";
+import { checkMergeSplitParameters } from "../services";
 import { TransferLogic } from "./TransferLogic";
 
 /**
- * Build required backend Parameters request for mint, transfer, split, burn
+ * Build required backend Parameters request for mint, transfer, burn
  */
 export class TransferBuilder {
-  protected client: TransferLogic;
+  readonly client: TransferLogic;
 
   constructor(client: TransferLogic) {
     this.client = client;
@@ -28,49 +29,28 @@ export class TransferBuilder {
     return new TransferBuilder(client);
   }
 
-  buildMintResources(mintProps: CreateMintProps): CreatedResources {
-    // Create the resources
-    const { consumedResource, createdResource, actionTree } =
-      this.client.createMintResources(mintProps);
-    return {
-      actionTree,
-      consumedResource,
-      createdResource,
-    };
-  }
-
   buildMintParameters(
     mintResources: {
       createdResource: Resource;
       consumedResource: Resource;
     },
-    consumedWitnessProps: ConsumedEphemeralProps,
-    createdWitnessProps: CreatedPersistentProps,
-    nullifierKey: Uint8Array
+    permit2Data: Permit2Data,
+    evmAddress: Address,
+    tokenContractAddress: Address,
+    keyring: UserKeyring
   ): Parameters {
     const { createdResource, consumedResource } = mintResources;
-    const {
-      permit2Data: permit2_data,
-      senderWalletAddress: sender_wallet_address,
-      tokenContractAddress: consumed_token_contract_address,
-    } = consumedWitnessProps;
-    const {
-      receiverDiscoveryPublicKey: receiver_discovery_public_key,
-      receiverEncryptionPublicKey: receiver_encryption_public_key,
-      authorityPublicKey: receiver_authorization_verifying_key,
-      tokenContractAddress: created_token_contract_address,
-    } = createdWitnessProps;
 
     return {
       consumed_resources: [
         {
           resource: consumedResource.encode(),
-          nullifier_key: toBase64(nullifierKey),
+          nullifier_key: toBase64(keyring.nullifierKeyPair.nk),
           witness_data: {
             Ephemeral: {
-              permit2_data,
-              sender_wallet_address,
-              token_contract_address: consumed_token_contract_address,
+              permit2_data: permit2Data,
+              sender_wallet_address: evmAddress,
+              token_contract_address: tokenContractAddress,
             },
           },
         },
@@ -80,10 +60,16 @@ export class TransferBuilder {
           resource: createdResource.encode(),
           witness_data: {
             Persistent: {
-              receiver_discovery_public_key,
-              receiver_encryption_public_key,
-              receiver_authorization_verifying_key,
-              token_contract_address: created_token_contract_address,
+              receiver_discovery_public_key: new PublicKey(
+                keyring.discoveryKeyPair.publicKey
+              ).toBase64(),
+              receiver_encryption_public_key: new PublicKey(
+                keyring.encryptionKeyPair.publicKey
+              ).toBase64(),
+              receiver_authorization_verifying_key: new PublicKey(
+                keyring.authorityKeyPair.publicKey
+              ).toBase64(),
+              token_contract_address: tokenContractAddress,
             },
           },
         },
@@ -91,44 +77,41 @@ export class TransferBuilder {
     };
   }
 
-  buildTransferParameters(
-    transferProps: CreateTransferProps,
-    createdWitnessProps: CreatedPersistentProps,
-    nullifierKey: Uint8Array
-  ): Parameters {
-    const { consumedResource, createdResource, authSig } =
-      this.client.createTransferResource(transferProps);
-
+  buildTransferParameters(transferProps: CreateTransferProps): Parameters {
     const {
-      receiverDiscoveryPublicKey: receiver_discovery_public_key,
-      receiverEncryptionPublicKey: receiver_encryption_public_key,
-      authorityPublicKey: receiver_authorization_verifying_key,
-      tokenContractAddress: token_contract_address,
-    } = createdWitnessProps;
+      authSig,
+      consumedResource,
+      createdResource,
+      paddingResource,
+      remainderResource,
+    } = this.client.createTransferResource(transferProps);
+    const { keyring, receiverKeyring } = transferProps;
 
     const consumedWitnessData: ConsumedWitnessData["Persistent"] = {
       sender_authorization_signature: toBase64(authSig.toBytes()),
-      sender_authorization_verifying_key: toBase64(
-        PublicKey.fromHex(
-          toHex(transferProps.authKeypair.publicKey)
-        ).serialize() // serialize() returns the serde-serialized AffinePoint
-      ),
-      sender_encryption_public_key: toBase64(
-        PublicKey.fromHex(transferProps.encryptionPublicKey).serialize() // serialize() returns the serde-serialized AffinePoint
-      ),
+      sender_authorization_verifying_key: new PublicKey(
+        keyring.authorityKeyPair.publicKey
+      ).toBase64(),
+      sender_encryption_public_key: new PublicKey(
+        keyring.encryptionKeyPair.publicKey
+      ).toBase64(),
     };
     const createdWitnessData: CreatedWitnessData["Persistent"] = {
-      receiver_discovery_public_key,
-      receiver_encryption_public_key,
-      receiver_authorization_verifying_key,
-      token_contract_address,
+      receiver_discovery_public_key: toHex(receiverKeyring.discoveryPublicKey),
+      receiver_encryption_public_key: toHex(
+        receiverKeyring.encryptionPublicKey
+      ),
+      receiver_authorization_verifying_key: toHex(
+        receiverKeyring.authorityPublicKey
+      ),
+      token_contract_address: transferProps.token,
     };
 
-    return {
+    const parameters: Parameters = {
       consumed_resources: [
         {
           resource: consumedResource.encode(),
-          nullifier_key: toBase64(nullifierKey),
+          nullifier_key: toBase64(keyring.nullifierKeyPair.nk),
           witness_data: {
             Persistent: consumedWitnessData,
           },
@@ -141,11 +124,25 @@ export class TransferBuilder {
         },
       ],
     };
+
+    return checkMergeSplitParameters(
+      parameters,
+      keyring,
+      transferProps.token,
+      paddingResource,
+      remainderResource
+    );
   }
 
   buildBurnParameters(burnProps: CreateBurnProps): Parameters {
-    const { authSig, consumedResource, createdResource } =
-      this.client.createBurnResource(burnProps);
+    const {
+      authSig,
+      consumedResource,
+      createdResource,
+      remainderResource,
+      paddingResource,
+    } = this.client.createBurnResource(burnProps);
+    const { keyring } = burnProps;
 
     const createdWitnessData: CreatedWitnessData["Ephemeral"] = {
       token_contract_address: burnProps.token,
@@ -153,19 +150,18 @@ export class TransferBuilder {
     };
     const consumedWitnessData: ConsumedWitnessData["Persistent"] = {
       sender_authorization_signature: toBase64(authSig.toBytes()),
-      sender_authorization_verifying_key: toBase64(
-        PublicKey.fromHex(toHex(burnProps.authKeypair.publicKey)).serialize() // serialize() returns the serde-serialized AffinePoint
-      ),
-      sender_encryption_public_key: toBase64(
-        PublicKey.fromHex(burnProps.encryptionPublicKey).serialize() // serialize() returns the serde-serialized AffinePoint
-      ),
+      sender_authorization_verifying_key: new PublicKey(
+        keyring.authorityKeyPair.publicKey
+      ).toBase64(),
+      sender_encryption_public_key: new PublicKey(
+        keyring.encryptionKeyPair.publicKey
+      ).toBase64(),
     };
-
-    return {
+    const parameters: Parameters = {
       consumed_resources: [
         {
           resource: consumedResource.encode(),
-          nullifier_key: toBase64(burnProps.burnNullifierKeypair.nk),
+          nullifier_key: toBase64(keyring.nullifierKeyPair.nk),
           witness_data: {
             Persistent: consumedWitnessData,
           },
@@ -180,71 +176,49 @@ export class TransferBuilder {
         },
       ],
     };
+
+    return checkMergeSplitParameters(
+      parameters,
+      keyring,
+      burnProps.token,
+      paddingResource,
+      remainderResource
+    );
   }
-  buildSplitTransferParameters(
-    transferProps: CreateTransferProps,
-    createdWitnessProps: CreatedPersistentProps,
-    remainderWitnessProps: CreatedPersistentProps,
-    nullifierKey: Uint8Array
-  ): Parameters {
-    const {
-      receiverDiscoveryPublicKey: receiver_discovery_public_key,
-      receiverEncryptionPublicKey: receiver_encryption_public_key,
-      authorityPublicKey: receiver_authorization_verifying_key,
-      tokenContractAddress: token_contract_address,
-    } = createdWitnessProps;
-    const {
-      receiverDiscoveryPublicKey: sender_discovery_public_key,
-      receiverEncryptionPublicKey: sender_encryption_public_key,
-      authorityPublicKey: sender_authorization_verifying_key,
-    } = remainderWitnessProps;
+
+  buildFeeTransferParameters(props: CreateFeeTransferProps): Parameters {
+    const { keyring, tokenContractAddress } = props;
 
     const {
-      consumedResource: toSplitResource,
+      authSig,
       createdResource,
+      consumedResource,
       paddingResource,
       remainderResource,
-      authSig,
-    } = this.client.createSplitTransfer(transferProps);
-
+    } = this.client.createFeeTransferResource(props);
     const consumedWitnessData: ConsumedWitnessData["Persistent"] = {
       sender_authorization_signature: toBase64(authSig.toBytes()),
-      sender_authorization_verifying_key: toBase64(
-        PublicKey.fromHex(
-          toHex(transferProps.authKeypair.publicKey)
-        ).serialize() // serialize() returns the serde-serialized AffinePoint
-      ),
-      sender_encryption_public_key: toBase64(
-        PublicKey.fromHex(transferProps.encryptionPublicKey).serialize() // serialize() returns the serde-serialized AffinePoint
-      ),
-    };
-    const createdWitnessData: CreatedWitnessData["Persistent"] = {
-      receiver_discovery_public_key,
-      receiver_encryption_public_key,
-      receiver_authorization_verifying_key,
-      token_contract_address,
-    };
-    const remainderWitnessData: CreatedWitnessData["Persistent"] = {
-      receiver_discovery_public_key: sender_discovery_public_key,
-      receiver_encryption_public_key: sender_encryption_public_key,
-      receiver_authorization_verifying_key: sender_authorization_verifying_key,
-      token_contract_address,
+      sender_authorization_verifying_key: new PublicKey(
+        keyring.authorityKeyPair.publicKey
+      ).toBase64(),
+      sender_encryption_public_key: new PublicKey(
+        keyring.encryptionKeyPair.publicKey
+      ).toBase64(),
     };
 
-    return {
+    const { HELIAX_FEE_ENCRYPTION_PK, HELIAX_FEE_DISCOVERY_PK } = HeliaxKeys;
+    const createdWitnessData: CreatedWitnessData["Persistent"] = {
+      receiver_discovery_public_key: HELIAX_FEE_DISCOVERY_PK,
+      receiver_encryption_public_key: HELIAX_FEE_ENCRYPTION_PK,
+    };
+
+    const parameters = {
       consumed_resources: [
         {
-          resource: toSplitResource.encode(),
-          nullifier_key: toBase64(nullifierKey),
+          resource: consumedResource.encode(),
+          nullifier_key: toBase64(keyring.nullifierKeyPair.nk),
           witness_data: {
             Persistent: consumedWitnessData,
-          },
-        },
-        {
-          resource: paddingResource.encode(),
-          nullifier_key: NullifierKey.default().toBase64(),
-          witness_data: {
-            TrivialEphemeral: {},
           },
         },
       ],
@@ -253,82 +227,15 @@ export class TransferBuilder {
           resource: createdResource.encode(),
           witness_data: { Persistent: createdWitnessData },
         },
-        {
-          resource: remainderResource.encode(),
-          witness_data: { Persistent: remainderWitnessData },
-        },
       ],
     };
-  }
 
-  buildSplitBurnParameters(
-    burnProps: CreateBurnProps,
-    remainderWitnessProps: CreatedPersistentProps
-  ): Parameters {
-    const {
-      authSig,
-      consumedResource: toSplitResource,
+    return checkMergeSplitParameters(
+      parameters,
+      keyring,
+      tokenContractAddress,
       paddingResource,
-      remainderResource,
-      createdResource,
-    } = this.client.createSplitBurnResources(burnProps);
-    const nullifierKey = burnProps.burnNullifierKeypair.nk;
-
-    const {
-      receiverDiscoveryPublicKey: sender_discovery_public_key,
-      receiverEncryptionPublicKey: sender_encryption_public_key,
-      authorityPublicKey: sender_authorization_verifying_key,
-      tokenContractAddress: token_contract_address,
-    } = remainderWitnessProps;
-
-    const remainderWitnessData: CreatedWitnessData["Persistent"] = {
-      receiver_discovery_public_key: sender_discovery_public_key,
-      receiver_encryption_public_key: sender_encryption_public_key,
-      receiver_authorization_verifying_key: sender_authorization_verifying_key,
-      token_contract_address,
-    };
-
-    const createdWitnessData: CreatedWitnessData["Ephemeral"] = {
-      token_contract_address: burnProps.token,
-      receiver_wallet_address: burnProps.burnAddress,
-    };
-    const consumedWitnessData: ConsumedWitnessData["Persistent"] = {
-      sender_authorization_signature: toBase64(authSig.toBytes()),
-      sender_authorization_verifying_key: toBase64(
-        PublicKey.fromHex(toHex(burnProps.authKeypair.publicKey)).serialize() // serialize() returns the serde-serialized AffinePoint
-      ),
-      sender_encryption_public_key: toBase64(
-        PublicKey.fromHex(burnProps.encryptionPublicKey).serialize() // serialize() returns the serde-serialized AffinePoint
-      ),
-    };
-
-    return {
-      consumed_resources: [
-        {
-          resource: toSplitResource.encode(),
-          nullifier_key: toBase64(nullifierKey),
-          witness_data: {
-            Persistent: consumedWitnessData,
-          },
-        },
-        {
-          resource: paddingResource.encode(),
-          nullifier_key: NullifierKey.default().toBase64(),
-          witness_data: {
-            TrivialEphemeral: {},
-          },
-        },
-      ],
-      created_resources: [
-        {
-          resource: createdResource.encode(),
-          witness_data: { Ephemeral: createdWitnessData },
-        },
-        {
-          resource: remainderResource.encode(),
-          witness_data: { Persistent: remainderWitnessData },
-        },
-      ],
-    };
+      remainderResource
+    );
   }
 }

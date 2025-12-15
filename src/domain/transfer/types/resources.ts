@@ -1,81 +1,53 @@
 import type {
   AuthorizationSignature,
-  Digest,
   EncodedResource,
   MerkleTree,
-  NullifierKeyCommitment,
   Resource,
 } from "wasm";
 
-import type {
-  KeyPair,
-  NullifierKeyPair as NullifierKeyProps,
-} from "domain/keys/models";
-
-import type {
-  ConsumedWitnessData,
-  CreatedWitnessData,
-  Permit2Data,
-} from "./witness";
-
-export type EphemeralMintProps = {
-  userAddress: string;
-  forwarderAddress: string;
-  token: string;
-  quantity: bigint;
-  nkCommitment: NullifierKeyCommitment;
-};
-
-export type PersistentMintProps = {
-  authVerifyingKey: string;
-  encryptionPublicKey: string;
-  forwarderAddress: string;
-  token: string;
-  quantity: bigint;
-  consumedResourceNullifier: Digest;
-  nkCommitment: NullifierKeyCommitment;
-};
+import type { UserKeyring, UserPublicKeys } from "types";
+import type { Address } from "viem";
+import type { ConsumedWitnessData, CreatedWitnessData } from "./witness";
 
 /**
- * Prop types for creating Transfer resources
+ * Prop types for creating resources
  */
 export type CreateMintProps = {
-  authVerifyingKey: string;
-  encryptionPublicKey: string;
   userAddress: string;
-  nullifierKeypair: NullifierKeyProps;
   forwarderAddress: string;
   token: string;
   quantity: bigint;
+  keyring: UserKeyring;
 };
 
-// Create Resource Transfer or Split Transfer
 export type CreateTransferProps = {
   resource: Resource;
-  authKeypair: KeyPair;
-  encryptionPublicKey: string;
-  transferredResourceNullifier: Digest;
-  receiverNullifierCommitment: NullifierKeyCommitment;
-  receiverVerifyingKey: string;
-  receiverEncryptionPublicKey: string;
   forwarderAddress: string;
-  token: string;
+  token: Address;
   quantity: bigint;
+  keyring: UserKeyring;
+  receiverKeyring: UserPublicKeys;
+};
+
+export type CreateFeeTransferProps = {
+  resource: Resource;
+  tokenSymbol: "USDC" | "XAN" | "WETH";
+  tokenContractAddress: Address;
+  quantity: bigint;
+  keyring: UserKeyring;
 };
 
 export type CreateBurnProps = {
   burnResource: Resource;
   burnAddress: string;
-  authKeypair: KeyPair;
-  encryptionPublicKey: string;
-  burnNullifierKeypair: NullifierKeyProps;
   forwarderAddress: string;
-  token: string;
+  token: Address;
   quantity: bigint;
+  keyring: UserKeyring;
 };
 
 /**
- * Created resource responses
+ * Created resource return types
  */
 export type CreatedResources = {
   actionTree: MerkleTree;
@@ -85,32 +57,8 @@ export type CreatedResources = {
 
 export type AuthorizedResources = CreatedResources & {
   authSig: AuthorizationSignature;
-};
-
-export type SplitResources = AuthorizedResources & {
-  paddingResource: Resource;
-  remainderResource: Resource;
-};
-
-type Address = `0x${string}`;
-
-// Props to construct consumed ephemeral resource
-export type ConsumedEphemeralProps = {
-  permit2Data: Permit2Data;
-  senderWalletAddress: Address;
-  tokenContractAddress: Address;
-};
-
-export type ConsumedPersistentProps = {
-  senderAuthorizationSignature: string;
-  senderAuthorizationVerifyingKey: string;
-};
-
-export type CreatedPersistentProps = {
-  receiverDiscoveryPublicKey: string;
-  receiverEncryptionPublicKey: string;
-  authorityPublicKey: string;
-  tokenContractAddress: Address;
+  paddingResource?: Resource;
+  remainderResource?: Resource;
 };
 
 /**
@@ -125,6 +73,7 @@ export type CreatedResource = ResourceWithWitness & {
 };
 
 export type ConsumedResource = ResourceWithWitness & {
+  resource: EncodedResource;
   nullifier_key: string;
   witness_data: ConsumedWitnessData;
 };

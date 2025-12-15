@@ -1,3 +1,5 @@
+import type { Address } from "viem";
+
 // Permit2 Data
 export type Permit2Data = {
   deadline: bigint;
@@ -17,8 +19,8 @@ type CreatedEphemeral = Record<string, never>;
 type TokenTransferCreatedPersistent = {
   receiver_discovery_public_key: string;
   receiver_encryption_public_key: string;
-  receiver_authorization_verifying_key: string;
-  token_contract_address: string;
+  receiver_authorization_verifying_key?: string;
+  token_contract_address?: Address;
 };
 
 /**

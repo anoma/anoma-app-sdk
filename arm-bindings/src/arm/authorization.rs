@@ -1,16 +1,12 @@
+use crate::arm::{action_tree::MerkleTree, encryption::PublicKey};
 use arm_gadgets::authorization::{
     AuthorizationSignature as AS, AuthorizationSigningKey as ASK, AuthorizationVerifyingKey as AVK,
 };
-use serde::{Deserialize, Serialize};
-
-#[cfg(feature = "wasm")]
-use crate::arm::action_tree::MerkleTree;
-#[cfg(feature = "wasm")]
 use k256::{ecdsa::Signature, elliptic_curve::sec1::ToEncodedPoint};
-#[cfg(feature = "wasm")]
+use serde::{Deserialize, Serialize};
 use wasm_bindgen::{JsError, prelude::wasm_bindgen};
 
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
+#[wasm_bindgen]
 #[derive(Clone)]
 pub struct AuthorizationSigningKey(pub(crate) ASK);
 
@@ -20,7 +16,6 @@ impl AuthorizationSigningKey {
     }
 }
 
-#[cfg(feature = "wasm")]
 #[wasm_bindgen]
 impl AuthorizationSigningKey {
     #[wasm_bindgen(constructor)]
@@ -57,7 +52,7 @@ impl Default for AuthorizationSigningKey {
     }
 }
 
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
+#[wasm_bindgen]
 #[derive(Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct AuthorizationSignature(AS);
 
@@ -71,7 +66,6 @@ impl AuthorizationSignature {
     }
 }
 
-#[cfg(feature = "wasm")]
 #[wasm_bindgen]
 impl AuthorizationSignature {
     #[wasm_bindgen(js_name = "toBytes")]
@@ -85,7 +79,7 @@ impl AuthorizationSignature {
     }
 }
 
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
+#[wasm_bindgen]
 #[derive(Clone, Copy, Debug, Default, Serialize, Deserialize, PartialEq)]
 pub struct AuthorizationVerifyingKey(AVK);
 
@@ -95,9 +89,14 @@ impl AuthorizationVerifyingKey {
     }
 }
 
-#[cfg(feature = "wasm")]
 #[wasm_bindgen]
 impl AuthorizationVerifyingKey {
+    #[wasm_bindgen(constructor)]
+    pub fn new(pk_bytes: &[u8]) -> Result<AuthorizationVerifyingKey, JsError> {
+        let pk = PublicKey::new(pk_bytes)?;
+        Ok(AuthorizationVerifyingKey(AVK::from_affine(*pk.instance())))
+    }
+
     #[wasm_bindgen(js_name = "fromSigningKey")]
     pub fn from_signing_key(signing_key: &AuthorizationSigningKey) -> Self {
         AuthorizationVerifyingKey(AVK::from_signing_key(&signing_key.0))
@@ -114,9 +113,7 @@ impl AuthorizationVerifyingKey {
 
     #[wasm_bindgen(js_name = "fromHex")]
     pub fn from_hex(pk_hex: &str) -> Result<AuthorizationVerifyingKey, JsError> {
-        use crate::arm::encryption::PublicKey;
-        let pk = PublicKey::from_hex(pk_hex)?;
-        Ok(AuthorizationVerifyingKey(AVK::from_affine(*pk.instance())))
+        AuthorizationVerifyingKey::new(&hex::decode(pk_hex)?)
     }
 
     #[wasm_bindgen(js_name = "toBytes")]
