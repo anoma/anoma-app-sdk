@@ -1,20 +1,15 @@
 use arm_gadgets::encryption::{Ciphertext as C, SecretKey as SK};
-use k256::AffinePoint;
-use serde::{self, Deserialize, Serialize};
-
-#[cfg(feature = "wasm")]
 use base64::{Engine as _, engine::general_purpose::STANDARD as b64};
-#[cfg(feature = "wasm")]
+use k256::AffinePoint;
 use k256::{
     CompressedPoint, ProjectivePoint, Scalar, elliptic_curve::PrimeField,
     elliptic_curve::group::GroupEncoding,
 };
-#[cfg(feature = "wasm")]
+use serde::{self, Deserialize, Serialize};
 use tsify::Tsify;
-#[cfg(feature = "wasm")]
 use wasm_bindgen::{JsError, JsValue, prelude::wasm_bindgen};
 
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
+#[wasm_bindgen]
 #[derive(Clone, Serialize, Deserialize)]
 pub struct SecretKey(pub(crate) SK);
 
@@ -24,7 +19,6 @@ impl SecretKey {
     }
 }
 
-#[cfg(feature = "wasm")]
 #[wasm_bindgen]
 impl SecretKey {
     #[wasm_bindgen(constructor)]
@@ -85,7 +79,7 @@ impl SecretKey {
     }
 }
 
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
+#[wasm_bindgen]
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct PublicKey(pub(crate) AffinePoint);
 
@@ -95,10 +89,9 @@ impl PublicKey {
     }
 }
 
-#[cfg(feature = "wasm")]
 #[wasm_bindgen]
 impl PublicKey {
-    #[cfg_attr(feature = "wasm", wasm_bindgen(constructor))]
+    #[wasm_bindgen(constructor)]
     pub fn new(bytes: &[u8]) -> Result<Self, JsError> {
         let bytes: [u8; 33] = bytes.try_into()?;
         Ok(PublicKey(
@@ -112,12 +105,12 @@ impl PublicKey {
 
     #[wasm_bindgen(js_name = "fromBase64")]
     pub fn from_base64(pk_b64: &str) -> Result<PublicKey, JsError> {
-        PublicKey::new(&b64.decode(pk_b64)?)
+        PublicKey::from_affine_point_bytes(&b64.decode(pk_b64)?)
     }
 
     #[wasm_bindgen(js_name = "toBase64")]
     pub fn to_base64(&self) -> Result<String, JsError> {
-        Ok(b64.encode(self.encode()?))
+        Ok(b64.encode(self.to_affine_point_bytes()?))
     }
 
     #[wasm_bindgen(js_name = "fromHex")]
@@ -136,11 +129,13 @@ impl PublicKey {
         self.0.to_bytes().to_vec()
     }
 
-    pub fn serialize(&self) -> Result<Vec<u8>, JsError> {
+    #[wasm_bindgen(js_name = "toAffinePointBytes")]
+    pub fn to_affine_point_bytes(&self) -> Result<Vec<u8>, JsError> {
         Ok(serde_json::to_vec(&self.0)?)
     }
 
-    pub fn deserialize(bytes: &[u8]) -> Result<PublicKey, JsError> {
+    #[wasm_bindgen(js_name = "fromAffinePointBytes")]
+    pub fn from_affine_point_bytes(bytes: &[u8]) -> Result<PublicKey, JsError> {
         Ok(PublicKey(serde_json::from_slice(bytes)?))
     }
 
@@ -149,7 +144,6 @@ impl PublicKey {
     }
 }
 
-#[cfg(feature = "wasm")]
 #[derive(Tsify, Debug, Serialize, Deserialize)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct EncodedKeypair {
@@ -157,16 +151,15 @@ pub struct EncodedKeypair {
     pub public_key: String,
 }
 
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
+#[wasm_bindgen]
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Keypair {
-    #[cfg_attr(feature = "wasm", wasm_bindgen(getter_with_clone))]
+    #[wasm_bindgen(getter_with_clone)]
     pub sk: SecretKey,
-    #[cfg_attr(feature = "wasm", wasm_bindgen(getter_with_clone))]
+    #[wasm_bindgen(getter_with_clone)]
     pub pk: PublicKey,
 }
 
-#[cfg(feature = "wasm")]
 #[wasm_bindgen]
 impl Keypair {
     pub fn new(sk_bytes: &[u8], pk_bytes: &[u8]) -> Result<Self, JsError> {
@@ -205,11 +198,10 @@ impl Keypair {
     }
 }
 
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
+#[wasm_bindgen]
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Ciphertext(pub(crate) C);
 
-#[cfg(feature = "wasm")]
 #[wasm_bindgen]
 impl Ciphertext {
     #[wasm_bindgen(js_name = "fromBytes")]

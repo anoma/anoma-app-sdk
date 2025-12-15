@@ -1,12 +1,9 @@
+use hex::FromHex;
 use risc0_zkvm::Digest as D;
 use serde::{self, Deserialize, Serialize};
-
-#[cfg(feature = "wasm")]
-use hex::FromHex;
-#[cfg(feature = "wasm")]
 use wasm_bindgen::{JsError, prelude::wasm_bindgen};
 
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
+#[wasm_bindgen]
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Digest(pub(crate) D);
 
@@ -16,7 +13,6 @@ impl Digest {
     }
 }
 
-#[cfg(feature = "wasm")]
 #[wasm_bindgen]
 impl Digest {
     #[wasm_bindgen(constructor)]

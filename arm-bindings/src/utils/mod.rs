@@ -1,9 +1,8 @@
-#[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::wasm_bindgen;
 
 const DEFAULT_BYTES: usize = 32;
 
-#[cfg_attr(feature = "wasm", wasm_bindgen(js_name = "convertCounterToValueRef"))]
+#[wasm_bindgen(js_name = "convertCounterToValueRef")]
 pub fn convert_counter_to_value_ref(value: u128) -> Vec<u8> {
     let mut arr = [0u8; DEFAULT_BYTES];
     let bytes = value.to_le_bytes();
@@ -12,7 +11,7 @@ pub fn convert_counter_to_value_ref(value: u128) -> Vec<u8> {
 }
 
 /// Return a 32-byte randome vec
-#[cfg_attr(feature = "wasm", wasm_bindgen(js_name = "randomBytes"))]
+#[wasm_bindgen(js_name = "randomBytes")]
 pub fn random_bytes() -> Vec<u8> {
     let mut bytes = [0u8; DEFAULT_BYTES];
     getrandom::fill(&mut bytes).expect("Failed to fill buffer");

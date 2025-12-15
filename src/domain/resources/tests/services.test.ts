@@ -6,38 +6,33 @@ describe("Resources service functions", () => {
   it("Can select a resource with a matching quantity", () => {
     const targetAmount = 2_000_000n;
     const transferResources = selectTransferResources(resources, targetAmount);
-    expect(transferResources.transfers.length).toBe(1);
-    expect(transferResources.transfers[0].quantity).toBe(targetAmount);
-    expect(transferResources.split).toBeUndefined();
+    expect(transferResources.length).toBe(1);
+    expect(transferResources[0][0].quantity).toBe(targetAmount);
   });
 
   it("Can select multiple resources to fulfill transfer amount", () => {
     const targetAmount = 6_000_000n;
     const transferResources = selectTransferResources(resources, targetAmount);
-    expect(transferResources.transfers.length).toBe(2);
+    expect(transferResources.length).toBe(2);
     // Sum of all quantities should match target exactly
     expect(
-      transferResources.transfers.reduce(
-        (sum, resource) => (sum += resource.quantity),
+      transferResources.reduce(
+        (sum, [resource, _]) => (sum += resource.quantity),
         0n
       )
     ).toBe(targetAmount);
-    expect(transferResources.split).toBeUndefined();
   });
 
   it("Can select a resource to split", () => {
     const targetAmount = 500_000n;
     const transferResources = selectTransferResources(resources, targetAmount);
-    expect(transferResources.transfers.length).toBe(0);
-    expect(transferResources.split).toBeDefined();
+    expect(transferResources.length).toBe(1);
     // Difference of quantity and remainder should match target exactly
-    const {
-      resource: { quantity = 0n },
-      remainder = 0n,
-    } = transferResources.split || { resource: {} };
+    const [resource, amount] = transferResources[0];
+    const remainder = resource.quantity - amount;
     expect(remainder).toBe(500_000n);
-    expect(quantity).toBe(1_000_000n);
-    expect(quantity - remainder).toBe(targetAmount);
+    expect(resource.quantity).toBe(1_000_000n);
+    expect(resource.quantity - remainder).toBe(targetAmount);
   });
 
   it("Can select multiple resources with a split to fulfill transfer amount", () => {
@@ -45,22 +40,18 @@ describe("Resources service functions", () => {
     // and split the remaining one:
     const targetAmount = 9_712_345n;
     const transferResources = selectTransferResources(resources, targetAmount);
-    expect(transferResources.transfers.length).toBe(3);
-    expect(transferResources.split).toBeDefined();
-    const {
-      resource: { quantity = 0n },
-      remainder = 0n,
-    } = transferResources.split || { resource: {} };
+    expect(transferResources.length).toBe(4);
+    const [splitResource, quantity] =
+      transferResources[transferResources.length - 1];
+    const resourceQuantitySum = transferResources.reduce(
+      (sum, [resource, _]) => (sum += resource.quantity),
+      0n
+    );
+    const remainder = resourceQuantitySum - targetAmount;
+    expect(quantity).toBe(9_712_345n);
     expect(remainder).toBe(287_655n);
-    expect(quantity).toBe(1_000_000n);
+    expect(splitResource.quantity).toBe(1_000_000n);
     // Sum of all quantities + split resource quantity minus remainder should match target exactly
-    expect(
-      transferResources.transfers.reduce(
-        (sum, resource) => (sum += resource.quantity),
-        0n
-      ) +
-        quantity -
-        remainder
-    ).toBe(targetAmount);
+    expect(resourceQuantitySum - remainder).toBe(targetAmount);
   });
 });

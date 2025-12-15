@@ -1,11 +1,8 @@
-use arm::action_tree::MerkleTree as MT;
-
-#[cfg(feature = "wasm")]
 use crate::arm::digest::Digest;
-#[cfg(feature = "wasm")]
+use arm::action_tree::MerkleTree as MT;
 use wasm_bindgen::{JsError, prelude::wasm_bindgen};
 
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
+#[wasm_bindgen]
 #[derive(Debug)]
 pub struct MerkleTree(pub(crate) MT);
 
@@ -15,7 +12,6 @@ impl MerkleTree {
     }
 }
 
-#[cfg(feature = "wasm")]
 #[wasm_bindgen]
 impl MerkleTree {
     #[wasm_bindgen(constructor)]
