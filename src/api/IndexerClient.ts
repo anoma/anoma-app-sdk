@@ -26,6 +26,6 @@ export class IndexerClient extends ApiClient {
 
   async storeUserKeys(userDto: VaultDataTransferObject) {
     const parsedObj = convertObjectToSnakeCase(userDto);
-    console.log("POST:", userDto, JSON.stringify(parsedObj));
+    return this.post(IndexerPaths.StoreKeyring, parsedObj);
   }
 }
