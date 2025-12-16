@@ -18,7 +18,6 @@ import type {
   VaultEntry,
 } from "types";
 import type { Hex } from "viem";
-import { PublicKey } from "wasm";
 
 export const hashVaultId = (id: string) =>
   toHex(sha256(id) as Uint8Array<ArrayBuffer>);
@@ -91,9 +90,9 @@ export const createVaultDto = async (
   const ciphertextSignature = toBase64Url(
     await storageAuthorizationKeyPair.sign(ciphertextInBase64)
   );
-  const storageAuthorizationPublicKey = new PublicKey(
+  const storageAuthorizationPublicKey = toBase64Url(
     storageAuthorizationKeyPair.publicKey
-  ).toBase64();
+  );
 
   return {
     storageAuthorizationPublicKey,
