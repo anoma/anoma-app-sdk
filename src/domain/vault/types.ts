@@ -1,3 +1,4 @@
+import type { PayAddress } from "lib/payAddress";
 import type { UserKeyring } from "types";
 import type { Address } from "viem";
 
@@ -13,5 +14,18 @@ export type VaultEntry = {
   encryptionType: VaultEncryptionType;
   createdAt: number;
   modifiedAt: number;
+  version: number;
+};
+
+export type DecryptedVaultEntry = VaultEntry & {
+  keyring: UserKeyring;
+};
+
+export type VaultDataTransferObject = {
+  storageAuthorizationPublicKey: string;
+  userAddress: PayAddress;
+  ciphertext: string;
+  initializationVector: string;
+  ciphertextSignature: string;
   version: number;
 };

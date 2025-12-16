@@ -11,7 +11,7 @@ export const keysDbVersion = 1;
  * It also proceeds with the creation of a new database if it doesn't exist.
  * The database version is controlled by {@link keysDbVersion}.
  */
-export const openKeysDatabase = async (): Promise<IDBDatabase> => {
+export const openVaultDatabase = async (): Promise<IDBDatabase> => {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(keysDbName, keysDbVersion);
 
@@ -54,7 +54,7 @@ export const openKeysDatabase = async (): Promise<IDBDatabase> => {
 export const insertVaultEntry = async (
   vaultEntry: VaultEntry
 ): Promise<VaultEntry> => {
-  const db = await openKeysDatabase();
+  const db = await openVaultDatabase();
   return new Promise((resolve, reject) => {
     const vault = db.transaction("vault", "readwrite").objectStore("vault");
     const query = vault.add(vaultEntry);
@@ -82,7 +82,7 @@ export const insertVaultEntry = async (
  * @returns Promise resolving to the stored {@link VaultEntry}.
  */
 export const retrieveVaultById = async (id: string): Promise<VaultEntry> => {
-  const db = await openKeysDatabase();
+  const db = await openVaultDatabase();
   return new Promise((resolve, reject) => {
     const vault = db.transaction(["vault"]).objectStore("vault");
     const request = vault.get(id);

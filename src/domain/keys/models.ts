@@ -1,9 +1,8 @@
-import * as secp256k1 from "@noble/secp256k1";
 import { hmac } from "@noble/hashes/hmac";
 import { sha256 } from "@noble/hashes/sha2";
+import * as secp256k1 from "@noble/secp256k1";
+import { fromHex, generateRandomBytes, toHex } from "lib/utils";
 import { PRFDomainMap, type PRFDomain } from "types";
-import { fromHex, toHex } from "lib/utils";
-import { generateRandomBytes } from "lib/utils";
 
 type KeyPairConstructor<T extends KeyPairBase> = {
   new (
@@ -138,6 +137,17 @@ export class KeyPair extends KeyPairBase {
 
   get publicKey() {
     return this.keys.publicKey;
+  }
+
+  /**
+   * Generates deterministic-k ECDSA signature
+   * @param message Message to sign
+   */
+  async sign(message: string): Promise<Uint8Array<ArrayBufferLike>> {
+    return secp256k1.signAsync(
+      new TextEncoder().encode(message),
+      this.privateKey
+    );
   }
 
   /**

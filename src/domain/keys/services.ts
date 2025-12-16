@@ -3,7 +3,7 @@ import {
   KeyPairSerializer,
   NullifierKeyPair,
 } from "domain/keys/models";
-import type { UserKeyring } from "types";
+import type { UserKeyring, UserPublicKeys } from "types";
 
 /**
  * Derives all key pairs that make up a user keyring.
@@ -79,5 +79,14 @@ export const converUserKeyringFromJson = (json: string): UserKeyring => {
       KeyPair,
       keyringObj.encryptionKeyPair
     ),
+  };
+};
+
+export const extractUserPublicKeys = (keyring: UserKeyring): UserPublicKeys => {
+  return {
+    authorityPublicKey: keyring.authorityKeyPair.publicKey,
+    discoveryPublicKey: keyring.discoveryKeyPair.publicKey,
+    encryptionPublicKey: keyring.encryptionKeyPair.publicKey,
+    nullifierKeyCommitment: keyring.nullifierKeyPair.cnk,
   };
 };

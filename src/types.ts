@@ -2,9 +2,9 @@ import type { ApiConfig } from "api";
 import type { Address } from "viem";
 import type { ResourceWithLabel } from "wasm";
 
-export * from "domain/crypto/types";
 export * from "domain/keys/types";
 export * from "domain/transfer/types";
+export * from "domain/vault/types";
 
 export type ResourceBalance = {
   label: string;

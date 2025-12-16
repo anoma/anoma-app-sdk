@@ -1,14 +1,15 @@
-import { sha256 } from "@noble/hashes/sha2";
 import {
+  KEK_DOMAIN_SALT,
+  STORAGE_KEY_DOMAIN_SALT,
   VAULT_DOMAIN_INFO,
-  VAULT_DOMAIN_SALT,
   VAULT_VERSION,
 } from "app-constants";
+import { KeyPair } from "domain/keys";
 import {
   convertUserKeyringToJson,
   converUserKeyringFromJson,
 } from "domain/keys/services";
-import { generateRandomBytes, toHex } from "lib/utils";
+import { generateRandomBytes } from "lib/utils";
 import type { UserKeyring, VaultEncryptionType, VaultEntry } from "types";
 
 /**
@@ -16,7 +17,7 @@ import type { UserKeyring, VaultEncryptionType, VaultEntry } from "types";
  * @param signature Signature bytes returned by the signer
  * @returns A CryptoKey that can be used as HKDF input material
  */
-const wrapSignatureAsCryptoKey = (
+export const wrapSignatureAsCryptoKey = (
   signature: Uint8Array<ArrayBuffer>
 ): Promise<CryptoKey> => {
   return window.crypto.subtle.importKey(
@@ -24,12 +25,12 @@ const wrapSignatureAsCryptoKey = (
     signature,
     { name: "HKDF" },
     false,
-    ["deriveKey"]
+    ["deriveKey", "deriveBits"]
   );
 };
 
 /**
- * Derives the AES-GCM key-encryption-key from the HKDF input material.
+ * Derives the AES-GCM key-encryption-key from the key input material.
  * @param key Imported key material produced by {@link wrapSignatureAsCryptoKey}
  * @returns CryptoKey configured for AES-GCM encrypt/decrypt
  */
@@ -39,7 +40,7 @@ const deriveKeyEncryptionKey = (key: CryptoKey): Promise<CryptoKey> => {
     {
       name: "HKDF",
       hash: "SHA-256",
-      salt: encoder.encode(VAULT_DOMAIN_SALT),
+      salt: encoder.encode(KEK_DOMAIN_SALT),
       info: encoder.encode(VAULT_DOMAIN_INFO),
     },
     key,
@@ -47,6 +48,40 @@ const deriveKeyEncryptionKey = (key: CryptoKey): Promise<CryptoKey> => {
     false,
     ["encrypt", "decrypt"]
   );
+};
+
+/**
+ * Derives the AES-GCM storage authorization secret key from the key input material.
+ * @param key Imported key material produced by {@link wrapSignatureAsCryptoKey}
+ * @returns CryptoKey configured for AES-GCM encrypt/decrypt
+ */
+export const deriveStorageAuthorizationSecretKey = (
+  key: CryptoKey
+): Promise<ArrayBuffer> => {
+  const encoder = new TextEncoder();
+  return window.crypto.subtle.deriveBits(
+    {
+      name: "HKDF",
+      hash: "SHA-256",
+      salt: encoder.encode(STORAGE_KEY_DOMAIN_SALT),
+      info: encoder.encode(VAULT_DOMAIN_INFO),
+    },
+    key,
+    256
+  );
+};
+
+/**
+ * Deterministically create a keypair that will be used to create the
+ * ciphertext signature and identify users in the database
+ */
+export const createStorageAuthorizationKeypair = async (
+  signature: Uint8Array<ArrayBuffer>
+) => {
+  const ikm = await wrapSignatureAsCryptoKey(signature);
+  const storageAuthorizationSecretKey =
+    await deriveStorageAuthorizationSecretKey(ikm);
+  return KeyPair.create(new Uint8Array(storageAuthorizationSecretKey));
 };
 
 /**
@@ -103,9 +138,6 @@ export const decrypt = async (
   }
   return new TextDecoder().decode(encodedOutput);
 };
-
-export const hashVaultId = (id: string) =>
-  toHex(sha256(id) as Uint8Array<ArrayBuffer>);
 
 /**
  * Creates a vault entry storing an encrypted keyring using a user signature.
