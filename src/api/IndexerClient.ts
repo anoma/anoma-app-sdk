@@ -1,3 +1,5 @@
+import { convertObjectToSnakeCase } from "lib/utils";
+import type { VaultDataTransferObject } from "types";
 import type { EncodedKeypair } from "wasm";
 import { ApiClient } from "./ApiClient";
 import { IndexerPaths } from "./paths";
@@ -20,5 +22,10 @@ export class IndexerClient extends ApiClient {
 
   async generateProof(leaf: string): Promise<ResponseJson> {
     return this.get(`${IndexerPaths.GenerateProof}/${leaf}`);
+  }
+
+  async storeUserKeys(userDto: VaultDataTransferObject) {
+    const parsedObj = convertObjectToSnakeCase(userDto);
+    console.log("POST:", userDto, JSON.stringify(parsedObj));
   }
 }

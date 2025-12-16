@@ -2,6 +2,7 @@ import CRC32 from "crc-32";
 import type { UserPublicKeys } from "types";
 import { fromBase64Url, toBase64Url } from "./base64url";
 
+// TODO: this shouldn't be here
 export type PayAddress = string;
 
 const getCrc32 = (keyBytes: Uint8Array): Uint8Array => {

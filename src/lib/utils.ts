@@ -146,3 +146,15 @@ export const generateRandomBytes = (size = 32): Uint8Array<ArrayBuffer> => {
   crypto.getRandomValues(uint8Array);
   return uint8Array;
 };
+
+export const convertObjectToSnakeCase = (obj: object) => {
+  const output: Record<string, unknown> = {};
+  for (const key in obj) {
+    const snakeCaseStr = key
+      .split(/(?=[A-Z])/)
+      .join("_")
+      .toLowerCase();
+    output[snakeCaseStr] = obj[key as keyof typeof obj];
+  }
+  return output;
+};
