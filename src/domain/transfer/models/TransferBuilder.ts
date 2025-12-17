@@ -1,4 +1,4 @@
-import { toBase64, toHex } from "lib/utils";
+import { toBase64 } from "lib/utils";
 import type {
   ConsumedWitnessData,
   CreateBurnProps,
@@ -97,13 +97,17 @@ export class TransferBuilder {
       ).toBase64(),
     };
     const createdWitnessData: CreatedWitnessData["Persistent"] = {
-      receiver_discovery_public_key: toHex(receiverKeyring.discoveryPublicKey),
-      receiver_encryption_public_key: toHex(
+      receiver_discovery_public_key: new PublicKey(
+        receiverKeyring.discoveryPublicKey
+      ).toBase64(),
+      receiver_encryption_public_key: new PublicKey(
         receiverKeyring.encryptionPublicKey
-      ),
-      receiver_authorization_verifying_key: toHex(
+      ).toBase64(),
+      // NOTE: The backend serializer will deserialize this AffinePoint to recover
+      // auth veritying key as: AuthorizationVerifyingKey::from_affine(affine)
+      receiver_authorization_verifying_key: new PublicKey(
         receiverKeyring.authorityPublicKey
-      ),
+      ).toBase64(),
       token_contract_address: transferProps.token,
     };
 
