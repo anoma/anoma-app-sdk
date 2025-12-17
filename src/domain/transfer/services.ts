@@ -1,4 +1,4 @@
-import { PADDING_LOGIC_VK } from "app-constants";
+import { averageTimePerProofInSeconds, PADDING_LOGIC_VK } from "app-constants";
 import { fromHex, normalizeHex, toBase64 } from "lib/utils";
 import type {
   CreatedWitnessData,
@@ -17,6 +17,13 @@ import {
   randomBytes,
   Resource,
 } from "wasm";
+
+export const estimateTransferTimeInSeconds = (resources: unknown[]) => {
+  const averageProofPerResource = 1;
+  return (
+    resources.length * averageTimePerProofInSeconds * averageProofPerResource
+  );
+};
 
 export function calculateLabelRef(
   forwarderAddress: string,
