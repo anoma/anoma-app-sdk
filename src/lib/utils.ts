@@ -9,6 +9,7 @@ import clsx, { type ClassValue } from "clsx";
 import type { ReactElement } from "react";
 import { twMerge } from "tailwind-merge";
 import { formatUnits } from "viem";
+import z from "zod";
 
 export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));
@@ -158,3 +159,16 @@ export const convertObjectToSnakeCase = (obj: object) => {
   }
   return output;
 };
+
+export const base64Schema = z
+  .base64()
+  .transform((val: string) => Buffer.from(val, "base64"));
+
+export function invariant(
+  // eslint-disable-next-line
+  condition: any,
+  message: string
+): asserts condition {
+  if (condition) return;
+  throw new Error(message);
+}

@@ -16,12 +16,14 @@ import { Route as LoginIndexRouteImport } from "./routes/login/index";
 import { Route as SignUpWalletRouteImport } from "./routes/sign-up/wallet";
 import { Route as SignUpPasskeysRouteImport } from "./routes/sign-up/passkeys";
 import { Route as LoginWalletRouteImport } from "./routes/login/wallet";
+import { Route as ClaimSeedRouteImport } from "./routes/claim.$seed";
 import { Route as AppWithdrawRouteImport } from "./routes/_app/withdraw";
 import { Route as AppSendRouteImport } from "./routes/_app/send";
 import { Route as AppRequestRouteImport } from "./routes/_app/request";
 import { Route as AppDepositRouteImport } from "./routes/_app/deposit";
 import { Route as AppDashboardRouteImport } from "./routes/_app/dashboard";
 import { Route as AppPayReceiverRouteImport } from "./routes/_app/pay.$receiver";
+import { Route as AppClaimCreateRouteImport } from "./routes/_app/claim.create";
 
 const AppRouteRoute = AppRouteRouteImport.update({
   id: "/_app",
@@ -57,6 +59,11 @@ const LoginWalletRoute = LoginWalletRouteImport.update({
   path: "/login/wallet",
   getParentRoute: () => rootRouteImport,
 } as any);
+const ClaimSeedRoute = ClaimSeedRouteImport.update({
+  id: "/claim/$seed",
+  path: "/claim/$seed",
+  getParentRoute: () => rootRouteImport,
+} as any);
 const AppWithdrawRoute = AppWithdrawRouteImport.update({
   id: "/withdraw",
   path: "/withdraw",
@@ -87,6 +94,11 @@ const AppPayReceiverRoute = AppPayReceiverRouteImport.update({
   path: "/pay/$receiver",
   getParentRoute: () => AppRouteRoute,
 } as any);
+const AppClaimCreateRoute = AppClaimCreateRouteImport.update({
+  id: "/claim/create",
+  path: "/claim/create",
+  getParentRoute: () => AppRouteRoute,
+} as any);
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
@@ -95,11 +107,13 @@ export interface FileRoutesByFullPath {
   "/request": typeof AppRequestRoute;
   "/send": typeof AppSendRoute;
   "/withdraw": typeof AppWithdrawRoute;
+  "/claim/$seed": typeof ClaimSeedRoute;
   "/login/wallet": typeof LoginWalletRoute;
   "/sign-up/passkeys": typeof SignUpPasskeysRoute;
   "/sign-up/wallet": typeof SignUpWalletRoute;
   "/login": typeof LoginIndexRoute;
   "/sign-up": typeof SignUpIndexRoute;
+  "/claim/create": typeof AppClaimCreateRoute;
   "/pay/$receiver": typeof AppPayReceiverRoute;
 }
 export interface FileRoutesByTo {
@@ -109,11 +123,13 @@ export interface FileRoutesByTo {
   "/request": typeof AppRequestRoute;
   "/send": typeof AppSendRoute;
   "/withdraw": typeof AppWithdrawRoute;
+  "/claim/$seed": typeof ClaimSeedRoute;
   "/login/wallet": typeof LoginWalletRoute;
   "/sign-up/passkeys": typeof SignUpPasskeysRoute;
   "/sign-up/wallet": typeof SignUpWalletRoute;
   "/login": typeof LoginIndexRoute;
   "/sign-up": typeof SignUpIndexRoute;
+  "/claim/create": typeof AppClaimCreateRoute;
   "/pay/$receiver": typeof AppPayReceiverRoute;
 }
 export interface FileRoutesById {
@@ -125,11 +141,13 @@ export interface FileRoutesById {
   "/_app/request": typeof AppRequestRoute;
   "/_app/send": typeof AppSendRoute;
   "/_app/withdraw": typeof AppWithdrawRoute;
+  "/claim/$seed": typeof ClaimSeedRoute;
   "/login/wallet": typeof LoginWalletRoute;
   "/sign-up/passkeys": typeof SignUpPasskeysRoute;
   "/sign-up/wallet": typeof SignUpWalletRoute;
   "/login/": typeof LoginIndexRoute;
   "/sign-up/": typeof SignUpIndexRoute;
+  "/_app/claim/create": typeof AppClaimCreateRoute;
   "/_app/pay/$receiver": typeof AppPayReceiverRoute;
 }
 export interface FileRouteTypes {
@@ -141,11 +159,13 @@ export interface FileRouteTypes {
     | "/request"
     | "/send"
     | "/withdraw"
+    | "/claim/$seed"
     | "/login/wallet"
     | "/sign-up/passkeys"
     | "/sign-up/wallet"
     | "/login"
     | "/sign-up"
+    | "/claim/create"
     | "/pay/$receiver";
   fileRoutesByTo: FileRoutesByTo;
   to:
@@ -155,11 +175,13 @@ export interface FileRouteTypes {
     | "/request"
     | "/send"
     | "/withdraw"
+    | "/claim/$seed"
     | "/login/wallet"
     | "/sign-up/passkeys"
     | "/sign-up/wallet"
     | "/login"
     | "/sign-up"
+    | "/claim/create"
     | "/pay/$receiver";
   id:
     | "__root__"
@@ -170,17 +192,20 @@ export interface FileRouteTypes {
     | "/_app/request"
     | "/_app/send"
     | "/_app/withdraw"
+    | "/claim/$seed"
     | "/login/wallet"
     | "/sign-up/passkeys"
     | "/sign-up/wallet"
     | "/login/"
     | "/sign-up/"
+    | "/_app/claim/create"
     | "/_app/pay/$receiver";
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
   AppRouteRoute: typeof AppRouteRouteWithChildren;
+  ClaimSeedRoute: typeof ClaimSeedRoute;
   LoginWalletRoute: typeof LoginWalletRoute;
   SignUpPasskeysRoute: typeof SignUpPasskeysRoute;
   SignUpWalletRoute: typeof SignUpWalletRoute;
@@ -239,6 +264,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof LoginWalletRouteImport;
       parentRoute: typeof rootRouteImport;
     };
+    "/claim/$seed": {
+      id: "/claim/$seed";
+      path: "/claim/$seed";
+      fullPath: "/claim/$seed";
+      preLoaderRoute: typeof ClaimSeedRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     "/_app/withdraw": {
       id: "/_app/withdraw";
       path: "/withdraw";
@@ -281,6 +313,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AppPayReceiverRouteImport;
       parentRoute: typeof AppRouteRoute;
     };
+    "/_app/claim/create": {
+      id: "/_app/claim/create";
+      path: "/claim/create";
+      fullPath: "/claim/create";
+      preLoaderRoute: typeof AppClaimCreateRouteImport;
+      parentRoute: typeof AppRouteRoute;
+    };
   }
 }
 
@@ -290,6 +329,7 @@ interface AppRouteRouteChildren {
   AppRequestRoute: typeof AppRequestRoute;
   AppSendRoute: typeof AppSendRoute;
   AppWithdrawRoute: typeof AppWithdrawRoute;
+  AppClaimCreateRoute: typeof AppClaimCreateRoute;
   AppPayReceiverRoute: typeof AppPayReceiverRoute;
 }
 
@@ -299,6 +339,7 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppRequestRoute: AppRequestRoute,
   AppSendRoute: AppSendRoute,
   AppWithdrawRoute: AppWithdrawRoute,
+  AppClaimCreateRoute: AppClaimCreateRoute,
   AppPayReceiverRoute: AppPayReceiverRoute,
 };
 
@@ -309,6 +350,7 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRouteRoute: AppRouteRouteWithChildren,
+  ClaimSeedRoute: ClaimSeedRoute,
   LoginWalletRoute: LoginWalletRoute,
   SignUpPasskeysRoute: SignUpPasskeysRoute,
   SignUpWalletRoute: SignUpWalletRoute,

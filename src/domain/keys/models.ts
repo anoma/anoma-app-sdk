@@ -109,7 +109,8 @@ abstract class KeyPairBase {
     domain?: keyof typeof PRFDomainMap
   ) {
     const actualSeed = seed ?? generateRandomBytes();
-    const domainString = domain ? PRFDomainMap[domain] : "";
+    // We only need to define a domain if a seed was provided
+    const domainString = seed && domain ? PRFDomainMap[domain] : "";
     const domainBytes = new TextEncoder().encode(domainString);
     return hmac(sha256, actualSeed, domainBytes) as Uint8Array<ArrayBuffer>;
   }
