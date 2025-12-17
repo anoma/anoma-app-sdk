@@ -6,6 +6,7 @@ import type {
   ResourcesWithBalance,
   ResourceWithMetadata,
 } from "types";
+import type { Hex } from "viem";
 import { NullifierKey, ResourceWithLabel, type EncodedResource } from "wasm";
 
 /** Convert an Envio nullifier list into a normalized hex set. */
@@ -20,7 +21,7 @@ async function buildNullifierSet(
 }
 
 export function deserializeResourcePayload(
-  blobHex: string,
+  blobHex: Hex,
   encryptionPrivateKey: Uint8Array
 ): ResourceWithLabel {
   const payload = fromHex(blobHex);

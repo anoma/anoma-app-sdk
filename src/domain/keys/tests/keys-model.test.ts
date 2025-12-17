@@ -8,6 +8,7 @@ import {
   NullifierKeyPair,
 } from "domain/keys";
 import { fromBase64, fromHex, toHex } from "lib/utils";
+import type { Hex } from "viem";
 import { beforeAll, describe, expect, it } from "vitest";
 import {
   authorityKeyPair,
@@ -82,8 +83,12 @@ describe("Key functions", () => {
       KeyPair,
       serializedKeyPair
     );
-    expect(fromHex(authorityKeyPair.apk)).toEqual(restoredKeypair.publicKey);
-    expect(fromHex(authorityKeyPair.ask)).toEqual(restoredKeypair.privateKey);
+    expect(fromHex(authorityKeyPair.apk as Hex)).toEqual(
+      restoredKeypair.publicKey
+    );
+    expect(fromHex(authorityKeyPair.ask as Hex)).toEqual(
+      restoredKeypair.privateKey
+    );
   });
 
   it("Can deserialize JSON to NullifierKeyPair", () => {
@@ -91,7 +96,11 @@ describe("Key functions", () => {
       NullifierKeyPair,
       serializedNullifierKeyPair
     );
-    expect(fromHex(nullifierKeyPair.nk)).toEqual(restoredNullifierKeyPair.nk);
-    expect(fromHex(nullifierKeyPair.cnk)).toEqual(restoredNullifierKeyPair.cnk);
+    expect(fromHex(nullifierKeyPair.nk as Hex)).toEqual(
+      restoredNullifierKeyPair.nk
+    );
+    expect(fromHex(nullifierKeyPair.cnk as Hex)).toEqual(
+      restoredNullifierKeyPair.cnk
+    );
   });
 });

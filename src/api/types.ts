@@ -1,3 +1,5 @@
+import type { Hex } from "viem";
+
 export type ApiConfig = {
   baseUrl: string;
   port?: number;
@@ -47,7 +49,7 @@ export type NullifierResponse = {
 };
 
 export type IndexerBlob = {
-  blob: string;
+  blob: Hex;
   id: string;
 };
 

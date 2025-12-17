@@ -9,7 +9,7 @@ import { createUserKeyring } from "domain/keys";
 import { insertVaultEntry, retrieveVaultById } from "domain/vault/storage";
 import { toBase64Url } from "lib/base64url";
 import { encodePayAddress } from "lib/payAddress";
-import { toHex } from "lib/utils";
+import { fromHex, toHex } from "lib/utils";
 import type {
   DecryptedVaultEntry,
   UserPublicKeys,
@@ -17,7 +17,7 @@ import type {
   VaultEncryptionType,
   VaultEntry,
 } from "types";
-import type { Hex } from "viem";
+import { type Hex } from "viem";
 
 export const hashVaultId = (id: string) =>
   toHex(sha256(id) as Uint8Array<ArrayBuffer>);
@@ -80,7 +80,7 @@ export const createVaultDto = async (
   userPublicKeys: UserPublicKeys,
   signature: Hex
 ): Promise<VaultDataTransferObject> => {
-  const signatureBytes = new TextEncoder().encode(signature);
+  const signatureBytes = fromHex(signature);
   const storageAuthorizationKeyPair =
     await createStorageAuthorizationKeypair(signatureBytes);
 

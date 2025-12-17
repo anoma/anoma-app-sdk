@@ -9,7 +9,7 @@ import {
   convertUserKeyringToJson,
   converUserKeyringFromJson,
 } from "domain/keys/services";
-import { generateRandomBytes } from "lib/utils";
+import { generateRandomBytes, stringToBytes } from "lib/utils";
 import type { UserKeyring, VaultEncryptionType, VaultEntry } from "types";
 
 /**
@@ -20,13 +20,17 @@ import type { UserKeyring, VaultEncryptionType, VaultEntry } from "types";
 export const wrapSignatureAsCryptoKey = (
   signature: Uint8Array<ArrayBuffer>
 ): Promise<CryptoKey> => {
-  return window.crypto.subtle.importKey(
-    "raw",
-    signature,
-    { name: "HKDF" },
-    false,
-    ["deriveKey", "deriveBits"]
-  );
+  try {
+    return window.crypto.subtle.importKey(
+      "raw",
+      signature,
+      { name: "HKDF" },
+      false,
+      ["deriveKey", "deriveBits"]
+    );
+  } catch {
+    throw new Error("Failed to prepare signature for key derivation");
+  }
 };
 
 /**
@@ -35,19 +39,22 @@ export const wrapSignatureAsCryptoKey = (
  * @returns CryptoKey configured for AES-GCM encrypt/decrypt
  */
 const deriveKeyEncryptionKey = (key: CryptoKey): Promise<CryptoKey> => {
-  const encoder = new TextEncoder();
-  return window.crypto.subtle.deriveKey(
-    {
-      name: "HKDF",
-      hash: "SHA-256",
-      salt: encoder.encode(KEK_DOMAIN_SALT),
-      info: encoder.encode(VAULT_DOMAIN_INFO),
-    },
-    key,
-    { name: "AES-GCM", length: 256 },
-    false,
-    ["encrypt", "decrypt"]
-  );
+  try {
+    return window.crypto.subtle.deriveKey(
+      {
+        name: "HKDF",
+        hash: "SHA-256",
+        salt: stringToBytes(KEK_DOMAIN_SALT),
+        info: stringToBytes(VAULT_DOMAIN_INFO),
+      },
+      key,
+      { name: "AES-GCM", length: 256 },
+      false,
+      ["encrypt", "decrypt"]
+    );
+  } catch {
+    throw new Error("Failed to derive encryption key");
+  }
 };
 
 /**
@@ -58,17 +65,20 @@ const deriveKeyEncryptionKey = (key: CryptoKey): Promise<CryptoKey> => {
 export const deriveStorageAuthorizationSecretKey = (
   key: CryptoKey
 ): Promise<ArrayBuffer> => {
-  const encoder = new TextEncoder();
-  return window.crypto.subtle.deriveBits(
-    {
-      name: "HKDF",
-      hash: "SHA-256",
-      salt: encoder.encode(STORAGE_KEY_DOMAIN_SALT),
-      info: encoder.encode(VAULT_DOMAIN_INFO),
-    },
-    key,
-    256
-  );
+  try {
+    return window.crypto.subtle.deriveBits(
+      {
+        name: "HKDF",
+        hash: "SHA-256",
+        salt: stringToBytes(STORAGE_KEY_DOMAIN_SALT),
+        info: stringToBytes(VAULT_DOMAIN_INFO),
+      },
+      key,
+      256
+    );
+  } catch {
+    throw new Error("Failed to derive storage authorization secret key");
+  }
 };
 
 /**
@@ -94,19 +104,23 @@ export const encrypt = async (
   keyEncryptionKey: CryptoKey,
   serializedKeyring: string
 ): Promise<{ iv: Uint8Array<ArrayBuffer>; ciphertext: ArrayBuffer }> => {
-  const iv = generateRandomBytes(12);
-  const ciphertext = await window.crypto.subtle.encrypt(
-    {
-      name: "AES-GCM",
+  try {
+    const iv = generateRandomBytes(12);
+    const ciphertext = await window.crypto.subtle.encrypt(
+      {
+        name: "AES-GCM",
+        iv,
+      },
+      keyEncryptionKey,
+      stringToBytes(serializedKeyring)
+    );
+    return {
       iv,
-    },
-    keyEncryptionKey,
-    new TextEncoder().encode(serializedKeyring)
-  );
-  return {
-    iv,
-    ciphertext,
-  };
+      ciphertext,
+    };
+  } catch {
+    throw new Error("Failed to encrypt user keyring");
+  }
 };
 
 /**
@@ -131,12 +145,12 @@ export const decrypt = async (
       keyEncryptionKey,
       ciphertext
     );
+    return new TextDecoder().decode(encodedOutput);
   } catch {
     throw new Error(
       "Failed to decrypt vault entry (invalid key or corrupted data)."
     );
   }
-  return new TextDecoder().decode(encodedOutput);
 };
 
 /**

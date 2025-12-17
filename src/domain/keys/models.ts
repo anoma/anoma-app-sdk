@@ -3,6 +3,7 @@ import { sha256 } from "@noble/hashes/sha2";
 import * as secp256k1 from "@noble/secp256k1";
 import { fromHex, generateRandomBytes, toHex } from "lib/utils";
 import { PRFDomainMap, type PRFDomain } from "types";
+import { isHex, stringToBytes } from "viem";
 
 type KeyPairConstructor<T extends KeyPairBase> = {
   new (
@@ -49,7 +50,7 @@ export class KeyPairSerializer {
       const privHex = obj[privateKey];
       const pubHex = obj[publicKey];
 
-      if (typeof privHex !== "string" || typeof pubHex !== "string") {
+      if (!isHex(privHex) || !isHex(pubHex)) {
         throw new Error("Missing key fields in JSON");
       }
 
@@ -111,7 +112,7 @@ abstract class KeyPairBase {
     const actualSeed = seed ?? generateRandomBytes();
     // We only need to define a domain if a seed was provided
     const domainString = seed && domain ? PRFDomainMap[domain] : "";
-    const domainBytes = new TextEncoder().encode(domainString);
+    const domainBytes = stringToBytes(domainString);
     return hmac(sha256, actualSeed, domainBytes) as Uint8Array<ArrayBuffer>;
   }
 
@@ -145,10 +146,7 @@ export class KeyPair extends KeyPairBase {
    * @param message Message to sign
    */
   async sign(message: string): Promise<Uint8Array<ArrayBufferLike>> {
-    return secp256k1.signAsync(
-      new TextEncoder().encode(message),
-      this.privateKey
-    );
+    return secp256k1.signAsync(stringToBytes(message), this.privateKey);
   }
 
   /**
