@@ -9,4 +9,5 @@ export const IndexerPaths = {
   LatestRoot: "/latest_root",
   GenerateProof: "/generate_proof",
   StoreKeyring: "/keyblob",
+  AllowList: "/rating",
 } as const;
