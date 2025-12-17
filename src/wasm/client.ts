@@ -1,5 +1,4 @@
-import { validHexBytes, validHexString } from "lib/utils";
-import invariant from "tiny-invariant";
+import { invariant, validHexBytes, validHexString } from "lib/utils";
 import { initWasm } from "wasm";
 
 const DIGEST_BYTES_LENGTH = 32;

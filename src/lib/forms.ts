@@ -1,23 +1,28 @@
-import transferSchema from "schemas/transfer.schema";
-import type { TokenBalance, TokenRegistry } from "types";
-import { parseUnits } from "viem";
+import { ResponseError } from "api";
+import { ZodError } from "zod";
 
-export const getSenderValidationMessages = (
-  token?: TokenRegistry,
-  transferAmount?: string,
-  availableBalance?: TokenBalance
-) => {
-  if (!token) return "Start by selecting a token";
-  if (!transferAmount) return "Enter amount";
+export const getFirstErrorMessage = (
+  ...args: (Error | ZodError | ResponseError | unknown | undefined | null)[]
+): string | undefined => {
+  const error = args.find(Boolean);
+  if (!error) return;
 
-  const result = transferSchema.safeParse({
-    minDenomAmountToTransfer: parseUnits(transferAmount, token.decimals),
-    minDenomAccountBalance: availableBalance?.amount,
-  });
-
-  if (!result.success) {
-    return result.error.issues[0].message;
+  // API errors are parsed in to ResponseError, and if they're descriptive,
+  // they'll have a `json` property
+  if (
+    error instanceof ResponseError &&
+    error.json &&
+    typeof error.json === "object" &&
+    "error" in error.json
+  ) {
+    return error.json.error?.toString();
   }
 
-  return null;
+  if (error instanceof ZodError && error.issues.length > 0) {
+    return error.issues[0].message;
+  }
+
+  if (error instanceof Error) return error.message;
+
+  return String(error);
 };

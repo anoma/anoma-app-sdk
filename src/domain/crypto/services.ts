@@ -133,7 +133,7 @@ export const decrypt = async (
     );
   } catch {
     throw new Error(
-      "Failed to decrypt vault entry (invalid key or corrupted data)"
+      "Failed to decrypt vault entry (invalid key or corrupted data)."
     );
   }
   return new TextDecoder().decode(encodedOutput);

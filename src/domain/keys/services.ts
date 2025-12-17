@@ -19,7 +19,7 @@ export const createUserKeyring = (
      * applications that have a notion of ownership and require explicit authorisation of the owner
      * @param seed Optional seed to deterministically derive the key pair
      */
-    authorityKeyPair: KeyPair.create(seed),
+    authorityKeyPair: KeyPair.create(seed, "Authority"),
 
     /**
      * These keys are used to reflect the right to nullify
@@ -31,13 +31,13 @@ export const createUserKeyring = (
      * This static key pair is used to produce resource encryption keys
      * @param seed Optional seed to deterministically derive the key pair
      */
-    encryptionKeyPair: KeyPair.create(seed),
+    encryptionKeyPair: KeyPair.create(seed, "Encryption"),
 
     /**
      * This static key pair is used to produce discovery encryption keys
      * @param seed Optional seed to deterministically derive the key pair
      */
-    discoveryKeyPair: KeyPair.create(seed),
+    discoveryKeyPair: KeyPair.create(seed, "Discovery"),
   };
 };
 

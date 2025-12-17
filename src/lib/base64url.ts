@@ -7,7 +7,7 @@ export const toBase64Url = (bytes: Uint8Array): string => {
     .replace(/=+$/, "");
 };
 
-export const fromBase64Url = (base64url: string): Uint8Array => {
+export const fromBase64Url = (base64url: string): Uint8Array<ArrayBuffer> => {
   const base64 = base64url
     .replace(/-/g, "+")
     .replace(/_/g, "/")

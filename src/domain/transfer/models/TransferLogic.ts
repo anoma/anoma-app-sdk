@@ -103,9 +103,9 @@ export class TransferLogic extends Client {
       receiverKeyring.authorityPublicKey
     );
 
-    const transferredResourceNullifier = resource.nullifier(
-      new NullifierKey(keyring.nullifierKeyPair.nk)
-    );
+    console.log(">>>>", resource.encode());
+    const nullifierKey = new NullifierKey(keyring.nullifierKeyPair.nk);
+    const transferredResourceNullifier = resource.nullifier(nullifierKey);
     const logicRef = Digest.fromHex(this.digest);
     const labelRef = calculateLabelRef(forwarderAddress, token);
     const createdValueRef = calculateValueRefFromAuth(
