@@ -8,7 +8,13 @@ import {
 import clsx, { type ClassValue } from "clsx";
 import type { ReactElement } from "react";
 import { twMerge } from "tailwind-merge";
-import { formatUnits } from "viem";
+import {
+  bytesToHex,
+  formatUnits,
+  hexToBytes,
+  stringToBytes as viemStringToBytes,
+  type Hex,
+} from "viem";
 import z from "zod";
 
 export const cn = (...inputs: ClassValue[]) => {
@@ -75,12 +81,8 @@ export function fromBase64(base64: string): Uint8Array<ArrayBuffer> {
  * @param hex - string
  * @returns Uint8Array
  */
-export function fromHex(hexString: string): Uint8Array<ArrayBuffer> {
-  const bytes = [];
-  const hex = hexString.replace(/^0x/, "");
-  for (let c = 0; c < hex.length; c += 2)
-    bytes.push(parseInt(hex.substr(c, 2), 16));
-  return new Uint8Array(bytes);
+export function fromHex(hexString: Hex): Uint8Array<ArrayBuffer> {
+  return hexToBytes(hexString) as Uint8Array<ArrayBuffer>;
 }
 
 /**
@@ -88,14 +90,12 @@ export function fromHex(hexString: string): Uint8Array<ArrayBuffer> {
  * @param bytes - Uint8Array
  * @returns string
  */
-export function toHex(bytes: Uint8Array<ArrayBuffer>): string {
-  const hex = [];
-  for (let i = 0; i < bytes.length; i++) {
-    const current = bytes[i] < 0 ? bytes[i] + 256 : bytes[i];
-    hex.push((current >>> 4).toString(16));
-    hex.push((current & 0xf).toString(16));
-  }
-  return hex.join("");
+export function toHex(bytes: Uint8Array<ArrayBuffer>): Hex {
+  return bytesToHex(bytes);
+}
+
+export function stringToBytes(str: string): Uint8Array<ArrayBuffer> {
+  return viemStringToBytes(str) as Uint8Array<ArrayBuffer>;
 }
 
 /**
@@ -108,7 +108,7 @@ export function serializeBigInt(_key: string, value: unknown): unknown {
   return value;
 }
 
-export const fromHexToBase64 = (hex: string) => toBase64(fromHex(hex));
+export const fromHexToBase64 = (hex: Hex) => toBase64(fromHex(hex));
 
 /** Normalize a hex string by lowercasing and stripping a leading 0x. */
 export function normalizeHex(hex: string): string {

@@ -6,7 +6,7 @@ import type {
   Parameters,
   UserKeyring,
 } from "types";
-import type { Address } from "viem";
+import type { Address, Hex } from "viem";
 import {
   AuthorizationVerifyingKey,
   Digest,
@@ -26,8 +26,8 @@ export const estimateTransferTimeInSeconds = (resources: unknown[]) => {
 };
 
 export function calculateLabelRef(
-  forwarderAddress: string,
-  tokenAddress: string
+  forwarderAddress: Address,
+  tokenAddress: Address
 ): Digest {
   const forwarderBytes = fromHex(forwarderAddress);
   const erc20Bytes = fromHex(tokenAddress);
@@ -36,7 +36,7 @@ export function calculateLabelRef(
 
 export function calculateValueRefFromAuth(
   authorizationVerifyingKey: AuthorizationVerifyingKey,
-  encryptionPublicKey: string
+  encryptionPublicKey: Hex
 ): Digest {
   return hashBytes(
     new Uint8Array([

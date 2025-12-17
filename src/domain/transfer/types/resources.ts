@@ -14,15 +14,15 @@ import type { ConsumedWitnessData, CreatedWitnessData } from "./witness";
  */
 export type CreateMintProps = {
   userAddress: string;
-  forwarderAddress: string;
-  token: string;
+  forwarderAddress: Address;
+  token: Address;
   quantity: bigint;
   keyring: UserKeyring;
 };
 
 export type CreateTransferProps = {
   resource: Resource;
-  forwarderAddress: string;
+  forwarderAddress: Address;
   token: Address;
   quantity: bigint;
   keyring: UserKeyring;
@@ -40,7 +40,7 @@ export type CreateFeeTransferProps = {
 export type CreateBurnProps = {
   burnResource: Resource;
   burnAddress: string;
-  forwarderAddress: string;
+  forwarderAddress: Address;
   token: Address;
   quantity: bigint;
   keyring: UserKeyring;
