@@ -103,7 +103,6 @@ export class TransferLogic extends Client {
       receiverKeyring.authorityPublicKey
     );
 
-    console.log(">>>>", resource.encode());
     const nullifierKey = new NullifierKey(keyring.nullifierKeyPair.nk);
     const transferredResourceNullifier = resource.nullifier(nullifierKey);
     const logicRef = Digest.fromHex(this.digest);
