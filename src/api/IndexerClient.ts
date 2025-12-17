@@ -1,5 +1,6 @@
 import { convertObjectToSnakeCase } from "lib/utils";
 import type { VaultDataTransferObject } from "types";
+import type { Address } from "viem";
 import type { EncodedKeypair } from "wasm";
 import { ApiClient } from "./ApiClient";
 import { IndexerPaths } from "./paths";
@@ -27,5 +28,9 @@ export class IndexerClient extends ApiClient {
   async storeUserKeys(userDto: VaultDataTransferObject) {
     const parsedObj = convertObjectToSnakeCase(userDto);
     return this.post(IndexerPaths.StoreKeyring, parsedObj);
+  }
+
+  async checkAllowedAddress(address: Address): Promise<{ allowed: boolean }> {
+    return this.get(`${IndexerPaths.AllowList}/${address}`);
   }
 }
