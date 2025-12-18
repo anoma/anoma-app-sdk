@@ -63,6 +63,7 @@ export const chainIds = [
 export type SupportedChainId = (typeof chainIds)[number];
 export type ChainSettings = {
   forwarderAddress: Address;
+  registry: TokenRegistry[];
   chainId: SupportedChainId;
   network: Network;
   rpc?: string;

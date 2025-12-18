@@ -1,7 +1,6 @@
 // The constants below should never change.
 
 import type { Network, SupportedChainId } from "types";
-import type { Address } from "viem";
 
 // Verifying Key for TrivialLogicWitness
 export const PADDING_LOGIC_VK =
@@ -14,7 +13,8 @@ export const SIMPLE_TRANSFER_ID =
 // Authorization signature domain
 export const AUTH_SIGNATURE_DOMAIN = "TokenTransferAuthorization";
 
-// Constants related to vault creation Defines the current version of the Vault. Should be incremented on every
+// Constants related to vault creation
+// Defines the current version of the Vault. Should be incremented on every
 // update of the vault structure, so users can migrate from old versions to the
 // current one without the need of recreating the vault
 export const VAULT_VERSION = 1;
@@ -34,11 +34,11 @@ export const EthereumSepoliaChainId = 11155111;
 export const BaseMainnetChainId = 8453;
 export const BaseSepoliaChainId = 84532;
 
-export const EthereumSepoliaForwarderContract: Address =
+export const EthereumSepoliaForwarderContract =
   "0x9bbC75f66f5344864FfABCF70625B99E42e5F108";
-export const BaseMainnetForwarderContract: Address =
+export const BaseMainnetForwarderContract =
   "0xfeE5b48919100c192E017992810c9539ebD00249";
-export const BaseSepoliaFowarderContract: Address =
+export const BaseSepoliaFowarderContract =
   "0xfeE5b48919100c192E017992810c9539ebD00249";
 
 export const ChainIdByNetwork: Record<Network, SupportedChainId | 0> = {

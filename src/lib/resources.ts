@@ -1,16 +1,15 @@
-import type { ResourcesWithBalance, TokenRegistry } from "types";
+import type { ResourcesWithBalance } from "types";
 import type { Address } from "viem";
 import type { EncodedResource } from "wasm";
 import { getTokenByAddress } from "./tokenUtils";
 
 export function getResourcesForToken(
   tokenAddress: Address,
-  registry: TokenRegistry[],
   resources?: ResourcesWithBalance
 ): EncodedResource[] {
   if (!resources) return [];
 
-  const token = getTokenByAddress(tokenAddress, registry);
+  const token = getTokenByAddress(tokenAddress);
 
   return (
     resources?.resources
