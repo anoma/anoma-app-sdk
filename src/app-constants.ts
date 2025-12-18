@@ -1,5 +1,7 @@
 // The constants below should never change.
 
+import type { Network, SupportedChainId } from "types";
+
 // Verifying Key for TrivialLogicWitness
 export const PADDING_LOGIC_VK =
   "83d603b23e090c1400b018adb61f516386e9f2d523f983c3c417ab49b2037585";
@@ -27,3 +29,21 @@ export const WEBSITE_URL = "https://anoma.money";
 export const WEBSITE_DOMAIN = "anoma.money";
 
 export const averageTimePerProofInSeconds = 18;
+
+export const EthereumSepoliaChainId = 11155111;
+export const BaseMainnetChainId = 8453;
+export const BaseSepoliaChainId = 84532;
+
+export const EthereumSepoliaForwarderContract =
+  "0x9bbC75f66f5344864FfABCF70625B99E42e5F108";
+export const BaseMainnetForwarderContract =
+  "0xfeE5b48919100c192E017992810c9539ebD00249";
+export const BaseSepoliaFowarderContract =
+  "0xfeE5b48919100c192E017992810c9539ebD00249";
+
+export const ChainIdByNetwork: Record<Network, SupportedChainId | 0> = {
+  ["eth-sepolia"]: EthereumSepoliaChainId,
+  ["base-mainnet"]: BaseMainnetChainId,
+  ["base-sepolia"]: BaseSepoliaChainId,
+  ["unknown"]: 0,
+};

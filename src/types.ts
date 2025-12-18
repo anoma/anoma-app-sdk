@@ -1,4 +1,9 @@
 import type { ApiConfig } from "api";
+import {
+  BaseMainnetChainId,
+  BaseSepoliaChainId,
+  EthereumSepoliaChainId,
+} from "app-constants";
 import type { Address } from "viem";
 import type { ResourceWithLabel } from "wasm";
 
@@ -41,7 +46,7 @@ export type TokenRegistry = {
   address: Address;
   label: string;
   decimals: number;
-  network: string;
+  network: Network;
 };
 
 export type TokenBalance = {
@@ -50,14 +55,37 @@ export type TokenBalance = {
   network?: string;
 };
 
+export const chainIds = [
+  EthereumSepoliaChainId,
+  BaseMainnetChainId,
+  BaseSepoliaChainId,
+] as const;
+export type SupportedChainId = (typeof chainIds)[number];
+export type ChainSettings = {
+  forwarderAddress: Address;
+  registry: TokenRegistry[];
+  chainId: SupportedChainId;
+  network: Network;
+  rpc?: string;
+};
+
+export type ChainLookup = Record<SupportedChainId, ChainSettings>;
+
+export type Network =
+  | "base-mainnet"
+  | "base-sepolia"
+  | "eth-sepolia"
+  | "unknown";
+
 /**
  * Represents the runtime configuration of Transfer Example
  */
 export type Config = {
   permit2Address: Address;
-  permit2Deadline: number;
+  permit2DeadlineOffset: number;
   forwarderAddress: Address;
   backend: ApiConfig;
   indexer: ApiConfig;
   envio: ApiConfig;
+  chain: ChainSettings;
 };
