@@ -8,7 +8,7 @@ import {
   NullifierKeyPair,
 } from "domain/keys";
 import { fromBase64, fromHex, toHex } from "lib/utils";
-import type { Hex } from "viem";
+import type { Address } from "viem";
 import { beforeAll, describe, expect, it } from "vitest";
 import {
   authorityKeyPair,
@@ -38,32 +38,34 @@ describe("Key functions", () => {
     expect(keyring.nullifierKeyPair).toBeInstanceOf(NullifierKeyPair);
 
     // Authority Keypair
-    expect(authorityKeyPair.ask).toBe(
-      toHex(keyring.authorityKeyPair.privateKey)
+    expect(toHex(keyring.authorityKeyPair.privateKey)).toBe(
+      authorityKeyPair.privateKey
     );
-    expect(authorityKeyPair.apk).toBe(
-      toHex(keyring.authorityKeyPair.publicKey)
+    expect(toHex(keyring.authorityKeyPair.publicKey)).toBe(
+      authorityKeyPair.publicKey
     );
 
     // Discovery Keypair
-    expect(staticDiscoverKeyPair.sdsk).toBe(
-      toHex(keyring.discoveryKeyPair.privateKey)
+    expect(toHex(keyring.discoveryKeyPair.privateKey)).toBe(
+      staticDiscoverKeyPair.privateKey
     );
-    expect(staticDiscoverKeyPair.sdpk).toBe(
-      toHex(keyring.discoveryKeyPair.publicKey)
+
+    expect(toHex(keyring.discoveryKeyPair.publicKey)).toBe(
+      staticDiscoverKeyPair.publicKey
     );
 
     // Encryption Keypair
-    expect(staticEncryptionKeyPair.sesk).toBe(
-      toHex(keyring.encryptionKeyPair.privateKey)
+    expect(toHex(keyring.encryptionKeyPair.privateKey)).toBe(
+      staticEncryptionKeyPair.privateKey
     );
-    expect(staticEncryptionKeyPair.sepk).toBe(
-      toHex(keyring.encryptionKeyPair.publicKey)
+
+    expect(toHex(keyring.encryptionKeyPair.publicKey)).toBe(
+      staticEncryptionKeyPair.publicKey
     );
 
     // NullifierKeyPair
-    expect(nullifierKeyPair.nk).toBe(toHex(keyring.nullifierKeyPair.nk));
-    expect(nullifierKeyPair.cnk).toBe(toHex(keyring.nullifierKeyPair.cnk));
+    expect(toHex(keyring.nullifierKeyPair.nk)).toBe(nullifierKeyPair.nk);
+    expect(toHex(keyring.nullifierKeyPair.cnk)).toBe(nullifierKeyPair.cnk);
   });
 
   it("Can serialize KeyPair", () => {
@@ -83,11 +85,11 @@ describe("Key functions", () => {
       KeyPair,
       serializedKeyPair
     );
-    expect(fromHex(authorityKeyPair.apk as Hex)).toEqual(
-      restoredKeypair.publicKey
+    expect(JSON.parse(KeyPairSerializer.toJson(restoredKeypair))).toEqual(
+      authorityKeyPair
     );
-    expect(fromHex(authorityKeyPair.ask as Hex)).toEqual(
-      restoredKeypair.privateKey
+    expect(restoredKeypair.privateKey).toEqual(
+      fromHex(authorityKeyPair.privateKey as Address)
     );
   });
 
@@ -96,11 +98,11 @@ describe("Key functions", () => {
       NullifierKeyPair,
       serializedNullifierKeyPair
     );
-    expect(fromHex(nullifierKeyPair.nk as Hex)).toEqual(
-      restoredNullifierKeyPair.nk
+    expect(restoredNullifierKeyPair.nk).toEqual(
+      fromHex(nullifierKeyPair.nk as Address)
     );
-    expect(fromHex(nullifierKeyPair.cnk as Hex)).toEqual(
-      restoredNullifierKeyPair.cnk
+    expect(restoredNullifierKeyPair.cnk).toEqual(
+      fromHex(nullifierKeyPair.cnk as Address)
     );
   });
 });

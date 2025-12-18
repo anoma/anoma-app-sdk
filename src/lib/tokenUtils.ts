@@ -1,6 +1,12 @@
+import { appConfig } from "config/app";
 import { tokenRegistry } from "config/tokenRegistry";
 import type { WalletBalance } from "hooks/useWalletBalances";
-import type { ResourceBalance, TokenBalance, TokenRegistry } from "types";
+import type {
+  Network,
+  ResourceBalance,
+  TokenBalance,
+  TokenRegistry,
+} from "types";
 import type { Address } from "viem";
 
 const getNotFoundToken = (values?: Partial<TokenRegistry>): TokenRegistry => ({
@@ -8,20 +14,24 @@ const getNotFoundToken = (values?: Partial<TokenRegistry>): TokenRegistry => ({
   address: "0x",
   label: "",
   decimals: 6,
-  network: "",
+  network: "unknown",
   ...values,
 });
+
+export const getTokensByNetwork = (network?: Network): TokenRegistry[] => {
+  return tokenRegistry.filter(registry => registry.network === network);
+};
 
 export const getTokenByAddress = (address?: Address): TokenRegistry =>
   tokenRegistry.find(token => token.address === address) ??
   getNotFoundToken({ address });
 
 export const getTokenByLabel = (label?: string): TokenRegistry =>
-  tokenRegistry.find(token => token.label === label) ??
+  appConfig.chain.registry.find(token => token.label === label) ??
   getNotFoundToken({ label });
 
 export const getTokenBySymbol = (symbol?: string): TokenRegistry =>
-  tokenRegistry.find(
+  appConfig.chain.registry.find(
     token => token.symbol.toLowerCase() === symbol?.toLowerCase()
   ) ?? getNotFoundToken({ symbol });
 
