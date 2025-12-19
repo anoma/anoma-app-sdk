@@ -1,16 +1,16 @@
 import {
+  type PermitTransferFrom,
+  type PermitTransferFromData,
+  SignatureTransfer,
+  type Witness,
+} from "@uniswap/permit2-sdk";
+import {
   type Hex,
   hexToNumber,
   slice,
   type TypedDataDomain,
   type WalletClient,
 } from "viem";
-import {
-  type PermitTransferFrom,
-  type PermitTransferFromData,
-  type Witness,
-  SignatureTransfer,
-} from "@uniswap/permit2-sdk";
 
 /**
  * Components of an EIP-712 signature returned by Permit2.
@@ -32,6 +32,15 @@ export type Permit2Props = {
   token: string;
   amount: bigint;
 };
+
+/**
+ * Converts an expiration (in milliseconds) to a deadline (in seconds) suitable for the EVM.
+ * Permit2 expresses expirations as deadlines, but JavaScript usually uses milliseconds,
+ * so this is provided as a convenience function.
+ */
+export function toDeadline(expiration: number): bigint {
+  return BigInt(Math.floor((Date.now() + expiration) / 1000));
+}
 
 /**
  * Builds the typed data payload used by Permit2 to authorize transfers.
