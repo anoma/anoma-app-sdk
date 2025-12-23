@@ -2,19 +2,22 @@ import type { EnvioClient, IndexerResource } from "api";
 import { SIMPLE_TRANSFER_ID } from "app-constants";
 import { fromHex, normalizeHex } from "lib/utils";
 import type {
+  EncodedResourceWithStatus,
   Parameters,
   ResourcesWithBalance,
   ResourceWithMetadata,
+  UserKeyring,
 } from "types";
-import type { Hex } from "viem";
+import { type Hex } from "viem";
 import { NullifierKey, ResourceWithLabel, type EncodedResource } from "wasm";
 
 /** Convert an Envio nullifier list into a normalized hex set. */
-async function buildNullifierSet(
+export async function buildNullifierSet(
   envio: EnvioClient,
-  logicRefHex: string
+  logicRefHex: string = SIMPLE_TRANSFER_ID
 ): Promise<Set<string>> {
-  const rows = await envio.nullifiers(logicRefHex);
+  const hex = logicRefHex.startsWith("0x") ? logicRefHex : `0x${logicRefHex}`;
+  const rows = await envio.nullifiers(hex);
   const set = new Set<string>();
   for (const r of rows) set.add(normalizeHex(r.nullifier));
   return set;
@@ -28,53 +31,58 @@ export function deserializeResourcePayload(
   return ResourceWithLabel.fromEncrypted(payload, encryptionPrivateKey);
 }
 
-export const parseIndexerResourceResponse = (
-  resourceResponseCollection: IndexerResource[],
-  encryptionPrivateKey: Uint8Array
-): ResourceWithMetadata[] => {
-  return resourceResponseCollection
-    .flatMap(item => {
-      try {
-        return [
-          {
-            resourceWithLabel: deserializeResourcePayload(
-              item.resource_payload.blob,
-              encryptionPrivateKey
-            ),
-            tag: item.tag || "",
-            isConsumed: item.is_consumed || false,
-          },
-        ];
-      } catch {
-        console.warn("Couldn't decrypt resource " + item.tag);
-        return [];
-      }
-    })
-    .filter(item => !item.resourceWithLabel.resource.encode().is_ephemeral);
+const tryToDeserializeResourcePayload = (
+  keyring: UserKeyring,
+  indexerResource: IndexerResource
+) => {
+  try {
+    return {
+      resourceWithLabel: deserializeResourcePayload(
+        indexerResource.resource_payload.blob,
+        keyring.encryptionKeyPair.privateKey
+      ),
+      tag: indexerResource.tag || "",
+      isConsumed: indexerResource.is_consumed,
+    };
+  } catch {
+    return false;
+  }
 };
 
-export async function calculateResourceBalanceWithNullifiers(
+export const parseIndexerResourceResponse = async (
+  keyring: UserKeyring,
+  resourceResponseCollection: IndexerResource[]
+): Promise<ResourceWithMetadata[]> => {
+  return resourceResponseCollection.flatMap(item => {
+    const payload = tryToDeserializeResourcePayload(keyring, item);
+    return payload ? payload : [];
+  });
+};
+
+export const pickNonEphemeralResources = (
+  resources: ResourceWithMetadata[]
+): ResourceWithMetadata[] => {
+  return resources.filter(
+    item => !item.resourceWithLabel.resource.encode().is_ephemeral
+  );
+};
+
+export const openResourceMetadata = async (
+  keyring: UserKeyring,
   resources: ResourceWithMetadata[],
-  nullifierKey: NullifierKey,
-  envio: EnvioClient
-): Promise<ResourcesWithBalance> {
-  // Use the specific logic_ref for this application, which is SIMPLE_TRANSFER_ID
-  // TODO make this more generic
-  const logicRefHex = `0x${SIMPLE_TRANSFER_ID}`;
-  const indexerNullifiers = await buildNullifierSet(envio, logicRefHex);
-
-  // Create updated resources array with corrected isConsumed status
-  const updatedResources: ResourceWithMetadata[] = [];
-
-  // Create a balances map to sum resource quantities
-  const balancesMap: Record<string, bigint> = {};
+  nullifierSet: Set<string>,
+  onlyAvailableResources = true
+): Promise<EncodedResourceWithStatus[]> => {
+  const updatedResources: EncodedResourceWithStatus[] = [];
+  const nullifierKey = new NullifierKey(keyring.nullifierKeyPair.nk);
 
   // Step 1: Compute optimistic balance from all decrypted resources quantities
   for (const resourceWithMetadata of resources) {
     const {
       resourceWithLabel: { resource },
     } = resourceWithMetadata;
-    const { quantity, label_ref, nonce } = resource.encode();
+
+    const resourceProps = resource.encode();
 
     // Step 2: Compute nullifier for each resource
     try {
@@ -82,21 +90,34 @@ export async function calculateResourceBalanceWithNullifiers(
         resource.nullifier(nullifierKey).toHex()
       );
 
+      const actualIsConsumed = nullifierSet.has(nullifierHex);
+
       // Step 3: Compare computed nullifier with indexer-provided nullifiers
       // Update the actual consumed status based on nullifier comparison
-      const actualIsConsumed = indexerNullifiers.has(nullifierHex);
-
-      // Step 4: Add if not consumed
-      if (!actualIsConsumed) {
-        balancesMap[label_ref] = (balancesMap[label_ref] ?? 0n) + quantity;
+      if (!onlyAvailableResources || !actualIsConsumed) {
         updatedResources.push({
-          ...resourceWithMetadata,
-          isConsumed: actualIsConsumed,
+          ...resourceProps,
+          isConsumed: resourceWithMetadata.isConsumed || actualIsConsumed,
+          metadata: resourceWithMetadata,
         });
       }
     } catch {
-      console.warn("Couldn't nullify resource " + nonce);
+      console.warn("Couldn't nullify resource " + resourceProps.nonce);
     }
+  }
+
+  return updatedResources;
+};
+
+export async function calculateResourceBalance(
+  resources: EncodedResourceWithStatus[]
+): Promise<ResourcesWithBalance> {
+  // Create a balances map to sum resource quantities
+  const balancesMap: Record<string, bigint> = {};
+
+  for (const resource of resources) {
+    balancesMap[resource.label_ref] =
+      (balancesMap[resource.label_ref] ?? 0n) + resource.quantity;
   }
 
   // Format balances from total quantities
@@ -106,7 +127,7 @@ export async function calculateResourceBalanceWithNullifiers(
 
   return {
     balances,
-    resources: updatedResources,
+    resources,
   };
 }
 

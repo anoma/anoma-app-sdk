@@ -5,7 +5,7 @@ import {
   EthereumSepoliaChainId,
 } from "app-constants";
 import type { Address } from "viem";
-import type { ResourceWithLabel } from "wasm";
+import type { EncodedResource, ResourceWithLabel } from "wasm";
 
 export * from "domain/keys/types";
 export * from "domain/transfer/types";
@@ -18,13 +18,18 @@ export type ResourceBalance = {
 
 export type ResourcesWithBalance = {
   balances: ResourceBalance[];
-  resources: ResourceWithMetadata[];
+  resources: EncodedResourceWithStatus[];
 };
 
 export type ResourceWithMetadata = {
   resourceWithLabel: ResourceWithLabel;
   tag: string;
   isConsumed: boolean;
+};
+
+export type EncodedResourceWithStatus = EncodedResource & {
+  isConsumed: boolean;
+  metadata: ResourceWithMetadata;
 };
 
 export const TRANSACTION_STATUS = [
