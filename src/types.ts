@@ -5,13 +5,14 @@ import {
   EthereumSepoliaChainId,
 } from "app-constants";
 import type { Address } from "viem";
-import type { EncodedResource, ResourceWithLabel } from "wasm";
-
+import type { EncodedResource } from "wasm";
 export * from "domain/keys/types";
 export * from "domain/transfer/types";
 export * from "domain/vault/types";
 
 export type ResourceBalance = {
+  erc20TokenAddress: Address;
+  forwarder: Address;
   label: string;
   quantity: bigint;
 };
@@ -21,15 +22,10 @@ export type ResourcesWithBalance = {
   resources: EncodedResourceWithStatus[];
 };
 
-export type ResourceWithMetadata = {
-  resourceWithLabel: ResourceWithLabel;
-  tag: string;
-  isConsumed: boolean;
-};
-
 export type EncodedResourceWithStatus = EncodedResource & {
   isConsumed: boolean;
-  metadata: ResourceWithMetadata;
+  erc20TokenAddress: Address;
+  forwarder: Address;
 };
 
 export const TRANSACTION_STATUS = [
@@ -49,7 +45,6 @@ export type TransactionStatus = (typeof TRANSACTION_STATUS)[number];
 export type TokenRegistry = {
   symbol: string;
   address: Address;
-  label: string;
   decimals: number;
   network: Network;
 };

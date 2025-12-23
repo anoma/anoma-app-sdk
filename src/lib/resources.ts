@@ -1,6 +1,5 @@
 import type { EncodedResourceWithStatus, ResourcesWithBalance } from "types";
-import type { Address } from "viem";
-import { getTokenByAddress } from "./tokenUtils";
+import { isAddressEqual, type Address } from "viem";
 
 export function getResourcesForToken(
   tokenAddress: Address,
@@ -8,9 +7,7 @@ export function getResourcesForToken(
 ): EncodedResourceWithStatus[] {
   if (!resources) return [];
 
-  const token = getTokenByAddress(tokenAddress);
-
   return resources?.resources.filter(r => {
-    return r.label_ref === token.label;
+    return isAddressEqual(r.erc20TokenAddress, tokenAddress);
   });
 }

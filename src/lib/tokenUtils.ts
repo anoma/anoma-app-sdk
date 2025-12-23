@@ -1,45 +1,68 @@
-import { appConfig } from "config/app";
+import {
+  BaseMainnetForwarderContract,
+  EthereumSepoliaForwarderContract,
+} from "app-constants";
 import { tokenRegistry } from "config/tokenRegistry";
 import type { WalletBalance } from "hooks/useWalletBalances";
 import type {
+  EncodedResourceWithStatus,
   Network,
   ResourceBalance,
   TokenBalance,
   TokenRegistry,
 } from "types";
-import type { Address } from "viem";
+import { isAddressEqual, type Address } from "viem";
 
 const getNotFoundToken = (values?: Partial<TokenRegistry>): TokenRegistry => ({
   symbol: "?",
   address: "0x",
-  label: "",
   decimals: 6,
   network: "unknown",
   ...values,
 });
+
+const networkMap: Record<string, Network> = {
+  [EthereumSepoliaForwarderContract.toLowerCase()]: "eth-sepolia",
+  [BaseMainnetForwarderContract.toLowerCase()]: "base-mainnet",
+  // TODO: lint fix, uncomment this when BaseMainnetForwarderContract !== BaseSepoliaFowarderContract
+  // [BaseSepoliaFowarderContract]: "base-sepolia",
+};
+
+export const getNetworkByForwarder = (forwarder: Address): Network => {
+  return networkMap[forwarder.toLowerCase()] ?? "unknown";
+};
+
+export const getTokenByResource = (
+  resource: ResourceBalance | EncodedResourceWithStatus
+): TokenRegistry => {
+  const address = resource.erc20TokenAddress;
+  const network = getNetworkByForwarder(resource.forwarder);
+  return (
+    tokenRegistry.find(
+      token =>
+        isAddressEqual(token.address, address) && token.network === network
+    ) ?? getNotFoundToken({ address, network })
+  );
+};
 
 export const getTokensByNetwork = (network?: Network): TokenRegistry[] => {
   return tokenRegistry.filter(registry => registry.network === network);
 };
 
 export const getTokenByAddress = (address?: Address): TokenRegistry =>
-  tokenRegistry.find(token => token.address === address) ??
+  (address &&
+    tokenRegistry.find(token => isAddressEqual(token.address, address))) ??
   getNotFoundToken({ address });
 
-export const getTokenByLabel = (label?: string): TokenRegistry =>
-  appConfig.chain.registry.find(token => token.label === label) ??
-  getNotFoundToken({ label });
-
 export const getTokenBySymbol = (symbol?: string): TokenRegistry =>
-  appConfig.chain.registry.find(
-    token => token.symbol.toLowerCase() === symbol?.toLowerCase()
-  ) ?? getNotFoundToken({ symbol });
+  tokenRegistry.find(token => token.symbol === symbol) ??
+  getNotFoundToken({ symbol });
 
 export const convertResourceBalanceToTokenBalance = (
   balances: ResourceBalance[] = []
 ) => {
   return balances.map(b => ({
-    symbol: getTokenByLabel(b.label).symbol,
+    symbol: getTokenByResource(b).symbol,
     amount: b.quantity,
   }));
 };
