@@ -4,11 +4,11 @@ import { fromHex, normalizeHex } from "lib/utils";
 import type {
   EncodedResourceWithStatus,
   Parameters,
+  ResourceBalance,
   ResourcesWithBalance,
-  ResourceWithMetadata,
   UserKeyring,
 } from "types";
-import { type Hex } from "viem";
+import { type Address, type Hex } from "viem";
 import { NullifierKey, ResourceWithLabel, type EncodedResource } from "wasm";
 
 /** Convert an Envio nullifier list into a normalized hex set. */
@@ -36,14 +36,10 @@ const tryToDeserializeResourcePayload = (
   indexerResource: IndexerResource
 ) => {
   try {
-    return {
-      resourceWithLabel: deserializeResourcePayload(
-        indexerResource.resource_payload.blob,
-        keyring.encryptionKeyPair.privateKey
-      ),
-      tag: indexerResource.tag || "",
-      isConsumed: indexerResource.is_consumed,
-    };
+    return deserializeResourcePayload(
+      indexerResource.resource_payload.blob,
+      keyring.encryptionKeyPair.privateKey
+    );
   } catch {
     return false;
   }
@@ -52,7 +48,7 @@ const tryToDeserializeResourcePayload = (
 export const parseIndexerResourceResponse = async (
   keyring: UserKeyring,
   resourceResponseCollection: IndexerResource[]
-): Promise<ResourceWithMetadata[]> => {
+): Promise<ResourceWithLabel[]> => {
   return resourceResponseCollection.flatMap(item => {
     const payload = tryToDeserializeResourcePayload(keyring, item);
     return payload ? payload : [];
@@ -60,16 +56,14 @@ export const parseIndexerResourceResponse = async (
 };
 
 export const pickNonEphemeralResources = (
-  resources: ResourceWithMetadata[]
-): ResourceWithMetadata[] => {
-  return resources.filter(
-    item => !item.resourceWithLabel.resource.encode().is_ephemeral
-  );
+  resources: ResourceWithLabel[]
+): ResourceWithLabel[] => {
+  return resources.filter(item => !item.resource.encode().is_ephemeral);
 };
 
 export const openResourceMetadata = async (
   keyring: UserKeyring,
-  resources: ResourceWithMetadata[],
+  resources: ResourceWithLabel[],
   nullifierSet: Set<string>,
   onlyAvailableResources = true
 ): Promise<EncodedResourceWithStatus[]> => {
@@ -77,19 +71,20 @@ export const openResourceMetadata = async (
   const nullifierKey = new NullifierKey(keyring.nullifierKeyPair.nk);
 
   // Step 1: Compute optimistic balance from all decrypted resources quantities
-  for (const resourceWithMetadata of resources) {
-    const {
-      resourceWithLabel: { resource },
-    } = resourceWithMetadata;
+  for (const resourceWithLabel of resources) {
+    const { resource, erc20TokenAddress, forwarder } = resourceWithLabel;
 
     const resourceProps = resource.encode();
 
     // Step 2: Compute nullifier for each resource
+    let nullifierHex: string | undefined;
     try {
-      const nullifierHex = normalizeHex(
-        resource.nullifier(nullifierKey).toHex()
-      );
+      nullifierHex = normalizeHex(resource.nullifier(nullifierKey).toHex());
+    } catch {
+      console.warn("Couldn't nullify resource " + resourceProps.nonce);
+    }
 
+    if (nullifierHex) {
       const actualIsConsumed = nullifierSet.has(nullifierHex);
 
       // Step 3: Compare computed nullifier with indexer-provided nullifiers
@@ -97,12 +92,11 @@ export const openResourceMetadata = async (
       if (!onlyAvailableResources || !actualIsConsumed) {
         updatedResources.push({
           ...resourceProps,
-          isConsumed: resourceWithMetadata.isConsumed || actualIsConsumed,
-          metadata: resourceWithMetadata,
+          isConsumed: actualIsConsumed,
+          erc20TokenAddress: erc20TokenAddress as Address,
+          forwarder: forwarder as Address,
         });
       }
-    } catch {
-      console.warn("Couldn't nullify resource " + resourceProps.nonce);
     }
   }
 
@@ -113,20 +107,32 @@ export async function calculateResourceBalance(
   resources: EncodedResourceWithStatus[]
 ): Promise<ResourcesWithBalance> {
   // Create a balances map to sum resource quantities
-  const balancesMap: Record<string, bigint> = {};
+  const balancesMap = new Map<string, ResourceBalance>();
 
   for (const resource of resources) {
-    balancesMap[resource.label_ref] =
-      (balancesMap[resource.label_ref] ?? 0n) + resource.quantity;
+    const {
+      quantity,
+      label_ref: label,
+      erc20TokenAddress,
+      forwarder,
+    } = resource;
+    const key = `${label}|${erc20TokenAddress}|${forwarder}`;
+
+    const balance = balancesMap.get(key);
+    if (balance) {
+      balance.quantity += quantity;
+    } else {
+      balancesMap.set(key, {
+        label,
+        erc20TokenAddress,
+        forwarder,
+        quantity,
+      });
+    }
   }
 
-  // Format balances from total quantities
-  const balances = Object.entries(balancesMap)
-    .map(([label, quantity]) => ({ label, quantity }))
-    .sort((a, b) => a.label.localeCompare(b.label));
-
   return {
-    balances,
+    balances: [...balancesMap.values()],
     resources,
   };
 }
