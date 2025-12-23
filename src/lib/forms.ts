@@ -22,7 +22,13 @@ export const getFirstErrorMessage = (
     return error.issues[0].message;
   }
 
-  if (error instanceof Error) return error.message;
+  if (error instanceof Error) {
+    if ("shortMessage" in error) {
+      return String(error.shortMessage);
+    }
+
+    return error.message;
+  }
 
   return String(error);
 };
