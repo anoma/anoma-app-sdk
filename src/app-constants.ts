@@ -28,7 +28,7 @@ export const VAULT_DOMAIN_INFO = "anoma-pay:vault-aes-key";
 export const WEBSITE_URL = "https://anoma.money";
 export const WEBSITE_DOMAIN = "anoma.money";
 
-export const averageTimePerProofInSeconds = 18;
+export const averageTimePerProofInSeconds = 22;
 
 export const EthereumSepoliaChainId = 11155111;
 export const BaseMainnetChainId = 8453;
