@@ -4,13 +4,8 @@ import {
   SignatureTransfer,
   type Witness,
 } from "@uniswap/permit2-sdk";
-import {
-  type Hex,
-  hexToNumber,
-  slice,
-  type TypedDataDomain,
-  type WalletClient,
-} from "viem";
+import { type Hex, hexToNumber, slice, type TypedDataDomain } from "viem";
+import type { SignTypedDataMutateAsync } from "wagmi/query";
 
 /**
  * Components of an EIP-712 signature returned by Permit2.
@@ -99,12 +94,12 @@ export const getPermit2Data = ({
  * @returns Split signature along with the original signature hex string.
  */
 export const signPermit = async (
-  walletClient: WalletClient,
+  signTypedData: SignTypedDataMutateAsync,
   props: Permit2Props,
   ownerAddress: Hex
 ): Promise<PermitSignature> => {
   const { domain, types, values } = getPermit2Data(props);
-  const signature = await walletClient.signTypedData({
+  const signature = await signTypedData({
     account: ownerAddress,
     domain: domain as TypedDataDomain,
     message: { ...values },
