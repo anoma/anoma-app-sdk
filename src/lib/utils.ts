@@ -8,6 +8,7 @@ import {
 import clsx, { type ClassValue } from "clsx";
 import type { ReactElement } from "react";
 import { twMerge } from "tailwind-merge";
+import type { TokenRegistry } from "types";
 import {
   bytesToHex,
   formatUnits,
@@ -46,6 +47,13 @@ export const formatBalance = (
   return new Intl.NumberFormat("en", {
     minimumFractionDigits: decimals,
   }).format(balance);
+};
+
+export const formatTokenAmount = (
+  amount: string,
+  token: TokenRegistry
+): string => {
+  return `${amount} ${token.symbol.toUpperCase()}`;
 };
 
 /**
