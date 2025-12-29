@@ -2,6 +2,7 @@ import type { ApiConfig } from "api";
 import {
   BaseMainnetChainId,
   BaseSepoliaChainId,
+  EthereumMainnetChainId,
   EthereumSepoliaChainId,
 } from "app-constants";
 import type { Address } from "viem";
@@ -56,6 +57,7 @@ export type TokenBalance = {
 };
 
 export const chainIds = [
+  EthereumMainnetChainId,
   EthereumSepoliaChainId,
   BaseMainnetChainId,
   BaseSepoliaChainId,
@@ -73,6 +75,7 @@ export type ChainLookup = Record<SupportedChainId, ChainSettings>;
 export type Network =
   | "base-mainnet"
   | "base-sepolia"
+  | "eth-mainnet"
   | "eth-sepolia"
   | "unknown";
 

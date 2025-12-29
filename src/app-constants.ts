@@ -30,18 +30,22 @@ export const WEBSITE_DOMAIN = "anoma.money";
 
 export const averageTimePerProofInSeconds = 22;
 
+export const EthereumMainnetChainId = 1;
 export const EthereumSepoliaChainId = 11155111;
 export const BaseMainnetChainId = 8453;
 export const BaseSepoliaChainId = 84532;
 
+export const EthereumMainnetForwarderContract =
+  "0x0000000000000000000000000000000000000000";
 export const EthereumSepoliaForwarderContract =
   "0x9bbC75f66f5344864FfABCF70625B99E42e5F108";
 export const BaseMainnetForwarderContract =
   "0xfeE5b48919100c192E017992810c9539ebD00249";
 export const BaseSepoliaFowarderContract =
-  "0xfeE5b48919100c192E017992810c9539ebD00249";
+  "0x0000000000000000000000000000000000000000";
 
 export const ChainIdByNetwork: Record<Network, SupportedChainId | 0> = {
+  ["eth-mainnet"]: EthereumMainnetChainId,
   ["eth-sepolia"]: EthereumSepoliaChainId,
   ["base-mainnet"]: BaseMainnetChainId,
   ["base-sepolia"]: BaseSepoliaChainId,
