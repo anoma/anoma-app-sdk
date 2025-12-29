@@ -1,5 +1,7 @@
 import {
   BaseMainnetForwarderContract,
+  BaseSepoliaFowarderContract,
+  EthereumMainnetForwarderContract,
   EthereumSepoliaForwarderContract,
 } from "app-constants";
 import { tokenRegistry } from "config/tokenRegistry";
@@ -22,10 +24,10 @@ const getNotFoundToken = (values?: Partial<TokenRegistry>): TokenRegistry => ({
 });
 
 const networkMap: Record<string, Network> = {
+  [EthereumMainnetForwarderContract.toLowerCase()]: "eth-mainnet",
   [EthereumSepoliaForwarderContract.toLowerCase()]: "eth-sepolia",
   [BaseMainnetForwarderContract.toLowerCase()]: "base-mainnet",
-  // TODO: lint fix, uncomment this when BaseMainnetForwarderContract !== BaseSepoliaFowarderContract
-  // [BaseSepoliaFowarderContract]: "base-sepolia",
+  [BaseSepoliaFowarderContract.toLowerCase()]: "base-sepolia",
 };
 
 export const getNetworkByForwarder = (forwarder: Address): Network => {

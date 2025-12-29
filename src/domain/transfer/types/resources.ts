@@ -114,3 +114,11 @@ export type FeeRequest = {
 export type FeeResponse = {
   fee: bigint;
 };
+
+/**
+ * Token price response
+ */
+export type TokenPriceResponse = {
+  address: Address;
+  usd_price: number;
+};
