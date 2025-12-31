@@ -1,6 +1,13 @@
 import { ResponseError } from "api";
 import { ZodError } from "zod";
 
+function hasProp<T extends string>(
+  value: unknown,
+  prop: T
+): value is Record<T, unknown> {
+  return typeof value === "object" && value !== null && prop in value;
+}
+
 export const getFirstErrorMessage = (
   ...args: (Error | ZodError | ResponseError | unknown | undefined | null)[]
 ): string | undefined => {
@@ -9,13 +16,14 @@ export const getFirstErrorMessage = (
 
   // API errors are parsed in to ResponseError, and if they're descriptive,
   // they'll have a `json` property
-  if (
-    error instanceof ResponseError &&
-    error.json &&
-    typeof error.json === "object" &&
-    "error" in error.json
-  ) {
-    return error.json.error?.toString();
+  if (error instanceof ResponseError && hasProp(error, "json")) {
+    const { json } = error;
+    if (hasProp(json, "error")) {
+      return json.error?.toString();
+    }
+    if (hasProp(json, "errors") && hasProp(json.errors, "detail")) {
+      return json.errors.detail?.toString();
+    }
   }
 
   if (error instanceof ZodError && error.issues.length > 0) {
