@@ -2,6 +2,7 @@ import type {
   FeeRequest,
   FeeResponse,
   Parameters,
+  TokenBalancesResponse,
   TokenPriceResponse,
 } from "types";
 import type { Address } from "viem";
@@ -24,6 +25,12 @@ export class TransferBackendClient extends ApiClient {
   async tokenPrice(tokenAddress: Address): Promise<TokenPriceResponse> {
     return this.get(
       `${TransferBackendPaths.TokenPrice}?address=${tokenAddress}`
+    );
+  }
+
+  async tokenBalances(walletAddress: Address): Promise<TokenBalancesResponse> {
+    return this.get(
+      `${TransferBackendPaths.TokenBalances}?address=${walletAddress}`
     );
   }
 }

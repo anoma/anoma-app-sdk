@@ -122,3 +122,13 @@ export type TokenPriceResponse = {
   address: Address;
   usd_price: number;
 };
+
+/**
+ * Token balances response
+ */
+export type TokenBalancesResponse = {
+  address: Address;
+  decimals: number;
+  symbol: string;
+  value: `${bigint}`;
+}[];
