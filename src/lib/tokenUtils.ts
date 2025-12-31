@@ -62,7 +62,7 @@ export const getTokenBySymbol = (symbol?: string): TokenRegistry =>
 
 export const convertResourceBalanceToTokenBalance = (
   balances: ResourceBalance[] = []
-) => {
+): TokenBalance[] => {
   return balances.map(b => ({
     symbol: getTokenByResource(b).symbol,
     amount: b.quantity,
@@ -71,12 +71,15 @@ export const convertResourceBalanceToTokenBalance = (
 
 export const convertWalletBalanceToTokenBalance = (
   balances: WalletBalance[] = []
-) => {
+): TokenBalance[] => {
+  const allowedTokens = new Set(tokenRegistry.map(t => t.address));
   return (
-    balances.map(b => ({
-      symbol: b.symbol,
-      amount: b.value,
-    })) ?? []
+    balances
+      .filter(b => allowedTokens.has(b.address))
+      .map(b => ({
+        symbol: b.symbol,
+        amount: b.value,
+      })) ?? []
   );
 };
 
