@@ -39,7 +39,7 @@ export class ApiClient<P extends string = string> {
     if (!response.ok) {
       throw new ResponseError(
         `GET ${path} failed: ${response.status} ${response.statusText}`,
-        response.status
+        await response.json()
       );
     }
     return await response.json();
