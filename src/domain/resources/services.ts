@@ -212,13 +212,14 @@ export function findTransferResourcesWithSplit(
   const sortedResources = resources.sort((a, b) =>
     Number(b.quantity - a.quantity)
   );
-  let sum = 0n;
+  let missingQuantity = targetQuantity;
   for (let i = 0; i < sortedResources.length; i++) {
     const resource = resources[i];
-    sum += resource.quantity;
-    transferResources.push([resource, targetQuantity]);
-
-    if (sum > targetQuantity) {
+    const quantity =
+      missingQuantity < resource.quantity ? missingQuantity : resource.quantity;
+    transferResources.push([resource, quantity]);
+    missingQuantity -= quantity;
+    if (missingQuantity === 0n) {
       // This is the last item we want, and is a split, so break
       break;
     }
