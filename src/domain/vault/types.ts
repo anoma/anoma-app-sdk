@@ -17,6 +17,10 @@ export type VaultEntry = {
   version: number;
 };
 
+export type SerializedVaultEntry = Omit<VaultEntry, "keyring"> & {
+  keyring: string;
+};
+
 export type DecryptedVaultEntry = VaultEntry & {
   keyring: UserKeyring;
 };
