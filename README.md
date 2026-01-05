@@ -97,6 +97,19 @@ npm run lint
 
 ```
 
+## Audits
+
+Our software undergoes regular audits:
+
+1. Informal Systems
+   - Company Website: https://informal.systems
+   - Commit ID: [957e8bf1e89a824f7c9be911b49533b9da1f5e72](https://github.com/anoma/pay-interface-app/tree/957e8bf1e89a824f7c9be911b49533b9da1f5e72)
+   - Started: 2025-12-01
+   - Finished: 2025-12-16
+   - Last revised: 2025-12-19
+
+   [📄 Audit Report (pdf)](./audits/2025-12-19_Informal_Systems_AnomaPay_Phase_I.pdf)
+
 ## Useful Resources
 
 - [Semi-deterministic key hierarchy proposal](https://forum.anoma.net/t/semi-deterministic-key-hierarchy-proposal/2444)
