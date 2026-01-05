@@ -9,24 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from "./routes/__root";
-import { Route as AppRouteRouteImport } from "./routes/_app/route";
+import { Route as AuthenticatedRouteRouteImport } from "./routes/_authenticated/route";
 import { Route as IndexRouteImport } from "./routes/index";
 import { Route as SignUpIndexRouteImport } from "./routes/sign-up/index";
 import { Route as LoginIndexRouteImport } from "./routes/login/index";
 import { Route as SignUpWalletRouteImport } from "./routes/sign-up/wallet";
 import { Route as SignUpPasskeysRouteImport } from "./routes/sign-up/passkeys";
 import { Route as LoginWalletRouteImport } from "./routes/login/wallet";
-import { Route as ClaimSeedRouteImport } from "./routes/claim.$seed";
-import { Route as AppWithdrawRouteImport } from "./routes/_app/withdraw";
-import { Route as AppSendRouteImport } from "./routes/_app/send";
-import { Route as AppRequestRouteImport } from "./routes/_app/request";
-import { Route as AppDepositRouteImport } from "./routes/_app/deposit";
-import { Route as AppDashboardRouteImport } from "./routes/_app/dashboard";
-import { Route as AppPayReceiverRouteImport } from "./routes/_app/pay.$receiver";
-import { Route as AppClaimCreateRouteImport } from "./routes/_app/claim.create";
+import { Route as AuthenticatedModalRouteRouteImport } from "./routes/_authenticated/_modal/route";
+import { Route as AuthenticatedAppRouteRouteImport } from "./routes/_authenticated/_app/route";
+import { Route as AuthenticatedModalWithdrawRouteImport } from "./routes/_authenticated/_modal/withdraw";
+import { Route as AuthenticatedModalSendRouteImport } from "./routes/_authenticated/_modal/send";
+import { Route as AuthenticatedModalDepositRouteImport } from "./routes/_authenticated/_modal/deposit";
+import { Route as AuthenticatedAppDashboardRouteImport } from "./routes/_authenticated/_app/dashboard";
+import { Route as AuthenticatedModalPayRequestRouteImport } from "./routes/_authenticated/_modal/pay.request";
+import { Route as AuthenticatedModalPayReceiverRouteImport } from "./routes/_authenticated/_modal/pay.$receiver";
+import { Route as AuthenticatedModalClaimCreateRouteImport } from "./routes/_authenticated/_modal/claim.create";
+import { Route as AuthenticatedModalClaimSeedRouteImport } from "./routes/_authenticated/_modal/claim.$seed";
 
-const AppRouteRoute = AppRouteRouteImport.update({
-  id: "/_app",
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: "/_authenticated",
   getParentRoute: () => rootRouteImport,
 } as any);
 const IndexRoute = IndexRouteImport.update({
@@ -59,153 +61,171 @@ const LoginWalletRoute = LoginWalletRouteImport.update({
   path: "/login/wallet",
   getParentRoute: () => rootRouteImport,
 } as any);
-const ClaimSeedRoute = ClaimSeedRouteImport.update({
-  id: "/claim/$seed",
-  path: "/claim/$seed",
-  getParentRoute: () => rootRouteImport,
+const AuthenticatedModalRouteRoute = AuthenticatedModalRouteRouteImport.update({
+  id: "/_modal",
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any);
-const AppWithdrawRoute = AppWithdrawRouteImport.update({
-  id: "/withdraw",
-  path: "/withdraw",
-  getParentRoute: () => AppRouteRoute,
+const AuthenticatedAppRouteRoute = AuthenticatedAppRouteRouteImport.update({
+  id: "/_app",
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any);
-const AppSendRoute = AppSendRouteImport.update({
+const AuthenticatedModalWithdrawRoute =
+  AuthenticatedModalWithdrawRouteImport.update({
+    id: "/withdraw",
+    path: "/withdraw",
+    getParentRoute: () => AuthenticatedModalRouteRoute,
+  } as any);
+const AuthenticatedModalSendRoute = AuthenticatedModalSendRouteImport.update({
   id: "/send",
   path: "/send",
-  getParentRoute: () => AppRouteRoute,
+  getParentRoute: () => AuthenticatedModalRouteRoute,
 } as any);
-const AppRequestRoute = AppRequestRouteImport.update({
-  id: "/request",
-  path: "/request",
-  getParentRoute: () => AppRouteRoute,
-} as any);
-const AppDepositRoute = AppDepositRouteImport.update({
-  id: "/deposit",
-  path: "/deposit",
-  getParentRoute: () => AppRouteRoute,
-} as any);
-const AppDashboardRoute = AppDashboardRouteImport.update({
-  id: "/dashboard",
-  path: "/dashboard",
-  getParentRoute: () => AppRouteRoute,
-} as any);
-const AppPayReceiverRoute = AppPayReceiverRouteImport.update({
-  id: "/pay/$receiver",
-  path: "/pay/$receiver",
-  getParentRoute: () => AppRouteRoute,
-} as any);
-const AppClaimCreateRoute = AppClaimCreateRouteImport.update({
-  id: "/claim/create",
-  path: "/claim/create",
-  getParentRoute: () => AppRouteRoute,
-} as any);
+const AuthenticatedModalDepositRoute =
+  AuthenticatedModalDepositRouteImport.update({
+    id: "/deposit",
+    path: "/deposit",
+    getParentRoute: () => AuthenticatedModalRouteRoute,
+  } as any);
+const AuthenticatedAppDashboardRoute =
+  AuthenticatedAppDashboardRouteImport.update({
+    id: "/dashboard",
+    path: "/dashboard",
+    getParentRoute: () => AuthenticatedAppRouteRoute,
+  } as any);
+const AuthenticatedModalPayRequestRoute =
+  AuthenticatedModalPayRequestRouteImport.update({
+    id: "/pay/request",
+    path: "/pay/request",
+    getParentRoute: () => AuthenticatedModalRouteRoute,
+  } as any);
+const AuthenticatedModalPayReceiverRoute =
+  AuthenticatedModalPayReceiverRouteImport.update({
+    id: "/pay/$receiver",
+    path: "/pay/$receiver",
+    getParentRoute: () => AuthenticatedModalRouteRoute,
+  } as any);
+const AuthenticatedModalClaimCreateRoute =
+  AuthenticatedModalClaimCreateRouteImport.update({
+    id: "/claim/create",
+    path: "/claim/create",
+    getParentRoute: () => AuthenticatedModalRouteRoute,
+  } as any);
+const AuthenticatedModalClaimSeedRoute =
+  AuthenticatedModalClaimSeedRouteImport.update({
+    id: "/claim/$seed",
+    path: "/claim/$seed",
+    getParentRoute: () => AuthenticatedModalRouteRoute,
+  } as any);
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
-  "/dashboard": typeof AppDashboardRoute;
-  "/deposit": typeof AppDepositRoute;
-  "/request": typeof AppRequestRoute;
-  "/send": typeof AppSendRoute;
-  "/withdraw": typeof AppWithdrawRoute;
-  "/claim/$seed": typeof ClaimSeedRoute;
   "/login/wallet": typeof LoginWalletRoute;
   "/sign-up/passkeys": typeof SignUpPasskeysRoute;
   "/sign-up/wallet": typeof SignUpWalletRoute;
   "/login": typeof LoginIndexRoute;
   "/sign-up": typeof SignUpIndexRoute;
-  "/claim/create": typeof AppClaimCreateRoute;
-  "/pay/$receiver": typeof AppPayReceiverRoute;
+  "/dashboard": typeof AuthenticatedAppDashboardRoute;
+  "/deposit": typeof AuthenticatedModalDepositRoute;
+  "/send": typeof AuthenticatedModalSendRoute;
+  "/withdraw": typeof AuthenticatedModalWithdrawRoute;
+  "/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
+  "/claim/create": typeof AuthenticatedModalClaimCreateRoute;
+  "/pay/$receiver": typeof AuthenticatedModalPayReceiverRoute;
+  "/pay/request": typeof AuthenticatedModalPayRequestRoute;
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
-  "/dashboard": typeof AppDashboardRoute;
-  "/deposit": typeof AppDepositRoute;
-  "/request": typeof AppRequestRoute;
-  "/send": typeof AppSendRoute;
-  "/withdraw": typeof AppWithdrawRoute;
-  "/claim/$seed": typeof ClaimSeedRoute;
   "/login/wallet": typeof LoginWalletRoute;
   "/sign-up/passkeys": typeof SignUpPasskeysRoute;
   "/sign-up/wallet": typeof SignUpWalletRoute;
   "/login": typeof LoginIndexRoute;
   "/sign-up": typeof SignUpIndexRoute;
-  "/claim/create": typeof AppClaimCreateRoute;
-  "/pay/$receiver": typeof AppPayReceiverRoute;
+  "/dashboard": typeof AuthenticatedAppDashboardRoute;
+  "/deposit": typeof AuthenticatedModalDepositRoute;
+  "/send": typeof AuthenticatedModalSendRoute;
+  "/withdraw": typeof AuthenticatedModalWithdrawRoute;
+  "/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
+  "/claim/create": typeof AuthenticatedModalClaimCreateRoute;
+  "/pay/$receiver": typeof AuthenticatedModalPayReceiverRoute;
+  "/pay/request": typeof AuthenticatedModalPayRequestRoute;
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
   "/": typeof IndexRoute;
-  "/_app": typeof AppRouteRouteWithChildren;
-  "/_app/dashboard": typeof AppDashboardRoute;
-  "/_app/deposit": typeof AppDepositRoute;
-  "/_app/request": typeof AppRequestRoute;
-  "/_app/send": typeof AppSendRoute;
-  "/_app/withdraw": typeof AppWithdrawRoute;
-  "/claim/$seed": typeof ClaimSeedRoute;
+  "/_authenticated": typeof AuthenticatedRouteRouteWithChildren;
+  "/_authenticated/_app": typeof AuthenticatedAppRouteRouteWithChildren;
+  "/_authenticated/_modal": typeof AuthenticatedModalRouteRouteWithChildren;
   "/login/wallet": typeof LoginWalletRoute;
   "/sign-up/passkeys": typeof SignUpPasskeysRoute;
   "/sign-up/wallet": typeof SignUpWalletRoute;
   "/login/": typeof LoginIndexRoute;
   "/sign-up/": typeof SignUpIndexRoute;
-  "/_app/claim/create": typeof AppClaimCreateRoute;
-  "/_app/pay/$receiver": typeof AppPayReceiverRoute;
+  "/_authenticated/_app/dashboard": typeof AuthenticatedAppDashboardRoute;
+  "/_authenticated/_modal/deposit": typeof AuthenticatedModalDepositRoute;
+  "/_authenticated/_modal/send": typeof AuthenticatedModalSendRoute;
+  "/_authenticated/_modal/withdraw": typeof AuthenticatedModalWithdrawRoute;
+  "/_authenticated/_modal/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
+  "/_authenticated/_modal/claim/create": typeof AuthenticatedModalClaimCreateRoute;
+  "/_authenticated/_modal/pay/$receiver": typeof AuthenticatedModalPayReceiverRoute;
+  "/_authenticated/_modal/pay/request": typeof AuthenticatedModalPayRequestRoute;
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
     | "/"
-    | "/dashboard"
-    | "/deposit"
-    | "/request"
-    | "/send"
-    | "/withdraw"
-    | "/claim/$seed"
     | "/login/wallet"
     | "/sign-up/passkeys"
     | "/sign-up/wallet"
     | "/login"
     | "/sign-up"
+    | "/dashboard"
+    | "/deposit"
+    | "/send"
+    | "/withdraw"
+    | "/claim/$seed"
     | "/claim/create"
-    | "/pay/$receiver";
+    | "/pay/$receiver"
+    | "/pay/request";
   fileRoutesByTo: FileRoutesByTo;
   to:
     | "/"
-    | "/dashboard"
-    | "/deposit"
-    | "/request"
-    | "/send"
-    | "/withdraw"
-    | "/claim/$seed"
     | "/login/wallet"
     | "/sign-up/passkeys"
     | "/sign-up/wallet"
     | "/login"
     | "/sign-up"
+    | "/dashboard"
+    | "/deposit"
+    | "/send"
+    | "/withdraw"
+    | "/claim/$seed"
     | "/claim/create"
-    | "/pay/$receiver";
+    | "/pay/$receiver"
+    | "/pay/request";
   id:
     | "__root__"
     | "/"
-    | "/_app"
-    | "/_app/dashboard"
-    | "/_app/deposit"
-    | "/_app/request"
-    | "/_app/send"
-    | "/_app/withdraw"
-    | "/claim/$seed"
+    | "/_authenticated"
+    | "/_authenticated/_app"
+    | "/_authenticated/_modal"
     | "/login/wallet"
     | "/sign-up/passkeys"
     | "/sign-up/wallet"
     | "/login/"
     | "/sign-up/"
-    | "/_app/claim/create"
-    | "/_app/pay/$receiver";
+    | "/_authenticated/_app/dashboard"
+    | "/_authenticated/_modal/deposit"
+    | "/_authenticated/_modal/send"
+    | "/_authenticated/_modal/withdraw"
+    | "/_authenticated/_modal/claim/$seed"
+    | "/_authenticated/_modal/claim/create"
+    | "/_authenticated/_modal/pay/$receiver"
+    | "/_authenticated/_modal/pay/request";
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
-  AppRouteRoute: typeof AppRouteRouteWithChildren;
-  ClaimSeedRoute: typeof ClaimSeedRoute;
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren;
   LoginWalletRoute: typeof LoginWalletRoute;
   SignUpPasskeysRoute: typeof SignUpPasskeysRoute;
   SignUpWalletRoute: typeof SignUpWalletRoute;
@@ -215,11 +235,11 @@ export interface RootRouteChildren {
 
 declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    "/_app": {
-      id: "/_app";
+    "/_authenticated": {
+      id: "/_authenticated";
       path: "";
       fullPath: "";
-      preLoaderRoute: typeof AppRouteRouteImport;
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/": {
@@ -264,93 +284,134 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof LoginWalletRouteImport;
       parentRoute: typeof rootRouteImport;
     };
-    "/claim/$seed": {
-      id: "/claim/$seed";
-      path: "/claim/$seed";
-      fullPath: "/claim/$seed";
-      preLoaderRoute: typeof ClaimSeedRouteImport;
-      parentRoute: typeof rootRouteImport;
+    "/_authenticated/_modal": {
+      id: "/_authenticated/_modal";
+      path: "";
+      fullPath: "";
+      preLoaderRoute: typeof AuthenticatedModalRouteRouteImport;
+      parentRoute: typeof AuthenticatedRouteRoute;
     };
-    "/_app/withdraw": {
-      id: "/_app/withdraw";
+    "/_authenticated/_app": {
+      id: "/_authenticated/_app";
+      path: "";
+      fullPath: "";
+      preLoaderRoute: typeof AuthenticatedAppRouteRouteImport;
+      parentRoute: typeof AuthenticatedRouteRoute;
+    };
+    "/_authenticated/_modal/withdraw": {
+      id: "/_authenticated/_modal/withdraw";
       path: "/withdraw";
       fullPath: "/withdraw";
-      preLoaderRoute: typeof AppWithdrawRouteImport;
-      parentRoute: typeof AppRouteRoute;
+      preLoaderRoute: typeof AuthenticatedModalWithdrawRouteImport;
+      parentRoute: typeof AuthenticatedModalRouteRoute;
     };
-    "/_app/send": {
-      id: "/_app/send";
+    "/_authenticated/_modal/send": {
+      id: "/_authenticated/_modal/send";
       path: "/send";
       fullPath: "/send";
-      preLoaderRoute: typeof AppSendRouteImport;
-      parentRoute: typeof AppRouteRoute;
+      preLoaderRoute: typeof AuthenticatedModalSendRouteImport;
+      parentRoute: typeof AuthenticatedModalRouteRoute;
     };
-    "/_app/request": {
-      id: "/_app/request";
-      path: "/request";
-      fullPath: "/request";
-      preLoaderRoute: typeof AppRequestRouteImport;
-      parentRoute: typeof AppRouteRoute;
-    };
-    "/_app/deposit": {
-      id: "/_app/deposit";
+    "/_authenticated/_modal/deposit": {
+      id: "/_authenticated/_modal/deposit";
       path: "/deposit";
       fullPath: "/deposit";
-      preLoaderRoute: typeof AppDepositRouteImport;
-      parentRoute: typeof AppRouteRoute;
+      preLoaderRoute: typeof AuthenticatedModalDepositRouteImport;
+      parentRoute: typeof AuthenticatedModalRouteRoute;
     };
-    "/_app/dashboard": {
-      id: "/_app/dashboard";
+    "/_authenticated/_app/dashboard": {
+      id: "/_authenticated/_app/dashboard";
       path: "/dashboard";
       fullPath: "/dashboard";
-      preLoaderRoute: typeof AppDashboardRouteImport;
-      parentRoute: typeof AppRouteRoute;
+      preLoaderRoute: typeof AuthenticatedAppDashboardRouteImport;
+      parentRoute: typeof AuthenticatedAppRouteRoute;
     };
-    "/_app/pay/$receiver": {
-      id: "/_app/pay/$receiver";
+    "/_authenticated/_modal/pay/request": {
+      id: "/_authenticated/_modal/pay/request";
+      path: "/pay/request";
+      fullPath: "/pay/request";
+      preLoaderRoute: typeof AuthenticatedModalPayRequestRouteImport;
+      parentRoute: typeof AuthenticatedModalRouteRoute;
+    };
+    "/_authenticated/_modal/pay/$receiver": {
+      id: "/_authenticated/_modal/pay/$receiver";
       path: "/pay/$receiver";
       fullPath: "/pay/$receiver";
-      preLoaderRoute: typeof AppPayReceiverRouteImport;
-      parentRoute: typeof AppRouteRoute;
+      preLoaderRoute: typeof AuthenticatedModalPayReceiverRouteImport;
+      parentRoute: typeof AuthenticatedModalRouteRoute;
     };
-    "/_app/claim/create": {
-      id: "/_app/claim/create";
+    "/_authenticated/_modal/claim/create": {
+      id: "/_authenticated/_modal/claim/create";
       path: "/claim/create";
       fullPath: "/claim/create";
-      preLoaderRoute: typeof AppClaimCreateRouteImport;
-      parentRoute: typeof AppRouteRoute;
+      preLoaderRoute: typeof AuthenticatedModalClaimCreateRouteImport;
+      parentRoute: typeof AuthenticatedModalRouteRoute;
+    };
+    "/_authenticated/_modal/claim/$seed": {
+      id: "/_authenticated/_modal/claim/$seed";
+      path: "/claim/$seed";
+      fullPath: "/claim/$seed";
+      preLoaderRoute: typeof AuthenticatedModalClaimSeedRouteImport;
+      parentRoute: typeof AuthenticatedModalRouteRoute;
     };
   }
 }
 
-interface AppRouteRouteChildren {
-  AppDashboardRoute: typeof AppDashboardRoute;
-  AppDepositRoute: typeof AppDepositRoute;
-  AppRequestRoute: typeof AppRequestRoute;
-  AppSendRoute: typeof AppSendRoute;
-  AppWithdrawRoute: typeof AppWithdrawRoute;
-  AppClaimCreateRoute: typeof AppClaimCreateRoute;
-  AppPayReceiverRoute: typeof AppPayReceiverRoute;
+interface AuthenticatedAppRouteRouteChildren {
+  AuthenticatedAppDashboardRoute: typeof AuthenticatedAppDashboardRoute;
 }
 
-const AppRouteRouteChildren: AppRouteRouteChildren = {
-  AppDashboardRoute: AppDashboardRoute,
-  AppDepositRoute: AppDepositRoute,
-  AppRequestRoute: AppRequestRoute,
-  AppSendRoute: AppSendRoute,
-  AppWithdrawRoute: AppWithdrawRoute,
-  AppClaimCreateRoute: AppClaimCreateRoute,
-  AppPayReceiverRoute: AppPayReceiverRoute,
+const AuthenticatedAppRouteRouteChildren: AuthenticatedAppRouteRouteChildren = {
+  AuthenticatedAppDashboardRoute: AuthenticatedAppDashboardRoute,
 };
 
-const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
-  AppRouteRouteChildren,
-);
+const AuthenticatedAppRouteRouteWithChildren =
+  AuthenticatedAppRouteRoute._addFileChildren(
+    AuthenticatedAppRouteRouteChildren,
+  );
+
+interface AuthenticatedModalRouteRouteChildren {
+  AuthenticatedModalDepositRoute: typeof AuthenticatedModalDepositRoute;
+  AuthenticatedModalSendRoute: typeof AuthenticatedModalSendRoute;
+  AuthenticatedModalWithdrawRoute: typeof AuthenticatedModalWithdrawRoute;
+  AuthenticatedModalClaimSeedRoute: typeof AuthenticatedModalClaimSeedRoute;
+  AuthenticatedModalClaimCreateRoute: typeof AuthenticatedModalClaimCreateRoute;
+  AuthenticatedModalPayReceiverRoute: typeof AuthenticatedModalPayReceiverRoute;
+  AuthenticatedModalPayRequestRoute: typeof AuthenticatedModalPayRequestRoute;
+}
+
+const AuthenticatedModalRouteRouteChildren: AuthenticatedModalRouteRouteChildren =
+  {
+    AuthenticatedModalDepositRoute: AuthenticatedModalDepositRoute,
+    AuthenticatedModalSendRoute: AuthenticatedModalSendRoute,
+    AuthenticatedModalWithdrawRoute: AuthenticatedModalWithdrawRoute,
+    AuthenticatedModalClaimSeedRoute: AuthenticatedModalClaimSeedRoute,
+    AuthenticatedModalClaimCreateRoute: AuthenticatedModalClaimCreateRoute,
+    AuthenticatedModalPayReceiverRoute: AuthenticatedModalPayReceiverRoute,
+    AuthenticatedModalPayRequestRoute: AuthenticatedModalPayRequestRoute,
+  };
+
+const AuthenticatedModalRouteRouteWithChildren =
+  AuthenticatedModalRouteRoute._addFileChildren(
+    AuthenticatedModalRouteRouteChildren,
+  );
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAppRouteRoute: typeof AuthenticatedAppRouteRouteWithChildren;
+  AuthenticatedModalRouteRoute: typeof AuthenticatedModalRouteRouteWithChildren;
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAppRouteRoute: AuthenticatedAppRouteRouteWithChildren,
+  AuthenticatedModalRouteRoute: AuthenticatedModalRouteRouteWithChildren,
+};
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren);
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AppRouteRoute: AppRouteRouteWithChildren,
-  ClaimSeedRoute: ClaimSeedRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   LoginWalletRoute: LoginWalletRoute,
   SignUpPasskeysRoute: SignUpPasskeysRoute,
   SignUpWalletRoute: SignUpWalletRoute,
