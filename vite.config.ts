@@ -17,7 +17,4 @@ export default defineConfig({
     tsconfigPaths(),
     tailwindcss(),
   ],
-  optimizeDeps: {
-    exclude: ["@anoma/lib"],
-  },
 });
