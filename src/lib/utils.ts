@@ -180,3 +180,5 @@ export function invariant(
   if (condition) return;
   throw new Error(message);
 }
+
+export const hasTouchScreen = () => navigator.maxTouchPoints > 0;
