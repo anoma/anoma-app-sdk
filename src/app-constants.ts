@@ -29,6 +29,7 @@ export const WEBSITE_URL = "https://anoma.money";
 export const WEBSITE_DOMAIN = "anoma.money";
 
 export const averageTimePerProofInSeconds = 22;
+export const balanceRefetchIntervalInMs = 10_000;
 
 export const EthereumMainnetChainId = 1;
 export const EthereumSepoliaChainId = 11155111;
