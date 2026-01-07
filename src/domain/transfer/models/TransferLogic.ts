@@ -1,4 +1,4 @@
-import { AUTH_SIGNATURE_DOMAIN, SIMPLE_TRANSFER_ID } from "app-constants";
+import { SIMPLE_TRANSFER_ID } from "app-constants";
 import {
   calculateLabelRef,
   calculateValueRefFromAuth,
@@ -8,15 +8,14 @@ import {
 } from "domain/transfer/services";
 import { toHex } from "lib/utils";
 import type {
-  AuthorizedResources,
   CreateBurnProps,
   CreateFeeTransferProps,
   CreateMintProps,
   CreateTransferProps,
   CreatedResources,
+  MintResources,
 } from "types";
 import {
-  AuthorizationSigningKey,
   AuthorizationVerifyingKey,
   Digest,
   HeliaxKeys,
@@ -38,7 +37,7 @@ export class TransferLogic extends Client {
     return initClient(TransferLogic, SIMPLE_TRANSFER_ID);
   }
 
-  createMintResources(props: CreateMintProps): CreatedResources {
+  createMintResources(props: CreateMintProps): MintResources {
     const { userAddress, forwarderAddress, token, quantity, keyring } = props;
 
     const nk = new NullifierKey(keyring.nullifierKeyPair.nk);
@@ -87,7 +86,7 @@ export class TransferLogic extends Client {
     };
   }
 
-  createTransferResource(props: CreateTransferProps): AuthorizedResources {
+  createTransferResource(props: CreateTransferProps): CreatedResources {
     const {
       forwarderAddress,
       quantity,
@@ -96,9 +95,6 @@ export class TransferLogic extends Client {
       keyring,
       receiverKeyring,
     } = props;
-    const authSigningKey = AuthorizationSigningKey.fromBytes(
-      keyring.authorityKeyPair.privateKey
-    );
     const receiverAuthVerifyingKey = new AuthorizationVerifyingKey(
       receiverKeyring.authorityPublicKey
     );
@@ -133,12 +129,8 @@ export class TransferLogic extends Client {
       splitActions = [],
     } = checkConstructSplit(resource, quantity);
 
-    const actionTree = new MerkleTree([...actions, ...splitActions]);
-    const authSig = authSigningKey.authorize(AUTH_SIGNATURE_DOMAIN, actionTree);
-
     return {
-      authSig,
-      actionTree,
+      actions: [...actions, ...splitActions],
       createdResource,
       consumedResource: resource,
       paddingResource,
@@ -146,7 +138,7 @@ export class TransferLogic extends Client {
     };
   }
 
-  createBurnResource(props: CreateBurnProps): AuthorizedResources {
+  createBurnResource(props: CreateBurnProps): CreatedResources {
     const {
       burnResource,
       burnAddress,
@@ -161,9 +153,6 @@ export class TransferLogic extends Client {
     const valueRef = calculateValueRefFromUserAddress(burnAddress);
     const burnNk = new NullifierKey(keyring.nullifierKeyPair.nk);
     const burnResourceNullifier = burnResource.nullifier(burnNk);
-    const authSigningKey = AuthorizationSigningKey.fromBytes(
-      keyring.authorityKeyPair.privateKey
-    );
 
     const createdResource = Resource.create(
       logicRef,
@@ -187,12 +176,8 @@ export class TransferLogic extends Client {
       splitActions = [],
     } = checkConstructSplit(burnResource, quantity);
 
-    const actionTree = new MerkleTree([...actions, ...splitActions]);
-    const authSig = authSigningKey.authorize(AUTH_SIGNATURE_DOMAIN, actionTree);
-
     return {
-      authSig,
-      actionTree,
+      actions: [...actions, ...splitActions],
       createdResource,
       consumedResource: burnResource,
       paddingResource,
@@ -205,7 +190,7 @@ export class TransferLogic extends Client {
     tokenSymbol,
     quantity,
     keyring,
-  }: CreateFeeTransferProps): AuthorizedResources {
+  }: CreateFeeTransferProps): CreatedResources {
     const {
       HELIAX_FEE_LOGIC_REF,
       HELIAX_FEE_VALUE_REF,
@@ -213,10 +198,6 @@ export class TransferLogic extends Client {
     } = HeliaxKeys;
     const transferredResourceNullifier = resource.nullifier(
       new NullifierKey(keyring.nullifierKeyPair.nk)
-    );
-
-    const authSigningKey = AuthorizationSigningKey.fromBytes(
-      keyring.authorityKeyPair.privateKey
     );
     const tokenLabelRef = tokenSymbolToLabelRef(tokenSymbol);
 
@@ -243,13 +224,8 @@ export class TransferLogic extends Client {
       splitActions = [],
     } = checkConstructSplit(resource, quantity);
 
-    const actionTree = new MerkleTree([...actions, ...splitActions]);
-
-    const authSig = authSigningKey.authorize(AUTH_SIGNATURE_DOMAIN, actionTree);
-
     return {
-      authSig,
-      actionTree,
+      actions: [...actions, ...splitActions],
       createdResource,
       consumedResource: resource,
       paddingResource,
