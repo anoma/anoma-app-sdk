@@ -60,3 +60,10 @@ export const ChainIdByNetwork: Record<Network, SupportedChainId | 0> = {
   ["base-sepolia"]: BaseSepoliaChainId,
   ["unknown"]: 0,
 };
+
+export const NetworkName: Record<SupportedChainId, string> = {
+  [BaseMainnetChainId]: "base",
+  [BaseSepoliaChainId]: "base",
+  [EthereumMainnetChainId]: "eth",
+  [EthereumSepoliaChainId]: "eth",
+};
