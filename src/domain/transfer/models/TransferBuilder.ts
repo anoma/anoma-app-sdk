@@ -1,13 +1,12 @@
 import { toBase64 } from "lib/utils";
 import type {
+  AuthorizedResources,
   ConsumedWitnessData,
-  CreateBurnProps,
-  CreateFeeTransferProps,
-  CreateTransferProps,
   CreatedWitnessData,
   Parameters,
   Permit2Data,
   UserKeyring,
+  UserPublicKeys,
 } from "types";
 import type { Address } from "viem";
 import { HeliaxKeys, PublicKey, type Resource } from "wasm";
@@ -77,15 +76,19 @@ export class TransferBuilder {
     };
   }
 
-  buildTransferParameters(transferProps: CreateTransferProps): Parameters {
+  buildTransferParameters(
+    authorizedResources: AuthorizedResources,
+    keyring: UserKeyring,
+    receiverKeyring: UserPublicKeys,
+    token: Address
+  ): Parameters {
     const {
       authSig,
       consumedResource,
       createdResource,
       paddingResource,
       remainderResource,
-    } = this.client.createTransferResource(transferProps);
-    const { keyring, receiverKeyring } = transferProps;
+    } = authorizedResources;
 
     const consumedWitnessData: ConsumedWitnessData["Persistent"] = {
       sender_authorization_signature: toBase64(authSig.toBytes()),
@@ -108,7 +111,7 @@ export class TransferBuilder {
       receiver_authorization_verifying_key: new PublicKey(
         receiverKeyring.authorityPublicKey
       ).toBase64(),
-      token_contract_address: transferProps.token,
+      token_contract_address: token,
     };
 
     const parameters: Parameters = {
@@ -132,25 +135,29 @@ export class TransferBuilder {
     return checkMergeSplitParameters(
       parameters,
       keyring,
-      transferProps.token,
+      token,
       paddingResource,
       remainderResource
     );
   }
 
-  buildBurnParameters(burnProps: CreateBurnProps): Parameters {
+  buildBurnParameters(
+    authorizedResources: AuthorizedResources,
+    keyring: UserKeyring,
+    token: Address,
+    burnAddress: Address
+  ): Parameters {
     const {
       authSig,
       consumedResource,
       createdResource,
       remainderResource,
       paddingResource,
-    } = this.client.createBurnResource(burnProps);
-    const { keyring } = burnProps;
+    } = authorizedResources;
 
     const createdWitnessData: CreatedWitnessData["Ephemeral"] = {
-      token_contract_address: burnProps.token,
-      receiver_wallet_address: burnProps.burnAddress,
+      token_contract_address: token,
+      receiver_wallet_address: burnAddress,
     };
     const consumedWitnessData: ConsumedWitnessData["Persistent"] = {
       sender_authorization_signature: toBase64(authSig.toBytes()),
@@ -184,22 +191,24 @@ export class TransferBuilder {
     return checkMergeSplitParameters(
       parameters,
       keyring,
-      burnProps.token,
+      token,
       paddingResource,
       remainderResource
     );
   }
 
-  buildFeeTransferParameters(props: CreateFeeTransferProps): Parameters {
-    const { keyring, tokenContractAddress } = props;
-
+  buildFeeTransferParameters(
+    authorizedResources: AuthorizedResources,
+    keyring: UserKeyring,
+    tokenContractAddress: Address
+  ): Parameters {
     const {
       authSig,
       createdResource,
       consumedResource,
       paddingResource,
       remainderResource,
-    } = this.client.createFeeTransferResource(props);
+    } = authorizedResources;
     const consumedWitnessData: ConsumedWitnessData["Persistent"] = {
       sender_authorization_signature: toBase64(authSig.toBytes()),
       sender_authorization_verifying_key: new PublicKey(

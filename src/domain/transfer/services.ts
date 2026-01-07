@@ -1,6 +1,12 @@
-import { averageTimePerProofInSeconds, PADDING_LOGIC_VK } from "app-constants";
+import {
+  AUTH_SIGNATURE_DOMAIN,
+  averageTimePerProofInSeconds,
+  PADDING_LOGIC_VK,
+} from "app-constants";
 import { fromHex, normalizeHex, toBase64 } from "lib/utils";
 import type {
+  AuthorizedResources,
+  CreatedResources,
   CreatedWitnessData,
   FeeCompatibleERC20,
   Parameters,
@@ -8,10 +14,13 @@ import type {
 } from "types";
 import type { Address, Hex } from "viem";
 import {
+  AuthorizationSignature,
+  AuthorizationSigningKey,
   AuthorizationVerifyingKey,
   Digest,
   hashBytes,
   HeliaxKeys,
+  MerkleTree,
   NullifierKey,
   PublicKey,
   randomBytes,
@@ -166,4 +175,31 @@ export function checkMergeSplitParameters(
     });
   }
   return parameters;
+}
+
+export function authorizeCreatedResources(
+  createdResourcesArray: CreatedResources[],
+  authorizationKeyBytes: Uint8Array
+): AuthorizedResources[] {
+  const actions = createdResourcesArray.map(({ actions }) => actions).flat();
+  const authSig = authorizeActions(actions, authorizationKeyBytes);
+
+  return createdResourcesArray.map(createdResources => ({
+    ...createdResources,
+    authSig,
+  }));
+}
+
+/**
+ * Authorize an array of actions and return the signature
+ */
+export function authorizeActions(
+  actions: Digest[],
+  authorizationKeyBytes: Uint8Array
+): AuthorizationSignature {
+  const authorizationKey = AuthorizationSigningKey.fromBytes(
+    authorizationKeyBytes
+  );
+  const actionTree = new MerkleTree(actions);
+  return authorizationKey.authorize(AUTH_SIGNATURE_DOMAIN, actionTree);
 }

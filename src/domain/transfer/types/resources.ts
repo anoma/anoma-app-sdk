@@ -1,5 +1,6 @@
 import type {
   AuthorizationSignature,
+  Digest,
   EncodedResource,
   MerkleTree,
   Resource,
@@ -46,19 +47,24 @@ export type CreateBurnProps = {
   keyring: UserKeyring;
 };
 
-/**
- * Created resource return types
- */
-export type CreatedResources = {
+export type MintResources = {
   actionTree: MerkleTree;
   consumedResource: Resource;
   createdResource: Resource;
 };
+/**
+ * Created resource return types
+ */
+export type CreatedResources = {
+  actions: Digest[];
+  consumedResource: Resource;
+  createdResource: Resource;
+  paddingResource?: Resource;
+  remainderResource?: Resource;
+};
 
 export type AuthorizedResources = CreatedResources & {
   authSig: AuthorizationSignature;
-  paddingResource?: Resource;
-  remainderResource?: Resource;
 };
 
 /**
