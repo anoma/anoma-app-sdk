@@ -28,8 +28,16 @@ export const VAULT_DOMAIN_INFO = "anoma-pay:vault-aes-key";
 export const WEBSITE_URL = "https://anoma.money";
 export const WEBSITE_DOMAIN = "anoma.money";
 
+// General
+
+// Estimate time to calculate a proof:
 export const averageTimePerProofInSeconds = 22;
+
+// Polling interval to check for user balances:
 export const balanceRefetchIntervalInMs = 10_000;
+
+// How many times some mutations query should retry before throwing an error:
+export const retryMutationsCount = 3;
 
 export const EthereumMainnetChainId = 1;
 export const EthereumSepoliaChainId = 11155111;
