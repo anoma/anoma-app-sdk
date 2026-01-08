@@ -5,10 +5,11 @@ import {
   TokenIcon,
   WalletIcon,
 } from "@web3icons/react/dynamic";
+import { TxExplorerUrlByChainId } from "app-constants";
 import clsx, { type ClassValue } from "clsx";
 import type { ReactElement } from "react";
 import { twMerge } from "tailwind-merge";
-import type { TokenRegistry } from "types";
+import type { SupportedChainId, TokenRegistry } from "types";
 import {
   bytesToHex,
   formatUnits,
@@ -195,3 +196,8 @@ export function invariant(
 }
 
 export const hasTouchScreen = () => navigator.maxTouchPoints > 0;
+
+export const getTxUrl = (chainId: SupportedChainId, txHash: string) => {
+  const base = TxExplorerUrlByChainId[chainId];
+  return base + `0x${normalizeHex(txHash)}`;
+};
