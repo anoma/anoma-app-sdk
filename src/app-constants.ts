@@ -67,3 +67,17 @@ export const NetworkName: Record<SupportedChainId, string> = {
   [EthereumMainnetChainId]: "eth",
   [EthereumSepoliaChainId]: "eth",
 };
+
+export const TxExplorerUrlByChainId: Record<SupportedChainId, string> = {
+  [BaseSepoliaChainId]: "https://sepolia.basescan.org/tx/",
+  [BaseMainnetChainId]: "https://basescan.org/tx/",
+  [EthereumMainnetChainId]: "https://etherscan.io/tx/",
+  [EthereumSepoliaChainId]: "https://sepolia.etherscan.io/tx/",
+};
+
+export const ExplorerNameByChainId: Record<SupportedChainId, string> = {
+  [BaseSepoliaChainId]: "BaseScan",
+  [BaseMainnetChainId]: "BaseScan",
+  [EthereumMainnetChainId]: "EtherScan",
+  [EthereumSepoliaChainId]: "EtherScan",
+};
