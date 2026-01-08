@@ -56,6 +56,19 @@ export const formatTokenAmount = (
   return `${amount} ${token.symbol.toUpperCase()}`;
 };
 
+export const formatFiatAmount = (balance: number) => {
+  if (balance === 0) return "0.00";
+
+  if (balance < 0.01) {
+    return "<0.01";
+  }
+
+  return new Intl.NumberFormat("en", {
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 2,
+  }).format(balance);
+};
+
 /**
  * Return base64-encoded bytes
  * @param bytes - Uint8Array of bytes
