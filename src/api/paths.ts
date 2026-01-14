@@ -1,6 +1,7 @@
 export const TransferBackendPaths = {
-  SendTransaction: "/send_transaction",
   EstimateFee: "/estimate_fee",
+  SendTransaction: "/send_transaction",
+  StatsQueue: "/stats/queue",
   TokenPrice: "/token_price",
   TokenBalances: "/token_balances",
 } as const;

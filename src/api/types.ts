@@ -99,3 +99,9 @@ export type TransactionResponse<T = ResponseJson> = {
 export type TransactionHashResponse = {
   transaction_hash: string;
 };
+
+export type StatusQueueResponse = {
+  created: number;
+  completed: number;
+  processing: number;
+};

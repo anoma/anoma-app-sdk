@@ -8,7 +8,7 @@ import type {
 import type { Address } from "viem";
 import { ApiClient } from "./ApiClient";
 import { TransferBackendPaths } from "./paths";
-import type { TransactionHashResponse } from "./types";
+import type { StatusQueueResponse, TransactionHashResponse } from "./types";
 
 export class TransferBackendClient extends ApiClient {
   async transfer(props: Parameters): Promise<TransactionHashResponse> {
@@ -32,5 +32,9 @@ export class TransferBackendClient extends ApiClient {
     return this.get(
       `${TransferBackendPaths.TokenBalances}?address=${walletAddress}`
     );
+  }
+
+  async statsQueue(): Promise<StatusQueueResponse> {
+    return this.get(TransferBackendPaths.StatsQueue);
   }
 }
