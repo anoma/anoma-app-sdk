@@ -28,7 +28,9 @@ export const hashVaultId = (id: string) =>
  * @param vaultId - Vault identifier (Ex: wallet address, uuid, etc). The hash of this value,
  * calculated by {@link hashVaultId} will be queried from the IndexedDB
  */
-export const retrieveVault = async (vaultId: string): Promise<VaultEntry> => {
+export const retrieveVault = async (
+  vaultId: string
+): Promise<VaultEntry | undefined> => {
   return retrieveVaultById(hashVaultId(vaultId));
 };
 
@@ -42,7 +44,7 @@ export const createVault = async (
   vaultId: string,
   signature: Uint8Array<ArrayBuffer>,
   type: VaultEncryptionType
-): Promise<VaultEntry> => {
+): Promise<VaultEntry | undefined> => {
   const keyring = createUserKeyring();
   const vaultEntry = await createVaultAccount(
     hashVaultId(vaultId),
