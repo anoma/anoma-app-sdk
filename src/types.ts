@@ -73,10 +73,10 @@ export type ChainSettings = {
 export type ChainLookup = Record<SupportedChainId, ChainSettings>;
 
 export type Network =
-  | "base-mainnet"
+  | "base"
   | "base-sepolia"
-  | "eth-mainnet"
-  | "eth-sepolia"
+  | "ethereum"
+  | "ethereum-sepolia"
   | "unknown";
 
 /**

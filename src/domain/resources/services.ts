@@ -86,7 +86,6 @@ export const openResourceMetadata = async (
 
     if (nullifierHex) {
       const actualIsConsumed = nullifierSet.has(nullifierHex);
-
       // Step 3: Compare computed nullifier with indexer-provided nullifiers
       // Update the actual consumed status based on nullifier comparison
       if (!onlyAvailableResources || !actualIsConsumed) {
