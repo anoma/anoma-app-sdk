@@ -16,6 +16,7 @@ import type {
   VaultDataTransferObject,
   VaultEncryptionType,
   VaultEntry,
+  VaultRequestDataTransferObject,
 } from "types";
 import { type Hex } from "viem";
 
@@ -80,11 +81,11 @@ export const unlock = async (
 export const createVaultDto = async (
   vault: DecryptedVaultEntry,
   userPublicKeys: UserPublicKeys,
-  signature: Hex
+  ikm: Hex
 ): Promise<VaultDataTransferObject> => {
-  const signatureBytes = fromHex(signature);
+  const ikmBytes = fromHex(ikm);
   const storageAuthorizationKeyPair =
-    await createStorageAuthorizationKeypair(signatureBytes);
+    await createStorageAuthorizationKeypair(ikmBytes);
 
   const userAddress = encodePayAddress(userPublicKeys);
   const ciphertextInBase64 = toBase64Url(new Uint8Array(vault.ciphertext));
@@ -103,5 +104,25 @@ export const createVaultDto = async (
     initializationVector: initializationVectorInBase64,
     ciphertextSignature,
     version: VAULT_VERSION,
+  };
+};
+
+export const createVaultRequestDto = async (
+  ikm: Uint8Array<ArrayBuffer>,
+  message: string
+): Promise<VaultRequestDataTransferObject> => {
+  const storageAuthorizationKeyPair =
+    await createStorageAuthorizationKeypair(ikm);
+  const hashedMessage = toBase64Url(sha256(message) as Uint8Array<ArrayBuffer>);
+  const challengeSignature = toBase64Url(
+    await storageAuthorizationKeyPair.sign(hashedMessage)
+  );
+
+  return {
+    storageAuthorizationPublicKey: toBase64Url(
+      storageAuthorizationKeyPair.publicKey
+    ),
+    ciphertext: hashedMessage,
+    ciphertextSignature: challengeSignature,
   };
 };
