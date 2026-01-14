@@ -33,3 +33,9 @@ export type VaultDataTransferObject = {
   ciphertextSignature: string;
   version: number;
 };
+
+export type VaultRequestDataTransferObject = {
+  storageAuthorizationPublicKey: string;
+  ciphertext: string;
+  ciphertextSignature: string;
+};
