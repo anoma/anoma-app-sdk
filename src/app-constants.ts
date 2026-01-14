@@ -31,10 +31,21 @@ export const WEBSITE_DOMAIN = "anoma.money";
 // General
 
 // Estimate time to calculate a proof:
-export const averageTimePerProofInSeconds = 22;
+export const averageTimePerProofInSeconds = 20;
 
 // Polling interval to check for user balances:
 export const balanceRefetchIntervalInMs = 10_000;
+
+/**
+ * The folloiwng constants determine the normal load threshhold,
+ * beyond which the queue could be said to be under heavy load
+ */
+export const provingGPUs = 2; // TODO: Use value from endpoint when availalbe
+export const proofPerTx = 3;
+export const estimatedTxTimeInSeconds = 120;
+
+// Polling interval to check for Bento queue stats:
+export const statsQueueRefetchIntervalInMs = 20_000;
 
 // How many times some mutations query should retry before throwing an error:
 export const retryMutationsCount = 3;

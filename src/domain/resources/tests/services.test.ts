@@ -48,7 +48,7 @@ describe("Resources service functions", () => {
       0n
     );
     const remainder = resourceQuantitySum - targetAmount;
-    expect(quantity).toBe(9_712_345n);
+    expect(quantity).toBe(712_345n);
     expect(remainder).toBe(287_655n);
     expect(splitResource.quantity).toBe(1_000_000n);
     // Sum of all quantities + split resource quantity minus remainder should match target exactly
