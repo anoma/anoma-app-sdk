@@ -53,7 +53,7 @@ export const openVaultDatabase = async (): Promise<IDBDatabase> => {
  */
 export const insertVaultEntry = async (
   vaultEntry: VaultEntry
-): Promise<VaultEntry> => {
+): Promise<VaultEntry | undefined> => {
   const db = await openVaultDatabase();
   return new Promise((resolve, reject) => {
     const vault = db.transaction("vault", "readwrite").objectStore("vault");
@@ -79,9 +79,11 @@ export const insertVaultEntry = async (
  * Retrieves a VaultEntry by its id.
  *
  * @param id - Identifier of the vault entry to fetch. Can be a wallet address, a uuid, etc.
- * @returns Promise resolving to the stored {@link VaultEntry}.
+ * @returns Promise resolving to the stored {@link VaultEntry} or undefined if it doesn't exists.
  */
-export const retrieveVaultById = async (id: string): Promise<VaultEntry> => {
+export const retrieveVaultById = async (
+  id: string
+): Promise<VaultEntry | undefined> => {
   const db = await openVaultDatabase();
   return new Promise((resolve, reject) => {
     const vault = db.transaction(["vault"]).objectStore("vault");
