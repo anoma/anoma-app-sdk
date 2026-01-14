@@ -24,9 +24,9 @@ const getNotFoundToken = (values?: Partial<TokenRegistry>): TokenRegistry => ({
 });
 
 const networkMap: Record<string, Network> = {
-  [EthereumMainnetForwarderContract.toLowerCase()]: "eth-mainnet",
-  [EthereumSepoliaForwarderContract.toLowerCase()]: "eth-sepolia",
-  [BaseMainnetForwarderContract.toLowerCase()]: "base-mainnet",
+  [EthereumMainnetForwarderContract.toLowerCase()]: "ethereum",
+  [EthereumSepoliaForwarderContract.toLowerCase()]: "ethereum-sepolia",
+  [BaseMainnetForwarderContract.toLowerCase()]: "base",
   [BaseSepoliaFowarderContract.toLowerCase()]: "base-sepolia",
 };
 
@@ -81,6 +81,10 @@ export const convertWalletBalanceToTokenBalance = (
         amount: b.value,
       })) ?? []
   );
+};
+
+export const tokenId = (tokenRegistry: TokenRegistry) => {
+  return `${tokenRegistry.network}:${tokenRegistry.symbol}`;
 };
 
 export const findBalanceByToken = (

@@ -54,9 +54,9 @@ export const BaseSepoliaFowarderContract =
   "0x0000000000000000000000000000000000000000";
 
 export const ChainIdByNetwork: Record<Network, SupportedChainId | 0> = {
-  ["eth-mainnet"]: EthereumMainnetChainId,
-  ["eth-sepolia"]: EthereumSepoliaChainId,
-  ["base-mainnet"]: BaseMainnetChainId,
+  ["ethereum"]: EthereumMainnetChainId,
+  ["ethereum-sepolia"]: EthereumSepoliaChainId,
+  ["base"]: BaseMainnetChainId,
   ["base-sepolia"]: BaseSepoliaChainId,
   ["unknown"]: 0,
 };
