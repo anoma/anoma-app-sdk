@@ -47,6 +47,7 @@ export const formatBalance = (
   const balance = Number(formatUnits(amount, tokenDenom));
   return new Intl.NumberFormat("en", {
     minimumFractionDigits: decimals,
+    maximumFractionDigits: tokenDenom,
   }).format(balance);
 };
 
