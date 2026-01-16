@@ -28,15 +28,17 @@ export type ResponseJson =
 
 export class ResponseError extends Error {
   json: ResponseJson;
+  status: number;
   /**
    * @param message - string
    * @param json - ResponseJson
    * @returns ResponseError
    */
-  constructor(message: string, json: ResponseJson = {}) {
+  constructor(message: string, json: ResponseJson = {}, status: number) {
     super(message);
     this.name = "ResponseError";
     this.json = json;
+    this.status = status;
   }
 }
 
@@ -65,6 +67,15 @@ export type IndexerResource = {
 export type IndexerResourceResponse = {
   status: "ok";
   resources: IndexerResource[];
+};
+
+export type IndexerVaultResponse = {
+  ciphertext: string;
+  ciphertext_signature: string;
+  initialization_vector: string;
+  storage_authorization_public_key: string;
+  user_address: string;
+  version: number;
 };
 
 export type MerkleProofResponse = {

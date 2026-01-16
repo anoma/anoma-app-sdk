@@ -1,10 +1,17 @@
 import { convertObjectToSnakeCase } from "lib/utils";
-import type { VaultDataTransferObject } from "types";
+import type {
+  VaultDataTransferObject,
+  VaultRequestDataTransferObject,
+} from "types";
 import type { Address } from "viem";
 import type { EncodedKeypair } from "wasm";
 import { ApiClient } from "./ApiClient";
 import { IndexerPaths } from "./paths";
-import { type IndexerResourceResponse, type ResponseJson } from "./types";
+import {
+  type IndexerResourceResponse,
+  type IndexerVaultResponse,
+  type ResponseJson,
+} from "./types";
 
 export class IndexerClient extends ApiClient {
   async addKeys(keypair: EncodedKeypair): Promise<void> {
@@ -32,5 +39,12 @@ export class IndexerClient extends ApiClient {
 
   async checkAllowedAddress(address: Address): Promise<{ allowed: boolean }> {
     return this.get(`${IndexerPaths.AllowList}/${address}`);
+  }
+
+  async fetchUserKeys(
+    vaultRequestDto: VaultRequestDataTransferObject
+  ): Promise<IndexerVaultResponse> {
+    const parsedObj = convertObjectToSnakeCase(vaultRequestDto);
+    return this.post(IndexerPaths.RetrieveKeyring, parsedObj);
   }
 }

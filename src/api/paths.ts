@@ -13,4 +13,5 @@ export const IndexerPaths = {
   GenerateProof: "/generate_proof",
   StoreKeyring: "/keyblob",
   AllowList: "/rating",
+  RetrieveKeyring: "/fetch-keyblob",
 } as const;

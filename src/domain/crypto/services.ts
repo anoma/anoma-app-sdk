@@ -9,8 +9,15 @@ import {
   convertUserKeyringToJson,
   converUserKeyringFromJson,
 } from "domain/keys/services";
+import { hashVaultId } from "domain/vault/services";
+import { fromBase64Url } from "lib/base64url";
 import { generateRandomBytes, stringToBytes } from "lib/utils";
-import type { UserKeyring, VaultEncryptionType, VaultEntry } from "types";
+import type {
+  UserKeyring,
+  VaultDataTransferObject,
+  VaultEncryptionType,
+  VaultEntry,
+} from "types";
 
 /**
  * Imports the user signature so it can be used as input material for HKDF.
@@ -86,9 +93,9 @@ export const deriveStorageAuthorizationSecretKey = (
  * ciphertext signature and identify users in the database
  */
 export const createStorageAuthorizationKeypair = async (
-  signature: Uint8Array<ArrayBuffer>
+  storageIkm: Uint8Array<ArrayBuffer>
 ) => {
-  const ikm = await wrapSignatureAsCryptoKey(signature);
+  const ikm = await wrapSignatureAsCryptoKey(storageIkm);
   const storageAuthorizationSecretKey =
     await deriveStorageAuthorizationSecretKey(ikm);
   return KeyPair.create(new Uint8Array(storageAuthorizationSecretKey));
@@ -197,4 +204,20 @@ export const unlockVault = async (
   const kek = await deriveKeyEncryptionKey(inputKeyMaterial);
   const serializedKeyring = await decrypt(kek, vault.ciphertext, vault.iv);
   return converUserKeyringFromJson(serializedKeyring);
+};
+
+export const recreateVaultFromBackup = (
+  vaultId: string,
+  vaultDto: VaultDataTransferObject,
+  encryptionType: VaultEncryptionType
+): VaultEntry => {
+  return {
+    id: hashVaultId(vaultId),
+    ciphertext: fromBase64Url(vaultDto.ciphertext).buffer,
+    iv: fromBase64Url(vaultDto.initializationVector),
+    encryptionType,
+    version: vaultDto.version,
+    createdAt: Date.now(),
+    modifiedAt: Date.now(),
+  };
 };
