@@ -1,18 +1,18 @@
 import { sha256 } from "@noble/hashes/sha2";
+import type { IndexerVaultResponse } from "api";
 import { VAULT_VERSION } from "app-constants";
 import {
   createStorageAuthorizationKeypair,
   createVaultAccount,
   unlockVault,
 } from "domain/crypto";
-import { createUserKeyring } from "domain/keys";
+import { createUserKeyring, extractUserPublicKeys } from "domain/keys";
 import { insertVaultEntry, retrieveVaultById } from "domain/vault/storage";
 import { toBase64Url } from "lib/base64url";
 import { encodePayAddress } from "lib/payAddress";
 import { fromHex, toHex } from "lib/utils";
 import type {
   DecryptedVaultEntry,
-  UserPublicKeys,
   VaultDataTransferObject,
   VaultEncryptionType,
   VaultEntry,
@@ -29,7 +29,7 @@ export const hashVaultId = (id: string) =>
  * @param vaultId - Vault identifier (Ex: wallet address, uuid, etc). The hash of this value,
  * calculated by {@link hashVaultId} will be queried from the IndexedDB
  */
-export const retrieveVault = async (
+export const retrieveVaultFromStorage = async (
   vaultId: string
 ): Promise<VaultEntry | undefined> => {
   return retrieveVaultById(hashVaultId(vaultId));
@@ -79,17 +79,19 @@ export const unlock = async (
  * which is a deterministic generated key to sign the ciphertext, and create the ciphertextSignature.
  */
 export const createVaultDto = async (
-  vault: DecryptedVaultEntry,
-  userPublicKeys: UserPublicKeys,
-  ikm: Hex
+  decryptedVault: DecryptedVaultEntry,
+  storageIkm: Hex
 ): Promise<VaultDataTransferObject> => {
-  const ikmBytes = fromHex(ikm);
+  const userPublicKeys = extractUserPublicKeys(decryptedVault.keyring);
+  const ikmBytes = fromHex(storageIkm);
   const storageAuthorizationKeyPair =
     await createStorageAuthorizationKeypair(ikmBytes);
 
   const userAddress = encodePayAddress(userPublicKeys);
-  const ciphertextInBase64 = toBase64Url(new Uint8Array(vault.ciphertext));
-  const initializationVectorInBase64 = toBase64Url(vault.iv);
+  const ciphertextInBase64 = toBase64Url(
+    new Uint8Array(decryptedVault.ciphertext)
+  );
+  const initializationVectorInBase64 = toBase64Url(decryptedVault.iv);
   const ciphertextSignature = toBase64Url(
     await storageAuthorizationKeyPair.sign(ciphertextInBase64)
   );
@@ -107,13 +109,21 @@ export const createVaultDto = async (
   };
 };
 
+/**
+ * Creates the request payload needed to prove storage authorization for a challenge.
+ *
+ * @param ikm - Input key material used to derive the storage authorization keypair.
+ * @param challenge - Challenge payload to hash and sign before sending to the vault service.
+ */
 export const createVaultRequestDto = async (
   ikm: Uint8Array<ArrayBuffer>,
-  message: string
+  challenge: string
 ): Promise<VaultRequestDataTransferObject> => {
   const storageAuthorizationKeyPair =
     await createStorageAuthorizationKeypair(ikm);
-  const hashedMessage = toBase64Url(sha256(message) as Uint8Array<ArrayBuffer>);
+  const hashedMessage = toBase64Url(
+    sha256(challenge) as Uint8Array<ArrayBuffer>
+  );
   const challengeSignature = toBase64Url(
     await storageAuthorizationKeyPair.sign(hashedMessage)
   );
@@ -124,5 +134,18 @@ export const createVaultRequestDto = async (
     ),
     ciphertext: hashedMessage,
     ciphertextSignature: challengeSignature,
+  };
+};
+
+export const createVaultDtoFromIndexerResponse = (
+  response: IndexerVaultResponse
+): VaultDataTransferObject => {
+  return {
+    ciphertext: response.ciphertext,
+    version: response.version,
+    initializationVector: response.initialization_vector,
+    ciphertextSignature: response.ciphertext_signature,
+    storageAuthorizationPublicKey: response.storage_authorization_public_key,
+    userAddress: response.user_address,
   };
 };
