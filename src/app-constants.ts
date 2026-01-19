@@ -40,7 +40,7 @@ export const balanceRefetchIntervalInMs = 10_000;
  * The folloiwng constants determine the normal load threshhold,
  * beyond which the queue could be said to be under heavy load
  */
-export const provingGPUs = 2; // TODO: Use value from endpoint when availalbe
+export const provingGPUs = 11; // TODO: Use value from endpoint when availalbe
 export const proofPerTx = 3;
 export const estimatedTxTimeInSeconds = 120;
 
