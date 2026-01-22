@@ -27,10 +27,14 @@ import {
   Resource,
 } from "wasm";
 
-export const estimateTransferTimeInSeconds = (resources: unknown[]) => {
+export const estimateTransferTimeInSeconds = (parameters?: Parameters) => {
   const averageProofPerResource = 1;
+  const resourcesAmount =
+    parameters ?
+      parameters.consumed_resources.length + parameters.created_resources.length
+    : 0;
   return (
-    resources.length * averageTimePerProofInSeconds * averageProofPerResource
+    resourcesAmount * averageTimePerProofInSeconds * averageProofPerResource
   );
 };
 
