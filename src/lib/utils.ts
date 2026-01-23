@@ -198,6 +198,15 @@ export function invariant(
 
 export const hasTouchScreen = () => navigator.maxTouchPoints > 0;
 
+export const isMobileDevice = () =>
+  window.matchMedia("(pointer: coarse)").matches ||
+  window.matchMedia("(hover: none)").matches;
+
+export const isIOS = () =>
+  /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+  // deprecated but required for iPadOS detection
+  (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
 export const getTxUrl = (chainId: SupportedChainId, txHash: string) => {
   const base = TxExplorerUrlByChainId[chainId];
   return base + `0x${normalizeHex(txHash)}`;
