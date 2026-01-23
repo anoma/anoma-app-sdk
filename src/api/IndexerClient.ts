@@ -18,9 +18,11 @@ export class IndexerClient extends ApiClient {
     this.post<EncodedKeypair, string>(IndexerPaths.AddKeys, keypair);
   }
 
-  async resources(publicKey: string): Promise<IndexerResourceResponse> {
+  async resources(
+    discoveryPrivateKey: string
+  ): Promise<IndexerResourceResponse> {
     return this.get<IndexerResourceResponse>(
-      `${IndexerPaths.Tags}/${publicKey}`
+      `${IndexerPaths.Tags}/${discoveryPrivateKey}`
     );
   }
 
