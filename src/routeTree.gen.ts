@@ -10,18 +10,19 @@
 
 import { Route as rootRouteImport } from "./routes/__root";
 import { Route as AuthenticatedRouteRouteImport } from "./routes/_authenticated/route";
+import { Route as AuthRouteRouteImport } from "./routes/_auth/route";
 import { Route as IndexRouteImport } from "./routes/index";
-import { Route as SignUpIndexRouteImport } from "./routes/sign-up/index";
-import { Route as LoginIndexRouteImport } from "./routes/login/index";
-import { Route as SignUpWalletRouteImport } from "./routes/sign-up/wallet";
-import { Route as SignUpPasskeysRouteImport } from "./routes/sign-up/passkeys";
-import { Route as LoginWalletRouteImport } from "./routes/login/wallet";
 import { Route as AuthenticatedModalRouteRouteImport } from "./routes/_authenticated/_modal/route";
 import { Route as AuthenticatedAppRouteRouteImport } from "./routes/_authenticated/_app/route";
+import { Route as AuthSignUpIndexRouteImport } from "./routes/_auth/sign-up/index";
+import { Route as AuthLoginIndexRouteImport } from "./routes/_auth/login/index";
 import { Route as AuthenticatedModalWithdrawRouteImport } from "./routes/_authenticated/_modal/withdraw";
 import { Route as AuthenticatedModalSendRouteImport } from "./routes/_authenticated/_modal/send";
 import { Route as AuthenticatedModalDepositRouteImport } from "./routes/_authenticated/_modal/deposit";
 import { Route as AuthenticatedAppDashboardRouteImport } from "./routes/_authenticated/_app/dashboard";
+import { Route as AuthSignUpWalletRouteImport } from "./routes/_auth/sign-up/wallet";
+import { Route as AuthSignUpPasskeysRouteImport } from "./routes/_auth/sign-up/passkeys";
+import { Route as AuthLoginWalletRouteImport } from "./routes/_auth/login/wallet";
 import { Route as AuthenticatedModalPayRequestRouteImport } from "./routes/_authenticated/_modal/pay.request";
 import { Route as AuthenticatedModalPayReceiverRouteImport } from "./routes/_authenticated/_modal/pay.$receiver";
 import { Route as AuthenticatedModalClaimCreateRouteImport } from "./routes/_authenticated/_modal/claim.create";
@@ -31,34 +32,13 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: "/_authenticated",
   getParentRoute: () => rootRouteImport,
 } as any);
+const AuthRouteRoute = AuthRouteRouteImport.update({
+  id: "/_auth",
+  getParentRoute: () => rootRouteImport,
+} as any);
 const IndexRoute = IndexRouteImport.update({
   id: "/",
   path: "/",
-  getParentRoute: () => rootRouteImport,
-} as any);
-const SignUpIndexRoute = SignUpIndexRouteImport.update({
-  id: "/sign-up/",
-  path: "/sign-up/",
-  getParentRoute: () => rootRouteImport,
-} as any);
-const LoginIndexRoute = LoginIndexRouteImport.update({
-  id: "/login/",
-  path: "/login/",
-  getParentRoute: () => rootRouteImport,
-} as any);
-const SignUpWalletRoute = SignUpWalletRouteImport.update({
-  id: "/sign-up/wallet",
-  path: "/sign-up/wallet",
-  getParentRoute: () => rootRouteImport,
-} as any);
-const SignUpPasskeysRoute = SignUpPasskeysRouteImport.update({
-  id: "/sign-up/passkeys",
-  path: "/sign-up/passkeys",
-  getParentRoute: () => rootRouteImport,
-} as any);
-const LoginWalletRoute = LoginWalletRouteImport.update({
-  id: "/login/wallet",
-  path: "/login/wallet",
   getParentRoute: () => rootRouteImport,
 } as any);
 const AuthenticatedModalRouteRoute = AuthenticatedModalRouteRouteImport.update({
@@ -68,6 +48,16 @@ const AuthenticatedModalRouteRoute = AuthenticatedModalRouteRouteImport.update({
 const AuthenticatedAppRouteRoute = AuthenticatedAppRouteRouteImport.update({
   id: "/_app",
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any);
+const AuthSignUpIndexRoute = AuthSignUpIndexRouteImport.update({
+  id: "/sign-up/",
+  path: "/sign-up/",
+  getParentRoute: () => AuthRouteRoute,
+} as any);
+const AuthLoginIndexRoute = AuthLoginIndexRouteImport.update({
+  id: "/login/",
+  path: "/login/",
+  getParentRoute: () => AuthRouteRoute,
 } as any);
 const AuthenticatedModalWithdrawRoute =
   AuthenticatedModalWithdrawRouteImport.update({
@@ -92,6 +82,21 @@ const AuthenticatedAppDashboardRoute =
     path: "/dashboard",
     getParentRoute: () => AuthenticatedAppRouteRoute,
   } as any);
+const AuthSignUpWalletRoute = AuthSignUpWalletRouteImport.update({
+  id: "/sign-up/wallet",
+  path: "/sign-up/wallet",
+  getParentRoute: () => AuthRouteRoute,
+} as any);
+const AuthSignUpPasskeysRoute = AuthSignUpPasskeysRouteImport.update({
+  id: "/sign-up/passkeys",
+  path: "/sign-up/passkeys",
+  getParentRoute: () => AuthRouteRoute,
+} as any);
+const AuthLoginWalletRoute = AuthLoginWalletRouteImport.update({
+  id: "/login/wallet",
+  path: "/login/wallet",
+  getParentRoute: () => AuthRouteRoute,
+} as any);
 const AuthenticatedModalPayRequestRoute =
   AuthenticatedModalPayRequestRouteImport.update({
     id: "/pay/request",
@@ -119,15 +124,15 @@ const AuthenticatedModalClaimSeedRoute =
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
-  "/login/wallet": typeof LoginWalletRoute;
-  "/sign-up/passkeys": typeof SignUpPasskeysRoute;
-  "/sign-up/wallet": typeof SignUpWalletRoute;
-  "/login": typeof LoginIndexRoute;
-  "/sign-up": typeof SignUpIndexRoute;
+  "/login/wallet": typeof AuthLoginWalletRoute;
+  "/sign-up/passkeys": typeof AuthSignUpPasskeysRoute;
+  "/sign-up/wallet": typeof AuthSignUpWalletRoute;
   "/dashboard": typeof AuthenticatedAppDashboardRoute;
   "/deposit": typeof AuthenticatedModalDepositRoute;
   "/send": typeof AuthenticatedModalSendRoute;
   "/withdraw": typeof AuthenticatedModalWithdrawRoute;
+  "/login": typeof AuthLoginIndexRoute;
+  "/sign-up": typeof AuthSignUpIndexRoute;
   "/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
   "/claim/create": typeof AuthenticatedModalClaimCreateRoute;
   "/pay/$receiver": typeof AuthenticatedModalPayReceiverRoute;
@@ -135,15 +140,15 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
-  "/login/wallet": typeof LoginWalletRoute;
-  "/sign-up/passkeys": typeof SignUpPasskeysRoute;
-  "/sign-up/wallet": typeof SignUpWalletRoute;
-  "/login": typeof LoginIndexRoute;
-  "/sign-up": typeof SignUpIndexRoute;
+  "/login/wallet": typeof AuthLoginWalletRoute;
+  "/sign-up/passkeys": typeof AuthSignUpPasskeysRoute;
+  "/sign-up/wallet": typeof AuthSignUpWalletRoute;
   "/dashboard": typeof AuthenticatedAppDashboardRoute;
   "/deposit": typeof AuthenticatedModalDepositRoute;
   "/send": typeof AuthenticatedModalSendRoute;
   "/withdraw": typeof AuthenticatedModalWithdrawRoute;
+  "/login": typeof AuthLoginIndexRoute;
+  "/sign-up": typeof AuthSignUpIndexRoute;
   "/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
   "/claim/create": typeof AuthenticatedModalClaimCreateRoute;
   "/pay/$receiver": typeof AuthenticatedModalPayReceiverRoute;
@@ -152,18 +157,19 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
   "/": typeof IndexRoute;
+  "/_auth": typeof AuthRouteRouteWithChildren;
   "/_authenticated": typeof AuthenticatedRouteRouteWithChildren;
   "/_authenticated/_app": typeof AuthenticatedAppRouteRouteWithChildren;
   "/_authenticated/_modal": typeof AuthenticatedModalRouteRouteWithChildren;
-  "/login/wallet": typeof LoginWalletRoute;
-  "/sign-up/passkeys": typeof SignUpPasskeysRoute;
-  "/sign-up/wallet": typeof SignUpWalletRoute;
-  "/login/": typeof LoginIndexRoute;
-  "/sign-up/": typeof SignUpIndexRoute;
+  "/_auth/login/wallet": typeof AuthLoginWalletRoute;
+  "/_auth/sign-up/passkeys": typeof AuthSignUpPasskeysRoute;
+  "/_auth/sign-up/wallet": typeof AuthSignUpWalletRoute;
   "/_authenticated/_app/dashboard": typeof AuthenticatedAppDashboardRoute;
   "/_authenticated/_modal/deposit": typeof AuthenticatedModalDepositRoute;
   "/_authenticated/_modal/send": typeof AuthenticatedModalSendRoute;
   "/_authenticated/_modal/withdraw": typeof AuthenticatedModalWithdrawRoute;
+  "/_auth/login/": typeof AuthLoginIndexRoute;
+  "/_auth/sign-up/": typeof AuthSignUpIndexRoute;
   "/_authenticated/_modal/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
   "/_authenticated/_modal/claim/create": typeof AuthenticatedModalClaimCreateRoute;
   "/_authenticated/_modal/pay/$receiver": typeof AuthenticatedModalPayReceiverRoute;
@@ -176,12 +182,12 @@ export interface FileRouteTypes {
     | "/login/wallet"
     | "/sign-up/passkeys"
     | "/sign-up/wallet"
-    | "/login"
-    | "/sign-up"
     | "/dashboard"
     | "/deposit"
     | "/send"
     | "/withdraw"
+    | "/login"
+    | "/sign-up"
     | "/claim/$seed"
     | "/claim/create"
     | "/pay/$receiver"
@@ -192,12 +198,12 @@ export interface FileRouteTypes {
     | "/login/wallet"
     | "/sign-up/passkeys"
     | "/sign-up/wallet"
-    | "/login"
-    | "/sign-up"
     | "/dashboard"
     | "/deposit"
     | "/send"
     | "/withdraw"
+    | "/login"
+    | "/sign-up"
     | "/claim/$seed"
     | "/claim/create"
     | "/pay/$receiver"
@@ -205,18 +211,19 @@ export interface FileRouteTypes {
   id:
     | "__root__"
     | "/"
+    | "/_auth"
     | "/_authenticated"
     | "/_authenticated/_app"
     | "/_authenticated/_modal"
-    | "/login/wallet"
-    | "/sign-up/passkeys"
-    | "/sign-up/wallet"
-    | "/login/"
-    | "/sign-up/"
+    | "/_auth/login/wallet"
+    | "/_auth/sign-up/passkeys"
+    | "/_auth/sign-up/wallet"
     | "/_authenticated/_app/dashboard"
     | "/_authenticated/_modal/deposit"
     | "/_authenticated/_modal/send"
     | "/_authenticated/_modal/withdraw"
+    | "/_auth/login/"
+    | "/_auth/sign-up/"
     | "/_authenticated/_modal/claim/$seed"
     | "/_authenticated/_modal/claim/create"
     | "/_authenticated/_modal/pay/$receiver"
@@ -225,12 +232,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
+  AuthRouteRoute: typeof AuthRouteRouteWithChildren;
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren;
-  LoginWalletRoute: typeof LoginWalletRoute;
-  SignUpPasskeysRoute: typeof SignUpPasskeysRoute;
-  SignUpWalletRoute: typeof SignUpWalletRoute;
-  LoginIndexRoute: typeof LoginIndexRoute;
-  SignUpIndexRoute: typeof SignUpIndexRoute;
 }
 
 declare module "@tanstack/react-router" {
@@ -242,46 +245,18 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport;
       parentRoute: typeof rootRouteImport;
     };
+    "/_auth": {
+      id: "/_auth";
+      path: "";
+      fullPath: "";
+      preLoaderRoute: typeof AuthRouteRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     "/": {
       id: "/";
       path: "/";
       fullPath: "/";
       preLoaderRoute: typeof IndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/sign-up/": {
-      id: "/sign-up/";
-      path: "/sign-up";
-      fullPath: "/sign-up";
-      preLoaderRoute: typeof SignUpIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/login/": {
-      id: "/login/";
-      path: "/login";
-      fullPath: "/login";
-      preLoaderRoute: typeof LoginIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/sign-up/wallet": {
-      id: "/sign-up/wallet";
-      path: "/sign-up/wallet";
-      fullPath: "/sign-up/wallet";
-      preLoaderRoute: typeof SignUpWalletRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/sign-up/passkeys": {
-      id: "/sign-up/passkeys";
-      path: "/sign-up/passkeys";
-      fullPath: "/sign-up/passkeys";
-      preLoaderRoute: typeof SignUpPasskeysRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/login/wallet": {
-      id: "/login/wallet";
-      path: "/login/wallet";
-      fullPath: "/login/wallet";
-      preLoaderRoute: typeof LoginWalletRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/_authenticated/_modal": {
@@ -297,6 +272,20 @@ declare module "@tanstack/react-router" {
       fullPath: "";
       preLoaderRoute: typeof AuthenticatedAppRouteRouteImport;
       parentRoute: typeof AuthenticatedRouteRoute;
+    };
+    "/_auth/sign-up/": {
+      id: "/_auth/sign-up/";
+      path: "/sign-up";
+      fullPath: "/sign-up";
+      preLoaderRoute: typeof AuthSignUpIndexRouteImport;
+      parentRoute: typeof AuthRouteRoute;
+    };
+    "/_auth/login/": {
+      id: "/_auth/login/";
+      path: "/login";
+      fullPath: "/login";
+      preLoaderRoute: typeof AuthLoginIndexRouteImport;
+      parentRoute: typeof AuthRouteRoute;
     };
     "/_authenticated/_modal/withdraw": {
       id: "/_authenticated/_modal/withdraw";
@@ -325,6 +314,27 @@ declare module "@tanstack/react-router" {
       fullPath: "/dashboard";
       preLoaderRoute: typeof AuthenticatedAppDashboardRouteImport;
       parentRoute: typeof AuthenticatedAppRouteRoute;
+    };
+    "/_auth/sign-up/wallet": {
+      id: "/_auth/sign-up/wallet";
+      path: "/sign-up/wallet";
+      fullPath: "/sign-up/wallet";
+      preLoaderRoute: typeof AuthSignUpWalletRouteImport;
+      parentRoute: typeof AuthRouteRoute;
+    };
+    "/_auth/sign-up/passkeys": {
+      id: "/_auth/sign-up/passkeys";
+      path: "/sign-up/passkeys";
+      fullPath: "/sign-up/passkeys";
+      preLoaderRoute: typeof AuthSignUpPasskeysRouteImport;
+      parentRoute: typeof AuthRouteRoute;
+    };
+    "/_auth/login/wallet": {
+      id: "/_auth/login/wallet";
+      path: "/login/wallet";
+      fullPath: "/login/wallet";
+      preLoaderRoute: typeof AuthLoginWalletRouteImport;
+      parentRoute: typeof AuthRouteRoute;
     };
     "/_authenticated/_modal/pay/request": {
       id: "/_authenticated/_modal/pay/request";
@@ -356,6 +366,26 @@ declare module "@tanstack/react-router" {
     };
   }
 }
+
+interface AuthRouteRouteChildren {
+  AuthLoginWalletRoute: typeof AuthLoginWalletRoute;
+  AuthSignUpPasskeysRoute: typeof AuthSignUpPasskeysRoute;
+  AuthSignUpWalletRoute: typeof AuthSignUpWalletRoute;
+  AuthLoginIndexRoute: typeof AuthLoginIndexRoute;
+  AuthSignUpIndexRoute: typeof AuthSignUpIndexRoute;
+}
+
+const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthLoginWalletRoute: AuthLoginWalletRoute,
+  AuthSignUpPasskeysRoute: AuthSignUpPasskeysRoute,
+  AuthSignUpWalletRoute: AuthSignUpWalletRoute,
+  AuthLoginIndexRoute: AuthLoginIndexRoute,
+  AuthSignUpIndexRoute: AuthSignUpIndexRoute,
+};
+
+const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
+  AuthRouteRouteChildren,
+);
 
 interface AuthenticatedAppRouteRouteChildren {
   AuthenticatedAppDashboardRoute: typeof AuthenticatedAppDashboardRoute;
@@ -411,12 +441,8 @@ const AuthenticatedRouteRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRouteRoute: AuthRouteRouteWithChildren,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  LoginWalletRoute: LoginWalletRoute,
-  SignUpPasskeysRoute: SignUpPasskeysRoute,
-  SignUpWalletRoute: SignUpWalletRoute,
-  LoginIndexRoute: LoginIndexRoute,
-  SignUpIndexRoute: SignUpIndexRoute,
 };
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
