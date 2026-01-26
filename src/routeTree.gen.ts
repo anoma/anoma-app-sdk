@@ -27,6 +27,7 @@ import { Route as AuthenticatedModalPayRequestRouteImport } from "./routes/_auth
 import { Route as AuthenticatedModalPayReceiverRouteImport } from "./routes/_authenticated/_modal/pay.$receiver";
 import { Route as AuthenticatedModalClaimCreateRouteImport } from "./routes/_authenticated/_modal/claim.create";
 import { Route as AuthenticatedModalClaimSeedRouteImport } from "./routes/_authenticated/_modal/claim.$seed";
+import { Route as AuthLoginInAppIdRouteImport } from "./routes/_auth/login/in-app.$id";
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: "/_authenticated",
@@ -121,6 +122,11 @@ const AuthenticatedModalClaimSeedRoute =
     path: "/claim/$seed",
     getParentRoute: () => AuthenticatedModalRouteRoute,
   } as any);
+const AuthLoginInAppIdRoute = AuthLoginInAppIdRouteImport.update({
+  id: "/login/in-app/$id",
+  path: "/login/in-app/$id",
+  getParentRoute: () => AuthRouteRoute,
+} as any);
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
@@ -133,6 +139,7 @@ export interface FileRoutesByFullPath {
   "/withdraw": typeof AuthenticatedModalWithdrawRoute;
   "/login": typeof AuthLoginIndexRoute;
   "/sign-up": typeof AuthSignUpIndexRoute;
+  "/login/in-app/$id": typeof AuthLoginInAppIdRoute;
   "/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
   "/claim/create": typeof AuthenticatedModalClaimCreateRoute;
   "/pay/$receiver": typeof AuthenticatedModalPayReceiverRoute;
@@ -149,6 +156,7 @@ export interface FileRoutesByTo {
   "/withdraw": typeof AuthenticatedModalWithdrawRoute;
   "/login": typeof AuthLoginIndexRoute;
   "/sign-up": typeof AuthSignUpIndexRoute;
+  "/login/in-app/$id": typeof AuthLoginInAppIdRoute;
   "/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
   "/claim/create": typeof AuthenticatedModalClaimCreateRoute;
   "/pay/$receiver": typeof AuthenticatedModalPayReceiverRoute;
@@ -170,6 +178,7 @@ export interface FileRoutesById {
   "/_authenticated/_modal/withdraw": typeof AuthenticatedModalWithdrawRoute;
   "/_auth/login/": typeof AuthLoginIndexRoute;
   "/_auth/sign-up/": typeof AuthSignUpIndexRoute;
+  "/_auth/login/in-app/$id": typeof AuthLoginInAppIdRoute;
   "/_authenticated/_modal/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
   "/_authenticated/_modal/claim/create": typeof AuthenticatedModalClaimCreateRoute;
   "/_authenticated/_modal/pay/$receiver": typeof AuthenticatedModalPayReceiverRoute;
@@ -188,6 +197,7 @@ export interface FileRouteTypes {
     | "/withdraw"
     | "/login"
     | "/sign-up"
+    | "/login/in-app/$id"
     | "/claim/$seed"
     | "/claim/create"
     | "/pay/$receiver"
@@ -204,6 +214,7 @@ export interface FileRouteTypes {
     | "/withdraw"
     | "/login"
     | "/sign-up"
+    | "/login/in-app/$id"
     | "/claim/$seed"
     | "/claim/create"
     | "/pay/$receiver"
@@ -224,6 +235,7 @@ export interface FileRouteTypes {
     | "/_authenticated/_modal/withdraw"
     | "/_auth/login/"
     | "/_auth/sign-up/"
+    | "/_auth/login/in-app/$id"
     | "/_authenticated/_modal/claim/$seed"
     | "/_authenticated/_modal/claim/create"
     | "/_authenticated/_modal/pay/$receiver"
@@ -364,6 +376,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthenticatedModalClaimSeedRouteImport;
       parentRoute: typeof AuthenticatedModalRouteRoute;
     };
+    "/_auth/login/in-app/$id": {
+      id: "/_auth/login/in-app/$id";
+      path: "/login/in-app/$id";
+      fullPath: "/login/in-app/$id";
+      preLoaderRoute: typeof AuthLoginInAppIdRouteImport;
+      parentRoute: typeof AuthRouteRoute;
+    };
   }
 }
 
@@ -373,6 +392,7 @@ interface AuthRouteRouteChildren {
   AuthSignUpWalletRoute: typeof AuthSignUpWalletRoute;
   AuthLoginIndexRoute: typeof AuthLoginIndexRoute;
   AuthSignUpIndexRoute: typeof AuthSignUpIndexRoute;
+  AuthLoginInAppIdRoute: typeof AuthLoginInAppIdRoute;
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
@@ -381,6 +401,7 @@ const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthSignUpWalletRoute: AuthSignUpWalletRoute,
   AuthLoginIndexRoute: AuthLoginIndexRoute,
   AuthSignUpIndexRoute: AuthSignUpIndexRoute,
+  AuthLoginInAppIdRoute: AuthLoginInAppIdRoute,
 };
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
