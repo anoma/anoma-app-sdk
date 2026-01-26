@@ -11,6 +11,7 @@ import type {
   Network,
   ResourceBalance,
   TokenBalance,
+  TokenId,
   TokenRegistry,
 } from "types";
 import { isAddressEqual, type Address } from "viem";
@@ -83,7 +84,7 @@ export const convertWalletBalanceToTokenBalance = (
   );
 };
 
-export const tokenId = (tokenRegistry: TokenRegistry) => {
+export const tokenId = (tokenRegistry: TokenRegistry): TokenId => {
   return `${tokenRegistry.network}:${tokenRegistry.symbol}`;
 };
 

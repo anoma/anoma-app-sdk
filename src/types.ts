@@ -43,6 +43,8 @@ export const TRANSACTION_STATUS = [
 
 export type TransactionStatus = (typeof TRANSACTION_STATUS)[number];
 
+export type TokenId = string; // {network}:{symbol}
+
 export type TokenRegistry = {
   symbol: string;
   address: Address;
