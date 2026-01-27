@@ -58,17 +58,26 @@ export const formatTokenAmount = (
   return `${amount} ${token.symbol.toUpperCase()}`;
 };
 
+/**
+ * Format a fiat amount for display
+ * @param balance - The balance to format
+ * @returns Formatted string (e.g., "1,234.56", "<0.01", "0.00")
+ */
 export const formatFiatAmount = (balance: number) => {
   if (balance === 0) return "0.00";
 
-  if (balance < 0.01) {
+  // Round to 2 decimal places to match display precision and avoid
+  // floating point issues (e.g., 0.01 becoming 0.00999999999...)
+  const roundedBalance = Math.round(balance * 100) / 100;
+
+  if (roundedBalance < 0.01) {
     return "<0.01";
   }
 
   return new Intl.NumberFormat("en", {
     maximumFractionDigits: 2,
     minimumFractionDigits: 2,
-  }).format(balance);
+  }).format(roundedBalance);
 };
 
 /**
