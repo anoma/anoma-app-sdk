@@ -216,7 +216,12 @@ export const isIOS = () =>
   // deprecated but required for iPadOS detection
   (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
-export const getTxUrl = (chainId: SupportedChainId, txHash: string) => {
-  const base = TxExplorerUrlByChainId[chainId];
-  return base + `0x${normalizeHex(txHash)}`;
+/**
+ * Builds the block explorer URL for a transaction.
+ * @param chainId - The chain ID to get the explorer URL for
+ * @param prefixedTxHash - The transaction hash with 0x prefix
+ * @returns The full URL to view the transaction on the block explorer
+ */
+export const getTxUrl = (chainId: SupportedChainId, prefixedTxHash: string) => {
+  return TxExplorerUrlByChainId[chainId] + prefixedTxHash;
 };
