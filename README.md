@@ -97,6 +97,23 @@ npm run lint
 
 ```
 
+## Pay Address Format
+
+Anoma Pay uses a custom address format that encodes multiple public keys into a single Base64URL string. The address structure consists of:
+
+| Field                    | Size (bytes) |
+| ------------------------ | ------------ |
+| Authority Public Key     | 33           |
+| Discovery Public Key     | 33           |
+| Encryption Public Key    | 33           |
+| Nullifier Key Commitment | 32           |
+| CRC32 Checksum           | 4            |
+| **Total**                | **135**      |
+
+The raw bytes are concatenated in the order shown above and then encoded using Base64URL encoding. The CRC32 checksum at the end provides integrity verification when decoding addresses.
+
+For implementation details, see [`src/lib/payAddress.ts`](./src/lib/payAddress.ts).
+
 ## Repository Conventions
 
 - All commits must follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) standard
