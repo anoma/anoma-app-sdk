@@ -98,3 +98,24 @@ export const retrieveVaultById = async (
     };
   });
 };
+
+/**
+ * Checks if there are any vault entries in the database.
+ *
+ * @returns Promise resolving to true if there is at least one vault entry, false otherwise.
+ */
+export const hasVaultEntries = async (): Promise<boolean> => {
+  const db = await openVaultDatabase();
+  return new Promise((resolve, reject) => {
+    const vault = db.transaction(["vault"]).objectStore("vault");
+    const request = vault.count();
+
+    request.onerror = () => {
+      reject(request.error);
+    };
+
+    request.onsuccess = () => {
+      resolve(request.result > 0);
+    };
+  });
+};
