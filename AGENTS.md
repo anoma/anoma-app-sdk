@@ -4,12 +4,14 @@
   On the first interaction with the project, read the following sections in `README.md`:
   **Tech Stack**, **Project Structure**, **Audits**, **Useful Resources**.
 
+- [REQUIRED | FIRST RUN ONLY]
+  Read the contents of .NOTES to get up to date with information saved about the project
+
 - [REQUIRED]
   You must be proficient in all technologies listed in the **Tech Stack** section.
   If a task requires unfamiliar technology, explicitly state the limitation before proceeding.
 
 - [REQUIRED]
-  This project is maintained by a team of 69 junior developers and trainees.
   All code must prioritize:
   - Clarity over cleverness
   - Maintainability over brevity
@@ -42,8 +44,12 @@
   - Fix **all** ESLint errors before proceeding
 
 - [REQUIRED]
-  Run `npm run tsc-check` after changes.
+  Run `npm run tsc-check`.
   Resolve TypeScript errors incrementally as they appear.
+
+- [REQUIRED]
+  Run `npm run build`.
+  Resolve TypeScript build errors.
 
 - [REQUIRED]
   Run tests using `npm run test` before considering a task complete.
@@ -132,8 +138,8 @@
 
 # General Guidelines
 
-- [IMPORTANT]
-  Use `/.NOTES` file to store project notes or intermediate reasoning.
+- [REQUIRED]
+  Save any important information related to the current execution in /.NOTES that may assist with intermediate reasoning and future executions.
 
 - [INFO]
   This file:
