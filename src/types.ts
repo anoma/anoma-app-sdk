@@ -69,7 +69,6 @@ export type ChainSettings = {
   forwarderAddress: Address;
   chainId: SupportedChainId;
   network: Network;
-  rpc?: string;
 };
 
 export type ChainLookup = Record<SupportedChainId, ChainSettings>;
