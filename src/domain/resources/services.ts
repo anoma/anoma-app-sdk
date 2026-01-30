@@ -1,13 +1,7 @@
 import type { EnvioClient, IndexerResource } from "api";
 import { SIMPLE_TRANSFER_ID } from "app-constants";
 import { fromHex, normalizeHex } from "lib/utils";
-import type {
-  EncodedResourceWithStatus,
-  Parameters,
-  ResourceBalance,
-  ResourcesWithBalance,
-  UserKeyring,
-} from "types";
+import type { EncodedResourceWithStatus, Parameters, UserKeyring } from "types";
 import { type Address, type Hex } from "viem";
 import { NullifierKey, ResourceWithLabel, type EncodedResource } from "wasm";
 
@@ -101,40 +95,6 @@ export const openResourceMetadata = async (
 
   return updatedResources;
 };
-
-export async function calculateResourceBalance(
-  resources: EncodedResourceWithStatus[]
-): Promise<ResourcesWithBalance> {
-  // Create a balances map to sum resource quantities
-  const balancesMap = new Map<string, ResourceBalance>();
-
-  for (const resource of resources) {
-    const {
-      quantity,
-      label_ref: label,
-      erc20TokenAddress,
-      forwarder,
-    } = resource;
-    const key = `${label}|${erc20TokenAddress}|${forwarder}`;
-
-    const balance = balancesMap.get(key);
-    if (balance) {
-      balance.quantity += quantity;
-    } else {
-      balancesMap.set(key, {
-        label,
-        erc20TokenAddress,
-        forwarder,
-        quantity,
-      });
-    }
-  }
-
-  return {
-    balances: [...balancesMap.values()],
-    resources,
-  };
-}
 
 /**
  * Given a collection of Resources, return an array of the fewest resources

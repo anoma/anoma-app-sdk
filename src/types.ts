@@ -11,18 +11,6 @@ export * from "domain/keys/types";
 export * from "domain/transfer/types";
 export * from "domain/vault/types";
 
-export type ResourceBalance = {
-  erc20TokenAddress: Address;
-  forwarder: Address;
-  label: string;
-  quantity: bigint;
-};
-
-export type ResourcesWithBalance = {
-  balances: ResourceBalance[];
-  resources: EncodedResourceWithStatus[];
-};
-
 export type EncodedResourceWithStatus = EncodedResource & {
   isConsumed: boolean;
   erc20TokenAddress: Address;
