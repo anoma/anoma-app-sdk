@@ -63,6 +63,36 @@ Build Storybook:
 npm run build-storybook
 ```
 
+## Docker (Production)
+
+Run the production build using Docker Compose:
+
+```bash
+docker compose --profile prod up --build
+```
+
+The application will be available at `http://localhost:4173/`.
+
+Environment variables:
+
+- `.env` is optional.
+
+## Docker (Development)
+
+Run the Vite dev server in Docker with live reload:
+
+```bash
+docker compose --profile dev up --build
+```
+
+The application will be available at `http://localhost:5173/`.
+
+Environment variables:
+
+- `.env` is optional.
+- For CLI env vars quick changes (no image rebuild needed).
+  - Example: `VITE_APP_BACKEND_BASE_URL=https://pay.next.heliax.fyi docker compose --profile dev up -d --force-recreate`
+
 ## Linting
 
 Run ESLint:
