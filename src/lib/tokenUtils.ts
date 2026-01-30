@@ -5,11 +5,11 @@ import {
   EthereumSepoliaForwarderContract,
 } from "app-constants";
 import { tokenRegistry } from "config/tokenRegistry";
+import type { AggregatedTokenBalance } from "hooks/useAggregatedTokenBalances";
 import type { WalletBalance } from "hooks/useWalletBalances";
 import type {
   EncodedResourceWithStatus,
   Network,
-  ResourceBalance,
   TokenBalance,
   TokenId,
   TokenRegistry,
@@ -35,8 +35,13 @@ export const getNetworkByForwarder = (forwarder: Address): Network => {
   return networkMap[forwarder.toLowerCase()] ?? "unknown";
 };
 
+/**
+ * Gets the token registry entry for a given resource.
+ * @param resource - The encoded resource with status information
+ * @returns The matching token registry or a placeholder for unknown tokens
+ */
 export const getTokenByResource = (
-  resource: ResourceBalance | EncodedResourceWithStatus
+  resource: EncodedResourceWithStatus
 ): TokenRegistry => {
   const address = resource.erc20TokenAddress;
   const network = getNetworkByForwarder(resource.forwarder);
@@ -61,12 +66,19 @@ export const getTokenBySymbol = (symbol?: string): TokenRegistry =>
   tokenRegistry.find(token => token.symbol === symbol) ??
   getNotFoundToken({ symbol });
 
-export const convertResourceBalanceToTokenBalance = (
-  balances: ResourceBalance[] = []
+/**
+ * Converts aggregated token balances to TokenBalance array format
+ * for use in transfer forms and other components.
+ * @param balancesPerToken - Record of token balances from useAggregatedTokenBalances
+ * @returns Array of TokenBalance objects with symbol, amount, and network
+ */
+export const convertAggregatedToTokenBalance = (
+  balancesPerToken: Record<TokenId, AggregatedTokenBalance>
 ): TokenBalance[] => {
-  return balances.map(b => ({
-    symbol: getTokenByResource(b).symbol,
-    amount: b.quantity,
+  return Object.entries(balancesPerToken).map(([tokenId, balance]) => ({
+    symbol: balance.symbol,
+    amount: balance.raw,
+    network: getNetworkFromTokenId(tokenId),
   }));
 };
 
@@ -92,3 +104,6 @@ export const findBalanceByToken = (
   balances: TokenBalance[],
   token?: TokenRegistry | TokenBalance
 ) => balances.find(t => t.symbol === token?.symbol);
+
+export const getNetworkFromTokenId = (tokenId: TokenId) =>
+  tokenId.split(":")[0];
