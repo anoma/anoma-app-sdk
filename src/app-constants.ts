@@ -8,7 +8,7 @@ export const PADDING_LOGIC_VK =
 
 // ID for Simple Transfer Logic
 export const SIMPLE_TRANSFER_ID =
-  "678b37ba70cfb1787c2436d7eb2ef3c588d1e1d6f30a7248e79436bd15f3fc11";
+  "bc12323668c37c3d381ca798f11116f35fb1639d12239b29da7810df3985e7ad";
 
 // Authorization signature domain
 export const AUTH_SIGNATURE_DOMAIN = "TokenTransferAuthorization";
