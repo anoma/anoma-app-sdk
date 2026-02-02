@@ -46,7 +46,7 @@ export class TransferBuilder {
           resource: consumedResource.encode(),
           nullifier_key: toBase64(keyring.nullifierKeyPair.nk),
           witness_data: {
-            Ephemeral: {
+            TokenTransferEphemeralWrap: {
               permit2_data: permit2Data,
               sender_wallet_address: evmAddress,
               token_contract_address: tokenContractAddress,
@@ -58,7 +58,7 @@ export class TransferBuilder {
         {
           resource: createdResource.encode(),
           witness_data: {
-            Persistent: {
+            TokenTransferPersistent: {
               receiver_discovery_public_key: new PublicKey(
                 keyring.discoveryKeyPair.publicKey
               ).toBase64(),
@@ -90,16 +90,17 @@ export class TransferBuilder {
       remainderResource,
     } = authorizedResources;
 
-    const consumedWitnessData: ConsumedWitnessData["Persistent"] = {
-      sender_authorization_signature: toBase64(authSig.toBytes()),
-      sender_authorization_verifying_key: new PublicKey(
-        keyring.authorityKeyPair.publicKey
-      ).toBase64(),
-      sender_encryption_public_key: new PublicKey(
-        keyring.encryptionKeyPair.publicKey
-      ).toBase64(),
-    };
-    const createdWitnessData: CreatedWitnessData["Persistent"] = {
+    const consumedWitnessData: ConsumedWitnessData["TokenTransferPersistent"] =
+      {
+        sender_authorization_signature: toBase64(authSig.toBytes()),
+        sender_authorization_verifying_key: new PublicKey(
+          keyring.authorityKeyPair.publicKey
+        ).toBase64(),
+        sender_encryption_public_key: new PublicKey(
+          keyring.encryptionKeyPair.publicKey
+        ).toBase64(),
+      };
+    const createdWitnessData: CreatedWitnessData["TokenTransferPersistent"] = {
       receiver_discovery_public_key: new PublicKey(
         receiverKeyring.discoveryPublicKey
       ).toBase64(),
@@ -120,14 +121,14 @@ export class TransferBuilder {
           resource: consumedResource.encode(),
           nullifier_key: toBase64(keyring.nullifierKeyPair.nk),
           witness_data: {
-            Persistent: consumedWitnessData,
+            TokenTransferPersistent: consumedWitnessData,
           },
         },
       ],
       created_resources: [
         {
           resource: createdResource.encode(),
-          witness_data: { Persistent: createdWitnessData },
+          witness_data: { TokenTransferPersistent: createdWitnessData },
         },
       ],
     };
@@ -155,26 +156,28 @@ export class TransferBuilder {
       paddingResource,
     } = authorizedResources;
 
-    const createdWitnessData: CreatedWitnessData["Ephemeral"] = {
-      token_contract_address: token,
-      receiver_wallet_address: burnAddress,
-    };
-    const consumedWitnessData: ConsumedWitnessData["Persistent"] = {
-      sender_authorization_signature: toBase64(authSig.toBytes()),
-      sender_authorization_verifying_key: new PublicKey(
-        keyring.authorityKeyPair.publicKey
-      ).toBase64(),
-      sender_encryption_public_key: new PublicKey(
-        keyring.encryptionKeyPair.publicKey
-      ).toBase64(),
-    };
+    const createdWitnessData: CreatedWitnessData["TokenTransferEphemeralUnwrap"] =
+      {
+        token_contract_address: token,
+        receiver_wallet_address: burnAddress,
+      };
+    const consumedWitnessData: ConsumedWitnessData["TokenTransferPersistent"] =
+      {
+        sender_authorization_signature: toBase64(authSig.toBytes()),
+        sender_authorization_verifying_key: new PublicKey(
+          keyring.authorityKeyPair.publicKey
+        ).toBase64(),
+        sender_encryption_public_key: new PublicKey(
+          keyring.encryptionKeyPair.publicKey
+        ).toBase64(),
+      };
     const parameters: Parameters = {
       consumed_resources: [
         {
           resource: consumedResource.encode(),
           nullifier_key: toBase64(keyring.nullifierKeyPair.nk),
           witness_data: {
-            Persistent: consumedWitnessData,
+            TokenTransferPersistent: consumedWitnessData,
           },
         },
       ],
@@ -182,7 +185,7 @@ export class TransferBuilder {
         {
           resource: createdResource.encode(),
           witness_data: {
-            Ephemeral: createdWitnessData,
+            TokenTransferEphemeralUnwrap: createdWitnessData,
           },
         },
       ],
@@ -209,18 +212,19 @@ export class TransferBuilder {
       paddingResource,
       remainderResource,
     } = authorizedResources;
-    const consumedWitnessData: ConsumedWitnessData["Persistent"] = {
-      sender_authorization_signature: toBase64(authSig.toBytes()),
-      sender_authorization_verifying_key: new PublicKey(
-        keyring.authorityKeyPair.publicKey
-      ).toBase64(),
-      sender_encryption_public_key: new PublicKey(
-        keyring.encryptionKeyPair.publicKey
-      ).toBase64(),
-    };
+    const consumedWitnessData: ConsumedWitnessData["TokenTransferPersistent"] =
+      {
+        sender_authorization_signature: toBase64(authSig.toBytes()),
+        sender_authorization_verifying_key: new PublicKey(
+          keyring.authorityKeyPair.publicKey
+        ).toBase64(),
+        sender_encryption_public_key: new PublicKey(
+          keyring.encryptionKeyPair.publicKey
+        ).toBase64(),
+      };
 
     const { HELIAX_FEE_ENCRYPTION_PK, HELIAX_FEE_DISCOVERY_PK } = HeliaxKeys;
-    const createdWitnessData: CreatedWitnessData["Persistent"] = {
+    const createdWitnessData: CreatedWitnessData["TokenTransferPersistent"] = {
       receiver_discovery_public_key: HELIAX_FEE_DISCOVERY_PK,
       receiver_encryption_public_key: HELIAX_FEE_ENCRYPTION_PK,
     };
@@ -231,14 +235,14 @@ export class TransferBuilder {
           resource: consumedResource.encode(),
           nullifier_key: toBase64(keyring.nullifierKeyPair.nk),
           witness_data: {
-            Persistent: consumedWitnessData,
+            TokenTransferPersistent: consumedWitnessData,
           },
         },
       ],
       created_resources: [
         {
           resource: createdResource.encode(),
-          witness_data: { Persistent: createdWitnessData },
+          witness_data: { TokenTransferPersistent: createdWitnessData },
         },
       ],
     };
