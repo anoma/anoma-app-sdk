@@ -161,21 +161,22 @@ export function checkMergeSplitParameters(
       nullifier_key: NullifierKey.default().toBase64(),
       witness_data: { TrivialEphemeral: {} },
     });
-    const remainderWitnessData: CreatedWitnessData["Persistent"] = {
-      receiver_discovery_public_key: new PublicKey(
-        keyring.discoveryKeyPair.publicKey
-      ).toBase64(),
-      receiver_encryption_public_key: new PublicKey(
-        keyring.encryptionKeyPair.publicKey
-      ).toBase64(),
-      receiver_authorization_verifying_key: new PublicKey(
-        keyring.authorityKeyPair.publicKey
-      ).toBase64(),
-      token_contract_address: tokenContractAddress,
-    };
+    const remainderWitnessData: CreatedWitnessData["TokenTransferPersistent"] =
+      {
+        receiver_discovery_public_key: new PublicKey(
+          keyring.discoveryKeyPair.publicKey
+        ).toBase64(),
+        receiver_encryption_public_key: new PublicKey(
+          keyring.encryptionKeyPair.publicKey
+        ).toBase64(),
+        receiver_authorization_verifying_key: new PublicKey(
+          keyring.authorityKeyPair.publicKey
+        ).toBase64(),
+        token_contract_address: tokenContractAddress,
+      };
     parameters.created_resources.push({
       resource: remainderResource.encode(),
-      witness_data: { Persistent: remainderWitnessData },
+      witness_data: { TokenTransferPersistent: remainderWitnessData },
     });
   }
   return parameters;

@@ -56,13 +56,13 @@ export const BaseMainnetChainId = 8453;
 export const BaseSepoliaChainId = 84532;
 
 export const EthereumMainnetForwarderContract =
-  "0x0000000000000000000000000000000000000000";
+  "0x775C81A47F2618a8594a7a7f4A3Df2a300337559";
 export const EthereumSepoliaForwarderContract =
-  "0x9bbC75f66f5344864FfABCF70625B99E42e5F108";
+  "0x0A62bE41E66841f693f922991C4e40C89cb0CFDF";
 export const BaseMainnetForwarderContract =
-  "0xfeE5b48919100c192E017992810c9539ebD00249";
+  "0xfAa9DE773Be11fc759A16F294d32BB2261bF818B";
 export const BaseSepoliaFowarderContract =
-  "0x0000000000000000000000000000000000000000";
+  "0xfAa9DE773Be11fc759A16F294d32BB2261bF818B";
 
 export const ChainIdByNetwork: Record<Network, SupportedChainId | 0> = {
   ["ethereum"]: EthereumMainnetChainId,

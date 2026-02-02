@@ -56,21 +56,21 @@ type Trivial = {
 };
 
 type TokenTransfer = {
-  CreatedEphemeral: TokenTransferCreatedEphemeral;
+  CreatedEphemeralUnwrap: TokenTransferCreatedEphemeral;
   CreatedPersistent: TokenTransferCreatedPersistent;
-  ConsumedEphemeral: TokenTransferConsumedEphemeral;
+  ConsumedEphemeralWrap: TokenTransferConsumedEphemeral;
   ConsumedPersistent: TokenTransferConsumedPersistent;
 };
 
 type CreatedWitnessDataEnum = {
-  Persistent: TokenTransfer["CreatedPersistent"];
-  Ephemeral: TokenTransfer["CreatedEphemeral"];
+  TokenTransferPersistent: TokenTransfer["CreatedPersistent"];
+  TokenTransferEphemeralUnwrap: TokenTransfer["CreatedEphemeralUnwrap"];
   TrivialEphemeral: Trivial["CreatedEphemeral"];
 };
 
 type ConsumedWitnessDataEnum = {
-  Persistent: TokenTransfer["ConsumedPersistent"];
-  Ephemeral: TokenTransfer["ConsumedEphemeral"];
+  TokenTransferPersistent: TokenTransfer["ConsumedPersistent"];
+  TokenTransferEphemeralWrap: TokenTransfer["ConsumedEphemeralWrap"];
   TrivialEphemeral: Trivial["ConsumedEphemeral"];
 };
 
@@ -80,15 +80,15 @@ type ConsumedWitnessDataEnum = {
 
 // Created Witness Data Schema
 export type CreatedWitnessDataSchema = {
-  Ephemeral: CreatedWitnessDataEnum["Ephemeral"];
-  Persistent: CreatedWitnessDataEnum["Persistent"];
+  TokenTransferEphemeralUnwrap: CreatedWitnessDataEnum["TokenTransferEphemeralUnwrap"];
+  TokenTransferPersistent: CreatedWitnessDataEnum["TokenTransferPersistent"];
   TrivialEphemeral: CreatedWitnessDataEnum["TrivialEphemeral"];
 };
 
 // Consumed Witness Data Schema
 export type ConsumedWitnessDataSchema = {
-  Persistent: ConsumedWitnessDataEnum["Persistent"];
-  Ephemeral: ConsumedWitnessDataEnum["Ephemeral"];
+  TokenTransferPersistent: ConsumedWitnessDataEnum["TokenTransferPersistent"];
+  TokenTransferEphemeralWrap: ConsumedWitnessDataEnum["TokenTransferEphemeralWrap"];
   TrivialEphemeral: ConsumedWitnessDataEnum["TrivialEphemeral"];
 };
 
