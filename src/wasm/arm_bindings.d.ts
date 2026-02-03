@@ -5,11 +5,6 @@ export interface EncodedKeypair {
   public_key: string;
 }
 
-export interface EncodedNullifierKeyPair {
-  nk: string;
-  cnk: string;
-}
-
 export interface ResourceProps {
   isEphemeral: boolean;
   quantity: bigint;
@@ -32,37 +27,42 @@ export interface EncodedResource {
   nk_commitment: string;
 }
 
-export class AuthorizationSignature {
+export interface EncodedNullifierKeyPair {
+  nk: string;
+  cnk: string;
+}
+
+export class AuthoritySignature {
   private constructor();
   free(): void;
   [Symbol.dispose](): void;
   toBytes(): Uint8Array;
-  static fromBytes(bytes: Uint8Array): AuthorizationSignature;
+  static fromBytes(bytes: Uint8Array): AuthoritySignature;
 }
 
-export class AuthorizationSigningKey {
+export class AuthoritySigningKey {
   free(): void;
   [Symbol.dispose](): void;
   constructor();
-  sign(domain: string, message: Uint8Array): AuthorizationSignature;
-  authorize(domain: string, action_tree: MerkleTree): AuthorizationSignature;
+  sign(domain: string, message: Uint8Array): AuthoritySignature;
+  authorize(domain: string, action_tree: MerkleTree): AuthoritySignature;
   toBytes(): Uint8Array;
-  static fromBytes(bytes: Uint8Array): AuthorizationSigningKey;
+  static fromBytes(bytes: Uint8Array): AuthoritySigningKey;
 }
 
-export class AuthorizationVerifyingKey {
+export class AuthorityVerifyingKey {
   free(): void;
   [Symbol.dispose](): void;
   constructor(pk_bytes: Uint8Array);
   static fromSigningKey(
-    signing_key: AuthorizationSigningKey
-  ): AuthorizationVerifyingKey;
+    signing_key: AuthoritySigningKey
+  ): AuthorityVerifyingKey;
   verify(
     domain: string,
     message: Uint8Array,
-    signature: AuthorizationSignature
+    signature: AuthoritySignature
   ): void;
-  static fromHex(pk_hex: string): AuthorizationVerifyingKey;
+  static fromHex(pk_hex: string): AuthorityVerifyingKey;
   toBytes(): Uint8Array;
 }
 
@@ -384,42 +384,6 @@ export interface InitOutput {
   ];
   readonly heliaxkeys_HELIAX_FEE_DISCOVERY_PK: () => [number, number];
   readonly heliaxkeys_HELIAX_FEE_ENCRYPTION_PK: () => [number, number];
-  readonly __wbg_nullifierkey_free: (a: number, b: number) => void;
-  readonly nullifierkey_new: (a: number, b: number) => [number, number, number];
-  readonly nullifierkey_commit: (a: number) => number;
-  readonly nullifierkey_inner: (a: number) => [number, number];
-  readonly nullifierkey_random: () => number;
-  readonly nullifierkey_toBase64: (a: number) => [number, number];
-  readonly nullifierkey_fromBase64: (
-    a: number,
-    b: number
-  ) => [number, number, number];
-  readonly nullifierkey_default: () => number;
-  readonly __wbg_nullifierkeycommitment_free: (a: number, b: number) => void;
-  readonly nullifierkeycommitment_new: (
-    a: number,
-    b: number
-  ) => [number, number, number];
-  readonly nullifierkeycommitment_inner: (a: number) => number;
-  readonly nullifierkeycommitment_toBase64: (a: number) => [number, number];
-  readonly nullifierkeycommitment_fromBase64: (
-    a: number,
-    b: number
-  ) => [number, number, number];
-  readonly __wbg_nullifierkeypair_free: (a: number, b: number) => void;
-  readonly __wbg_get_nullifierkeypair_nk: (a: number) => number;
-  readonly __wbg_set_nullifierkeypair_nk: (a: number, b: number) => void;
-  readonly __wbg_get_nullifierkeypair_cnk: (a: number) => number;
-  readonly __wbg_set_nullifierkeypair_cnk: (a: number, b: number) => void;
-  readonly nullifierkeypair_new: (a: number, b: number) => number;
-  readonly nullifierkeypair_toJson: (a: number) => [number, number, number];
-  readonly nullifierkeypair_fromJson: (a: any) => [number, number, number];
-  readonly nullifierkeypair_encode: (a: number) => any;
-  readonly nullifierkeypair_decode: (a: any) => [number, number, number];
-  readonly hashBytes: (a: number, b: number) => number;
-  readonly hashTwo: (a: number, b: number) => number;
-  readonly bytesToWords: (a: number, b: number) => [number, number];
-  readonly wordsToBytes: (a: number, b: number) => [number, number];
   readonly __wbg_resource_free: (a: number, b: number) => void;
   readonly resource_new: (a: any) => [number, number, number];
   readonly resource_create: (
@@ -453,39 +417,71 @@ export interface InitOutput {
   readonly resourcewithlabel_resource: (a: number) => number;
   readonly resourcewithlabel_forwarder: (a: number) => [number, number];
   readonly resourcewithlabel_erc20TokenAddress: (a: number) => [number, number];
-  readonly __wbg_authorizationsigningkey_free: (a: number, b: number) => void;
-  readonly authorizationsigningkey_new: () => number;
-  readonly authorizationsigningkey_sign: (
+  readonly __wbg_nullifierkey_free: (a: number, b: number) => void;
+  readonly nullifierkey_new: (a: number, b: number) => [number, number, number];
+  readonly nullifierkey_commit: (a: number) => number;
+  readonly nullifierkey_inner: (a: number) => [number, number];
+  readonly nullifierkey_random: () => number;
+  readonly nullifierkey_toBase64: (a: number) => [number, number];
+  readonly nullifierkey_fromBase64: (
+    a: number,
+    b: number
+  ) => [number, number, number];
+  readonly nullifierkey_default: () => number;
+  readonly __wbg_nullifierkeycommitment_free: (a: number, b: number) => void;
+  readonly nullifierkeycommitment_new: (
+    a: number,
+    b: number
+  ) => [number, number, number];
+  readonly nullifierkeycommitment_inner: (a: number) => number;
+  readonly nullifierkeycommitment_toBase64: (a: number) => [number, number];
+  readonly nullifierkeycommitment_fromBase64: (
+    a: number,
+    b: number
+  ) => [number, number, number];
+  readonly __wbg_nullifierkeypair_free: (a: number, b: number) => void;
+  readonly __wbg_get_nullifierkeypair_nk: (a: number) => number;
+  readonly __wbg_set_nullifierkeypair_nk: (a: number, b: number) => void;
+  readonly __wbg_get_nullifierkeypair_cnk: (a: number) => number;
+  readonly __wbg_set_nullifierkeypair_cnk: (a: number, b: number) => void;
+  readonly nullifierkeypair_new: (a: number, b: number) => number;
+  readonly nullifierkeypair_toJson: (a: number) => [number, number, number];
+  readonly nullifierkeypair_fromJson: (a: any) => [number, number, number];
+  readonly nullifierkeypair_encode: (a: number) => any;
+  readonly nullifierkeypair_decode: (a: any) => [number, number, number];
+  readonly __wbg_authoritysigningkey_free: (a: number, b: number) => void;
+  readonly authoritysigningkey_new: () => number;
+  readonly authoritysigningkey_sign: (
     a: number,
     b: number,
     c: number,
     d: number,
     e: number
   ) => number;
-  readonly authorizationsigningkey_authorize: (
+  readonly authoritysigningkey_authorize: (
     a: number,
     b: number,
     c: number,
     d: number
   ) => [number, number, number];
-  readonly authorizationsigningkey_toBytes: (a: number) => [number, number];
-  readonly authorizationsigningkey_fromBytes: (
+  readonly authoritysigningkey_toBytes: (a: number) => [number, number];
+  readonly authoritysigningkey_fromBytes: (
     a: number,
     b: number
   ) => [number, number, number];
-  readonly __wbg_authorizationsignature_free: (a: number, b: number) => void;
-  readonly authorizationsignature_toBytes: (a: number) => [number, number];
-  readonly authorizationsignature_fromBytes: (
+  readonly __wbg_authoritysignature_free: (a: number, b: number) => void;
+  readonly authoritysignature_toBytes: (a: number) => [number, number];
+  readonly authoritysignature_fromBytes: (
     a: number,
     b: number
   ) => [number, number, number];
-  readonly __wbg_authorizationverifyingkey_free: (a: number, b: number) => void;
-  readonly authorizationverifyingkey_new: (
+  readonly __wbg_authorityverifyingkey_free: (a: number, b: number) => void;
+  readonly authorityverifyingkey_new: (
     a: number,
     b: number
   ) => [number, number, number];
-  readonly authorizationverifyingkey_fromSigningKey: (a: number) => number;
-  readonly authorizationverifyingkey_verify: (
+  readonly authorityverifyingkey_fromSigningKey: (a: number) => number;
+  readonly authorityverifyingkey_verify: (
     a: number,
     b: number,
     c: number,
@@ -493,15 +489,19 @@ export interface InitOutput {
     e: number,
     f: number
   ) => [number, number];
-  readonly authorizationverifyingkey_fromHex: (
+  readonly authorityverifyingkey_fromHex: (
     a: number,
     b: number
   ) => [number, number, number];
-  readonly authorizationverifyingkey_toBytes: (a: number) => [number, number];
+  readonly authorityverifyingkey_toBytes: (a: number) => [number, number];
   readonly __wbg_calltype_free: (a: number, b: number) => void;
   readonly calltype_toVec: (a: number) => [number, number];
   readonly calltype_Wrap: () => number;
   readonly calltype_Unwrap: () => number;
+  readonly hashBytes: (a: number, b: number) => number;
+  readonly hashTwo: (a: number, b: number) => number;
+  readonly bytesToWords: (a: number, b: number) => [number, number];
+  readonly wordsToBytes: (a: number, b: number) => [number, number];
   readonly sys_verify_integrity: (a: number, b: number) => void;
   readonly sys_verify_integrity2: (a: number, b: number) => void;
   readonly sys_read: (a: number, b: number, c: number) => number;

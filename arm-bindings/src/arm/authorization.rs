@@ -1,6 +1,6 @@
 use crate::arm::{action_tree::MerkleTree, encryption::PublicKey};
-use arm_gadgets::authorization::{
-    AuthorizationSignature as AS, AuthorizationSigningKey as ASK, AuthorizationVerifyingKey as AVK,
+use arm_gadgets::authority::{
+    AuthoritySignature as AS, AuthoritySigningKey as ASK, AuthorityVerifyingKey as AVK,
 };
 use k256::{ecdsa::Signature, elliptic_curve::sec1::ToEncodedPoint};
 use serde::{Deserialize, Serialize};
@@ -8,30 +8,30 @@ use wasm_bindgen::{JsError, prelude::wasm_bindgen};
 
 #[wasm_bindgen]
 #[derive(Clone)]
-pub struct AuthorizationSigningKey(pub(crate) ASK);
+pub struct AuthoritySigningKey(pub(crate) ASK);
 
-impl AuthorizationSigningKey {
+impl AuthoritySigningKey {
     pub fn instance(&self) -> &ASK {
         &self.0
     }
 }
 
 #[wasm_bindgen]
-impl AuthorizationSigningKey {
+impl AuthoritySigningKey {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
-        AuthorizationSigningKey::default()
+        AuthoritySigningKey::default()
     }
 
-    pub fn sign(&self, domain: &str, message: &[u8]) -> AuthorizationSignature {
-        AuthorizationSignature(self.0.sign(domain.as_bytes(), message))
+    pub fn sign(&self, domain: &str, message: &[u8]) -> AuthoritySignature {
+        AuthoritySignature(self.0.sign(domain.as_bytes(), message))
     }
 
     pub fn authorize(
         &self,
         domain: &str,
         action_tree: &MerkleTree,
-    ) -> Result<AuthorizationSignature, JsError> {
+    ) -> Result<AuthoritySignature, JsError> {
         Ok(self.sign(domain, &action_tree.root()?.to_bytes()))
     }
 
@@ -42,21 +42,21 @@ impl AuthorizationSigningKey {
 
     #[wasm_bindgen(js_name = "fromBytes")]
     pub fn from_bytes(bytes: &[u8]) -> Result<Self, JsError> {
-        Ok(AuthorizationSigningKey(ASK::from_bytes(bytes)?))
+        Ok(AuthoritySigningKey(ASK::from_bytes(bytes)?))
     }
 }
 
-impl Default for AuthorizationSigningKey {
+impl Default for AuthoritySigningKey {
     fn default() -> Self {
-        AuthorizationSigningKey(ASK::new())
+        AuthoritySigningKey(ASK::new())
     }
 }
 
 #[wasm_bindgen]
 #[derive(Clone, Copy, Debug, Serialize, Deserialize)]
-pub struct AuthorizationSignature(AS);
+pub struct AuthoritySignature(AS);
 
-impl AuthorizationSignature {
+impl AuthoritySignature {
     pub fn instance(&self) -> &AS {
         &self.0
     }
@@ -67,7 +67,7 @@ impl AuthorizationSignature {
 }
 
 #[wasm_bindgen]
-impl AuthorizationSignature {
+impl AuthoritySignature {
     #[wasm_bindgen(js_name = "toBytes")]
     pub fn to_bytes(&self) -> Vec<u8> {
         self.0.to_bytes().to_vec()
@@ -75,45 +75,45 @@ impl AuthorizationSignature {
 
     #[wasm_bindgen(js_name = "fromBytes")]
     pub fn from_bytes(bytes: &[u8]) -> Result<Self, JsError> {
-        Ok(AuthorizationSignature(AS::from_bytes(bytes)?))
+        Ok(AuthoritySignature(AS::from_bytes(bytes)?))
     }
 }
 
 #[wasm_bindgen]
 #[derive(Clone, Copy, Debug, Default, Serialize, Deserialize, PartialEq)]
-pub struct AuthorizationVerifyingKey(AVK);
+pub struct AuthorityVerifyingKey(AVK);
 
-impl AuthorizationVerifyingKey {
+impl AuthorityVerifyingKey {
     pub fn instance(&self) -> &AVK {
         &self.0
     }
 }
 
 #[wasm_bindgen]
-impl AuthorizationVerifyingKey {
+impl AuthorityVerifyingKey {
     #[wasm_bindgen(constructor)]
-    pub fn new(pk_bytes: &[u8]) -> Result<AuthorizationVerifyingKey, JsError> {
+    pub fn new(pk_bytes: &[u8]) -> Result<AuthorityVerifyingKey, JsError> {
         let pk = PublicKey::new(pk_bytes)?;
-        Ok(AuthorizationVerifyingKey(AVK::from_affine(*pk.instance())))
+        Ok(AuthorityVerifyingKey(AVK::from_affine(*pk.instance())))
     }
 
     #[wasm_bindgen(js_name = "fromSigningKey")]
-    pub fn from_signing_key(signing_key: &AuthorizationSigningKey) -> Self {
-        AuthorizationVerifyingKey(AVK::from_signing_key(&signing_key.0))
+    pub fn from_signing_key(signing_key: &AuthoritySigningKey) -> Self {
+        AuthorityVerifyingKey(AVK::from_signing_key(&signing_key.0))
     }
 
     pub fn verify(
         &self,
         domain: &str,
         message: &[u8],
-        signature: &AuthorizationSignature,
+        signature: &AuthoritySignature,
     ) -> Result<(), JsError> {
         Ok(self.0.verify(domain.as_bytes(), message, &signature.0)?)
     }
 
     #[wasm_bindgen(js_name = "fromHex")]
-    pub fn from_hex(pk_hex: &str) -> Result<AuthorizationVerifyingKey, JsError> {
-        AuthorizationVerifyingKey::new(&hex::decode(pk_hex)?)
+    pub fn from_hex(pk_hex: &str) -> Result<AuthorityVerifyingKey, JsError> {
+        AuthorityVerifyingKey::new(&hex::decode(pk_hex)?)
     }
 
     #[wasm_bindgen(js_name = "toBytes")]

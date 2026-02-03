@@ -1,4 +1,4 @@
-import { SIMPLE_TRANSFER_ID } from "app-constants";
+import { TOKEN_TRANSFER_ID } from "app-constants";
 import {
   calculateLabelRef,
   calculateValueRefFromAuth,
@@ -16,7 +16,7 @@ import type {
   MintResources,
 } from "types";
 import {
-  AuthorizationVerifyingKey,
+  AuthorityVerifyingKey,
   Digest,
   HeliaxKeys,
   MerkleTree,
@@ -34,7 +34,7 @@ import { Client, initClient } from "wasm/client";
  */
 export class TransferLogic extends Client {
   static async init(): Promise<TransferLogic> {
-    return initClient(TransferLogic, SIMPLE_TRANSFER_ID);
+    return initClient(TransferLogic, TOKEN_TRANSFER_ID);
   }
 
   createMintResources(props: CreateMintProps): MintResources {
@@ -65,7 +65,7 @@ export class TransferLogic extends Client {
       labelRef,
       BigInt(quantity),
       calculateValueRefFromAuth(
-        new AuthorizationVerifyingKey(keyring.authorityKeyPair.publicKey),
+        new AuthorityVerifyingKey(keyring.authorityKeyPair.publicKey),
         toHex(keyring.encryptionKeyPair.publicKey)
       ),
       false,
@@ -95,7 +95,7 @@ export class TransferLogic extends Client {
       keyring,
       receiverKeyring,
     } = props;
-    const receiverAuthVerifyingKey = new AuthorizationVerifyingKey(
+    const receiverAuthVerifyingKey = new AuthorityVerifyingKey(
       receiverKeyring.authorityPublicKey
     );
 

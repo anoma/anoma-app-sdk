@@ -14,9 +14,9 @@ import type {
 } from "types";
 import type { Address, Hex } from "viem";
 import {
-  AuthorizationSignature,
-  AuthorizationSigningKey,
-  AuthorizationVerifyingKey,
+  AuthoritySignature,
+  AuthoritySigningKey,
+  AuthorityVerifyingKey,
   Digest,
   hashBytes,
   HeliaxKeys,
@@ -48,7 +48,7 @@ export function calculateLabelRef(
 }
 
 export function calculateValueRefFromAuth(
-  authorizationVerifyingKey: AuthorizationVerifyingKey,
+  authorizationVerifyingKey: AuthorityVerifyingKey,
   encryptionPublicKey: Hex
 ): Digest {
   return hashBytes(
@@ -201,10 +201,8 @@ export function authorizeCreatedResources(
 export function authorizeActions(
   actions: Digest[],
   authorizationKeyBytes: Uint8Array
-): AuthorizationSignature {
-  const authorizationKey = AuthorizationSigningKey.fromBytes(
-    authorizationKeyBytes
-  );
+): AuthoritySignature {
+  const authorizationKey = AuthoritySigningKey.fromBytes(authorizationKeyBytes);
   const actionTree = new MerkleTree(actions);
   return authorizationKey.authorize(AUTH_SIGNATURE_DOMAIN, actionTree);
 }

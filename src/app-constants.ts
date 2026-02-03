@@ -4,10 +4,10 @@ import type { Network, SupportedChainId } from "types";
 
 // Verifying Key for TrivialLogicWitness
 export const PADDING_LOGIC_VK =
-  "83d603b23e090c1400b018adb61f516386e9f2d523f983c3c417ab49b2037585";
+  "21fcc2fc2c07f9753405d3070f2488c67389f7d797b6f6e20a9f2529fe4a0bff";
 
 // ID for Simple Transfer Logic
-export const SIMPLE_TRANSFER_ID =
+export const TOKEN_TRANSFER_ID =
   "bc12323668c37c3d381ca798f11116f35fb1639d12239b29da7810df3985e7ad";
 
 // Authorization signature domain
