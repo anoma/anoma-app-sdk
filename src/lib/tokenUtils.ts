@@ -1,6 +1,5 @@
 import {
   BaseMainnetForwarderContract,
-  BaseSepoliaFowarderContract,
   EthereumMainnetForwarderContract,
   EthereumSepoliaForwarderContract,
 } from "app-constants";
@@ -28,7 +27,6 @@ const networkMap: Record<string, Network> = {
   [EthereumMainnetForwarderContract.toLowerCase()]: "ethereum",
   [EthereumSepoliaForwarderContract.toLowerCase()]: "ethereum-sepolia",
   [BaseMainnetForwarderContract.toLowerCase()]: "base",
-  [BaseSepoliaFowarderContract.toLowerCase()]: "base-sepolia",
 };
 
 export const getNetworkByForwarder = (forwarder: Address): Network => {

@@ -53,7 +53,6 @@ export const retryMutationsCount = 3;
 export const EthereumMainnetChainId = 1;
 export const EthereumSepoliaChainId = 11155111;
 export const BaseMainnetChainId = 8453;
-export const BaseSepoliaChainId = 84532;
 
 export const EthereumMainnetForwarderContract =
   "0x775C81A47F2618a8594a7a7f4A3Df2a300337559";
@@ -61,33 +60,27 @@ export const EthereumSepoliaForwarderContract =
   "0x0A62bE41E66841f693f922991C4e40C89cb0CFDF";
 export const BaseMainnetForwarderContract =
   "0xfAa9DE773Be11fc759A16F294d32BB2261bF818B";
-export const BaseSepoliaFowarderContract =
-  "0xfAa9DE773Be11fc759A16F294d32BB2261bF818B";
 
 export const ChainIdByNetwork: Record<Network, SupportedChainId | 0> = {
   ["ethereum"]: EthereumMainnetChainId,
   ["ethereum-sepolia"]: EthereumSepoliaChainId,
   ["base"]: BaseMainnetChainId,
-  ["base-sepolia"]: BaseSepoliaChainId,
   ["unknown"]: 0,
 };
 
 export const NetworkName: Record<SupportedChainId, string> = {
   [BaseMainnetChainId]: "base",
-  [BaseSepoliaChainId]: "base",
   [EthereumMainnetChainId]: "eth",
   [EthereumSepoliaChainId]: "eth",
 };
 
 export const TxExplorerUrlByChainId: Record<SupportedChainId, string> = {
-  [BaseSepoliaChainId]: "https://sepolia.basescan.org/tx/",
   [BaseMainnetChainId]: "https://basescan.org/tx/",
   [EthereumMainnetChainId]: "https://etherscan.io/tx/",
   [EthereumSepoliaChainId]: "https://sepolia.etherscan.io/tx/",
 };
 
 export const ExplorerNameByChainId: Record<SupportedChainId, string> = {
-  [BaseSepoliaChainId]: "BaseScan",
   [BaseMainnetChainId]: "BaseScan",
   [EthereumMainnetChainId]: "EtherScan",
   [EthereumSepoliaChainId]: "EtherScan",

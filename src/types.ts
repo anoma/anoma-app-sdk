@@ -1,7 +1,6 @@
 import type { ApiConfig } from "api";
 import {
   BaseMainnetChainId,
-  BaseSepoliaChainId,
   EthereumMainnetChainId,
   EthereumSepoliaChainId,
 } from "app-constants";
@@ -50,7 +49,6 @@ export const chainIds = [
   EthereumMainnetChainId,
   EthereumSepoliaChainId,
   BaseMainnetChainId,
-  BaseSepoliaChainId,
 ] as const;
 export type SupportedChainId = (typeof chainIds)[number];
 export type ChainSettings = {
@@ -61,12 +59,7 @@ export type ChainSettings = {
 
 export type ChainLookup = Record<SupportedChainId, ChainSettings>;
 
-export type Network =
-  | "base"
-  | "base-sepolia"
-  | "ethereum"
-  | "ethereum-sepolia"
-  | "unknown";
+export type Network = "base" | "ethereum" | "ethereum-sepolia" | "unknown";
 
 /**
  * Represents the runtime configuration of Transfer Example
