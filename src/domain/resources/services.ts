@@ -1,5 +1,5 @@
 import type { EnvioClient, IndexerResource } from "api";
-import { SIMPLE_TRANSFER_ID } from "app-constants";
+import { TOKEN_TRANSFER_ID } from "app-constants";
 import { fromHex, normalizeHex } from "lib/utils";
 import type { EncodedResourceWithStatus, Parameters, UserKeyring } from "types";
 import { type Address, type Hex } from "viem";
@@ -8,7 +8,7 @@ import { NullifierKey, ResourceWithLabel, type EncodedResource } from "wasm";
 /** Convert an Envio nullifier list into a normalized hex set. */
 export async function buildNullifierSet(
   envio: EnvioClient,
-  logicRefHex: string = SIMPLE_TRANSFER_ID
+  logicRefHex: string = TOKEN_TRANSFER_ID
 ): Promise<Set<string>> {
   const hex = logicRefHex.startsWith("0x") ? logicRefHex : `0x${logicRefHex}`;
   const rows = await envio.nullifiers(hex);

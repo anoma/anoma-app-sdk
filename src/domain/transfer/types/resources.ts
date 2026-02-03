@@ -1,5 +1,5 @@
 import type {
-  AuthorizationSignature,
+  AuthoritySignature,
   Digest,
   EncodedResource,
   MerkleTree,
@@ -64,7 +64,7 @@ export type CreatedResources = {
 };
 
 export type AuthorizedResources = CreatedResources & {
-  authSig: AuthorizationSignature;
+  authSig: AuthoritySignature;
 };
 
 /**

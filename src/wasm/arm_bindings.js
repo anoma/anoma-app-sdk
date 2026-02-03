@@ -246,25 +246,25 @@ if (!("encodeInto" in cachedTextEncoder)) {
 
 let WASM_VECTOR_LEN = 0;
 
-const AuthorizationSignatureFinalization =
+const AuthoritySignatureFinalization =
   typeof FinalizationRegistry === "undefined" ?
     { register: () => {}, unregister: () => {} }
   : new FinalizationRegistry(ptr =>
-      wasm.__wbg_authorizationsignature_free(ptr >>> 0, 1)
+      wasm.__wbg_authoritysignature_free(ptr >>> 0, 1)
     );
 
-const AuthorizationSigningKeyFinalization =
+const AuthoritySigningKeyFinalization =
   typeof FinalizationRegistry === "undefined" ?
     { register: () => {}, unregister: () => {} }
   : new FinalizationRegistry(ptr =>
-      wasm.__wbg_authorizationsigningkey_free(ptr >>> 0, 1)
+      wasm.__wbg_authoritysigningkey_free(ptr >>> 0, 1)
     );
 
-const AuthorizationVerifyingKeyFinalization =
+const AuthorityVerifyingKeyFinalization =
   typeof FinalizationRegistry === "undefined" ?
     { register: () => {}, unregister: () => {} }
   : new FinalizationRegistry(ptr =>
-      wasm.__wbg_authorizationverifyingkey_free(ptr >>> 0, 1)
+      wasm.__wbg_authorityverifyingkey_free(ptr >>> 0, 1)
     );
 
 const CallTypeFinalization =
@@ -343,79 +343,79 @@ const SecretKeyFinalization =
     { register: () => {}, unregister: () => {} }
   : new FinalizationRegistry(ptr => wasm.__wbg_secretkey_free(ptr >>> 0, 1));
 
-export class AuthorizationSignature {
+export class AuthoritySignature {
   static __wrap(ptr) {
     ptr = ptr >>> 0;
-    const obj = Object.create(AuthorizationSignature.prototype);
+    const obj = Object.create(AuthoritySignature.prototype);
     obj.__wbg_ptr = ptr;
-    AuthorizationSignatureFinalization.register(obj, obj.__wbg_ptr, obj);
+    AuthoritySignatureFinalization.register(obj, obj.__wbg_ptr, obj);
     return obj;
   }
   __destroy_into_raw() {
     const ptr = this.__wbg_ptr;
     this.__wbg_ptr = 0;
-    AuthorizationSignatureFinalization.unregister(this);
+    AuthoritySignatureFinalization.unregister(this);
     return ptr;
   }
   free() {
     const ptr = this.__destroy_into_raw();
-    wasm.__wbg_authorizationsignature_free(ptr, 0);
+    wasm.__wbg_authoritysignature_free(ptr, 0);
   }
   /**
    * @returns {Uint8Array}
    */
   toBytes() {
-    const ret = wasm.authorizationsignature_toBytes(this.__wbg_ptr);
+    const ret = wasm.authoritysignature_toBytes(this.__wbg_ptr);
     var v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
     wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
     return v1;
   }
   /**
    * @param {Uint8Array} bytes
-   * @returns {AuthorizationSignature}
+   * @returns {AuthoritySignature}
    */
   static fromBytes(bytes) {
     const ptr0 = passArray8ToWasm0(bytes, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.authorizationsignature_fromBytes(ptr0, len0);
+    const ret = wasm.authoritysignature_fromBytes(ptr0, len0);
     if (ret[2]) {
       throw takeFromExternrefTable0(ret[1]);
     }
-    return AuthorizationSignature.__wrap(ret[0]);
+    return AuthoritySignature.__wrap(ret[0]);
   }
 }
 if (Symbol.dispose)
-  AuthorizationSignature.prototype[Symbol.dispose] =
-    AuthorizationSignature.prototype.free;
+  AuthoritySignature.prototype[Symbol.dispose] =
+    AuthoritySignature.prototype.free;
 
-export class AuthorizationSigningKey {
+export class AuthoritySigningKey {
   static __wrap(ptr) {
     ptr = ptr >>> 0;
-    const obj = Object.create(AuthorizationSigningKey.prototype);
+    const obj = Object.create(AuthoritySigningKey.prototype);
     obj.__wbg_ptr = ptr;
-    AuthorizationSigningKeyFinalization.register(obj, obj.__wbg_ptr, obj);
+    AuthoritySigningKeyFinalization.register(obj, obj.__wbg_ptr, obj);
     return obj;
   }
   __destroy_into_raw() {
     const ptr = this.__wbg_ptr;
     this.__wbg_ptr = 0;
-    AuthorizationSigningKeyFinalization.unregister(this);
+    AuthoritySigningKeyFinalization.unregister(this);
     return ptr;
   }
   free() {
     const ptr = this.__destroy_into_raw();
-    wasm.__wbg_authorizationsigningkey_free(ptr, 0);
+    wasm.__wbg_authoritysigningkey_free(ptr, 0);
   }
   constructor() {
-    const ret = wasm.authorizationsigningkey_new();
+    const ret = wasm.authoritysigningkey_new();
     this.__wbg_ptr = ret >>> 0;
-    AuthorizationSigningKeyFinalization.register(this, this.__wbg_ptr, this);
+    AuthoritySigningKeyFinalization.register(this, this.__wbg_ptr, this);
     return this;
   }
   /**
    * @param {string} domain
    * @param {Uint8Array} message
-   * @returns {AuthorizationSignature}
+   * @returns {AuthoritySignature}
    */
   sign(domain, message) {
     const ptr0 = passStringToWasm0(
@@ -426,19 +426,19 @@ export class AuthorizationSigningKey {
     const len0 = WASM_VECTOR_LEN;
     const ptr1 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
     const len1 = WASM_VECTOR_LEN;
-    const ret = wasm.authorizationsigningkey_sign(
+    const ret = wasm.authoritysigningkey_sign(
       this.__wbg_ptr,
       ptr0,
       len0,
       ptr1,
       len1
     );
-    return AuthorizationSignature.__wrap(ret);
+    return AuthoritySignature.__wrap(ret);
   }
   /**
    * @param {string} domain
    * @param {MerkleTree} action_tree
-   * @returns {AuthorizationSignature}
+   * @returns {AuthoritySignature}
    */
   authorize(domain, action_tree) {
     const ptr0 = passStringToWasm0(
@@ -448,7 +448,7 @@ export class AuthorizationSigningKey {
     );
     const len0 = WASM_VECTOR_LEN;
     _assertClass(action_tree, MerkleTree);
-    const ret = wasm.authorizationsigningkey_authorize(
+    const ret = wasm.authoritysigningkey_authorize(
       this.__wbg_ptr,
       ptr0,
       len0,
@@ -457,52 +457,52 @@ export class AuthorizationSigningKey {
     if (ret[2]) {
       throw takeFromExternrefTable0(ret[1]);
     }
-    return AuthorizationSignature.__wrap(ret[0]);
+    return AuthoritySignature.__wrap(ret[0]);
   }
   /**
    * @returns {Uint8Array}
    */
   toBytes() {
-    const ret = wasm.authorizationsigningkey_toBytes(this.__wbg_ptr);
+    const ret = wasm.authoritysigningkey_toBytes(this.__wbg_ptr);
     var v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
     wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
     return v1;
   }
   /**
    * @param {Uint8Array} bytes
-   * @returns {AuthorizationSigningKey}
+   * @returns {AuthoritySigningKey}
    */
   static fromBytes(bytes) {
     const ptr0 = passArray8ToWasm0(bytes, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.authorizationsigningkey_fromBytes(ptr0, len0);
+    const ret = wasm.authoritysigningkey_fromBytes(ptr0, len0);
     if (ret[2]) {
       throw takeFromExternrefTable0(ret[1]);
     }
-    return AuthorizationSigningKey.__wrap(ret[0]);
+    return AuthoritySigningKey.__wrap(ret[0]);
   }
 }
 if (Symbol.dispose)
-  AuthorizationSigningKey.prototype[Symbol.dispose] =
-    AuthorizationSigningKey.prototype.free;
+  AuthoritySigningKey.prototype[Symbol.dispose] =
+    AuthoritySigningKey.prototype.free;
 
-export class AuthorizationVerifyingKey {
+export class AuthorityVerifyingKey {
   static __wrap(ptr) {
     ptr = ptr >>> 0;
-    const obj = Object.create(AuthorizationVerifyingKey.prototype);
+    const obj = Object.create(AuthorityVerifyingKey.prototype);
     obj.__wbg_ptr = ptr;
-    AuthorizationVerifyingKeyFinalization.register(obj, obj.__wbg_ptr, obj);
+    AuthorityVerifyingKeyFinalization.register(obj, obj.__wbg_ptr, obj);
     return obj;
   }
   __destroy_into_raw() {
     const ptr = this.__wbg_ptr;
     this.__wbg_ptr = 0;
-    AuthorizationVerifyingKeyFinalization.unregister(this);
+    AuthorityVerifyingKeyFinalization.unregister(this);
     return ptr;
   }
   free() {
     const ptr = this.__destroy_into_raw();
-    wasm.__wbg_authorizationverifyingkey_free(ptr, 0);
+    wasm.__wbg_authorityverifyingkey_free(ptr, 0);
   }
   /**
    * @param {Uint8Array} pk_bytes
@@ -510,29 +510,29 @@ export class AuthorizationVerifyingKey {
   constructor(pk_bytes) {
     const ptr0 = passArray8ToWasm0(pk_bytes, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.authorizationverifyingkey_new(ptr0, len0);
+    const ret = wasm.authorityverifyingkey_new(ptr0, len0);
     if (ret[2]) {
       throw takeFromExternrefTable0(ret[1]);
     }
     this.__wbg_ptr = ret[0] >>> 0;
-    AuthorizationVerifyingKeyFinalization.register(this, this.__wbg_ptr, this);
+    AuthorityVerifyingKeyFinalization.register(this, this.__wbg_ptr, this);
     return this;
   }
   /**
-   * @param {AuthorizationSigningKey} signing_key
-   * @returns {AuthorizationVerifyingKey}
+   * @param {AuthoritySigningKey} signing_key
+   * @returns {AuthorityVerifyingKey}
    */
   static fromSigningKey(signing_key) {
-    _assertClass(signing_key, AuthorizationSigningKey);
-    const ret = wasm.authorizationverifyingkey_fromSigningKey(
+    _assertClass(signing_key, AuthoritySigningKey);
+    const ret = wasm.authorityverifyingkey_fromSigningKey(
       signing_key.__wbg_ptr
     );
-    return AuthorizationVerifyingKey.__wrap(ret);
+    return AuthorityVerifyingKey.__wrap(ret);
   }
   /**
    * @param {string} domain
    * @param {Uint8Array} message
-   * @param {AuthorizationSignature} signature
+   * @param {AuthoritySignature} signature
    */
   verify(domain, message, signature) {
     const ptr0 = passStringToWasm0(
@@ -543,8 +543,8 @@ export class AuthorizationVerifyingKey {
     const len0 = WASM_VECTOR_LEN;
     const ptr1 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
     const len1 = WASM_VECTOR_LEN;
-    _assertClass(signature, AuthorizationSignature);
-    const ret = wasm.authorizationverifyingkey_verify(
+    _assertClass(signature, AuthoritySignature);
+    const ret = wasm.authorityverifyingkey_verify(
       this.__wbg_ptr,
       ptr0,
       len0,
@@ -558,7 +558,7 @@ export class AuthorizationVerifyingKey {
   }
   /**
    * @param {string} pk_hex
-   * @returns {AuthorizationVerifyingKey}
+   * @returns {AuthorityVerifyingKey}
    */
   static fromHex(pk_hex) {
     const ptr0 = passStringToWasm0(
@@ -567,25 +567,25 @@ export class AuthorizationVerifyingKey {
       wasm.__wbindgen_realloc
     );
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.authorizationverifyingkey_fromHex(ptr0, len0);
+    const ret = wasm.authorityverifyingkey_fromHex(ptr0, len0);
     if (ret[2]) {
       throw takeFromExternrefTable0(ret[1]);
     }
-    return AuthorizationVerifyingKey.__wrap(ret[0]);
+    return AuthorityVerifyingKey.__wrap(ret[0]);
   }
   /**
    * @returns {Uint8Array}
    */
   toBytes() {
-    const ret = wasm.authorizationverifyingkey_toBytes(this.__wbg_ptr);
+    const ret = wasm.authorityverifyingkey_toBytes(this.__wbg_ptr);
     var v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
     wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
     return v1;
   }
 }
 if (Symbol.dispose)
-  AuthorizationVerifyingKey.prototype[Symbol.dispose] =
-    AuthorizationVerifyingKey.prototype.free;
+  AuthorityVerifyingKey.prototype[Symbol.dispose] =
+    AuthorityVerifyingKey.prototype.free;
 
 export class CallType {
   static __wrap(ptr) {
