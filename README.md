@@ -101,6 +101,22 @@ Run ESLint:
 npm run lint
 ```
 
+## End-to-End Tests
+
+Playwright tests live under `tests/e2e` and use `PLAYWRIGHT_BASE_URL` from `.env`.
+
+Run the E2E tests in another terminal:
+
+```bash
+npm run test:e2e
+```
+
+Run Playwright UI mode:
+
+```bash
+npm run test:e2e:ui
+```
+
 ## Project Structure
 
 ```
