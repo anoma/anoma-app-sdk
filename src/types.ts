@@ -30,6 +30,16 @@ export const TRANSACTION_STATUS = [
 
 export type TransactionStatus = (typeof TRANSACTION_STATUS)[number];
 
+export type TransactionReceipt = {
+  hash: Address;
+  status: TransactionStatus;
+  sender: string;
+  receiver: string;
+  token: Address;
+  quantity: bigint;
+  dateTime: Date;
+};
+
 export type TokenId = string; // {network}:{symbol}
 
 export type TokenRegistry = {

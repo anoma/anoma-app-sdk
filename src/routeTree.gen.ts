@@ -19,6 +19,7 @@ import { Route as AuthLoginIndexRouteImport } from "./routes/_auth/login/index";
 import { Route as AuthenticatedModalWithdrawRouteImport } from "./routes/_authenticated/_modal/withdraw";
 import { Route as AuthenticatedModalSendRouteImport } from "./routes/_authenticated/_modal/send";
 import { Route as AuthenticatedModalDepositRouteImport } from "./routes/_authenticated/_modal/deposit";
+import { Route as AuthenticatedAppTransactionsRouteImport } from "./routes/_authenticated/_app/transactions";
 import { Route as AuthenticatedAppDashboardRouteImport } from "./routes/_authenticated/_app/dashboard";
 import { Route as AuthSignUpWalletRouteImport } from "./routes/_auth/sign-up/wallet";
 import { Route as AuthSignUpPasskeysRouteImport } from "./routes/_auth/sign-up/passkeys";
@@ -76,6 +77,12 @@ const AuthenticatedModalDepositRoute =
     path: "/deposit",
     getParentRoute: () => AuthenticatedModalRouteRoute,
   } as any);
+const AuthenticatedAppTransactionsRoute =
+  AuthenticatedAppTransactionsRouteImport.update({
+    id: "/transactions",
+    path: "/transactions",
+    getParentRoute: () => AuthenticatedAppRouteRoute,
+  } as any);
 const AuthenticatedAppDashboardRoute =
   AuthenticatedAppDashboardRouteImport.update({
     id: "/dashboard",
@@ -127,6 +134,7 @@ export interface FileRoutesByFullPath {
   "/sign-up/passkeys": typeof AuthSignUpPasskeysRoute;
   "/sign-up/wallet": typeof AuthSignUpWalletRoute;
   "/dashboard": typeof AuthenticatedAppDashboardRoute;
+  "/transactions": typeof AuthenticatedAppTransactionsRoute;
   "/deposit": typeof AuthenticatedModalDepositRoute;
   "/send": typeof AuthenticatedModalSendRoute;
   "/withdraw": typeof AuthenticatedModalWithdrawRoute;
@@ -143,6 +151,7 @@ export interface FileRoutesByTo {
   "/sign-up/passkeys": typeof AuthSignUpPasskeysRoute;
   "/sign-up/wallet": typeof AuthSignUpWalletRoute;
   "/dashboard": typeof AuthenticatedAppDashboardRoute;
+  "/transactions": typeof AuthenticatedAppTransactionsRoute;
   "/deposit": typeof AuthenticatedModalDepositRoute;
   "/send": typeof AuthenticatedModalSendRoute;
   "/withdraw": typeof AuthenticatedModalWithdrawRoute;
@@ -164,6 +173,7 @@ export interface FileRoutesById {
   "/_auth/sign-up/passkeys": typeof AuthSignUpPasskeysRoute;
   "/_auth/sign-up/wallet": typeof AuthSignUpWalletRoute;
   "/_authenticated/_app/dashboard": typeof AuthenticatedAppDashboardRoute;
+  "/_authenticated/_app/transactions": typeof AuthenticatedAppTransactionsRoute;
   "/_authenticated/_modal/deposit": typeof AuthenticatedModalDepositRoute;
   "/_authenticated/_modal/send": typeof AuthenticatedModalSendRoute;
   "/_authenticated/_modal/withdraw": typeof AuthenticatedModalWithdrawRoute;
@@ -182,6 +192,7 @@ export interface FileRouteTypes {
     | "/sign-up/passkeys"
     | "/sign-up/wallet"
     | "/dashboard"
+    | "/transactions"
     | "/deposit"
     | "/send"
     | "/withdraw"
@@ -198,6 +209,7 @@ export interface FileRouteTypes {
     | "/sign-up/passkeys"
     | "/sign-up/wallet"
     | "/dashboard"
+    | "/transactions"
     | "/deposit"
     | "/send"
     | "/withdraw"
@@ -218,6 +230,7 @@ export interface FileRouteTypes {
     | "/_auth/sign-up/passkeys"
     | "/_auth/sign-up/wallet"
     | "/_authenticated/_app/dashboard"
+    | "/_authenticated/_app/transactions"
     | "/_authenticated/_modal/deposit"
     | "/_authenticated/_modal/send"
     | "/_authenticated/_modal/withdraw"
@@ -307,6 +320,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthenticatedModalDepositRouteImport;
       parentRoute: typeof AuthenticatedModalRouteRoute;
     };
+    "/_authenticated/_app/transactions": {
+      id: "/_authenticated/_app/transactions";
+      path: "/transactions";
+      fullPath: "/transactions";
+      preLoaderRoute: typeof AuthenticatedAppTransactionsRouteImport;
+      parentRoute: typeof AuthenticatedAppRouteRoute;
+    };
     "/_authenticated/_app/dashboard": {
       id: "/_authenticated/_app/dashboard";
       path: "/dashboard";
@@ -390,10 +410,12 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 
 interface AuthenticatedAppRouteRouteChildren {
   AuthenticatedAppDashboardRoute: typeof AuthenticatedAppDashboardRoute;
+  AuthenticatedAppTransactionsRoute: typeof AuthenticatedAppTransactionsRoute;
 }
 
 const AuthenticatedAppRouteRouteChildren: AuthenticatedAppRouteRouteChildren = {
   AuthenticatedAppDashboardRoute: AuthenticatedAppDashboardRoute,
+  AuthenticatedAppTransactionsRoute: AuthenticatedAppTransactionsRoute,
 };
 
 const AuthenticatedAppRouteRouteWithChildren =
