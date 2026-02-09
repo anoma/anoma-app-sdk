@@ -27,6 +27,7 @@ export const VAULT_DOMAIN_INFO = "anoma-pay:vault-aes-key";
 
 export const WEBSITE_URL = "https://anoma.money";
 export const WEBSITE_DOMAIN = "anoma.money";
+export const TERMS_URL = "https://anomapay.app/terms-and-conditions";
 
 // General
 
