@@ -22,7 +22,10 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": false,
     "noFallthroughCasesInSwitch": true,
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "paths": {
+      "tests/*": ["../tests/*"]
+    }
   },
   "include": ["src"]
 }

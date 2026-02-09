@@ -8,8 +8,6 @@ import {
   NullifierKeyPair,
 } from "domain/keys";
 import { fromBase64, fromHex, toHex } from "lib/utils";
-import type { Address } from "viem";
-import { beforeAll, describe, expect, it } from "vitest";
 import {
   authorityKeyPair,
   nullifierKeyPair,
@@ -18,7 +16,9 @@ import {
   serializedNullifierKeyPair,
   staticDiscoverKeyPair,
   staticEncryptionKeyPair,
-} from "./data.json";
+} from "tests/data.json";
+import type { Address } from "viem";
+import { beforeAll, describe, expect, it } from "vitest";
 
 describe("Key functions", () => {
   beforeAll(() => {

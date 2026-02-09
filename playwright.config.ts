@@ -2,7 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 import { loadEnv } from "vite";
 
 const env = loadEnv(process.env.NODE_ENV ?? "development", process.cwd(), "");
-const baseURL = env.PLAYWRIGHT_BASE_URL;
+const baseURL = env.PLAYWRIGHT_BASE_URL ?? "http://localhost:5173";
 const isRemoteBaseURL = Boolean(baseURL && !baseURL.includes("localhost"));
 
 export default defineConfig({

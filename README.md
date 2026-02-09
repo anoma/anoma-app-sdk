@@ -104,6 +104,7 @@ npm run lint
 ## End-to-End Tests
 
 Playwright tests live under `tests/e2e` and use `PLAYWRIGHT_BASE_URL` from `.env`.
+If `PLAYWRIGHT_BASE_URL` is not set, it defaults to `http://localhost:5173`.
 
 Run the E2E tests in another terminal:
 
