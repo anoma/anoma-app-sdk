@@ -1,4 +1,4 @@
-import { TOKEN_TRANSFER_ID } from "app-constants";
+import { TRANSFER_LOGIC_VERIFYING_KEY } from "app-constants";
 import {
   calculateLabelRef,
   calculateValueRefFromAuth,
@@ -34,7 +34,7 @@ import { Client, initClient } from "wasm/client";
  */
 export class TransferLogic extends Client {
   static async init(): Promise<TransferLogic> {
-    return initClient(TransferLogic, TOKEN_TRANSFER_ID);
+    return initClient(TransferLogic, TRANSFER_LOGIC_VERIFYING_KEY);
   }
 
   createMintResources(props: CreateMintProps): MintResources {
