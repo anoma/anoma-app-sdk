@@ -1,13 +1,13 @@
-// The constants below should never change.
-
 import type { Network, SupportedChainId } from "types";
 
 // Verifying Key for TrivialLogicWitness
-export const PADDING_LOGIC_VK =
+// https://github.com/anoma/arm-risc0/blob/main/arm/src/constants.rs#L23
+export const TRIVIAL_LOGIC_VERIFYING_KEY =
   "21fcc2fc2c07f9753405d3070f2488c67389f7d797b6f6e20a9f2529fe4a0bff";
 
 // ID for Simple Transfer Logic
-export const TOKEN_TRANSFER_ID =
+// https://github.com/anoma/anomapay-backend/blob/main/simple_transfer/transfer_library/src/lib.rs#L27
+export const TRANSFER_LOGIC_VERIFYING_KEY =
   "bc12323668c37c3d381ca798f11116f35fb1639d12239b29da7810df3985e7ad";
 
 // Authorization signature domain

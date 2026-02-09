@@ -1,7 +1,7 @@
 import {
   AUTH_SIGNATURE_DOMAIN,
   averageTimePerProofInSeconds,
-  PADDING_LOGIC_VK,
+  TRIVIAL_LOGIC_VERIFYING_KEY,
 } from "app-constants";
 import { fromHex, normalizeHex, toBase64 } from "lib/utils";
 import type {
@@ -107,7 +107,7 @@ export function checkConstructSplit(
   const remainder = encodedResource.quantity - quantity;
   if (remainder) {
     const paddingResource = Resource.create(
-      Digest.fromHex(PADDING_LOGIC_VK),
+      Digest.fromHex(TRIVIAL_LOGIC_VERIFYING_KEY),
       Digest.default(),
       0n,
       Digest.default(),
