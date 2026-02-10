@@ -1,6 +1,6 @@
 # Anoma Pay Interface
 
-This repository contains most of the code related to the Anoma Pay interface. For the Rust implementation (@anoma/lib), please refer to the @anoma/pay-js-toolkit repository.
+This repository contains most of the code related to the Anoma Pay interface.
 
 ## Tech Stack
 
@@ -12,86 +12,120 @@ This repository contains most of the code related to the Anoma Pay interface. Fo
 - [Jotai](https://jotai.org/)
 - [TanStack React Query](https://tanstack.com/query/latest)
 - [Tanstack Router](https://tanstack.com/router/latest)
-- [Tanstack Form](https://tanstack.com/form/latest)
 - [Wagmi](https://wagmi.sh/)
 - [Viem](http://viem.sh/)
+- [Rust](https://doc.rust-lang.org/)
+- [wasm-bindgen](https://github.com/wasm-bindgen/wasm-bindgen/)
+- [wasm-pack](https://github.com/drager/wasm-pack/)
 - [Storybook](https://storybook.js.org/)
+- [Playwright](https://playwright.dev/)
 
-## Installation
+## Running Local Build
+
+Requirements (local build only, excludes external services):
+
+- Node.js (>= 22)
+- npm (bundled with Node.js)
+- Git
+- Docker (optional, only if you want containerized dev/prod runs)
+
+Install the dependencies:
 
 ```bash
 npm install
 ```
 
-## Development
-
-Start the development server:
-
-```bash
-npm run dev
-```
-
-The application will be available at `http://localhost:5173/`
-
-### Storybook
-
-Run Storybook for component development:
-
-```bash
-npm run storybook
-```
-
-Storybook will be available at `http://localhost:6006/`
-
-## Build
-
-Build the application for production:
+Then build the project:
 
 ```bash
 npm run build
 ```
 
-Preview the production build:
+- Production built files are on `/dist` directory
+
+To serve the build locally, you can use the Vite preview feature
 
 ```bash
 npm run preview
 ```
 
-Build Storybook:
+- Vite preview server at http://localhost:4173
+
+### Alternatively, running local build with Docker
+
+Production builds bake `VITE_*` values at build time. Rebuild the image after changes.
+
+- `docker compose --profile prod up --build`
+- App served by Nginx at http://localhost:4173
+
+## Running Locally
 
 ```bash
-npm run build-storybook
+npm run dev
 ```
 
-## Docker (Production)
+- Vite dev server at http://localhost:5173/
 
-Run the production build using Docker Compose:
+### Alternatively, running locally with Docker
 
-```bash
-docker compose --profile prod up --build
-```
+- `docker compose --profile dev up --build`
+- Vite dev server at http://localhost:5173/
 
-The application will be available at `http://localhost:4173/`.
+You can pass CLI env vars and use `--force-recreate`
+
+- `VITE_APP_BACKEND_BASE_URL=https://pay.next.heliax.fyi docker compose --profile dev up -d --force-recreate`
+
+## Configuration
+
+Configuration is via environment variables only.
 
 Environment variables:
 
-- `.env` is optional.
+| Variable                    | Required | Default                                      | Description                                               |
+| --------------------------- | -------- | -------------------------------------------- | --------------------------------------------------------- |
+| `VITE_APP_BACKEND_BASE_URL` | Yes      | `https://pay.dev.heliax.fyi`                 | Transfer backend base URL.                                |
+| `VITE_APP_INDEXER_BASE_URL` | Yes      | `https://galileo.dev.heliax.fyi`             | Galileo indexer base URL.                                 |
+| `VITE_APP_ENVIO_BASE_URL`   | Yes      | `https://hasura.dev.heliax.fyi/v1/graphql`   | Envio GraphQL endpoint base URL.                          |
+| `VITE_APP_PERMIT2_ADDRESS`  | Yes      | `0x000000000022D473030F116dDEE9F6B43aC78BA3` | Permit2 contract address for token approvals.             |
+| `VITE_APP_CHAIN_ID`         | No       | `8453`                                       | EVM chain ID (Base Mainnet). Must match backend/indexers. |
+| `VITE_APP_PRIVATE_BETA`     | No       | `false`                                      | Enables private beta UI gating.                           |
+| `PLAYWRIGHT_BASE_URL`       | No       | `http://localhost:5173`                      | E2E test base URL for Playwright.                         |
 
-## Docker (Development)
+## External Dependencies for AnomaPay
 
-Run the Vite dev server in Docker with live reload:
+The UI can render without services, but core flows require external systems. Required dependencies for AnomaPay functionality:
+
+| Dependency                                         | Required For                                                         | Assumptions / Requirements                                                              |
+| -------------------------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Transfer backend API (`VITE_APP_BACKEND_BASE_URL`) | Transfers, fee estimation, queue stats, token prices, token balances | Must implement the REST paths in `src/api/paths.ts` under `TransferBackendPaths`.       |
+| Galileo indexer (`VITE_APP_INDEXER_BASE_URL`)      | Resource discovery, proof generation, key storage                    | Must implement the REST paths in `src/api/paths.ts` under `IndexerPaths`.               |
+| Envio GraphQL indexer (`VITE_APP_ENVIO_BASE_URL`)  | Nullifier checks                                                     | Must expose `ProtocolAdapter_Transaction` with fields used in `src/api/EnvioClient.ts`. |
+| EVM wallet + RPC endpoint                          | On-chain actions and signing                                         | Wallet must be connected to the same chain as `VITE_APP_CHAIN_ID`.                      |
+| Permit2 contract on target chain                   | ERC-20 approvals                                                     | `VITE_APP_PERMIT2_ADDRESS` must exist on the configured chain.                          |
+
+## Common Mistakes / Things to Check
+
+- `VITE_APP_CHAIN_ID`, wallet network, backend, and both indexers must all point to the same chain.
+- Base URLs must be reachable from the browser (CORS configured on backend/indexers).
+- If the UI appears to load but balances/transactions are empty, verify `VITE_APP_INDEXER_BASE_URL` and `VITE_APP_ENVIO_BASE_URL`.
+- Docker prod builds bake `VITE_*` values at build time. Rebuild when changing config.
+- Docker dev changes require container recreation when setting new CLI env vars.
+
+## How to Create a Release
+
+Releases are configured via GitHub and a Netlify webhook. Merge the commits on the `production` branch to trigger the Netlify build.
+
+Currently, the production version is available on https://beta.anomapay.app
+
+## Running Storybook
+
+Use [Storybook](https://storybook.js.org/) to develop and review UI components in isolation.
 
 ```bash
-docker compose --profile dev up --build
+npm run storybook
 ```
 
-The application will be available at `http://localhost:5173/`.
-
-Environment variables:
-
-- `.env` is optional.
-- For CLI env vars quick changes (no image rebuild needed).
-  - Example: `VITE_APP_BACKEND_BASE_URL=https://pay.next.heliax.fyi docker compose --profile dev up -d --force-recreate`
+- Storybook server at http://localhost:6006
 
 ## Linting
 
@@ -101,12 +135,26 @@ Run ESLint:
 npm run lint
 ```
 
+## Unit Tests
+
+Run [Vitest](https://vitest.dev/) for unit tests:
+
+```bash
+npm run test
+```
+
+Run Vitest UI mode:
+
+```bash
+npm run test:ui
+```
+
 ## End-to-End Tests
 
-Playwright tests live under `tests/e2e` and use `PLAYWRIGHT_BASE_URL` from `.env`.
+[Playwright](https://playwright.dev/) e2e tests live under `tests/e2e` and use `PLAYWRIGHT_BASE_URL` from `.env`.
 If `PLAYWRIGHT_BASE_URL` is not set, it defaults to `http://localhost:5173`.
 
-Run the E2E tests in another terminal:
+Run the E2E tests:
 
 ```bash
 npm run test:e2e
