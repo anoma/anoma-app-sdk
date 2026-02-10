@@ -55,6 +55,11 @@ export const EthereumMainnetChainId = 1;
 export const EthereumSepoliaChainId = 11155111;
 export const BaseMainnetChainId = 8453;
 
+// Blocks deposit if total amount is bigger than maxBalanceInUsd
+export const maxBalanceInUsd = Number(
+  import.meta.env?.MAX_DEPOSIT_AMOUNT_IN_USD ?? 1.0
+);
+
 export const EthereumMainnetForwarderContract =
   "0x775C81A47F2618a8594a7a7f4A3Df2a300337559";
 export const EthereumSepoliaForwarderContract =
