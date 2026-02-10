@@ -1,19 +1,14 @@
 import { serializeBigInt } from "lib/utils";
-import { ResponseError, type ApiConfig } from "./types";
+import { ResponseError } from "./types";
 
 /**
  * Generic ApiClient base class
  */
 export class ApiClient<P extends string = string> {
-  protected config: ApiConfig;
+  protected url: string;
 
-  constructor(config: ApiConfig) {
-    this.config = config;
-  }
-
-  get url(): string {
-    const { baseUrl, port, endpoint } = this.config;
-    return `${baseUrl}${port ? `:${port}` : ""}${endpoint ?? ""}`;
+  constructor(url: string) {
+    this.url = url;
   }
 
   private _endpoint(path: P | `${P}/${string}`): string {

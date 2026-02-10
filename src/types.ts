@@ -1,4 +1,3 @@
-import type { ApiConfig } from "api";
 import {
   BaseMainnetChainId,
   EthereumMainnetChainId,
@@ -78,8 +77,8 @@ export type Config = {
   permit2Address: Address;
   permit2DeadlineOffset: number;
   forwarderAddress: Address;
-  backend: ApiConfig;
-  indexer: ApiConfig;
-  envio: ApiConfig;
+  backendUrl: string;
+  indexerUrl: string;
+  envioUrl: string;
   chain: ChainSettings;
 };

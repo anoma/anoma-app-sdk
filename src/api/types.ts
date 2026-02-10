@@ -1,11 +1,5 @@
 import type { Hex } from "viem";
 
-export type ApiConfig = {
-  baseUrl: string;
-  port?: number;
-  endpoint?: string;
-};
-
 // HTTP status codes we may want to check for
 export const HttpStatus = {
   Ok: 200,
