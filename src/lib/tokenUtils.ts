@@ -64,44 +64,46 @@ export const getTokenBySymbol = (symbol?: string): TokenRegistry =>
   tokenRegistry.find(token => token.symbol === symbol) ??
   getNotFoundToken({ symbol });
 
+/** Finds a token registry entry matching both network and symbol. */
+export const getTokenById = (tokenId: TokenId): TokenRegistry | undefined =>
+  tokenRegistry.find(t => `${t.network}:${t.symbol}` === tokenId);
+
 /**
  * Converts aggregated token balances to TokenBalance array format
  * for use in transfer forms and other components.
  * @param balancesPerToken - Record of token balances from useAggregatedTokenBalances
- * @returns Array of TokenBalance objects with symbol, amount, and network
+ * @returns Array of TokenBalance objects with full token registry and amount
  */
 export const convertAggregatedToTokenBalance = (
   balancesPerToken: Record<TokenId, AggregatedTokenBalance>
 ): TokenBalance[] => {
-  return Object.entries(balancesPerToken).map(([tokenId, balance]) => ({
-    symbol: balance.symbol,
-    amount: balance.raw,
-    network: getNetworkFromTokenId(tokenId),
-  }));
+  const tokenIds = Object.keys(balancesPerToken) as TokenId[];
+  return tokenIds.flatMap(tokenId => {
+    const token = getTokenById(tokenId);
+    if (!token) return [];
+    return { token, amount: balancesPerToken[tokenId].raw };
+  });
 };
 
 export const convertWalletBalanceToTokenBalance = (
   balances: WalletBalance[] = []
 ): TokenBalance[] => {
-  const allowedTokens = new Set(tokenRegistry.map(t => t.address));
-  return (
-    balances
-      .filter(b => allowedTokens.has(b.address))
-      .map(b => ({
-        symbol: b.symbol,
-        amount: b.value,
-      })) ?? []
-  );
+  return balances.reduce<TokenBalance[]>((acc, b) => {
+    const token = tokenRegistry.find(t => isAddressEqual(t.address, b.address));
+    if (token) acc.push({ token, amount: b.value });
+    return acc;
+  }, []);
 };
 
 export const tokenId = (tokenRegistry: TokenRegistry): TokenId => {
   return `${tokenRegistry.network}:${tokenRegistry.symbol}`;
 };
 
+/** Finds the balance entry matching a given token registry. */
 export const findBalanceByToken = (
   balances: TokenBalance[],
-  token?: TokenRegistry | TokenBalance
-) => balances.find(t => t.symbol === token?.symbol);
+  token?: TokenRegistry
+) => balances.find(t => t.token.symbol === token?.symbol);
 
 export const getNetworkFromTokenId = (tokenId: TokenId) =>
   tokenId.split(":")[0];
