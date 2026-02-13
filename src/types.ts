@@ -39,8 +39,6 @@ export type TransactionReceipt = {
   dateTime: Date;
 };
 
-export type TokenId = string; // {network}:{symbol}
-
 export type TokenRegistry = {
   symbol: string;
   address: Address;
@@ -49,9 +47,8 @@ export type TokenRegistry = {
 };
 
 export type TokenBalance = {
-  symbol: string;
+  token: TokenRegistry;
   amount: bigint;
-  network?: string;
 };
 
 export const chainIds = [
@@ -69,6 +66,8 @@ export type ChainSettings = {
 export type ChainLookup = Record<SupportedChainId, ChainSettings>;
 
 export type Network = "base" | "ethereum" | "ethereum-sepolia" | "unknown";
+
+export type TokenId = `${Network}:${string}`; // {network}:{symbol}
 
 /**
  * Represents the runtime configuration of Transfer Example
