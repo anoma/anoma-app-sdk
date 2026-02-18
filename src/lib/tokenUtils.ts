@@ -4,8 +4,8 @@ import {
   EthereumSepoliaForwarderContract,
 } from "app-constants";
 import { tokenRegistry } from "config/tokenRegistry";
-import type { AggregatedTokenBalance } from "hooks/useAggregatedTokenBalances";
-import type { WalletBalance } from "hooks/useWalletBalances";
+import type { AggregatedTokenBalance } from "hooks/resources/useAggregatedTokenBalances";
+import type { WalletBalance } from "hooks/resources/useWalletBalances";
 import type {
   EncodedResourceWithStatus,
   Network,

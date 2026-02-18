@@ -27,30 +27,36 @@ This is a domain-driven React application for privacy-preserving payments on the
 
 ### Directory Map (`src/`)
 
-| Directory       | Purpose                                                                                       |
-| --------------- | --------------------------------------------------------------------------------------------- |
-| `api/`          | API clients (`ApiClient` base class, `TransferBackendClient`, `IndexerClient`, `EnvioClient`) |
-| `config/`       | App config (`app.ts`), token registry, chain settings, wagmi config                           |
-| `domain/`       | Business logic — **never import UI or hooks here**                                            |
-| ├ `crypto/`     | Vault encryption/decryption (WebAuthn, passkeys)                                              |
-| ├ `keys/`       | Key pair models (`KeyPair`, `NullifierKeyPair`) and derivation services                       |
-| ├ `resources/`  | Resource encoding/decoding                                                                    |
-| ├ `transfer/`   | Transfer logic, resource splitting, authorization                                             |
-| ├ `vault/`      | Vault storage types                                                                           |
-| └ `queue/`      | Transaction queue management                                                                  |
-| `hooks/`        | Custom React hooks (data fetching, forms, auth, wallet)                                       |
-| `lib/`          | Pure utility functions (`utils.ts`, `forms.ts`, `payAddress.ts`)                              |
-| `providers/`    | `AnomaProvider` + `AnomaContext` — app-wide dependency injection                              |
-| `routes/`       | TanStack Router file-based routes                                                             |
-| `schemas/`      | Zod validation schemas                                                                        |
-| `store/`        | Jotai atoms for global state                                                                  |
-| `ui/`           | All visual components                                                                         |
-| ├ `components/` | Reusable primitives (Button, Input, Modal, etc.)                                              |
-| ├ `features/`   | Composed components with business logic (forms, modals, pages)                                |
-| ├ `icons/`      | Icon components                                                                               |
-| ├ `layouts/`    | Page layout shells (Auth layout, App layout)                                                  |
-| └ `stories/`    | Storybook stories                                                                             |
-| `wasm/`         | WASM client initialization from `arm-bindings`                                                |
+| Directory           | Purpose                                                                                       |
+| ------------------- | --------------------------------------------------------------------------------------------- |
+| `api/`              | API clients (`ApiClient` base class, `TransferBackendClient`, `IndexerClient`, `EnvioClient`) |
+| `config/`           | App config (`app.ts`), token registry, chain settings, wagmi config                           |
+| `domain/`           | Business logic — **never import UI or hooks here**                                            |
+| ├ `crypto/`         | Vault encryption/decryption (WebAuthn, passkeys)                                              |
+| ├ `keys/`           | Key pair models (`KeyPair`, `NullifierKeyPair`) and derivation services                       |
+| ├ `resources/`      | Resource encoding/decoding                                                                    |
+| ├ `transfer/`       | Transfer logic, resource splitting, authorization                                             |
+| ├ `vault/`          | Vault storage types                                                                           |
+| └ `queue/`          | Transaction queue management                                                                  |
+| `hooks/`            | Custom React hooks, organized by domain concern                                               |
+| ├ `auth/`           | Authentication, passkeys, wallet connection, vault backup, sign-up                            |
+| ├ `transfer/`       | Transfer primitives: form, resources, Permit2, compliance, animated transfer                  |
+| ├ `transfer/flows/` | Flow orchestrators: deposit, send, withdraw, pay, claim                                       |
+| ├ `resources/`      | Data fetching: balances, resources, token prices, nullifiers, transaction history             |
+| ├ `routing/`        | Route guards and redirects                                                                    |
+| └ `ui/`             | UI utilities: click outside, menu animation, success animation                                |
+| `lib/`              | Pure utility functions (`utils.ts`, `forms.ts`, `payAddress.ts`)                              |
+| `providers/`        | `AnomaProvider` + `AnomaContext` — app-wide dependency injection                              |
+| `routes/`           | TanStack Router file-based routes                                                             |
+| `schemas/`          | Zod validation schemas                                                                        |
+| `store/`            | Jotai atoms for global state                                                                  |
+| `ui/`               | All visual components                                                                         |
+| ├ `components/`     | Reusable primitives (Button, Input, Modal, etc.)                                              |
+| ├ `features/`       | Composed components with business logic (forms, modals, pages)                                |
+| ├ `icons/`          | Icon components                                                                               |
+| ├ `layouts/`        | Page layout shells (Auth layout, App layout)                                                  |
+| └ `stories/`        | Storybook stories                                                                             |
+| `wasm/`             | WASM client initialization from `arm-bindings`                                                |
 
 ### Dependency Direction
 
