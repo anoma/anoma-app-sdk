@@ -63,15 +63,6 @@ export type IndexerResourceResponse = {
   resources: IndexerResource[];
 };
 
-export type IndexerVaultResponse = {
-  ciphertext: string;
-  ciphertext_signature: string;
-  initialization_vector: string;
-  storage_authorization_public_key: string;
-  user_address: string;
-  version: number;
-};
-
 export type MerkleProofResponse = {
   root: string;
   frontiers: {

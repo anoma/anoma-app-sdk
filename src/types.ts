@@ -7,7 +7,8 @@ import type { Address } from "viem";
 import type { EncodedResource } from "wasm";
 export * from "domain/keys/types";
 export * from "domain/transfer/types";
-export * from "domain/vault/types";
+
+export type AuthType = "wallet" | "passkey";
 
 export type EncodedResourceWithStatus = EncodedResource & {
   isConsumed: boolean;
