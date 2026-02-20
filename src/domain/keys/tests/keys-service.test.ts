@@ -1,6 +1,9 @@
-import { VAULT_VERSION } from "app-constants";
-import { createVaultAccount, unlockVault } from "domain/crypto";
-import { createUserKeyring } from "domain/keys";
+import {
+  createUserKeyring,
+  createUserKeyringFromIkm,
+  deserializeUserKeyring,
+  serializeUserKeyring,
+} from "domain/keys";
 import { generateRandomBytes } from "lib/utils";
 import { expect, test } from "vitest";
 
@@ -20,56 +23,46 @@ test("should create user keyring correctly", () => {
   expect(keyring.nullifierKeyPair.nk).toBeInstanceOf(Uint8Array);
 });
 
-test("should encrypt and decrypt user vault correctly", async () => {
-  const keyring = createUserKeyring();
-  const fakeSignature = generateRandomBytes(18);
-  const walletAddress = "0xA707526e8DF54A7658bD4c19C1db46D6DA2F5157";
-  const vault = await createVaultAccount(
-    walletAddress,
-    keyring,
-    fakeSignature,
-    "wallet"
+test("should derive deterministic keyring from ikm", () => {
+  const ikm = generateRandomBytes(32);
+  const keyring1 = createUserKeyringFromIkm(ikm);
+  const keyring2 = createUserKeyringFromIkm(ikm);
+
+  expect(keyring1.authorityKeyPair.publicKey).toEqual(
+    keyring2.authorityKeyPair.publicKey
   );
+  expect(keyring1.authorityKeyPair.privateKey).toEqual(
+    keyring2.authorityKeyPair.privateKey
+  );
+  expect(keyring1.discoveryKeyPair.publicKey).toEqual(
+    keyring2.discoveryKeyPair.publicKey
+  );
+  expect(keyring1.nullifierKeyPair.nk).toEqual(keyring2.nullifierKeyPair.nk);
+});
 
-  // Checking if vault was created correclty
-  expect(vault.id).toBe(walletAddress);
-  // expect(vault.ciphertext).toBeInstanceOf(ArrayBuffer);
-  expect(vault.ciphertext.byteLength).toBeGreaterThan(0);
-  expect(vault.version).toBe(VAULT_VERSION);
-  expect(vault.iv.length).toBeGreaterThan(0);
-  expect(vault.createdAt).toBeLessThanOrEqual(Date.now());
-  expect(vault.modifiedAt).toBeLessThanOrEqual(Date.now());
+test("should round-trip serialize and deserialize a user keyring", () => {
+  const keyring = createUserKeyring();
+  const json = serializeUserKeyring(keyring);
+  const restored = deserializeUserKeyring(json);
 
-  const decryptedKeyring = await unlockVault(vault, fakeSignature);
-  expect(decryptedKeyring.authorityKeyPair.publicKey).toEqual(
+  expect(restored.authorityKeyPair.publicKey).toEqual(
     keyring.authorityKeyPair.publicKey
   );
-
-  expect(decryptedKeyring.authorityKeyPair.privateKey).toEqual(
+  expect(restored.authorityKeyPair.privateKey).toEqual(
     keyring.authorityKeyPair.privateKey
   );
-
-  expect(decryptedKeyring.discoveryKeyPair.publicKey).toEqual(
+  expect(restored.discoveryKeyPair.publicKey).toEqual(
     keyring.discoveryKeyPair.publicKey
   );
-
-  expect(decryptedKeyring.discoveryKeyPair.privateKey).toEqual(
+  expect(restored.discoveryKeyPair.privateKey).toEqual(
     keyring.discoveryKeyPair.privateKey
   );
-
-  expect(decryptedKeyring.encryptionKeyPair.publicKey).toEqual(
+  expect(restored.encryptionKeyPair.publicKey).toEqual(
     keyring.encryptionKeyPair.publicKey
   );
-
-  expect(decryptedKeyring.encryptionKeyPair.privateKey).toEqual(
+  expect(restored.encryptionKeyPair.privateKey).toEqual(
     keyring.encryptionKeyPair.privateKey
   );
-
-  expect(decryptedKeyring.nullifierKeyPair.cnk).toEqual(
-    keyring.nullifierKeyPair.cnk
-  );
-
-  expect(decryptedKeyring.nullifierKeyPair.nk).toEqual(
-    keyring.nullifierKeyPair.nk
-  );
+  expect(restored.nullifierKeyPair.cnk).toEqual(keyring.nullifierKeyPair.cnk);
+  expect(restored.nullifierKeyPair.nk).toEqual(keyring.nullifierKeyPair.nk);
 });

@@ -1,4 +1,5 @@
 import react from "@vitejs/plugin-react";
+import { fileURLToPath } from "node:url";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { configDefaults, defineConfig } from "vitest/config";
 
@@ -7,7 +8,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
-    setupFiles: "./tests/setup.ts",
+    setupFiles: [fileURLToPath(new URL("./tests/setup.ts", import.meta.url))],
     css: true,
     exclude: [...configDefaults.exclude, "tests/e2e/**"],
   },

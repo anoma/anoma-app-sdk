@@ -11,7 +11,5 @@ export const IndexerPaths = {
   Tags: "/tags",
   LatestRoot: "/latest_root",
   GenerateProof: "/generate_proof",
-  StoreKeyring: "/keyblob",
   AllowList: "/rating",
-  RetrieveKeyring: "/fetch-keyblob",
 } as const;

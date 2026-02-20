@@ -20,10 +20,9 @@ export const AUTH_SIGNATURE_DOMAIN = "TokenTransferAuthorization";
 export const VAULT_VERSION = 1;
 
 // Separate the encryption of the vault into separate domains
-export const KEK_DOMAIN_SALT = "anoma-pay:key_encryption_key";
-export const STORAGE_KEY_DOMAIN_SALT =
-  "anoma-pay:storage_authorization_secret_key";
-export const VAULT_DOMAIN_INFO = "anoma-pay:vault-aes-key";
+export const KEYRING_SALT = "anoma-pay:keyring-seed";
+export const PASSKEY_DOMAIN = "anoma-pay:passkeys";
+export const RETURNING_USER_STORAGE_KEY = "anoma-pay:returning_user";
 
 export const WEBSITE_URL = "https://anoma.money";
 export const WEBSITE_DOMAIN = "anoma.money";
