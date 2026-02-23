@@ -1,62 +1,54 @@
 import { ApiClient } from "./ApiClient";
 import type { NullifierResponse } from "./types";
 
+type GraphQLError = {
+  message: string;
+  locations?: { line: number; column: number }[];
+  path?: (string | number)[];
+  extensions?: Record<string, unknown>;
+};
+
+type GraphQLResponse<TData = unknown> = {
+  data?: TData;
+  errors?: GraphQLError[];
+  extensions?: Record<string, unknown>;
+};
+
 export class EnvioClient extends ApiClient {
-  async nullifiers(logicRef?: string): Promise<NullifierResponse[]> {
+  async nullifiers(logicRef: string): Promise<NullifierResponse> {
     const envioEndpoint = this.url;
 
     // Query for consumed transactions, optionally filtered by logic_ref through transactionExecuted
-    const whereClause = logicRef
-      ? `{isConsumed: {_eq: true}, transactionExecuted: {logicRefs: {_contains: ["${logicRef}"]}}}`
-      : `{isConsumed: {_eq: true}}`;
-
     const query = `
-      query GetConsumedTransactions {
-        ProtocolAdapter_Transaction(where: ${whereClause}) {
+      query GetConsumedTags {
+        Tag(where: {isConsumed: {_eq: true}, logicRef: {_eq: "${logicRef}"}}) {
           id
-          tag
-          isConsumed
-          transactionExecuted {
-            logicRefs
-          }
+          tagHash
         }
       }
     `;
 
-    try {
-      const response = await fetch(envioEndpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ query }),
-      });
+    const response = await fetch(envioEndpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query }),
+    });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-
-      if (result.errors) {
-        console.error("GraphQL errors:", result.errors);
-        return [];
-      }
-
-      const consumedTransactions =
-        result.data.ProtocolAdapter_Transaction || [];
-
-      // Return the consumed transaction tags as nullifiers
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const nullifiers = consumedTransactions.map((tx: any, index: number) => ({
-        nullifier: tx.tag,
-        index: index.toString(),
-        source: "consumed_transaction_tag",
-      }));
-
-      return nullifiers;
-    } catch {
-      return [];
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+
+    const result: GraphQLResponse<{
+      Tag: { id: string; tagHash: string }[];
+    }> = await response.json();
+
+    if (result.errors) {
+      throw new Error(String(result.errors));
+    }
+
+    // Return the consumed tags nullifiers
+    return result.data?.Tag.map(tx => tx.tagHash) ?? [];
   }
 }

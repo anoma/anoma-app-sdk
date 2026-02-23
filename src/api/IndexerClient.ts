@@ -2,7 +2,11 @@ import type { Address } from "viem";
 import type { EncodedKeypair } from "wasm";
 import { ApiClient } from "./ApiClient";
 import { IndexerPaths } from "./paths";
-import { type IndexerResourceResponse, type ResponseJson } from "./types";
+import {
+  type IndexerHealthResponse,
+  type IndexerResourceResponse,
+  type ResponseJson,
+} from "./types";
 
 export class IndexerClient extends ApiClient {
   async addKeys(keypair: EncodedKeypair): Promise<void> {
@@ -12,9 +16,19 @@ export class IndexerClient extends ApiClient {
   async resources(
     discoveryPrivateKey: string
   ): Promise<IndexerResourceResponse> {
-    return this.get<IndexerResourceResponse>(
-      `${IndexerPaths.Tags}/${discoveryPrivateKey}`
+    const { indexed_contracts } = await this.get<IndexerHealthResponse>(
+      IndexerPaths.Health
     );
+    const responses = await Promise.all(
+      indexed_contracts.map(({ chain_id, contract_address }) =>
+        this.get<IndexerResourceResponse>(
+          `${IndexerPaths.Tags}/${chain_id}/${contract_address}/${discoveryPrivateKey}`
+        )
+      )
+    );
+    return {
+      resources: responses.flatMap(r => r.resources),
+    };
   }
 
   async latestRoot(): Promise<string> {
