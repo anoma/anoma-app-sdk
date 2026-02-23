@@ -1,4 +1,5 @@
-import type { Hex } from "viem";
+import type { UUID } from "crypto";
+import type { Address, Hex } from "viem";
 
 // HTTP status codes we may want to check for
 export const HttpStatus = {
@@ -39,10 +40,7 @@ export class ResponseError extends Error {
 /**
  *  RESPONSES
  */
-export type NullifierResponse = {
-  nullifier: string;
-  index: string;
-};
+export type NullifierResponse = string[];
 
 export type IndexerBlob = {
   blob: Hex;
@@ -50,16 +48,11 @@ export type IndexerBlob = {
 };
 
 export type IndexerResource = {
-  id: string;
-  tag: string;
-  public_key: string;
   resource_payload: IndexerBlob;
-  discovery_payload: IndexerBlob;
-  is_consumed: boolean;
+  transaction_hash: Address;
 };
 
 export type IndexerResourceResponse = {
-  status: "ok";
   resources: IndexerResource[];
 };
 
@@ -93,11 +86,37 @@ export type TransactionResponse<T = ResponseJson> = {
 };
 
 export type TransactionHashResponse = {
-  transaction_hash: string;
+  // TODO request for the backend team to rename this variable to transaction_uuid or something else
+  transaction_hash: UUID;
+};
+
+export type TransactionStatusResponse = {
+  status:
+    | "New"
+    | "Proving"
+    | "Failed"
+    | "Submitted"
+    | "Submitting"
+    | "Unprocessable"
+    | "Proven";
+  transaction_uuid: UUID;
+  hash: string;
 };
 
 export type StatusQueueResponse = {
   created: number;
   completed: number;
   processing: number;
+};
+
+export type IndexerContract = {
+  chain_id: number;
+  contract_address: Address;
+  last_block: number;
+};
+
+export type IndexerHealthResponse = {
+  status: "ok";
+  version: string; // "1.0.0",
+  indexed_contracts: IndexerContract[];
 };

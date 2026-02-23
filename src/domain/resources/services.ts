@@ -11,9 +11,9 @@ export async function buildNullifierSet(
   logicRefHex: string = TRANSFER_LOGIC_VERIFYING_KEY
 ): Promise<Set<string>> {
   const hex = logicRefHex.startsWith("0x") ? logicRefHex : `0x${logicRefHex}`;
-  const rows = await envio.nullifiers(hex);
+  const nullifiers = await envio.nullifiers(hex);
   const set = new Set<string>();
-  for (const r of rows) set.add(normalizeHex(r.nullifier));
+  for (const n of nullifiers) set.add(normalizeHex(n));
   return set;
 }
 

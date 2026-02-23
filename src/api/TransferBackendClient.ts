@@ -1,3 +1,4 @@
+import type { UUID } from "crypto";
 import type {
   FeeRequest,
   FeeResponse,
@@ -8,13 +9,23 @@ import type {
 import type { Address } from "viem";
 import { ApiClient } from "./ApiClient";
 import { TransferBackendPaths } from "./paths";
-import type { StatusQueueResponse, TransactionHashResponse } from "./types";
+import type {
+  StatusQueueResponse,
+  TransactionHashResponse,
+  TransactionStatusResponse,
+} from "./types";
 
 export class TransferBackendClient extends ApiClient {
   async transfer(props: Parameters): Promise<TransactionHashResponse> {
     return this.post<Parameters, TransactionHashResponse>(
       TransferBackendPaths.SendTransaction,
       props
+    );
+  }
+
+  async transactionStatus(uuid: UUID): Promise<TransactionStatusResponse> {
+    return this.get<TransactionStatusResponse>(
+      `${TransferBackendPaths.TransactionStatus}/${uuid}`
     );
   }
 
