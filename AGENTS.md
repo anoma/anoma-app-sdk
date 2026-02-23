@@ -15,9 +15,26 @@
   Review `/tsconfig.app.json` and `/eslint.config.js` for compiler and lint constraints.
   Do not modify these files unless explicitly instructed.
 
-- [REQUIRED]
-  You must be proficient in all technologies in the **Tech Stack** section.
-  If a task requires unfamiliar technology, state the limitation before proceeding.
+---
+
+## Skills & Workflow
+
+Skills are loaded via the `Skill` tool. Invoke the relevant skill **before** any response or action, even clarifying questions. If a skill might apply (even 1% chance), invoke it.
+
+### Skill Map
+
+| Stage | Skill |
+|-------|-------|
+| New feature / component / behavior | `superpowers:brainstorming` — explore intent and design before writing code |
+| Multi-step implementation | `superpowers:writing-plans` → `superpowers:executing-plans` |
+| Any feature or bugfix | `superpowers:test-driven-development` — write tests before implementation |
+| Bug / test failure / unexpected behavior | `superpowers:systematic-debugging` — before proposing any fix |
+| Before claiming work is done | `superpowers:verification-before-completion` — run commands, confirm output |
+| Completing a development branch | `superpowers:finishing-a-development-branch` |
+| After major work / before merging | `superpowers:requesting-code-review` |
+| Feature work needing isolation | `superpowers:using-git-worktrees` |
+| 2+ independent tasks | `superpowers:dispatching-parallel-agents` |
+| PR review requested | `pr-review-toolkit:review-pr` |
 
 ---
 
@@ -79,13 +96,6 @@ lib (pure utilities, no side effects)
 
 ---
 
-## Code Principles
-
-- [REQUIRED] Clarity over cleverness. Maintainability over brevity. Explicitness over inference.
-- [REQUIRED] Avoid excessive comments — prefer code readability. Comments explain "why", not "what".
-
----
-
 ## Imports
 
 - [REQUIRED] Use **absolute imports** from `src/` root. The `baseUrl` is `./src`.
@@ -115,19 +125,6 @@ lib (pure utilities, no side effects)
   - Always destructure props in function signature
   - Create custom hooks for React Query usages (see `src/hooks/`)
 
-  ```typescript
-  import type { Address } from "viem";
-
-  type MyComponentProps = {
-    address: Address;
-    label: string;
-  };
-
-  export const MyComponent = ({ address, label }: MyComponentProps) => {
-    return <div>{label}: {address}</div>;
-  };
-  ```
-
 - [REQUIRED] For styled components, use `tailwind-variants` (`tv()`) for variant definitions.
   See `src/ui/components/Button.tsx` for the canonical example.
 
@@ -151,9 +148,6 @@ lib (pure utilities, no side effects)
 ## Routing (TanStack Router)
 
 - [REQUIRED] Routes live in `src/routes/` using file-based routing.
-- [INFO] `_auth/` = unauthenticated layout group. `_authenticated/` = protected layout group.
-- [INFO] `$param` segments are dynamic route parameters.
-- [INFO] Auto code-splitting is enabled via the TanStack Router Vite plugin.
 
 ---
 
@@ -179,8 +173,6 @@ lib (pure utilities, no side effects)
 
 - [REQUIRED] API clients extend `ApiClient` base class in `src/api/ApiClient.ts`.
 - [REQUIRED] Use `ResponseError` (from `src/api/types.ts`) for API error handling.
-- [INFO] Three backends: `TransferBackendClient`, `IndexerClient`, `EnvioClient` (GraphQL).
-- [INFO] Config is loaded from `import.meta.env.VITE_APP_*` variables, centralized in `config/app.ts`.
 
 ---
 
@@ -206,18 +198,12 @@ lib (pure utilities, no side effects)
 ## Domain Layer
 
 - [REQUIRED] Domain code in `src/domain/` must be **pure business logic** — no React, no UI, no side effects.
-- [INFO] Key concepts:
-  - **UserKeyring**: Authority, Discovery, Encryption, and Nullifier key pairs
-  - **Vault**: Encrypted storage of keyring, unlocked with WebAuthn/passkey signatures
-  - **Resources**: Encoded representations of token ownership (privacy-preserving)
-  - **Transfer**: Cryptographic operations for sending/receiving resources
 - [REQUIRED] Use `invariant()` from `lib/utils` for runtime assertions in domain logic.
 
 ---
 
 ## WASM Integration
 
-- [INFO] WASM bindings are in `arm-bindings/` (compiled from `@anoma/lib` Rust crate).
 - [REQUIRED] Always initialize WASM before use via `initWasm()` or the `initClient()` helper.
 - [REQUIRED] WASM-dependent classes use the async `ClassName.init()` factory pattern.
 
@@ -244,7 +230,6 @@ lib (pure utilities, no side effects)
 - [REQUIRED] Prefer proper type definitions over type assertions (`as`, `!`).
 - [REQUIRED] Avoid implicit type widening (e.g., untyped object literals).
 - [REQUIRED] Reuse existing types. New types go in `/src/types.ts` **only if** existing types are insufficient.
-- [INFO] Unused vars prefixed with `_` are allowed (ESLint rule: `argsIgnorePattern: "^_"`).
 
 ---
 
@@ -261,7 +246,6 @@ lib (pure utilities, no side effects)
 
 - [REQUIRED] Document all functions using JSDoc.
 - [REQUIRED] When modifying a function: update its existing docs or add docs if missing.
-- [PREFERRED] Use early returns to improve readability and reduce nesting.
 - [REQUIRED] Naming conventions:
   - **Components**: PascalCase file and export (`Button.tsx` → `export const Button`)
   - **Props types**: `<ComponentName>Props` (not exported)
@@ -279,6 +263,10 @@ lib (pure utilities, no side effects)
   2. `npm run tsc-check` — resolve TypeScript errors
   3. `npm run build` — verify production build
   4. `npm run test:run` — run unit/integration tests
+
+- [FORBIDDEN] Do not claim work is complete, tests are passing, or code is correct without
+  **actually running the above commands and confirming the output**. Use the
+  `superpowers:verification-before-completion` skill before making any success claim.
 
 - [INFO] Additional commands:
   - `npm run test:e2e` — Playwright E2E tests (requires running dev server or `PLAYWRIGHT_BASE_URL`)
@@ -306,14 +294,6 @@ lib (pure utilities, no side effects)
 
 - [REQUIRED] All commits must follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 - [REQUIRED] AI-generated commits must include `#ai` in the commit message.
-- [INFO] Husky pre-commit hooks are configured — do not bypass with `--no-verify`.
-
----
-
-## Code Review Behavior
-
-- [REQUIRED] Apply **all** rules in this document when reviewing pull requests.
-- [REQUIRED] Do not approve code that violates TypeScript rules, testing requirements, or security constraints.
 
 ---
 
@@ -321,6 +301,8 @@ lib (pure utilities, no side effects)
 
 - [REQUIRED] Save important information from the current session in `/.NOTES`.
 - [INFO] `.NOTES` does not need to be human-readable, has no size constraints, and is gitignored.
+- [INFO] Useful things to record: decisions made and their rationale, patterns discovered,
+  gotchas found in the codebase, in-progress work left incomplete, next steps.
 
 ---
 
