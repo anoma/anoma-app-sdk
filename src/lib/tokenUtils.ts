@@ -99,11 +99,14 @@ export const tokenId = (tokenRegistry: TokenRegistry): TokenId => {
   return `${tokenRegistry.network}:${tokenRegistry.symbol}`;
 };
 
-/** Finds the balance entry matching a given token registry. */
+/** Finds the balance entry matching a given token registry by both network and symbol. */
 export const findBalanceByToken = (
   balances: TokenBalance[],
   token?: TokenRegistry
-) => balances.find(t => t.token.symbol === token?.symbol);
+) =>
+  balances.find(
+    t => t.token.symbol === token?.symbol && t.token.network === token?.network
+  );
 
 export const getNetworkFromTokenId = (tokenId: TokenId) =>
   tokenId.split(":")[0];
