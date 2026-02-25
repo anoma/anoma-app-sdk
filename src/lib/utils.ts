@@ -14,7 +14,9 @@ import {
   bytesToHex,
   formatUnits,
   hexToBytes,
+  isAddress,
   stringToBytes as viemStringToBytes,
+  type Address,
   type Hex,
 } from "viem";
 import z from "zod";
@@ -25,6 +27,11 @@ export const cn = (...inputs: ClassValue[]) => {
 
 export const shortenAddress = (address: string, head = 6, tail = 4) => {
   return `${address.slice(0, 2 + head)}…${address.slice(-tail)}`;
+};
+
+export const normalizeEvmAddress = (address: string): Address => {
+  const normalized = address.toLowerCase();
+  return isAddress(normalized) ? normalized : `0x${normalized}`;
 };
 
 export const checkForWeb3Icons = (

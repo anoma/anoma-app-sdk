@@ -71,6 +71,11 @@ export type Network = "base" | "ethereum" | "ethereum-sepolia" | "unknown";
 
 export type TokenId = `${Network}:${string}`; // {network}:{symbol}
 
+export type TokenRegistryIndex = {
+  byTokenId: Record<TokenId, TokenRegistry>;
+  byAddress: Record<Address, TokenRegistry>;
+};
+
 /**
  * Represents the runtime configuration of Transfer Example
  */
