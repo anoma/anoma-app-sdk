@@ -7,7 +7,7 @@ import { tokenRegistry } from "config/tokenRegistry";
 import type { AggregatedTokenBalance } from "hooks/resources/useAggregatedTokenBalances";
 import type { WalletBalance } from "hooks/resources/useWalletBalances";
 import type {
-  EncodedResourceWithStatus,
+  AppResource,
   Network,
   TokenBalance,
   TokenId,
@@ -38,9 +38,7 @@ export const getNetworkByForwarder = (forwarder: Address): Network => {
  * @param resource - The encoded resource with status information
  * @returns The matching token registry or a placeholder for unknown tokens
  */
-export const getTokenByResource = (
-  resource: EncodedResourceWithStatus
-): TokenRegistry => {
+export const getTokenByResource = (resource: AppResource): TokenRegistry => {
   const address = resource.erc20TokenAddress;
   const network = getNetworkByForwarder(resource.forwarder);
   return (

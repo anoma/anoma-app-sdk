@@ -1,5 +1,5 @@
 import { ApiClient } from "./ApiClient";
-import type { NullifierResponse } from "./types";
+import type { ConsumedTagsResponse } from "./types";
 
 type GraphQLError = {
   message: string;
@@ -15,15 +15,23 @@ type GraphQLResponse<TData = unknown> = {
 };
 
 export class EnvioClient extends ApiClient {
-  async nullifiers(logicRef: string): Promise<NullifierResponse> {
+  // Query for consumed tags, filtered by logicRef
+  async consumedTags(logicRef: string): Promise<ConsumedTagsResponse> {
     const envioEndpoint = this.url;
 
-    // Query for consumed transactions, optionally filtered by logic_ref through transactionExecuted
     const query = `
       query GetConsumedTags {
         Tag(where: {isConsumed: {_eq: true}, logicRef: {_eq: "${logicRef}"}}) {
           id
           tagHash
+          transaction {
+            id
+            evmTransaction {
+              id
+              txHash
+              timestamp
+            }
+          }
         }
       }
     `;
@@ -40,15 +48,13 @@ export class EnvioClient extends ApiClient {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const result: GraphQLResponse<{
-      Tag: { id: string; tagHash: string }[];
-    }> = await response.json();
+    const result: GraphQLResponse<{ Tag: ConsumedTagsResponse }> =
+      await response.json();
 
     if (result.errors) {
       throw new Error(String(result.errors));
     }
 
-    // Return the consumed tags nullifiers
-    return result.data?.Tag.map(tx => tx.tagHash) ?? [];
+    return result.data?.Tag ?? [];
   }
 }

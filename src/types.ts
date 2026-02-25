@@ -1,3 +1,4 @@
+import type { IndexerEVMTransaction } from "api";
 import {
   BaseMainnetChainId,
   EthereumMainnetChainId,
@@ -10,10 +11,12 @@ export * from "domain/transfer/types";
 
 export type AuthType = "wallet" | "passkey";
 
-export type EncodedResourceWithStatus = EncodedResource & {
+export type AppResource = EncodedResource & {
   isConsumed: boolean;
   erc20TokenAddress: Address;
   forwarder: Address;
+  createdTransaction?: IndexerEVMTransaction;
+  consumedTransaction?: IndexerEVMTransaction;
 };
 
 export const TRANSACTION_STATUS = [
@@ -33,9 +36,7 @@ export type TransactionStatus = (typeof TRANSACTION_STATUS)[number];
 export type TransactionReceipt = {
   hash: Address;
   status: TransactionStatus;
-  sender: string;
-  receiver: string;
-  token: Address;
+  token: TokenRegistry;
   quantity: bigint;
   dateTime: Date;
 };
