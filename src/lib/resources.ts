@@ -1,10 +1,10 @@
-import type { EncodedResourceWithStatus } from "types";
+import type { AppResource } from "types";
 import { isAddressEqual, type Address } from "viem";
 
 export function getResourcesForToken(
   tokenAddress: Address,
-  resources?: EncodedResourceWithStatus[]
-): EncodedResourceWithStatus[] {
+  resources?: AppResource[]
+): AppResource[] {
   if (!resources) return [];
 
   return resources.filter(r => {

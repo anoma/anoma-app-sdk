@@ -1,20 +1,42 @@
-import type { EnvioClient, IndexerResource } from "api";
-import { TRANSFER_LOGIC_VERIFYING_KEY } from "app-constants";
+import type { IndexerEVMTransaction, IndexerResource, IndexerTag } from "api";
 import { fromHex, normalizeHex } from "lib/utils";
-import type { EncodedResourceWithStatus, Parameters, UserKeyring } from "types";
+import type { AppResource, Parameters, UserKeyring } from "types";
 import { type Address, type Hex } from "viem";
-import { NullifierKey, ResourceWithLabel, type EncodedResource } from "wasm";
+import {
+  NullifierKey,
+  Resource,
+  ResourceWithLabel,
+  type EncodedResource,
+} from "wasm";
 
-/** Convert an Envio nullifier list into a normalized hex set. */
-export async function buildNullifierSet(
-  envio: EnvioClient,
-  logicRefHex: string = TRANSFER_LOGIC_VERIFYING_KEY
-): Promise<Set<string>> {
-  const hex = logicRefHex.startsWith("0x") ? logicRefHex : `0x${logicRefHex}`;
-  const nullifiers = await envio.nullifiers(hex);
-  const set = new Set<string>();
-  for (const n of nullifiers) set.add(normalizeHex(n));
-  return set;
+type TransactionLookup = {
+  byNullifier: Map<string, IndexerEVMTransaction>;
+  byTxHash: Map<Address, IndexerEVMTransaction>;
+};
+
+type ResourceWithDetails = {
+  resource: Resource;
+  forwarder: Address;
+  erc20TokenAddress: Address;
+  transactionHash: Address;
+};
+
+export function buildTransactionLookup(tags: IndexerTag[]): TransactionLookup {
+  const lookup: TransactionLookup = {
+    byNullifier: new Map(),
+    byTxHash: new Map(),
+  };
+  for (const tag of tags) {
+    lookup.byNullifier.set(
+      normalizeHex(tag.tagHash),
+      tag.transaction.evmTransaction
+    );
+    lookup.byTxHash.set(
+      tag.transaction.evmTransaction.txHash,
+      tag.transaction.evmTransaction
+    );
+  }
+  return lookup;
 }
 
 export function deserializeResourcePayload(
@@ -42,31 +64,40 @@ const tryToDeserializeResourcePayload = (
 export const parseIndexerResourceResponse = async (
   keyring: UserKeyring,
   resourceResponseCollection: IndexerResource[]
-): Promise<ResourceWithLabel[]> => {
+): Promise<ResourceWithDetails[]> => {
   return resourceResponseCollection.flatMap(item => {
     const payload = tryToDeserializeResourcePayload(keyring, item);
-    return payload ? payload : [];
+    if (!payload) {
+      return [];
+    }
+    return {
+      resource: payload.resource,
+      forwarder: payload.forwarder as Address,
+      erc20TokenAddress: payload.erc20TokenAddress as Address,
+      transactionHash: item.transaction_hash,
+    };
   });
 };
 
 export const pickNonEphemeralResources = (
-  resources: ResourceWithLabel[]
-): ResourceWithLabel[] => {
+  resources: ResourceWithDetails[]
+): ResourceWithDetails[] => {
   return resources.filter(item => !item.resource.encode().is_ephemeral);
 };
 
 export const openResourceMetadata = async (
   keyring: UserKeyring,
-  resources: ResourceWithLabel[],
-  nullifierSet: Set<string>,
+  resources: ResourceWithDetails[],
+  transactionLookup: TransactionLookup,
   onlyAvailableResources = true
-): Promise<EncodedResourceWithStatus[]> => {
-  const updatedResources: EncodedResourceWithStatus[] = [];
+): Promise<AppResource[]> => {
+  const updatedResources: AppResource[] = [];
   const nullifierKey = new NullifierKey(keyring.nullifierKeyPair.nk);
 
   // Step 1: Compute optimistic balance from all decrypted resources quantities
-  for (const resourceWithLabel of resources) {
-    const { resource, erc20TokenAddress, forwarder } = resourceWithLabel;
+  for (const deserializedResource of resources) {
+    const { resource, erc20TokenAddress, forwarder, transactionHash } =
+      deserializedResource;
 
     const resourceProps = resource.encode();
 
@@ -79,15 +110,21 @@ export const openResourceMetadata = async (
     }
 
     if (nullifierHex) {
-      const actualIsConsumed = nullifierSet.has(nullifierHex);
       // Step 3: Compare computed nullifier with indexer-provided nullifiers
       // Update the actual consumed status based on nullifier comparison
-      if (!onlyAvailableResources || !actualIsConsumed) {
+      const createdTransaction =
+        transactionLookup.byTxHash.get(transactionHash);
+      const consumedTransaction =
+        transactionLookup.byNullifier.get(nullifierHex);
+      const isConsumed = !!consumedTransaction;
+      if (!onlyAvailableResources || !isConsumed) {
         updatedResources.push({
           ...resourceProps,
-          isConsumed: actualIsConsumed,
-          erc20TokenAddress: erc20TokenAddress as Address,
-          forwarder: forwarder as Address,
+          isConsumed,
+          erc20TokenAddress,
+          forwarder,
+          createdTransaction,
+          consumedTransaction,
         });
       }
     }
