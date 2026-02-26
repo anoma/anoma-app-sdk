@@ -8,6 +8,7 @@ import type { WalletBalance } from "hooks/resources/useWalletBalances";
 import type {
   AppResource,
   Network,
+  NetworkAddress,
   TokenBalance,
   TokenId,
   TokenRegistry,
@@ -16,6 +17,7 @@ import type {
 import type { Address } from "viem";
 import { normalizeEvmAddress } from "./utils";
 
+/** Creates a placeholder token registry entry for unknown or unresolved tokens. */
 const getNotFoundToken = (values?: Partial<TokenRegistry>): TokenRegistry => ({
   symbol: "?",
   address: "0x",
@@ -30,8 +32,22 @@ const networkMap: Record<string, Network> = {
   [BaseMainnetForwarderContract.toLowerCase()]: "base",
 };
 
+/** Resolves a forwarder contract address to its corresponding network. */
 export const getNetworkByForwarder = (forwarder: Address): Network => {
   return networkMap[forwarder.toLowerCase()] ?? "unknown";
+};
+
+/** Builds a `NetworkAddress` key by combining a network and a normalized EVM address. */
+export const networkAddress = (
+  network: Network,
+  address: Address
+): NetworkAddress => `${network}:${normalizeEvmAddress(address)}`;
+
+/** Builds a `TokenId` from a token's network and lowercased symbol (e.g. `"base:usdc"`). */
+export const tokenId = (
+  tokenRegistry: Pick<TokenRegistry, "network" | "symbol">
+): TokenId => {
+  return `${tokenRegistry.network}:${tokenRegistry.symbol.toLowerCase()}`;
 };
 
 /**
@@ -47,33 +63,25 @@ export const getTokenByResource = (
   const address = resource.erc20TokenAddress;
   const network = getNetworkByForwarder(resource.forwarder);
   return (
-    registry.byAddress[normalizeEvmAddress(address)] ??
+    registry.byAddress[networkAddress(network, address)] ??
     getNotFoundToken({ address, network })
   );
 };
 
+/** Looks up a token in the registry by its network and contract address. */
 export const getTokenByAddress = (
   registry: TokenRegistryIndex,
+  network: Network,
   address?: Address
 ): TokenRegistry =>
-  (address && registry.byAddress[normalizeEvmAddress(address)]) ??
-  getNotFoundToken({ address });
-
-export const getTokenBySymbol = (
-  registry: TokenRegistryIndex,
-  symbol?: string
-): TokenRegistry =>
-  Object.values(registry.byTokenId).find(token => token.symbol === symbol) ??
-  getNotFoundToken({ symbol });
+  (address && registry.byAddress[networkAddress(network, address)]) ??
+  getNotFoundToken({ address, network });
 
 /** Finds a token registry entry matching both network and symbol. */
 export const getTokenById = (
   registry: TokenRegistryIndex,
-  tokenId: TokenId
-): TokenRegistry | undefined =>
-  Object.values(registry.byTokenId).find(
-    t => `${t.network}:${t.symbol}` === tokenId
-  );
+  id: TokenId
+): TokenRegistry | undefined => registry.byTokenId[id];
 
 /**
  * Converts aggregated token balances to TokenBalance array format
@@ -94,27 +102,24 @@ export const convertAggregatedToTokenBalance = (
   });
 };
 
+/** Converts raw wallet balances into `TokenBalance` entries, filtering out tokens not in the registry. */
 export const convertWalletBalanceToTokenBalance = (
   registry: TokenRegistryIndex,
+  network: Network,
   balances: WalletBalance[] = []
 ): TokenBalance[] =>
-  balances.reduce<TokenBalance[]>((acc, b) => {
-    const token = registry.byAddress[normalizeEvmAddress(b.address)];
-    if (token) acc.push({ token, amount: b.value });
-    return acc;
-  }, []);
-
-export const tokenId = (
-  tokenRegistry: Pick<TokenRegistry, "network" | "symbol">
-): TokenId => {
-  return `${tokenRegistry.network}:${tokenRegistry.symbol.toLowerCase()}`;
-};
+  balances.flatMap(b => {
+    const token = registry.byAddress[networkAddress(network, b.address)];
+    if (!token) return [];
+    return { token, amount: b.value };
+  });
 
 /** Finds the balance entry matching a given token registry by both network and symbol. */
 export const findBalanceByToken = (
   balances: TokenBalance[],
   token?: TokenRegistry
-) =>
-  balances.find(
-    t => t.token.symbol === token?.symbol && t.token.network === token?.network
-  );
+) => {
+  if (!token) return undefined;
+  const id = tokenId(token);
+  return balances.find(t => tokenId(t.token) === id);
+};
