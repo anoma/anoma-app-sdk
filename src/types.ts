@@ -70,10 +70,11 @@ export type ChainLookup = Record<SupportedChainId, ChainSettings>;
 export type Network = "base" | "ethereum" | "ethereum-sepolia" | "unknown";
 
 export type TokenId = `${Network}:${string}`; // {network}:{symbol}
+export type NetworkAddress = `${Network}:${Address}`; // {network}:{address}
 
 export type TokenRegistryIndex = {
   byTokenId: Record<TokenId, TokenRegistry>;
-  byAddress: Record<Address, TokenRegistry>;
+  byAddress: Record<NetworkAddress, TokenRegistry>;
 };
 
 /**
