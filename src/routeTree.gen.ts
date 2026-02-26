@@ -24,6 +24,7 @@ import { Route as AuthenticatedAppDashboardRouteImport } from "./routes/_authent
 import { Route as AuthSignUpWalletRouteImport } from "./routes/_auth/sign-up/wallet";
 import { Route as AuthSignUpPasskeysRouteImport } from "./routes/_auth/sign-up/passkeys";
 import { Route as AuthLoginWalletRouteImport } from "./routes/_auth/login/wallet";
+import { Route as AuthenticatedOverlayReceiptIdRouteImport } from "./routes/_authenticated/_overlay/receipt.$id";
 import { Route as AuthenticatedModalPayRequestRouteImport } from "./routes/_authenticated/_modal/pay.request";
 import { Route as AuthenticatedModalPayReceiverRouteImport } from "./routes/_authenticated/_modal/pay.$receiver";
 import { Route as AuthenticatedModalClaimSeedRouteImport } from "./routes/_authenticated/_modal/claim.$seed";
@@ -104,6 +105,12 @@ const AuthLoginWalletRoute = AuthLoginWalletRouteImport.update({
   path: "/login/wallet",
   getParentRoute: () => AuthRouteRoute,
 } as any);
+const AuthenticatedOverlayReceiptIdRoute =
+  AuthenticatedOverlayReceiptIdRouteImport.update({
+    id: "/_overlay/receipt/$id",
+    path: "/receipt/$id",
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any);
 const AuthenticatedModalPayRequestRoute =
   AuthenticatedModalPayRequestRouteImport.update({
     id: "/pay/request",
@@ -144,6 +151,7 @@ export interface FileRoutesByFullPath {
   "/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
   "/pay/$receiver": typeof AuthenticatedModalPayReceiverRoute;
   "/pay/request": typeof AuthenticatedModalPayRequestRoute;
+  "/receipt/$id": typeof AuthenticatedOverlayReceiptIdRoute;
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
@@ -161,6 +169,7 @@ export interface FileRoutesByTo {
   "/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
   "/pay/$receiver": typeof AuthenticatedModalPayReceiverRoute;
   "/pay/request": typeof AuthenticatedModalPayRequestRoute;
+  "/receipt/$id": typeof AuthenticatedOverlayReceiptIdRoute;
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
@@ -183,6 +192,7 @@ export interface FileRoutesById {
   "/_authenticated/_modal/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
   "/_authenticated/_modal/pay/$receiver": typeof AuthenticatedModalPayReceiverRoute;
   "/_authenticated/_modal/pay/request": typeof AuthenticatedModalPayRequestRoute;
+  "/_authenticated/_overlay/receipt/$id": typeof AuthenticatedOverlayReceiptIdRoute;
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
@@ -201,7 +211,8 @@ export interface FileRouteTypes {
     | "/login/in-app/$id"
     | "/claim/$seed"
     | "/pay/$receiver"
-    | "/pay/request";
+    | "/pay/request"
+    | "/receipt/$id";
   fileRoutesByTo: FileRoutesByTo;
   to:
     | "/"
@@ -218,7 +229,8 @@ export interface FileRouteTypes {
     | "/login/in-app/$id"
     | "/claim/$seed"
     | "/pay/$receiver"
-    | "/pay/request";
+    | "/pay/request"
+    | "/receipt/$id";
   id:
     | "__root__"
     | "/"
@@ -239,7 +251,8 @@ export interface FileRouteTypes {
     | "/_auth/login/in-app/$id"
     | "/_authenticated/_modal/claim/$seed"
     | "/_authenticated/_modal/pay/$receiver"
-    | "/_authenticated/_modal/pay/request";
+    | "/_authenticated/_modal/pay/request"
+    | "/_authenticated/_overlay/receipt/$id";
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
@@ -355,6 +368,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthLoginWalletRouteImport;
       parentRoute: typeof AuthRouteRoute;
     };
+    "/_authenticated/_overlay/receipt/$id": {
+      id: "/_authenticated/_overlay/receipt/$id";
+      path: "/receipt/$id";
+      fullPath: "/receipt/$id";
+      preLoaderRoute: typeof AuthenticatedOverlayReceiptIdRouteImport;
+      parentRoute: typeof AuthenticatedRouteRoute;
+    };
     "/_authenticated/_modal/pay/request": {
       id: "/_authenticated/_modal/pay/request";
       path: "/pay/request";
@@ -450,11 +470,13 @@ const AuthenticatedModalRouteRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAppRouteRoute: typeof AuthenticatedAppRouteRouteWithChildren;
   AuthenticatedModalRouteRoute: typeof AuthenticatedModalRouteRouteWithChildren;
+  AuthenticatedOverlayReceiptIdRoute: typeof AuthenticatedOverlayReceiptIdRoute;
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAppRouteRoute: AuthenticatedAppRouteRouteWithChildren,
   AuthenticatedModalRouteRoute: AuthenticatedModalRouteRouteWithChildren,
+  AuthenticatedOverlayReceiptIdRoute: AuthenticatedOverlayReceiptIdRoute,
 };
 
 const AuthenticatedRouteRouteWithChildren =

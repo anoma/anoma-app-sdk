@@ -1,4 +1,4 @@
-import type { IndexerEVMTransaction } from "api";
+import type { IndexerEVMTransaction, IndexerId } from "api";
 import {
   BaseMainnetChainId,
   EthereumMainnetChainId,
@@ -34,6 +34,7 @@ export const TRANSACTION_STATUS = [
 export type TransactionStatus = (typeof TRANSACTION_STATUS)[number];
 
 export type TransactionReceipt = {
+  id: IndexerId;
   hash: Address;
   status: TransactionStatus;
   token: TokenRegistry;
