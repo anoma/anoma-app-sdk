@@ -56,7 +56,7 @@ export const BaseMainnetChainId = 8453;
 
 // Blocks deposit if total amount is bigger than maxBalanceInUsd
 export const maxBalanceInUsd = Number(
-  import.meta.env?.MAX_DEPOSIT_AMOUNT_IN_USD ?? 1.0
+  import.meta.env?.VITE_APP_MAX_DEPOSIT_AMOUNT_IN_USD ?? 1.0
 );
 
 export const EthereumMainnetForwarderContract =
