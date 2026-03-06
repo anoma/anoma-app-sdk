@@ -1,4 +1,4 @@
-import { TxExplorerUrlByChainId } from "constants";
+import { TxExplorerUrlByChainId } from "lib-constants";
 import type { SupportedChainId, TokenRegistry } from "types";
 import {
   bytesToHex,
@@ -23,7 +23,7 @@ export const normalizeEvmAddress = (address: string): Address => {
 export const formatBalance = (
   amount: bigint,
   tokenDenom = 6,
-  decimals = 2,
+  decimals = 2
 ): string => {
   const balance = Number(formatUnits(amount, tokenDenom));
   return new Intl.NumberFormat("en", {
@@ -34,7 +34,7 @@ export const formatBalance = (
 
 export const formatTokenAmount = (
   amount: string,
-  token: TokenRegistry,
+  token: TokenRegistry
 ): string => {
   return `${amount} ${token.symbol.toUpperCase()}`;
 };
@@ -180,7 +180,7 @@ export const base64Schema = z
 export function invariant(
   // eslint-disable-next-line
   condition: any,
-  message: string,
+  message: string
 ): asserts condition {
   if (condition) return;
   throw new Error(message);

@@ -1,6 +1,6 @@
 {
   "name": "@anonma/anomapay-sdk",
-  "private": false,
+  "private": true,
   "version": "0.1.0",
   "type": "module",
   "engines": {
@@ -37,11 +37,12 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.45.0",
     "vite": "^7.1.7",
+    "vite-plugin-dts": "^4.5.4",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^4.0.6"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
+    "*.{ts,js}": [
       "eslint --fix",
       "prettier --write"
     ],

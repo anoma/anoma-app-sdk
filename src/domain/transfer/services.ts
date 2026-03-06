@@ -2,7 +2,7 @@ import {
   AUTH_SIGNATURE_DOMAIN,
   averageTimePerProofInSeconds,
   TRIVIAL_LOGIC_VERIFYING_KEY,
-} from "constants";
+} from "lib-constants";
 import { fromHex, normalizeHex, toBase64 } from "lib/utils";
 import type {
   AuthorizedResources,
@@ -29,8 +29,9 @@ import {
 
 export const estimateTransferTimeInSeconds = (parameters?: Parameters) => {
   const averageProofPerResource = 1;
-  const resourcesAmount = parameters
-    ? parameters.consumed_resources.length + parameters.created_resources.length
+  const resourcesAmount =
+    parameters ?
+      parameters.consumed_resources.length + parameters.created_resources.length
     : 0;
   return (
     resourcesAmount * averageTimePerProofInSeconds * averageProofPerResource
@@ -39,7 +40,7 @@ export const estimateTransferTimeInSeconds = (parameters?: Parameters) => {
 
 export function calculateLabelRef(
   forwarderAddress: Address,
-  tokenAddress: Address,
+  tokenAddress: Address
 ): Digest {
   const forwarderBytes = fromHex(forwarderAddress);
   const erc20Bytes = fromHex(tokenAddress);
@@ -48,13 +49,13 @@ export function calculateLabelRef(
 
 export function calculateValueRefFromAuth(
   authorizationVerifyingKey: AuthorityVerifyingKey,
-  encryptionPublicKey: Hex,
+  encryptionPublicKey: Hex
 ): Digest {
   return hashBytes(
     new Uint8Array([
       ...authorizationVerifyingKey.toBytes(),
       ...fromHex(encryptionPublicKey),
-    ]),
+    ])
   );
 }
 
@@ -96,7 +97,7 @@ export const tokenSymbolToLabelRef = (tokenSymbol: FeeCompatibleERC20) => {
  */
 export function checkConstructSplit(
   resource: Resource,
-  quantity: bigint,
+  quantity: bigint
 ): {
   paddingResource?: Resource;
   remainderResource?: Resource;
@@ -112,10 +113,10 @@ export function checkConstructSplit(
       Digest.default(),
       true,
       Digest.fromBytes(randomBytes()),
-      NullifierKey.default().commit(),
+      NullifierKey.default().commit()
     );
     const paddingResourceNullifier = paddingResource.nullifier(
-      NullifierKey.default(),
+      NullifierKey.default()
     );
     const remainderResource = Resource.decode({
       ...encodedResource,
@@ -152,7 +153,7 @@ export function checkMergeSplitParameters(
   keyring: UserKeyring,
   tokenContractAddress: Address,
   paddingResource?: Resource,
-  remainderResource?: Resource,
+  remainderResource?: Resource
 ): Parameters {
   if (remainderResource && paddingResource) {
     parameters.consumed_resources.push({
@@ -163,13 +164,13 @@ export function checkMergeSplitParameters(
     const remainderWitnessData: CreatedWitnessData["TokenTransferPersistent"] =
       {
         receiver_discovery_public_key: new PublicKey(
-          keyring.discoveryKeyPair.publicKey,
+          keyring.discoveryKeyPair.publicKey
         ).toBase64(),
         receiver_encryption_public_key: new PublicKey(
-          keyring.encryptionKeyPair.publicKey,
+          keyring.encryptionKeyPair.publicKey
         ).toBase64(),
         receiver_authorization_verifying_key: new PublicKey(
-          keyring.authorityKeyPair.publicKey,
+          keyring.authorityKeyPair.publicKey
         ).toBase64(),
         token_contract_address: tokenContractAddress,
       };
@@ -183,12 +184,12 @@ export function checkMergeSplitParameters(
 
 export function authorizeCreatedResources(
   createdResourcesArray: CreatedResources[],
-  authorizationKeyBytes: Uint8Array,
+  authorizationKeyBytes: Uint8Array
 ): AuthorizedResources[] {
   const actions = createdResourcesArray.map(({ actions }) => actions).flat();
   const authSig = authorizeActions(actions, authorizationKeyBytes);
 
-  return createdResourcesArray.map((createdResources) => ({
+  return createdResourcesArray.map(createdResources => ({
     ...createdResources,
     authSig,
   }));
@@ -199,7 +200,7 @@ export function authorizeCreatedResources(
  */
 export function authorizeActions(
   actions: Digest[],
-  authorizationKeyBytes: Uint8Array,
+  authorizationKeyBytes: Uint8Array
 ): AuthoritySignature {
   const authorizationKey = AuthoritySigningKey.fromBytes(authorizationKeyBytes);
   const actionTree = new MerkleTree(actions);
