@@ -1,4 +1,3 @@
-import { TRANSFER_LOGIC_VERIFYING_KEY } from "constants";
 import {
   calculateLabelRef,
   calculateValueRefFromAuth,
@@ -6,6 +5,7 @@ import {
   checkConstructSplit,
   tokenSymbolToLabelRef,
 } from "domain/transfer/services";
+import { TRANSFER_LOGIC_VERIFYING_KEY } from "lib-constants";
 import { toHex } from "lib/utils";
 import type {
   CreateBurnProps,
@@ -52,7 +52,7 @@ export class TransferLogic extends Client {
       calculateValueRefFromUserAddress(userAddress),
       true,
       Digest.fromBytes(randomBytes()),
-      nkCommitment,
+      nkCommitment
     );
 
     const consumedResourceNullifier = consumedResource.nullifier(nk);
@@ -66,11 +66,11 @@ export class TransferLogic extends Client {
       BigInt(quantity),
       calculateValueRefFromAuth(
         new AuthorityVerifyingKey(keyring.authorityKeyPair.publicKey),
-        toHex(keyring.encryptionKeyPair.publicKey),
+        toHex(keyring.encryptionKeyPair.publicKey)
       ),
       false,
       consumedResourceNullifier,
-      nkCommitment,
+      nkCommitment
     );
 
     const createdResourceCommitment = createdResource.commitment();
@@ -96,7 +96,7 @@ export class TransferLogic extends Client {
       receiverKeyring,
     } = props;
     const receiverAuthVerifyingKey = new AuthorityVerifyingKey(
-      receiverKeyring.authorityPublicKey,
+      receiverKeyring.authorityPublicKey
     );
 
     const nullifierKey = new NullifierKey(keyring.nullifierKeyPair.nk);
@@ -105,7 +105,7 @@ export class TransferLogic extends Client {
     const labelRef = calculateLabelRef(forwarderAddress, token);
     const createdValueRef = calculateValueRefFromAuth(
       receiverAuthVerifyingKey,
-      toHex(receiverKeyring.encryptionPublicKey),
+      toHex(receiverKeyring.encryptionPublicKey)
     );
     const createdResource = Resource.create(
       logicRef,
@@ -114,7 +114,7 @@ export class TransferLogic extends Client {
       createdValueRef,
       false,
       transferredResourceNullifier,
-      new NullifierKeyCommitment(receiverKeyring.nullifierKeyCommitment),
+      new NullifierKeyCommitment(receiverKeyring.nullifierKeyCommitment)
     );
     const createdResourceCommitment = createdResource.commitment();
 
@@ -161,7 +161,7 @@ export class TransferLogic extends Client {
       valueRef,
       true,
       burnResourceNullifier,
-      burnNk.commit(),
+      burnNk.commit()
     );
     const createdResourceCommitment = createdResource.commitment();
 
@@ -197,7 +197,7 @@ export class TransferLogic extends Client {
       HELIAX_FEE_NULLIFIER_KEY_COMMITMENT,
     } = HeliaxKeys;
     const transferredResourceNullifier = resource.nullifier(
-      new NullifierKey(keyring.nullifierKeyPair.nk),
+      new NullifierKey(keyring.nullifierKeyPair.nk)
     );
     const tokenLabelRef = tokenSymbolToLabelRef(tokenSymbol);
 
@@ -208,7 +208,7 @@ export class TransferLogic extends Client {
       Digest.fromHex(HELIAX_FEE_VALUE_REF),
       false,
       transferredResourceNullifier,
-      NullifierKeyCommitment.fromBase64(HELIAX_FEE_NULLIFIER_KEY_COMMITMENT),
+      NullifierKeyCommitment.fromBase64(HELIAX_FEE_NULLIFIER_KEY_COMMITMENT)
     );
 
     const createdResourceCommitment = createdResource.commitment();

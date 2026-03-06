@@ -1,0 +1,93 @@
+{
+  "userKey": {
+    "cnk": "12dd91f7579fdf4e2df70d5ca267087a4a78c44a1152e7b9999316b50cfcb9da",
+    "sepk": "0302e05779d35a33b944f5e4c334f3126f17e09ef71e194cd96dd36583f71b199e",
+    "sdpk": "0283a1580fd8ce1b7643e7bbb78147b1b71b273f8701ecb84460797dc8b80a0d7a",
+    "signature": "9AFH/9CwKWbvX7yi96j32H+swhozXPVLQh5VPgXwKyxOOkcm+ygNL+47aAdf8PaXArbSw+jdtD5b5ZpNTpXKfQ=="
+  },
+  "serializedUserKey": "{\"cnk\":\"0x12dd91f7579fdf4e2df70d5ca267087a4a78c44a1152e7b9999316b50cfcb9da\",\"sdpk\":\"0x0283a1580fd8ce1b7643e7bbb78147b1b71b273f8701ecb84460797dc8b80a0d7a\",\"sepk\":\"0x0302e05779d35a33b944f5e4c334f3126f17e09ef71e194cd96dd36583f71b199e\",\"signature\":\"0xf40147ffd0b02966ef5fbca2f7a8f7d87facc21a335cf54b421e553e05f02b2c4e3a4726fb280d2fee3b68075ff0f69702b6d2c3e8ddb43e5be59a4d4e95ca7d\"}",
+  "serializedKeyPair": "{\"privateKey\":\"0x750d8d1613d1e87b4ac2513b46199e79fc3a52a73aeb50c9e8229c2d64608fb2\",\"publicKey\":\"0x0223ecb23a61c27e045ab462102ea518055b9be3ec5da98f7a613bb69f459fcf16\"}",
+  "serializedNullifierKeyPair": "{\"nk\":\"0x141432d2319640bd8f1965f26e56c78417e02baf44f7698b9cab63a6ebe9d6bb\",\"cnk\":\"0x77a2cb3924dfe29fac588639840d279cb9a6c51b610386f4e7cfa6b2a4294d49\"}",
+  "nullifierKeyPair": {
+    "nk": "0x141432d2319640bd8f1965f26e56c78417e02baf44f7698b9cab63a6ebe9d6bb",
+    "cnk": "0x77a2cb3924dfe29fac588639840d279cb9a6c51b610386f4e7cfa6b2a4294d49"
+  },
+  "staticEncryptionKeyPair": {
+    "privateKey": "0xa62d025cced560101e4b47c59025855c44ec93f60b6b21a5e72208842c38c8ce",
+    "publicKey": "0x0302e05779d35a33b944f5e4c334f3126f17e09ef71e194cd96dd36583f71b199e"
+  },
+  "staticDiscoverKeyPair": {
+    "privateKey": "0x41ded996f9834c5afe54818eb3b2f5a4249fb7bc28820735811f12a868347841",
+    "publicKey": "0x0283a1580fd8ce1b7643e7bbb78147b1b71b273f8701ecb84460797dc8b80a0d7a"
+  },
+  "authorityKeyPair": {
+    "privateKey": "0x750d8d1613d1e87b4ac2513b46199e79fc3a52a73aeb50c9e8229c2d64608fb2",
+    "publicKey": "0x0223ecb23a61c27e045ab462102ea518055b9be3ec5da98f7a613bb69f459fcf16"
+  },
+  "seed": "DBPykoK/RrW0ZjOPbAMRou2iQwjl+hmY4tA8oYSytgE=",
+  "wallet": {
+    "chainId": 8453,
+    "address": "0x44F6009b05FA253E9130A90037a1C4D82E34b87E",
+    "privateKey": "0x7ccd19727537db2636ff2f2a781411c2f41c87e76df6762a1f30208373b72cb5"
+  },
+  "Alice": {
+    "authorityKeyPair": {
+      "privateKey": "0xa59232b5a3e86da5645e83682115dc57fee70a8a8a9f005ba7a830cddf4c0c4a",
+      "publicKey": "0x038358ac15c19b61f8bb3f84cd62b81fe22e1d45441c77c74c467c07705d58486a"
+    },
+    "nullifierKeyPair": {
+      "nk": "0x78fe9d1b588a3d6c24426e7112b697236ababbdb570fcb01928b24cc18a809d1",
+      "cnk": "0x447af1d74802e7511a3dd2c3962471588ce0b57d6aff2cb2b3545b26d0b7762f"
+    },
+    "encryptionKeyPair": {
+      "privateKey": "0x3ff356b6a46bccc528045b8840a2ff03466824d7abcec55c4d897d45342b209e",
+      "publicKey": "0x020403d22f25bb7bc148f8843b9945ac4c3a4981f8d9052a9108dfc586b65f7998"
+    },
+    "discoveryKeyPair": {
+      "privateKey": "0xf4938c7803092a4e13fde1dd5629e53cad5f240bfa8b441fa89675bc727b757c",
+      "publicKey": "0x0388686a2f7fff9c529a93972e8ee3ca7a39b9d2d86a9ec27c23531f5964889886"
+    },
+    "anomaPayAddress": "A4NYrBXBm2H4uz-EzWK4H-IuHUVEHHfHTEZ8B3BdWEhqA4hoai9__5xSmpOXLo7jyno5udLYap7CfCNTH1lkiJiGAgQD0i8lu3vBSPiEO5lFrEw6SYH42QUqkQjfxYa2X3mYRHrx10gC51EaPdLDliRxWIzgtX1q_yyys1RbJtC3di8Gyr5s",
+    "seed": "AQIDBAU"
+  },
+  "Bob": {
+    "authorityKeyPair": {
+      "privateKey": "0xbf57181037336884394d4080926a0585ec77999be4d21d83793184ca704f4183",
+      "publicKey": "0x02d8d966beec96ca27568e6166f766a2d5faf55866356ee80c4dc7a31abed83773"
+    },
+    "nullifierKeyPair": {
+      "nk": "0xc5dfa0441806554a5724516a7d266dc8eb0587e6d3aa1dd9e09a9114393d629c",
+      "cnk": "0x2fd69006555a45211c1b304c28513c1c58c6fb24c3fa5ce78b16e7112c760b05"
+    },
+    "encryptionKeyPair": {
+      "privateKey": "0xd0aa25ae5e7fce097ed65a1f71d42030dc3e7d9c2b6fe8d6fec270be283237dc",
+      "publicKey": "0x0237176dc0c9c26528ae7ce8be3bb848c8db96c3d86f265575a28204012cfeec03"
+    },
+    "discoveryKeyPair": {
+      "privateKey": "0x72023769f89634a7e05cff04c1bd01207444689f5bf5ef54b64dbbe7631044d7",
+      "publicKey": "0x03f2f58ecbbbf0de5d10e28dec83b240b98b1c99bc400bd9aff54a092aa9947fef"
+    },
+    "anomaPayAddress": "AtjZZr7slsonVo5hZvdmotX69VhmNW7oDE3Hoxq-2DdzA_L1jsu78N5dEOKN7IOyQLmLHJm8QAvZr_VKCSqplH_vAjcXbcDJwmUornzovju4SMjblsPYbyZVdaKCBAEs_uwDL9aQBlVaRSEcGzBMKFE8HFjG-yTD-lznixbnESx2CwVqmSNO",
+    "seed": "BQQDAgE"
+  },
+  "Empty": {
+    "authorityKeyPair": {
+      "privateKey": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "publicKey": "0x000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "nullifierKeyPair": {
+      "nk": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "cnk": "0x0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "encryptionKeyPair": {
+      "privateKey": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "publicKey": "0x000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "discoveryKeyPair": {
+      "privateKey": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "publicKey": "0x000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "anomaPayAddress": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "seed": "0"
+  }
+}

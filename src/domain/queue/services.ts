@@ -2,7 +2,7 @@ import {
   averageTimePerProofInSeconds,
   estimatedTxTimeInSeconds,
   proofPerTx,
-} from "constants";
+} from "lib-constants";
 
 export function calculateLoadThreshold(provingGPUs: number): number {
   const gpuSeconds = provingGPUs * estimatedTxTimeInSeconds;

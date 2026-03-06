@@ -1,4 +1,4 @@
-# Anoma Pay Interface
+# @anoma/anomapay-sdk
 
 This repository contains most of the code related to the Anoma Pay shared functionality.
 
@@ -18,7 +18,6 @@ Requirements (local build only, excludes external services):
 - Node.js (>= 22)
 - npm (bundled with Node.js)
 - Git
-- Docker (optional, only if you want containerized dev/prod runs)
 
 Install the dependencies:
 

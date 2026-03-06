@@ -5,7 +5,7 @@ import {
   BaseMainnetChainId,
   EthereumMainnetChainId,
   EthereumSepoliaChainId,
-} from "./constants";
+} from "./lib-constants";
 export * from "domain/keys/types";
 export * from "domain/transfer/types";
 
