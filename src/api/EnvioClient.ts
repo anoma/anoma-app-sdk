@@ -16,12 +16,32 @@ type GraphQLResponse<TData = unknown> = {
 
 export class EnvioClient extends ApiClient {
   // Query for consumed tags, filtered by logicRef
-  async consumedTags(logicRef: string): Promise<ConsumedTagsResponse> {
+  async consumedTags(
+    logicRef: string,
+    timestamp = 0
+  ): Promise<ConsumedTagsResponse> {
     const envioEndpoint = this.url;
 
     const query = `
       query GetConsumedTags {
-        Tag(where: {isConsumed: {_eq: true}, logicRef: {_eq: "${logicRef}"}}) {
+        Tag(
+          where: {
+            isConsumed: {_eq: true},
+            logicRef: {_eq: "${logicRef}"},
+            transaction: {
+              evmTransaction: {
+                timestamp: { _gte: ${timestamp} }
+              }
+            }
+          }
+          order_by: {
+            transaction: {
+              evmTransaction: {
+                timestamp: asc
+              }
+            }
+          }
+        ) {
           id
           tagHash
           transaction {
