@@ -27,8 +27,6 @@ type TokenResourceWithAmount = {
   resourceWithAmount: TransferResourceWithAmount[];
 };
 
-const paddingNullifierKey = NullifierKey.default();
-
 /**
  * Orchestrates resource selection, creation, and padding for transfers
  * supporting multiple receivers and mixed address types.
@@ -212,7 +210,7 @@ export class ParametersDraftResolver {
     return {
       type: "Padding",
       resource: this.transferBuilder.client.createPaddingResource(),
-      nullifierKey: paddingNullifierKey,
+      nullifierKey: NullifierKey.default(),
     };
   }
 
