@@ -9,7 +9,7 @@ import type {
   UserPublicKeys,
 } from "types";
 import type { Address } from "viem";
-import { HeliaxKeys, PublicKey, type Resource } from "wasm";
+import { PublicKey, type Resource } from "wasm";
 import { checkMergeSplitParameters } from "../services";
 import { TransferLogic } from "./TransferLogic";
 
@@ -28,6 +28,7 @@ export class TransferBuilder {
     return new TransferBuilder(client);
   }
 
+  /** Builds the backend Parameters payload for a mint (deposit) transaction. */
   buildMintParameters(
     mintResources: {
       createdResource: Resource;
@@ -76,11 +77,12 @@ export class TransferBuilder {
     };
   }
 
+  /** Builds the backend Parameters payload for a shielded transfer, including split handling. */
   buildTransferParameters(
     authorizedResources: AuthorizedResources,
     keyring: UserKeyring,
     receiverKeyring: UserPublicKeys,
-    token: Address
+    tokenContractAddress: Address
   ): Parameters {
     const {
       authSig,
@@ -112,124 +114,10 @@ export class TransferBuilder {
       receiver_authorization_verifying_key: new PublicKey(
         receiverKeyring.authorityPublicKey
       ).toBase64(),
-      token_contract_address: token,
+      token_contract_address: tokenContractAddress,
     };
 
     const parameters: Parameters = {
-      consumed_resources: [
-        {
-          resource: consumedResource.encode(),
-          nullifier_key: toBase64(keyring.nullifierKeyPair.nk),
-          witness_data: {
-            TokenTransferPersistent: consumedWitnessData,
-          },
-        },
-      ],
-      created_resources: [
-        {
-          resource: createdResource.encode(),
-          witness_data: { TokenTransferPersistent: createdWitnessData },
-        },
-      ],
-    };
-
-    return checkMergeSplitParameters(
-      parameters,
-      keyring,
-      token,
-      paddingResource,
-      remainderResource
-    );
-  }
-
-  buildBurnParameters(
-    authorizedResources: AuthorizedResources,
-    keyring: UserKeyring,
-    token: Address,
-    burnAddress: Address
-  ): Parameters {
-    const {
-      authSig,
-      consumedResource,
-      createdResource,
-      remainderResource,
-      paddingResource,
-    } = authorizedResources;
-
-    const createdWitnessData: CreatedWitnessData["TokenTransferEphemeralUnwrap"] =
-      {
-        token_contract_address: token,
-        receiver_wallet_address: burnAddress,
-      };
-    const consumedWitnessData: ConsumedWitnessData["TokenTransferPersistent"] =
-      {
-        sender_authorization_signature: toBase64(authSig.toBytes()),
-        sender_authorization_verifying_key: new PublicKey(
-          keyring.authorityKeyPair.publicKey
-        ).toBase64(),
-        sender_encryption_public_key: new PublicKey(
-          keyring.encryptionKeyPair.publicKey
-        ).toBase64(),
-      };
-    const parameters: Parameters = {
-      consumed_resources: [
-        {
-          resource: consumedResource.encode(),
-          nullifier_key: toBase64(keyring.nullifierKeyPair.nk),
-          witness_data: {
-            TokenTransferPersistent: consumedWitnessData,
-          },
-        },
-      ],
-      created_resources: [
-        {
-          resource: createdResource.encode(),
-          witness_data: {
-            TokenTransferEphemeralUnwrap: createdWitnessData,
-          },
-        },
-      ],
-    };
-
-    return checkMergeSplitParameters(
-      parameters,
-      keyring,
-      token,
-      paddingResource,
-      remainderResource
-    );
-  }
-
-  buildFeeTransferParameters(
-    authorizedResources: AuthorizedResources,
-    keyring: UserKeyring,
-    tokenContractAddress: Address
-  ): Parameters {
-    const {
-      authSig,
-      createdResource,
-      consumedResource,
-      paddingResource,
-      remainderResource,
-    } = authorizedResources;
-    const consumedWitnessData: ConsumedWitnessData["TokenTransferPersistent"] =
-      {
-        sender_authorization_signature: toBase64(authSig.toBytes()),
-        sender_authorization_verifying_key: new PublicKey(
-          keyring.authorityKeyPair.publicKey
-        ).toBase64(),
-        sender_encryption_public_key: new PublicKey(
-          keyring.encryptionKeyPair.publicKey
-        ).toBase64(),
-      };
-
-    const { HELIAX_FEE_ENCRYPTION_PK, HELIAX_FEE_DISCOVERY_PK } = HeliaxKeys;
-    const createdWitnessData: CreatedWitnessData["TokenTransferPersistent"] = {
-      receiver_discovery_public_key: HELIAX_FEE_DISCOVERY_PK,
-      receiver_encryption_public_key: HELIAX_FEE_ENCRYPTION_PK,
-    };
-
-    const parameters = {
       consumed_resources: [
         {
           resource: consumedResource.encode(),
