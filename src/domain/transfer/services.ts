@@ -3,17 +3,8 @@ import {
   averageTimePerProofInSeconds,
   TRIVIAL_LOGIC_VERIFYING_KEY,
 } from "app-constants";
-import { appConfig } from "config/app";
 import { fromHex, normalizeHex, toBase64 } from "lib/utils";
-import type {
-  AppResource,
-  AuthorizedResources,
-  CreatedResources,
-  CreatedWitnessData,
-  Parameters,
-  TokenRegistry,
-  UserKeyring,
-} from "types";
+import type { CreatedWitnessData, Parameters, UserKeyring } from "types";
 import type { Address, Hex } from "viem";
 import {
   AuthoritySignature,
@@ -169,22 +160,6 @@ export function checkMergeSplitParameters(
   return parameters;
 }
 
-/** Authorizes an array of created resources by signing their combined action tree. */
-export function authorizeCreatedResources(
-  createdResourcesArray: CreatedResources[],
-  authorizationKeyBytes: Uint8Array
-): AuthorizedResources[] {
-  const actions = createdResourcesArray
-    .map(({ actions }) => actions.map(action => Digest.fromHex(action)))
-    .flat();
-  const authSig = authorizeActions(actions, authorizationKeyBytes);
-
-  return createdResourcesArray.map(createdResources => ({
-    ...createdResources,
-    authSig,
-  }));
-}
-
 /**
  * Authorize an array of actions and return the signature
  */
@@ -195,34 +170,4 @@ export function authorizeActions(
   const authorizationKey = AuthoritySigningKey.fromBytes(authorizationKeyBytes);
   const actionTree = new MerkleTree(actions);
   return authorizationKey.authorize(AUTH_SIGNATURE_DOMAIN, actionTree);
-}
-
-/**
- * This method appends any remainder resource from a split to the available resources,
- * to ensure that subsequent resource selections include this new created resource
- */
-export function appendRemainderToRemaining(
-  resources: CreatedResources[],
-  remainingResources: AppResource[],
-  token: TokenRegistry
-): AppResource[] {
-  const remaining: AppResource[] = [...remainingResources];
-
-  /**
-   * If construction of these parameters introduced a remainder resource,
-   * append to remaining resources for potential selection for paying fees
-   */
-  const remainderResource: Resource | undefined = resources.find(
-    ({ remainderResource }) => Boolean(remainderResource)
-  )?.remainderResource;
-
-  if (remainderResource)
-    remaining.push({
-      ...remainderResource.encode(),
-      erc20TokenAddress: token.address,
-      isConsumed: false,
-      forwarder: appConfig.forwarderAddress,
-    });
-
-  return remaining;
 }

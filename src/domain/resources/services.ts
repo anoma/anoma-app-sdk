@@ -1,6 +1,6 @@
 import type { IndexerEVMTransaction, IndexerResource, IndexerTag } from "api";
 import { fromHex, normalizeHex } from "lib/utils";
-import type { AppResource, Parameters, UserKeyring } from "types";
+import type { AppResource, UserKeyring } from "types";
 import { type Address, type Hex } from "viem";
 import { NullifierKey, Resource, ResourceWithLabel } from "wasm";
 import type { TransferResources, TransferResourceWithAmount } from "./types";
@@ -287,21 +287,3 @@ export const selectTransferResources = (
     remaining,
   };
 };
-
-/**
- * Given multiple Parameters objects. merge into one in order received
- */
-export const mergeParameters = (parameters: Parameters[]): Parameters =>
-  parameters.reduce(
-    (mergedParameters, parameters) => ({
-      consumed_resources: [
-        ...mergedParameters.consumed_resources,
-        ...parameters.consumed_resources,
-      ],
-      created_resources: [
-        ...mergedParameters.created_resources,
-        ...parameters.created_resources,
-      ],
-    }),
-    { consumed_resources: [], created_resources: [] }
-  );
