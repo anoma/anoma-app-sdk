@@ -21,6 +21,16 @@ type ResourceWithDetails = {
   transactionHash: Address;
 };
 
+/**
+ * Builds two lookup maps from a flat array of {@link IndexerTag} objects:
+ * one keyed by normalized nullifier hex and one keyed by EVM transaction hash.
+ *
+ * These maps are used internally by {@link openResourceMetadata} to check
+ * whether a resource has been consumed and to attach transaction metadata.
+ *
+ * @param tags - Array of {@link IndexerTag} objects returned by the indexer.
+ * @returns A `TransactionLookup` with `byNullifier` and `byTxHash` maps.
+ */
 export function buildTransactionLookup(tags: IndexerTag[]): TransactionLookup {
   const lookup: TransactionLookup = {
     byNullifier: new Map(),
@@ -39,6 +49,18 @@ export function buildTransactionLookup(tags: IndexerTag[]): TransactionLookup {
   return lookup;
 }
 
+/**
+ * Decrypts and deserializes a single encrypted resource blob received from the indexer.
+ *
+ * The blob is decrypted using the caller's encryption private key. The result
+ * contains the raw `Resource` object along with its `forwarder` address and
+ * `erc20TokenAddress` metadata.
+ *
+ * @param blobHex - The hex-encoded encrypted resource payload.
+ * @param encryptionPrivateKey - The caller's encryption private key (from `keyring.encryptionKeyPair.privateKey`).
+ * @returns A {@link ResourceWithLabel} containing the decrypted resource and label metadata.
+ * @throws If decryption fails or the payload cannot be deserialized.
+ */
 export function deserializeResourcePayload(
   blobHex: Hex,
   encryptionPrivateKey: Uint8Array
@@ -61,6 +83,26 @@ const tryToDeserializeResourcePayload = (
   }
 };
 
+/**
+ * Decrypts and deserializes a collection of encrypted resource blobs returned by
+ * {@link IndexerClient.resources}.
+ *
+ * Each blob is attempted in isolation; blobs that cannot be decrypted with the
+ * provided keyring are silently skipped (they belong to other users). The
+ * returned array contains only resources that belong to the caller.
+ *
+ * @param keyring - The caller's full {@link UserKeyring}; the encryption private
+ *   key is used to decrypt each payload.
+ * @param resourceResponseCollection - Raw {@link IndexerResource} objects from the indexer response.
+ * @returns A promise resolving to the successfully-decrypted resources with their
+ *   forwarder, token address, and transaction hash metadata attached.
+ *
+ * @example
+ * ```typescript
+ * const { resources } = await indexerClient.resources(discoveryPrivKey);
+ * const decrypted = await parseIndexerResourceResponse(keyring, resources);
+ * ```
+ */
 export const parseIndexerResourceResponse = async (
   keyring: UserKeyring,
   resourceResponseCollection: IndexerResource[]
@@ -79,12 +121,47 @@ export const parseIndexerResourceResponse = async (
   });
 };
 
+/**
+ * Filters out ephemeral resources from a decoded resource list.
+ *
+ * Ephemeral resources are transient (e.g. consumed in the same action batch)
+ * and should not be shown as spendable balances to the user.
+ *
+ * @param resources - Array of decoded resources with metadata.
+ * @returns Only the non-ephemeral (persistent) resources.
+ */
 export const pickNonEphemeralResources = (
   resources: ResourceWithDetails[]
 ): ResourceWithDetails[] => {
   return resources.filter(item => !item.resource.encode().is_ephemeral);
 };
 
+/**
+ * Enriches a list of decrypted resources with on-chain nullifier status and
+ * transaction metadata, returning {@link AppResource} objects.
+ *
+ * For each resource the function:
+ * 1. Computes the resource's nullifier using the caller's nullifier key (`nk`).
+ * 2. Checks whether that nullifier appears in `transactionLookup.byNullifier` to
+ *    determine if the resource has already been spent.
+ * 3. Attaches the creation and (if spent) consumption transaction details.
+ *
+ * @param keyring - The caller's full {@link UserKeyring}; `nullifierKeyPair.nk` is
+ *   used to compute nullifiers.
+ * @param resources - Decrypted resource list (e.g. from {@link parseIndexerResourceResponse}).
+ * @param transactionLookup - Pre-built lookup maps (see {@link buildTransactionLookup}).
+ * @param onlyAvailableResources - When `true` (default), only unspent resources are
+ *   returned. Set to `false` to include already-consumed resources.
+ * @returns A promise resolving to an array of {@link AppResource} objects annotated
+ *   with `isConsumed`, `erc20TokenAddress`, `forwarder`, and transaction references.
+ *
+ * @example
+ * ```typescript
+ * const lookup = buildTransactionLookup(tags);
+ * const appResources = await openResourceMetadata(keyring, decryptedResources, lookup);
+ * // appResources only contains unspent resources belonging to keyring
+ * ```
+ */
 export const openResourceMetadata = async (
   keyring: UserKeyring,
   resources: ResourceWithDetails[],
@@ -134,8 +211,16 @@ export const openResourceMetadata = async (
 };
 
 /**
- * Given a collection of Resources, return an array of the fewest resources
- * whose quantities sum to the exact target quantity
+ * Finds the smallest subset of `resources` whose quantities sum exactly to
+ * `targetQuantity`.
+ *
+ * Uses recursive subset-sum search; suitable for small resource sets (≤ ~20).
+ * Returns `undefined` if no exact-sum combination exists.
+ *
+ * @param resources - Available encoded resources.
+ * @param targetQuantity - The exact total quantity to match.
+ * @returns The smallest subset that sums to `targetQuantity`, or `undefined` if
+ *   no exact match is possible.
  */
 export function findMinResourceQuantitySum(
   resources: EncodedResource[],
@@ -172,8 +257,16 @@ export type TransferResourceWithAmount = [EncodedResource, bigint];
 export type TransferResources = TransferResourceWithAmount[];
 
 /**
- * Return first resource which can fulfill a transfer either with exact
- * quantity or by splitting
+ * Finds the single smallest resource whose quantity is greater than or equal to
+ * `targetQuantity`, enabling fulfillment via an exact match or a split.
+ *
+ * Resources are sorted ascending by quantity before searching. When the match
+ * quantity exceeds `targetQuantity`, the caller is expected to split the resource.
+ *
+ * @param resources - Available encoded resources.
+ * @param targetQuantity - The amount to fulfill.
+ * @returns A {@link TransferResourceWithAmount} tuple `[resource, targetQuantity]`
+ *   if a single resource can cover the amount, otherwise `undefined`.
  */
 export function findMinTransferResource(
   resources: EncodedResource[],
@@ -194,9 +287,17 @@ export function findMinTransferResource(
   }
 }
 /**
- * If we know that there is not an exact quantity match, or subset of resources
- * whose quantities sum to an exact target quantity, iterate through resources
- * until we have enough summed quantities plus a split to fulfill transfer
+ * Greedily combines resources (largest first) until their total covers
+ * `targetQuantity`, using a split on the final resource if necessary.
+ *
+ * Call this only when no exact-sum subset exists. The last entry in the
+ * returned array may have an amount less than its resource quantity, indicating
+ * a split is needed.
+ *
+ * @param resources - Available encoded resources.
+ * @param targetQuantity - The amount to fulfill.
+ * @returns An ordered array of {@link TransferResourceWithAmount} tuples whose
+ *   amounts sum to `targetQuantity`.
  */
 export function findTransferResourcesWithSplit(
   resources: EncodedResource[],
@@ -225,8 +326,23 @@ export function findTransferResourcesWithSplit(
 }
 
 /**
- * Determine what resources are needed to fulfill a transfer, either by resources
- * to sum, a resource to split, or both
+ * Selects the optimal set of resources to fulfill a transfer of `targetQuantity`.
+ *
+ * The selection strategy (in priority order):
+ * 1. A single resource with quantity ≥ `targetQuantity` (split if needed).
+ * 2. The smallest subset of resources whose quantities sum exactly to `targetQuantity`.
+ * 3. A greedy combination of resources (largest-first) with a final split.
+ *
+ * @param resources - Available spendable {@link EncodedResource} objects.
+ * @param targetQuantity - The total amount to transfer (must be > 0).
+ * @returns An ordered array of {@link TransferResourceWithAmount} tuples.
+ * @throws {Error} If `resources` is empty or `targetQuantity` is zero.
+ *
+ * @example
+ * ```typescript
+ * const selected = selectTransferResources(appResources, 500_000n);
+ * // selected is e.g. [[resource, 300_000n], [resource2, 200_000n]]
+ * ```
  */
 export const selectTransferResources = (
   resources: EncodedResource[],
@@ -264,7 +380,20 @@ export const selectTransferResources = (
 };
 
 /**
- * Given multiple Parameters objects. merge into one in order received
+ * Merges multiple {@link Parameters} objects into a single one by concatenating
+ * their `consumed_resources` and `created_resources` arrays in the order received.
+ *
+ * Use this when several independent operations (e.g. a fee transfer alongside a
+ * main transfer) must be submitted to the backend as a single atomic request.
+ *
+ * @param parameters - Ordered array of {@link Parameters} objects to merge.
+ * @returns A new {@link Parameters} whose resource lists are the union of all inputs.
+ *
+ * @example
+ * ```typescript
+ * const combined = mergeParameters([mainParams, feeParams]);
+ * await backendClient.transfer(combined);
+ * ```
  */
 export const mergeParameters = (parameters: Parameters[]): Parameters =>
   parameters.reduce(
