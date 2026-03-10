@@ -232,3 +232,5 @@ export const isIOS = () =>
 export const getTxUrl = (chainId: SupportedChainId, prefixedTxHash: string) => {
   return TxExplorerUrlByChainId[chainId] + prefixedTxHash;
 };
+
+export const maxBigInt = (a: bigint, b: bigint): bigint => (a > b ? a : b);

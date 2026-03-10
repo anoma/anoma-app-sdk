@@ -3,13 +3,15 @@ import {
   averageTimePerProofInSeconds,
   TRIVIAL_LOGIC_VERIFYING_KEY,
 } from "app-constants";
+import { appConfig } from "config/app";
 import { fromHex, normalizeHex, toBase64 } from "lib/utils";
 import type {
+  AppResource,
   AuthorizedResources,
   CreatedResources,
   CreatedWitnessData,
-  FeeCompatibleERC20,
   Parameters,
+  TokenRegistry,
   UserKeyring,
 } from "types";
 import type { Address, Hex } from "viem";
@@ -19,7 +21,6 @@ import {
   AuthorityVerifyingKey,
   Digest,
   hashBytes,
-  HeliaxKeys,
   MerkleTree,
   NullifierKey,
   PublicKey,
@@ -27,6 +28,7 @@ import {
   Resource,
 } from "wasm";
 
+/** Estimates the total proving time for a transfer based on the number of resources. */
 export const estimateTransferTimeInSeconds = (parameters?: Parameters) => {
   const averageProofPerResource = 1;
   const resourcesAmount =
@@ -38,6 +40,7 @@ export const estimateTransferTimeInSeconds = (parameters?: Parameters) => {
   );
 };
 
+/** Computes the label reference digest from a forwarder and token contract address. */
 export function calculateLabelRef(
   forwarderAddress: Address,
   tokenAddress: Address
@@ -47,6 +50,7 @@ export function calculateLabelRef(
   return hashBytes(new Uint8Array([...forwarderBytes, ...erc20Bytes]));
 }
 
+/** Computes the value reference digest from an authority verifying key and encryption public key. */
 export function calculateValueRefFromAuth(
   authorizationVerifyingKey: AuthorityVerifyingKey,
   encryptionPublicKey: Hex
@@ -59,29 +63,12 @@ export function calculateValueRefFromAuth(
   );
 }
 
+/** Computes the value reference digest from an EVM user address, zero-padded to 32 bytes. */
 export function calculateValueRefFromUserAddress(userAddress: string): Digest {
   // Padding with zero to fill the 32 bytes required by value_ref
   const paddedAddress = normalizeHex(userAddress).padEnd(64, "0");
   return Digest.fromHex(paddedAddress);
 }
-
-export const tokenSymbolToLabelRef = (tokenSymbol: FeeCompatibleERC20) => {
-  const {
-    HELIAX_FEE_LABEL_REF_WETH,
-    HELIAX_FEE_LABEL_REF_XAN,
-    HELIAX_FEE_LABEL_REF_USDC,
-  } = HeliaxKeys;
-  switch (tokenSymbol) {
-    case "USDC":
-      return HELIAX_FEE_LABEL_REF_USDC;
-    case "XAN":
-      return HELIAX_FEE_LABEL_REF_XAN;
-    case "WETH":
-      return HELIAX_FEE_LABEL_REF_WETH;
-    default:
-      throw new Error("Invalid fee token!");
-  }
-};
 
 /**
  * This method copmares a resource with a target quantity, and if the Resource
@@ -101,7 +88,7 @@ export function checkConstructSplit(
 ): {
   paddingResource?: Resource;
   remainderResource?: Resource;
-  splitActions?: Digest[];
+  splitActions?: string[];
 } {
   const encodedResource = resource.encode();
   const remainder = encodedResource.quantity - quantity;
@@ -124,9 +111,9 @@ export function checkConstructSplit(
       nonce: toBase64(paddingResourceNullifier.toBytes()),
     });
 
-    const splitActions: Digest[] = [
-      paddingResourceNullifier,
-      remainderResource.commitment(),
+    const splitActions: string[] = [
+      paddingResourceNullifier.toHex(),
+      remainderResource.commitment().toHex(),
     ];
 
     return {
@@ -182,11 +169,14 @@ export function checkMergeSplitParameters(
   return parameters;
 }
 
+/** Authorizes an array of created resources by signing their combined action tree. */
 export function authorizeCreatedResources(
   createdResourcesArray: CreatedResources[],
   authorizationKeyBytes: Uint8Array
 ): AuthorizedResources[] {
-  const actions = createdResourcesArray.map(({ actions }) => actions).flat();
+  const actions = createdResourcesArray
+    .map(({ actions }) => actions.map(action => Digest.fromHex(action)))
+    .flat();
   const authSig = authorizeActions(actions, authorizationKeyBytes);
 
   return createdResourcesArray.map(createdResources => ({
@@ -205,4 +195,34 @@ export function authorizeActions(
   const authorizationKey = AuthoritySigningKey.fromBytes(authorizationKeyBytes);
   const actionTree = new MerkleTree(actions);
   return authorizationKey.authorize(AUTH_SIGNATURE_DOMAIN, actionTree);
+}
+
+/**
+ * This method appends any remainder resource from a split to the available resources,
+ * to ensure that subsequent resource selections include this new created resource
+ */
+export function appendRemainderToRemaining(
+  resources: CreatedResources[],
+  remainingResources: AppResource[],
+  token: TokenRegistry
+): AppResource[] {
+  const remaining: AppResource[] = [...remainingResources];
+
+  /**
+   * If construction of these parameters introduced a remainder resource,
+   * append to remaining resources for potential selection for paying fees
+   */
+  const remainderResource: Resource | undefined = resources.find(
+    ({ remainderResource }) => Boolean(remainderResource)
+  )?.remainderResource;
+
+  if (remainderResource)
+    remaining.push({
+      ...remainderResource.encode(),
+      erc20TokenAddress: token.address,
+      isConsumed: false,
+      forwarder: appConfig.forwarderAddress,
+    });
+
+  return remaining;
 }

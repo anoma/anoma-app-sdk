@@ -1,4 +1,5 @@
-import type { Network, SupportedChainId } from "types";
+import { fromBase64 } from "lib/utils";
+import type { Network, SupportedChainId, UserPublicKeys } from "types";
 
 // Verifying Key for TrivialLogicWitness
 // https://github.com/anoma/arm-risc0/blob/main/arm/src/constants.rs#L23
@@ -90,3 +91,32 @@ export const ExplorerNameByChainId: Record<SupportedChainId, string> = {
   [EthereumMainnetChainId]: "EtherScan",
   [EthereumSepoliaChainId]: "EtherScan",
 };
+
+/**
+ * Heliax Public Keys to pay Fees to
+ */
+export const HeliaxKeys = {
+  HELIAX_FEE_DISCOVERY_PK: "Anm+Zn753LusVaBilc6HCwcCm/zbLc4o2VnygVsW+BeY",
+  HELIAX_FEE_ENCRYPTION_PK: "Anm+Zn753LusVaBilc6HCwcCm/zbLc4o2VnygVsW+BeY",
+  HELIAX_FEE_AUTHORITY_PK: "Anm+Zn753LusVaBilc6HCwcCm/zbLc4o2VnygVsW+BeY",
+  HELIAX_FEE_NULLIFIER_KEY_COMMITMENT:
+    "Zmh6rfhivXdsj8GLjp+OIAiXFIVu4jOzkCpZHQ1fKSU=",
+};
+
+export const HeliaxPublicKeys: UserPublicKeys = {
+  discoveryPublicKey: fromBase64(HeliaxKeys.HELIAX_FEE_DISCOVERY_PK),
+  encryptionPublicKey: fromBase64(HeliaxKeys.HELIAX_FEE_ENCRYPTION_PK),
+  authorityPublicKey: fromBase64(HeliaxKeys.HELIAX_FEE_AUTHORITY_PK),
+  nullifierKeyCommitment: fromBase64(
+    HeliaxKeys.HELIAX_FEE_NULLIFIER_KEY_COMMITMENT
+  ),
+};
+
+/*
+ * Offset Fee Estimate calculation to cover fee resources
+ */
+
+// TODO: This is a work-around!
+// Following is the recommended Fee overpayment multiplier
+// to fix insufficient fees. Change at will for testing:
+export const FeeEstimateFactor = 10n;
