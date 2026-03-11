@@ -1,4 +1,4 @@
-import type { AppResource } from "types";
+import type { AppResource, TokenRegistry } from "types";
 
 /**
  * A collection of transfer resources with the amount to transfer.
@@ -13,4 +13,11 @@ export type TransferResourceWithAmount = {
 export type TransferResources = {
   selected: TransferResourceWithAmount[];
   remaining: AppResource[];
+};
+
+export type AggregatedTokenBalance = {
+  raw: bigint;
+  formatted: string;
+  token: TokenRegistry;
+  resources: AppResource[];
 };

@@ -16,7 +16,7 @@ type GraphQLResponse<TData = unknown> = {
 
 export class EnvioClient extends ApiClient {
   // Query for consumed tags, filtered by logicRef
-  async consumedTags(
+  async publicNullifiers(
     logicRef: string,
     timestamp = 0
   ): Promise<ConsumedTagsResponse> {

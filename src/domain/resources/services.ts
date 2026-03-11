@@ -1,9 +1,24 @@
-import type { IndexerEVMTransaction, IndexerResource, IndexerTag } from "api";
-import { fromHex, normalizeHex } from "lib/utils";
-import type { AppResource, UserKeyring } from "types";
-import { type Address, type Hex } from "viem";
+import type {
+  IndexerEVMTransaction,
+  IndexerId,
+  IndexerResource,
+  IndexerTag,
+} from "api";
+import { getTokenByResource, tokenId } from "lib/tokenUtils";
+import { formatBalance, fromHex, normalizeHex } from "lib/utils";
+import type {
+  AppResource,
+  TokenId,
+  TokenRegistryIndex,
+  UserKeyring,
+} from "types";
+import { type Address, type Hex, formatUnits } from "viem";
 import { NullifierKey, Resource, ResourceWithLabel } from "wasm";
-import type { TransferResources, TransferResourceWithAmount } from "./types";
+import type {
+  AggregatedTokenBalance,
+  TransferResources,
+  TransferResourceWithAmount,
+} from "./types";
 
 type TransactionLookup = {
   byNullifier: Map<string, IndexerEVMTransaction>;
@@ -112,19 +127,16 @@ export const openResourceMetadata = async (
     if (nullifierHex) {
       // Step 3: Compare computed nullifier with indexer-provided nullifiers
       // Update the actual consumed status based on nullifier comparison
-      const createdTransaction =
-        transactionLookup.byTxHash.get(transactionHash);
-      const consumedTransaction =
-        transactionLookup.byNullifier.get(nullifierHex);
-      const isConsumed = !!consumedTransaction;
+      const transaction = transactionLookup.byTxHash.get(transactionHash);
+      const isConsumed = transactionLookup.byNullifier.has(nullifierHex);
+
       if (!onlyAvailableResources || !isConsumed) {
         updatedResources.push({
           ...resourceProps,
           isConsumed,
           erc20TokenAddress,
           forwarder,
-          createdTransaction,
-          consumedTransaction,
+          transaction,
         });
       }
     }
@@ -286,4 +298,101 @@ export const selectTransferResources = (
     selected,
     remaining,
   };
+};
+
+type TransactionResourceGroup = {
+  tx: IndexerEVMTransaction;
+  createdResources: AppResource[];
+  consumedResources: AppResource[];
+};
+
+/**
+ * Groups resources by their associated transaction ID.
+ *
+ * For each resource that has a `transaction`, the resource is classified as either
+ * created or consumed (based on `isConsumed`) and placed into the corresponding
+ * bucket of a {@link TransactionResourceGroup}. Resources without a transaction
+ * are skipped.
+ *
+ * @param resources - The list of app resources to group.
+ * @returns A map from {@link IndexerId} to its {@link TransactionResourceGroup},
+ *          containing the transaction metadata and its created/consumed resources.
+ */
+export const groupResourcesByTransaction = (resources: AppResource[]) => {
+  const transactionMap = new Map<IndexerId, TransactionResourceGroup>();
+  resources?.forEach(resource => {
+    const { transaction, isConsumed } = resource;
+
+    if (transaction) {
+      const entry = transactionMap.get(transaction.id);
+      const createdResources = isConsumed ? [] : [resource];
+      const consumedResources = isConsumed ? [resource] : [];
+
+      if (entry) {
+        entry.createdResources.push(...createdResources);
+        entry.consumedResources.push(...consumedResources);
+      } else {
+        transactionMap.set(transaction.id, {
+          tx: transaction,
+          createdResources,
+          consumedResources,
+        });
+      }
+    }
+  });
+  return transactionMap;
+};
+
+export type AggregatedTokenBalancesOutput = {
+  totalInUsd: number;
+  balancesPerToken: Record<TokenId, AggregatedTokenBalance>;
+  resources: AppResource[];
+};
+
+/**
+ * Aggregates a flat list of resources into per-token balances with USD totals.
+ *
+ * Groups resources by their token (resolved via registry), sums raw quantities,
+ * computes a USD total using the provided price map, and formats each balance
+ * for display.
+ *
+ * @param resources - Decoded app resources (consumed or available).
+ * @param registry - Token registry index for resolving resource → token.
+ * @param prices - Map of ERC-20 address → USD price.
+ * @returns Aggregated balances per token and a grand total in USD.
+ */
+export const aggregateTokenBalances = (
+  resources: AppResource[],
+  registry: TokenRegistryIndex,
+  prices: Record<Address, number>
+): AggregatedTokenBalancesOutput => {
+  const output: AggregatedTokenBalancesOutput = {
+    totalInUsd: 0,
+    balancesPerToken: {},
+    resources,
+  };
+
+  resources.forEach(item => {
+    const token = getTokenByResource(registry, item);
+    const id = tokenId(token);
+    const amount = Number(formatUnits(item.quantity, token.decimals));
+
+    const price = prices[item.erc20TokenAddress] ?? 0;
+    output.totalInUsd += amount * price;
+
+    const prev = output.balancesPerToken[id];
+    output.balancesPerToken[id] = {
+      raw: (prev?.raw ?? 0n) + item.quantity,
+      formatted: "",
+      token,
+      resources: (prev?.resources ?? []).concat(item),
+    };
+  });
+
+  for (const id of Object.keys(output.balancesPerToken) as TokenId[]) {
+    const item = output.balancesPerToken[id];
+    item.formatted = formatBalance(item.raw, item.token.decimals);
+  }
+
+  return output;
 };

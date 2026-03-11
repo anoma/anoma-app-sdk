@@ -15,8 +15,7 @@ export type AppResource = EncodedResource & {
   isConsumed: boolean;
   erc20TokenAddress: Address;
   forwarder: Address;
-  createdTransaction?: IndexerEVMTransaction;
-  consumedTransaction?: IndexerEVMTransaction;
+  transaction?: IndexerEVMTransaction;
 };
 
 export const TRANSACTION_STATUS = [

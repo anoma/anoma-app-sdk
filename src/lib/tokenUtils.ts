@@ -3,7 +3,7 @@ import {
   EthereumMainnetForwarderContract,
   EthereumSepoliaForwarderContract,
 } from "app-constants";
-import type { AggregatedTokenBalance } from "hooks/resources/useAggregatedTokenBalances";
+import type { AggregatedTokenBalance } from "domain/resources/types";
 import type { WalletBalance } from "hooks/resources/useWalletBalances";
 import type {
   AppResource,
