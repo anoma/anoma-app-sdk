@@ -14,6 +14,7 @@ import type {
 } from "types";
 import { type Address, type Hex, formatUnits } from "viem";
 import { NullifierKey, Resource, ResourceWithLabel } from "wasm";
+import { InsufficientResourcesError } from "./errors";
 import type {
   AggregatedTokenBalance,
   TransferResources,
@@ -245,6 +246,13 @@ function findTransferResourcesWithSplit(
       remaining.push(...sortedResources.slice(i + 1));
       break;
     }
+  }
+
+  if (missingQuantity > 0) {
+    throw new InsufficientResourcesError(
+      targetQuantity,
+      targetQuantity - missingQuantity
+    );
   }
 
   return [selected, remaining];

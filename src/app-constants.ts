@@ -112,11 +112,5 @@ export const HeliaxPublicKeys: UserPublicKeys = {
   ),
 };
 
-/*
- * Offset Fee Estimate calculation to cover fee resources
- */
-
-// TODO: This is a work-around!
-// Following is the recommended Fee overpayment multiplier
-// to fix insufficient fees. Change at will for testing:
-export const FeeEstimateFactor = 10n;
+// Token price can fluctuate between fee estimates, so accept convergence within 5%.
+export const FeeFluctuationPercentage = 5n;
