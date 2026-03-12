@@ -161,14 +161,11 @@ export type FeeRequest = {
 };
 
 export type FeeResponse = {
-  base_fee: {
-    fee_in_base_units: string;
-    fee_token: string;
-  };
-  percentage_fee: {
-    fee_in_base_units: string;
-    fee_token: string;
-  };
+  base_fee: number;
+  base_fee_per_resource: number;
+  percentage: number;
+  percentage_fee: number;
+  token_type: string;
 };
 
 /**

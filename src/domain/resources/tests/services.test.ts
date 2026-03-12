@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { InsufficientResourcesError } from "../errors";
 import { selectTransferResources } from "../services";
 import { transferResources as resources } from "./data";
 
@@ -58,5 +59,12 @@ describe("Resources service functions", () => {
     expect(splitResource.quantity).toBe(1_000_000n);
     // Sum of all quantities + split resource quantity minus remainder should match target exactly
     expect(resourceQuantitySum - remainder).toBe(targetAmount);
+  });
+
+  it("Throws when resources are insufficient to cover the target amount", () => {
+    const targetAmount = 11_000_000n; // exceeds total available (10_000_000n)
+    expect(() => selectTransferResources(resources, targetAmount)).toThrow(
+      InsufficientResourcesError
+    );
   });
 });
