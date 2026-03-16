@@ -1,11 +1,11 @@
 import type { IndexerEVMTransaction, IndexerId } from "api";
-import type { Address } from "viem";
-import type { EncodedResource } from "wasm";
 import {
   BaseMainnetChainId,
   EthereumMainnetChainId,
   EthereumSepoliaChainId,
-} from "./lib-constants";
+} from "lib-constants";
+import type { Address } from "viem";
+import type { EncodedResource } from "wasm";
 export * from "domain/keys/types";
 export * from "domain/transfer/types";
 
@@ -15,8 +15,7 @@ export type AppResource = EncodedResource & {
   isConsumed: boolean;
   erc20TokenAddress: Address;
   forwarder: Address;
-  createdTransaction?: IndexerEVMTransaction;
-  consumedTransaction?: IndexerEVMTransaction;
+  transaction?: IndexerEVMTransaction;
 };
 
 export const TRANSACTION_STATUS = [

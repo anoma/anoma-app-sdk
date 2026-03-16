@@ -1,14 +1,18 @@
 import type {
   AuthoritySignature,
-  Digest,
   EncodedResource,
   MerkleTree,
+  NullifierKey,
   Resource,
 } from "wasm";
 
-import type { UserKeyring, UserPublicKeys } from "types";
+import type { TokenRegistry, UserKeyring, UserPublicKeys } from "types";
 import type { Address } from "viem";
-import type { ConsumedWitnessData, CreatedWitnessData } from "./witness";
+import type {
+  ConsumedWitnessData,
+  CreatedWitnessData,
+  Permit2Data,
+} from "./witness";
 
 /**
  * Prop types for creating resources
@@ -26,23 +30,23 @@ export type CreateTransferProps = {
   forwarderAddress: Address;
   token: Address;
   quantity: bigint;
-  keyring: UserKeyring;
+  nullifierKey: NullifierKey;
   receiverKeyring: UserPublicKeys;
+};
+
+export type CreateBurnProps = {
+  resource: Resource;
+  forwarderAddress: Address;
+  token: Address;
+  receiverAddress: Address;
+  quantity: bigint;
+  nullifierKey: NullifierKey;
 };
 
 export type CreateFeeTransferProps = {
   resource: Resource;
-  tokenSymbol: "USDC" | "XAN" | "WETH";
   tokenContractAddress: Address;
-  quantity: bigint;
-  keyring: UserKeyring;
-};
-
-export type CreateBurnProps = {
-  burnResource: Resource;
-  burnAddress: string;
   forwarderAddress: Address;
-  token: Address;
   quantity: bigint;
   keyring: UserKeyring;
 };
@@ -56,7 +60,7 @@ export type MintResources = {
  * Created resource return types
  */
 export type CreatedResources = {
-  actions: Digest[];
+  actions: string[];
   consumedResource: Resource;
   createdResource: Resource;
   paddingResource?: Resource;
@@ -97,28 +101,71 @@ export type Parameters = {
   consumed_resources: Resources["Consumed"][];
 };
 
-export type ResourcePair = {
-  consumed: ConsumedResource;
-  created: CreatedResource;
+export type Receiver = { token: TokenRegistry; quantity: bigint } & (
+  | {
+      type: "AnomaAddress";
+      userPublicKeys: UserPublicKeys;
+    }
+  | {
+      type: "EvmAddress";
+      address: Address;
+    }
+);
+
+export type ConsumedResourceDraft = {
+  resource: Resource;
+  nullifierKey: NullifierKey;
+  token?: TokenRegistry;
+} & (
+  | {
+      type: "AnomaAddress";
+      userPublicKeys: UserPublicKeys;
+    }
+  | {
+      type: "EvmAddress";
+      address: Address;
+      permit2Data: Permit2Data;
+    }
+  | {
+      type: "Padding";
+    }
+);
+
+export type CreatedResourceDraft = {
+  resource: Resource;
+  receiver?: Receiver;
+};
+
+export type ResolvedParameters = {
+  createdResourceDrafts: CreatedResourceDraft[];
+  consumedResourceDrafts: ConsumedResourceDraft[];
 };
 
 /**
  * Fees
  */
-export const FeeCompatibleERC20Tokens = ["WETH", "USDC", "XAN"] as const;
-export type FeeCompatibleERC20 = (typeof FeeCompatibleERC20Tokens)[number];
-export type NativeToken = "ETH";
-export type FeeToken = FeeCompatibleERC20 | NativeToken;
+export const FeeCompatibleERC20Tokens = [
+  "USDC",
+  "USDT",
+  "WETH",
+  "XAN",
+] as const;
+export type SupportedFeeToken = (typeof FeeCompatibleERC20Tokens)[number];
 
 /**
  * Fees request & response
  */
 export type FeeRequest = {
-  fee_token: FeeToken;
+  fee_token: SupportedFeeToken;
   transaction: Parameters;
 };
+
 export type FeeResponse = {
-  fee: bigint;
+  base_fee: number;
+  base_fee_per_resource: number;
+  percentage: number;
+  percentage_fee: number;
+  token_type: string;
 };
 
 /**
