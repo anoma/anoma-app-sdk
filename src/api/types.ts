@@ -140,3 +140,7 @@ export type IndexerHealthResponse = {
   version: string; // "1.0.0",
   indexed_contracts: IndexerContract[];
 };
+
+export type IndexerAddKeysResponse = {
+  status: "ok";
+};
