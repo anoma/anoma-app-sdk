@@ -1,17 +1,36 @@
 {
-  "name": "@anonma/anomapay-sdk",
+  "name": "@anoma/anomapay-sdk",
   "version": "0.1.0",
   "type": "module",
   "engines": {
     "node": ">=22"
   },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "main": "./dist/anomapay-sdk.cjs",
   "module": "./dist/anomapay-sdk.js",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/anomapay-sdk.js",
-      "require": "./dist/anomapay-sdk.umd.cjs"
+      "require": "./dist/anomapay-sdk.cjs"
+    },
+    "./api": {
+      "import": "./dist/api.js",
+      "require": "./dist/api.cjs"
+    },
+    "./domain": {
+      "import": "./dist/domain.js",
+      "require": "./dist/domain.cjs"
+    },
+    "./lib": {
+      "import": "./dist/lib.js",
+      "require": "./dist/lib.cjs"
+    },
+    "./wasm": {
+      "import": "./dist/wasm.js",
+      "require": "./dist/wasm.cjs"
     }
   },
   "scripts": {
@@ -48,6 +67,9 @@
     "vite-plugin-dts": "^4.5.4",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^4.0.6"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "lint-staged": {
     "*.{ts,js}": [

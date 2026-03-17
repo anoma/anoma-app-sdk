@@ -3,14 +3,28 @@ import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-// https://vite.dev/config/
 export default defineConfig({
   build: {
     lib: {
-      entry: resolve(__dirname, "src/index.ts"),
-      fileName: "anomapay-sdk",
-      name: "anomapay-sdk",
-      formats: ["es", "umd"],
+      entry: {
+        "anomapay-sdk": resolve(import.meta.dirname, "src/index.js"),
+        api: resolve(import.meta.dirname, "src/api/index.js"),
+        domain: resolve(import.meta.dirname, "src/domain/index.js"),
+        lib: resolve(import.meta.dirname, "src/lib/index.js"),
+        wasm: resolve(import.meta.dirname, "src/wasm/index.js"),
+      },
+      name: "AnomaPay",
+    },
+    rollupOptions: {
+      external: [
+        "@noble/hashes",
+        "@noble/secp256k1",
+        "@uniswap/permit2-sdk",
+        "crc-32",
+        "viem",
+        "wagmi",
+        "zod",
+      ],
     },
   },
   plugins: [dts(), tsconfigPaths()],
