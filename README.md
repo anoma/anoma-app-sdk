@@ -2,6 +2,8 @@
 
 This repository contains most of the code related to the Anoma Pay shared functionality.
 
+The SDK type documentation can be found [here](./docs/globals.md).
+
 ## Tech Stack
 
 - [Typescript ^5.9](https://www.typescriptlang.org/)

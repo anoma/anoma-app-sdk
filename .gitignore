@@ -30,3 +30,7 @@ storybook-static
 pkg
 target
 .NOTES
+
+# Ignore superfluous files copied by typedoc
+docs/README.md
+docs/_media
