@@ -9,13 +9,13 @@ import type {
   UserPublicKeys,
 } from "types";
 import type { Address } from "viem";
-import { HeliaxKeys, PublicKey, type Resource } from "wasm";
+import { PublicKey, type Resource } from "wasm";
 import { checkMergeSplitParameters } from "../services";
 import { TransferLogic } from "./TransferLogic";
 
 /**
  * Assembles the {@link Parameters} payload required by the proving backend for
- * mint, transfer, and burn operations.
+ * mint and transfer operations.
  *
  * `TransferBuilder` takes the raw resources produced by {@link TransferLogic}
  * and the caller's keyring and formats them—together with per-operation witness
@@ -146,7 +146,7 @@ export class TransferBuilder {
    *   {@link TransferLogic.createTransferResource} and authorizing the action tree.
    * @param keyring - The sender's full {@link UserKeyring}.
    * @param receiverKeyring - The receiver's {@link UserPublicKeys} (no private keys required).
-   * @param token - The ERC-20 token contract address.
+   * @param tokenContractAddress - The ERC-20 token contract address.
    * @returns A {@link Parameters} object ready to submit to the proving backend.
    *
    * @example
@@ -164,7 +164,7 @@ export class TransferBuilder {
     authorizedResources: AuthorizedResources,
     keyring: UserKeyring,
     receiverKeyring: UserPublicKeys,
-    token: Address
+    tokenContractAddress: Address
   ): Parameters {
     const {
       authSig,
@@ -192,178 +192,14 @@ export class TransferBuilder {
         receiverKeyring.encryptionPublicKey
       ).toBase64(),
       // NOTE: The backend serializer will deserialize this AffinePoint to recover
-      // auth veritying key as: AuthorizationVerifyingKey::from_affine(affine)
+      // auth verifying key as: AuthorizationVerifyingKey::from_affine(affine)
       receiver_authorization_verifying_key: new PublicKey(
         receiverKeyring.authorityPublicKey
       ).toBase64(),
-      token_contract_address: token,
+      token_contract_address: tokenContractAddress,
     };
 
     const parameters: Parameters = {
-      consumed_resources: [
-        {
-          resource: consumedResource.encode(),
-          nullifier_key: toBase64(keyring.nullifierKeyPair.nk),
-          witness_data: {
-            TokenTransferPersistent: consumedWitnessData,
-          },
-        },
-      ],
-      created_resources: [
-        {
-          resource: createdResource.encode(),
-          witness_data: { TokenTransferPersistent: createdWitnessData },
-        },
-      ],
-    };
-
-    return checkMergeSplitParameters(
-      parameters,
-      keyring,
-      token,
-      paddingResource,
-      remainderResource
-    );
-  }
-
-  /**
-   * Assembles the {@link Parameters} payload for a burn (ERC-20 withdrawal) operation.
-   *
-   * The consumed resource uses `TokenTransferPersistent` witness data with the
-   * sender's signature and keys; the created (ephemeral) resource uses
-   * `TokenTransferEphemeralUnwrap` witness data with the destination wallet address.
-   * Split resources are merged in automatically if present.
-   *
-   * @param authorizedResources - The signed resources produced after calling
-   *   {@link TransferLogic.createBurnResource} and authorizing the action tree.
-   * @param keyring - The caller's full {@link UserKeyring}.
-   * @param token - The ERC-20 token contract address.
-   * @param burnAddress - The EVM wallet address that will receive the unwrapped tokens.
-   * @returns A {@link Parameters} object ready to submit to the proving backend.
-   *
-   * @example
-   * ```typescript
-   * const params = builder.buildBurnParameters(
-   *   authorizedResources,
-   *   keyring,
-   *   "0xTokenAddress",
-   *   "0xReceiverWalletAddress"
-   * );
-   * await backendClient.transfer(params);
-   * ```
-   */
-  buildBurnParameters(
-    authorizedResources: AuthorizedResources,
-    keyring: UserKeyring,
-    token: Address,
-    burnAddress: Address
-  ): Parameters {
-    const {
-      authSig,
-      consumedResource,
-      createdResource,
-      remainderResource,
-      paddingResource,
-    } = authorizedResources;
-
-    const createdWitnessData: CreatedWitnessData["TokenTransferEphemeralUnwrap"] =
-      {
-        token_contract_address: token,
-        receiver_wallet_address: burnAddress,
-      };
-    const consumedWitnessData: ConsumedWitnessData["TokenTransferPersistent"] =
-      {
-        sender_authorization_signature: toBase64(authSig.toBytes()),
-        sender_authorization_verifying_key: new PublicKey(
-          keyring.authorityKeyPair.publicKey
-        ).toBase64(),
-        sender_encryption_public_key: new PublicKey(
-          keyring.encryptionKeyPair.publicKey
-        ).toBase64(),
-      };
-    const parameters: Parameters = {
-      consumed_resources: [
-        {
-          resource: consumedResource.encode(),
-          nullifier_key: toBase64(keyring.nullifierKeyPair.nk),
-          witness_data: {
-            TokenTransferPersistent: consumedWitnessData,
-          },
-        },
-      ],
-      created_resources: [
-        {
-          resource: createdResource.encode(),
-          witness_data: {
-            TokenTransferEphemeralUnwrap: createdWitnessData,
-          },
-        },
-      ],
-    };
-
-    return checkMergeSplitParameters(
-      parameters,
-      keyring,
-      token,
-      paddingResource,
-      remainderResource
-    );
-  }
-
-  /**
-   * Assembles the {@link Parameters} payload for a fee transfer to the Heliax
-   * fee collector.
-   *
-   * Identical in structure to a regular transfer but the created resource uses
-   * the Heliax fee logic reference and the well-known Heliax discovery/encryption
-   * public keys as receiver keys.
-   *
-   * @param authorizedResources - The signed resources produced after calling
-   *   {@link TransferLogic.createFeeTransferResource} and authorizing the action tree.
-   * @param keyring - The caller's full {@link UserKeyring}.
-   * @param tokenContractAddress - The ERC-20 token contract used for the fee.
-   * @returns A {@link Parameters} object ready to submit to the proving backend.
-   *
-   * @example
-   * ```typescript
-   * const params = builder.buildFeeTransferParameters(
-   *   authorizedResources,
-   *   keyring,
-   *   "0xTokenAddress"
-   * );
-   * await backendClient.transfer(params);
-   * ```
-   */
-  buildFeeTransferParameters(
-    authorizedResources: AuthorizedResources,
-    keyring: UserKeyring,
-    tokenContractAddress: Address
-  ): Parameters {
-    const {
-      authSig,
-      createdResource,
-      consumedResource,
-      paddingResource,
-      remainderResource,
-    } = authorizedResources;
-    const consumedWitnessData: ConsumedWitnessData["TokenTransferPersistent"] =
-      {
-        sender_authorization_signature: toBase64(authSig.toBytes()),
-        sender_authorization_verifying_key: new PublicKey(
-          keyring.authorityKeyPair.publicKey
-        ).toBase64(),
-        sender_encryption_public_key: new PublicKey(
-          keyring.encryptionKeyPair.publicKey
-        ).toBase64(),
-      };
-
-    const { HELIAX_FEE_ENCRYPTION_PK, HELIAX_FEE_DISCOVERY_PK } = HeliaxKeys;
-    const createdWitnessData: CreatedWitnessData["TokenTransferPersistent"] = {
-      receiver_discovery_public_key: HELIAX_FEE_DISCOVERY_PK,
-      receiver_encryption_public_key: HELIAX_FEE_ENCRYPTION_PK,
-    };
-
-    const parameters = {
       consumed_resources: [
         {
           resource: consumedResource.encode(),

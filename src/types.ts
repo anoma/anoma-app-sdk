@@ -1,11 +1,11 @@
 import type { IndexerEVMTransaction, IndexerId } from "api";
-import type { Address } from "viem";
-import type { EncodedResource } from "wasm";
 import {
   BaseMainnetChainId,
   EthereumMainnetChainId,
   EthereumSepoliaChainId,
-} from "./lib-constants";
+} from "lib-constants";
+import type { Address } from "viem";
+import type { EncodedResource } from "wasm";
 export * from "domain/keys/types";
 export * from "domain/transfer/types";
 
@@ -25,12 +25,23 @@ export type AuthType = "wallet" | "passkey";
  *
  * Returned by {@link openResourceMetadata}.
  */
+/**
+ * A decoded, on-chain-validated resource augmented with balance and
+ * transaction metadata.
+ *
+ * Extends the WASM {@link EncodedResource} with:
+ * - `isConsumed` — whether the resource has already been spent.
+ * - `erc20TokenAddress` — the ERC-20 contract this resource represents.
+ * - `forwarder` — the forwarder contract that handled the original deposit.
+ * - `transaction` — the EVM transaction associated with this resource (creation or consumption).
+ *
+ * Returned by {@link openResourceMetadata}.
+ */
 export type AppResource = EncodedResource & {
   isConsumed: boolean;
   erc20TokenAddress: Address;
   forwarder: Address;
-  createdTransaction?: IndexerEVMTransaction;
-  consumedTransaction?: IndexerEVMTransaction;
+  transaction?: IndexerEVMTransaction;
 };
 
 /**

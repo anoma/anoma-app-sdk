@@ -1,14 +1,18 @@
 import type {
   AuthoritySignature,
-  Digest,
   EncodedResource,
   MerkleTree,
+  NullifierKey,
   Resource,
 } from "wasm";
 
-import type { UserKeyring, UserPublicKeys } from "types";
+import type { TokenRegistry, UserKeyring, UserPublicKeys } from "types";
 import type { Address } from "viem";
-import type { ConsumedWitnessData, CreatedWitnessData } from "./witness";
+import type {
+  ConsumedWitnessData,
+  CreatedWitnessData,
+  Permit2Data,
+} from "./witness";
 
 /**
  * Parameters for {@link TransferLogic.createMintResources}.
@@ -42,10 +46,30 @@ export type CreateTransferProps = {
   token: Address;
   /** Amount to send; must be ≤ the resource's quantity. */
   quantity: bigint;
-  /** The sender's full keyring. */
-  keyring: UserKeyring;
+  /** The sender's nullifier key, used to compute the resource nullifier. */
+  nullifierKey: NullifierKey;
   /** The receiver's public keys (no private key material required). */
   receiverKeyring: UserPublicKeys;
+};
+
+/**
+ * Parameters for {@link TransferLogic.createBurnResource}.
+ *
+ * Represents a withdrawal of an in-protocol resource back to an EVM address.
+ */
+export type CreateBurnProps = {
+  /** The resource to burn (consume and unwrap). */
+  resource: Resource;
+  /** Address of the forwarder contract that will process the unwrap. */
+  forwarderAddress: Address;
+  /** ERC-20 token contract address. */
+  token: Address;
+  /** EVM address that will receive the unwrapped ERC-20 tokens. */
+  receiverAddress: Address;
+  /** Amount to withdraw; must be ≤ the resource's quantity. */
+  quantity: bigint;
+  /** The sender's nullifier key, used to compute the resource nullifier. */
+  nullifierKey: NullifierKey;
 };
 
 /**
@@ -56,33 +80,13 @@ export type CreateTransferProps = {
 export type CreateFeeTransferProps = {
   /** The resource to consume for the fee payment. */
   resource: Resource;
-  /** Symbol of the fee token. Only `"USDC"`, `"XAN"`, and `"WETH"` are supported. */
-  tokenSymbol: "USDC" | "XAN" | "WETH";
-  /** ERC-20 token contract address for the fee token. */
+  /** Symbol of the fee token. Only `"USDC"`, `"USDT"`, `"XAN"`, and `"WETH"` are supported. */
   tokenContractAddress: Address;
+  /** Address of the forwarder contract. */
+  forwarderAddress: Address;
   /** Fee amount in the token's base unit. */
   quantity: bigint;
   /** The payer's full keyring. */
-  keyring: UserKeyring;
-};
-
-/**
- * Parameters for {@link TransferLogic.createBurnResource}.
- *
- * Represents a withdrawal of an in-protocol resource back to an EVM address.
- */
-export type CreateBurnProps = {
-  /** The resource to burn (consume and unwrap). */
-  burnResource: Resource;
-  /** EVM address that will receive the unwrapped ERC-20 tokens. */
-  burnAddress: string;
-  /** Address of the forwarder contract that will process the unwrap. */
-  forwarderAddress: Address;
-  /** ERC-20 token contract address. */
-  token: Address;
-  /** Amount to withdraw; must be ≤ the resource's quantity. */
-  quantity: bigint;
-  /** The caller's full keyring. */
   keyring: UserKeyring;
 };
 
@@ -105,14 +109,14 @@ export type MintResources = {
  * Resources produced by the transfer, burn, and fee-transfer methods on
  * {@link TransferLogic}.
  *
- * The `actions` array contains the nullifier and commitment digests needed to
- * build a Merkle action tree; `paddingResource` and `remainderResource` are
- * present when the source resource was larger than `quantity` and a split was
- * required.
+ * The `actions` array contains hex-encoded nullifier and commitment digests
+ * needed to build a Merkle action tree; `paddingResource` and
+ * `remainderResource` are present when the source resource was larger than
+ * `quantity` and a split was required.
  */
 export type CreatedResources = {
-  /** Ordered list of nullifier and commitment digests for the action tree. */
-  actions: Digest[];
+  /** Ordered list of hex-encoded nullifier and commitment digests for the action tree. */
+  actions: string[];
   /** The resource that is being consumed (nullified). */
   consumedResource: Resource;
   /** The newly created resource addressed to the recipient. */
@@ -182,44 +186,101 @@ export type Parameters = {
 };
 
 /**
- * A matched pair of one consumed and one created resource.
- * Useful when iterating over balanced resource pairs.
+ * Describes a transfer destination: either an Anoma Pay address (private)
+ * or a plain EVM address (public withdrawal).
  */
-export type ResourcePair = {
-  consumed: ConsumedResource;
-  created: CreatedResource;
+export type Receiver = { token: TokenRegistry; quantity: bigint } & (
+  | {
+      type: "AnomaAddress";
+      userPublicKeys: UserPublicKeys;
+    }
+  | {
+      type: "EvmAddress";
+      address: Address;
+    }
+);
+
+/**
+ * A draft representation of a resource being consumed, used during
+ * high-level transaction building before witness data is attached.
+ */
+export type ConsumedResourceDraft = {
+  resource: Resource;
+  nullifierKey: NullifierKey;
+  token?: TokenRegistry;
+} & (
+  | {
+      type: "AnomaAddress";
+      userPublicKeys: UserPublicKeys;
+    }
+  | {
+      type: "EvmAddress";
+      address: Address;
+      permit2Data: Permit2Data;
+    }
+  | {
+      type: "Padding";
+    }
+);
+
+/**
+ * A draft representation of a resource being created, paired with its
+ * optional receiver metadata.
+ */
+export type CreatedResourceDraft = {
+  resource: Resource;
+  receiver?: Receiver;
+};
+
+/**
+ * The resolved set of resource drafts that will be serialized into
+ * {@link Parameters} for backend submission.
+ */
+export type ResolvedParameters = {
+  createdResourceDrafts: CreatedResourceDraft[];
+  consumedResourceDrafts: ConsumedResourceDraft[];
 };
 
 /**
  * ERC-20 token symbols that can be used to pay protocol fees.
  */
-export const FeeCompatibleERC20Tokens = ["WETH", "USDC", "XAN"] as const;
+export const FeeCompatibleERC20Tokens = [
+  "USDC",
+  "USDT",
+  "WETH",
+  "XAN",
+] as const;
 
 /** Union of ERC-20 symbols accepted as fee tokens. */
-export type FeeCompatibleERC20 = (typeof FeeCompatibleERC20Tokens)[number];
-
-/** The native ETH token (paid directly, not via ERC-20 transfer). */
-export type NativeToken = "ETH";
-
-/** Any token that can be used to pay the Anoma Pay protocol fee. */
-export type FeeToken = FeeCompatibleERC20 | NativeToken;
+export type SupportedFeeToken = (typeof FeeCompatibleERC20Tokens)[number];
 
 /**
  * Request body for {@link TransferBackendClient.estimateFee}.
  */
 export type FeeRequest = {
   /** The token to use for fee payment. */
-  fee_token: FeeToken;
+  fee_token: SupportedFeeToken;
   /** The transfer parameters to estimate fees for. */
   transaction: Parameters;
 };
 
 /**
  * Response from {@link TransferBackendClient.estimateFee}.
+ *
+ * Contains a detailed fee breakdown including a flat base fee, a per-resource
+ * component, and a percentage-based fee on the transfer amount.
  */
 export type FeeResponse = {
-  /** Estimated fee in the `fee_token`'s base unit. */
-  fee: bigint;
+  /** Flat base fee in the fee token's base unit. */
+  base_fee: number;
+  /** Per-resource component of the fee. */
+  base_fee_per_resource: number;
+  /** Percentage rate applied to the transfer amount. */
+  percentage: number;
+  /** Fee amount derived from the percentage component. */
+  percentage_fee: number;
+  /** Symbol of the token used to pay the fee. */
+  token_type: string;
 };
 
 /**

@@ -4,9 +4,10 @@ This guide walks through building a minimal React application that lets users:
 
 1. Create or restore a private keyring using a passkey.
 2. Display their Pay Address so others can send them tokens.
-3. View their private token balance.
-4. Send a private transfer to another user's Pay Address.
-5. Withdraw tokens back to their EVM wallet (burn).
+3. Deposit ERC-20 tokens into the privacy protocol (mint).
+4. View their private token balance.
+5. Send a private transfer to another user's Pay Address.
+6. Withdraw tokens back to their EVM wallet (burn).
 
 By the end you will have a clear picture of the full SDK integration surface.
 
@@ -148,7 +149,6 @@ import { anomaPayConfig } from "../config";
 const indexer = new IndexerClient(anomaPayConfig.indexerUrl);
 
 async function registerKeys(keyring: UserKeyring) {
-  // EncodedKeypair shape expected by the indexer
   const encodedKeypair = {
     sk: Buffer.from(keyring.discoveryKeyPair.privateKey).toString("hex"),
     pk: Buffer.from(keyring.discoveryKeyPair.publicKey).toString("hex"),
@@ -157,180 +157,12 @@ async function registerKeys(keyring: UserKeyring) {
 }
 ```
 
-## 6. Fetch and decrypt the private balance
+## 6. Mint (deposit ERC-20 tokens)
 
-Resources on-chain are encrypted. The SDK decrypts them using the user's encryption private key and checks each one's nullifier status to determine if it has been spent.
-
-```ts
-import {
-  IndexerClient,
-  EnvioClient,
-  parseIndexerResourceResponse,
-  openResourceMetadata,
-  buildTransactionLookup,
-  type UserKeyring,
-  type AppResource,
-} from "@anonma/anomapay-sdk";
-import { anomaPayConfig } from "../config";
-import { TRANSFER_LOGIC_VERIFYING_KEY } from "@anonma/anomapay-sdk";
-
-const indexer = new IndexerClient(anomaPayConfig.indexerUrl);
-const envio = new EnvioClient(anomaPayConfig.envioUrl);
-
-async function fetchBalance(keyring: UserKeyring): Promise<AppResource[]> {
-  // 1. Fetch encrypted resource blobs from the indexer
-  const discoveryPrivateKeyHex = Buffer.from(
-    keyring.discoveryKeyPair.privateKey
-  ).toString("hex");
-  const { resources: indexerResources } = await indexer.resources(
-    discoveryPrivateKeyHex
-  );
-
-  // 2. Decrypt and deserialize the blobs
-  const decryptedResources = await parseIndexerResourceResponse(
-    keyring,
-    indexerResources
-  );
-
-  // 3. Fetch consumed tags to determine spent status
-  const consumedTags = await envio.consumedTags(TRANSFER_LOGIC_VERIFYING_KEY);
-  const transactionLookup = buildTransactionLookup(consumedTags);
-
-  // 4. Annotate each resource with its consumed/available status
-  const appResources = await openResourceMetadata(
-    keyring,
-    decryptedResources,
-    transactionLookup,
-    true // only return unspent resources
-  );
-
-  return appResources;
-}
-```
-
-Each `AppResource` includes:
-- `quantity` — token amount as `bigint`
-- `erc20TokenAddress` — the ERC-20 contract address
-- `isConsumed` — whether the resource has been spent
-- `createdTransaction` / `consumedTransaction` — on-chain transaction metadata
-
-## 7. Send a private transfer
-
-A private transfer moves tokens from the sender's resource to a new resource encrypted to the receiver. This is the most involved flow.
+Before a user can make private transfers, they need to deposit ERC-20 tokens into the protocol. Mint creates a private in-protocol resource backed by real ERC-20 tokens locked in the forwarder contract.
 
 ```ts
-import {
-  TransferLogic,
-  TransferBuilder,
-  TransferBackendClient,
-  IndexerClient,
-  EnvioClient,
-  decodePayAddress,
-  isValidPayAddress,
-  selectTransferResources,
-  authorizeCreatedResources,
-  mergeParameters,
-  type UserKeyring,
-  type AppResource,
-} from "@anonma/anomapay-sdk";
-import { anomaPayConfig } from "../config";
-
-const backend = new TransferBackendClient(anomaPayConfig.backendUrl);
-
-async function sendTransfer(
-  keyring: UserKeyring,
-  availableResources: AppResource[],
-  receiverPayAddress: string,
-  tokenAddress: `0x${string}`,
-  amount: bigint
-) {
-  // 1. Validate and decode the receiver's Pay Address
-  if (!isValidPayAddress(receiverPayAddress)) {
-    throw new Error("Invalid Pay Address");
-  }
-  const receiverPublicKeys = decodePayAddress(receiverPayAddress);
-
-  // 2. Select the optimal resource(s) for the transfer amount
-  const resourcesForToken = availableResources.filter(
-    (r) => r.erc20TokenAddress.toLowerCase() === tokenAddress.toLowerCase()
-  );
-  const transferResources = selectTransferResources(resourcesForToken, amount);
-
-  // 3. Initialise the transfer client (loads WASM)
-  const transferLogic = await TransferLogic.init();
-  const transferBuilder = await TransferBuilder.init();
-
-  // 4. Build and authorize resource pairs for each selected resource
-  const createdResourceSets = transferResources.map(([encodedResource, quantity]) => {
-    const resource = /* reconstruct Resource from EncodedResource */;
-    return transferLogic.createTransferResource({
-      resource,
-      forwarderAddress: anomaPayConfig.forwarderAddress,
-      token: tokenAddress,
-      quantity,
-      keyring,
-      receiverKeyring: receiverPublicKeys,
-    });
-  });
-
-  const authorizedSets = authorizeCreatedResources(
-    createdResourceSets,
-    keyring.authorityKeyPair.privateKey
-  );
-
-  // 5. Build the Parameters payload for each authorized resource set
-  const parametersList = authorizedSets.map((authorized) =>
-    transferBuilder.buildTransferParameters(
-      authorized,
-      keyring,
-      receiverPublicKeys,
-      tokenAddress
-    )
-  );
-
-  // 6. Merge into a single Parameters object and submit
-  const parameters = mergeParameters(parametersList);
-  const { transaction_hash: uuid } = await backend.transfer(parameters);
-
-  return uuid;
-}
-```
-
-## 8. Poll transaction status
-
-After submission, poll until the transaction is proven or has failed:
-
-```ts
-import { TransferBackendClient } from "@anonma/anomapay-sdk";
-
-const backend = new TransferBackendClient(anomaPayConfig.backendUrl);
-
-async function waitForProof(uuid: string): Promise<string> {
-  const terminalStates = new Set(["Proven", "Failed", "Unprocessable"]);
-
-  while (true) {
-    const { status, hash } = await backend.transactionStatus(uuid as any);
-
-    if (status === "Proven") return hash;
-    if (terminalStates.has(status)) {
-      throw new Error(`Transaction ended with status: ${status}`);
-    }
-
-    // Wait 5 seconds before polling again
-    await new Promise((resolve) => setTimeout(resolve, 5_000));
-  }
-}
-```
-
-::: tip Proof time
-Each resource requires an independent ZK proof. Budget approximately 20 seconds per resource — a simple transfer with no split takes ~60 seconds total (2 resources + 2 fee resources).
-:::
-
-## 9. Mint (deposit ERC-20 tokens)
-
-Before a user can make private transfers, they need to deposit ERC-20 tokens into the protocol. This is the "mint" operation.
-
-```ts
+// Inside a React component or hook:
 import {
   TransferLogic,
   TransferBuilder,
@@ -343,7 +175,6 @@ import {
 import { useSignTypedData, useAccount } from "wagmi";
 import { anomaPayConfig } from "../config";
 
-// Inside a React component:
 const { address: walletAddress } = useAccount();
 const { signTypedDataAsync } = useSignTypedData();
 
@@ -352,10 +183,11 @@ async function mint(
   tokenAddress: `0x${string}`,
   amount: bigint
 ) {
+  const backend = new TransferBackendClient(anomaPayConfig.backendUrl);
   const transferLogic = await TransferLogic.init();
   const transferBuilder = await TransferBuilder.init();
 
-  // 1. Create the mint resources
+  // 1. Create the mint resource pair
   const { createdResource, consumedResource, actionTree } =
     transferLogic.createMintResources({
       userAddress: walletAddress!,
@@ -380,7 +212,7 @@ async function mint(
     amount,
   };
 
-  const { signature, r, s, v } = await signPermit(
+  const { signature } = await signPermit(
     signTypedDataAsync,
     permit2Props,
     walletAddress!
@@ -401,48 +233,238 @@ async function mint(
     keyring
   );
 
-  const { transaction_hash: uuid } = await backend.transfer(parameters);
-  return uuid;
+  const { transaction_hash: txId } = await backend.transfer(parameters);
+  return txId;
 }
 ```
 
-## 10. Burn (withdraw back to wallet)
+## 7. Fetch and decrypt the private balance
+
+Resources on-chain are encrypted. The SDK decrypts them using the user's encryption private key and checks each one's nullifier status to determine if it has been spent.
 
 ```ts
+import {
+  IndexerClient,
+  EnvioClient,
+  parseIndexerResourceResponse,
+  openResourceMetadata,
+  buildTransactionLookup,
+  TRANSFER_LOGIC_VERIFYING_KEY,
+  type UserKeyring,
+  type AppResource,
+} from "@anonma/anomapay-sdk";
+import { anomaPayConfig } from "../config";
+
+const indexer = new IndexerClient(anomaPayConfig.indexerUrl);
+const envio = new EnvioClient(anomaPayConfig.envioUrl);
+
+async function fetchBalance(keyring: UserKeyring): Promise<AppResource[]> {
+  // 1. Fetch encrypted resource blobs from the indexer
+  const discoveryPrivateKeyHex = Buffer.from(
+    keyring.discoveryKeyPair.privateKey
+  ).toString("hex");
+  const { resources: indexerResources } = await indexer.resources(
+    discoveryPrivateKeyHex
+  );
+
+  // 2. Decrypt and deserialize the blobs
+  const decryptedResources = await parseIndexerResourceResponse(
+    keyring,
+    indexerResources
+  );
+
+  // 3. Fetch consumed tags to determine spent status
+  const consumedTags = await envio.consumedTags(TRANSFER_LOGIC_VERIFYING_KEY);
+  const transactionLookup = buildTransactionLookup(consumedTags);
+
+  // 4. Annotate each resource with consumed/available status
+  const appResources = await openResourceMetadata(
+    keyring,
+    decryptedResources,
+    transactionLookup,
+    true // only return unspent resources
+  );
+
+  return appResources;
+}
+```
+
+Each `AppResource` includes:
+- `quantity` — token amount as `bigint`
+- `erc20TokenAddress` — the ERC-20 contract address
+- `isConsumed` — whether the resource has been spent
+- `transaction` — on-chain EVM transaction metadata (if available)
+
+## 8. Send a private transfer
+
+A private transfer moves tokens from the sender's resource to a new resource encrypted to the receiver's public keys. Use `ParametersDraftResolver` to handle resource selection, padding, and change-back automatically, then `PayloadBuilder` to sign and serialize the payload.
+
+```ts
+import {
+  TransferBuilder,
+  TransferBackendClient,
+  ParametersDraftResolver,
+  PayloadBuilder,
+  decodePayAddress,
+  isValidPayAddress,
+  type UserKeyring,
+  type AppResource,
+  type TokenRegistry,
+} from "@anonma/anomapay-sdk";
+import { anomaPayConfig } from "../config";
+
+async function sendTransfer(
+  keyring: UserKeyring,
+  availableResources: AppResource[],
+  receiverPayAddress: string,
+  token: TokenRegistry,
+  amount: bigint
+) {
+  // 1. Validate and decode the receiver's Pay Address
+  if (!isValidPayAddress(receiverPayAddress)) {
+    throw new Error("Invalid Pay Address");
+  }
+  const receiverPublicKeys = decodePayAddress(receiverPayAddress);
+
+  // 2. Build the transfer parameters
+  const transferBuilder = await TransferBuilder.init();
+  const resolver = new ParametersDraftResolver(transferBuilder, keyring);
+
+  resolver.addReceiver({
+    type: "AnomaAddress",
+    userPublicKeys: receiverPublicKeys,
+    quantity: amount,
+    token,
+  });
+
+  const resolved = resolver.build(
+    availableResources,
+    anomaPayConfig.forwarderAddress
+  );
+
+  // 3. Authorize (sign the action tree) and serialize
+  const parameters = new PayloadBuilder(keyring, resolved)
+    .withAuthorization()
+    .build();
+
+  // 4. Submit to the proving backend
+  const backend = new TransferBackendClient(anomaPayConfig.backendUrl);
+  const { transaction_hash: txId } = await backend.transfer(parameters);
+  return txId;
+}
+```
+
+::: tip Multiple receivers
+You can call `resolver.addReceiver(...)` multiple times before `resolver.build(...)` to send to several recipients in a single atomic transaction. `ParametersDraftResolver` automatically selects the minimum set of resources needed and creates change-back resources for any remainder.
+:::
+
+## 9. Burn (withdraw back to wallet)
+
+A burn unwraps a private resource and releases the underlying ERC-20 tokens to an EVM address. The flow is identical to a transfer, but the receiver is an `EvmAddress` instead of an `AnomaAddress`.
+
+```ts
+import {
+  TransferBuilder,
+  TransferBackendClient,
+  ParametersDraftResolver,
+  PayloadBuilder,
+  type UserKeyring,
+  type AppResource,
+  type TokenRegistry,
+} from "@anonma/anomapay-sdk";
+import { anomaPayConfig } from "../config";
+
 async function burn(
   keyring: UserKeyring,
-  resource: AppResource,
+  availableResources: AppResource[],
+  token: TokenRegistry,
   amount: bigint,
   withdrawToAddress: `0x${string}`
 ) {
-  const transferLogic = await TransferLogic.init();
   const transferBuilder = await TransferBuilder.init();
+  const resolver = new ParametersDraftResolver(transferBuilder, keyring);
 
-  const burnResourceSet = transferLogic.createBurnResource({
-    burnResource: /* Resource from AppResource */,
-    burnAddress: withdrawToAddress,
-    forwarderAddress: anomaPayConfig.forwarderAddress,
-    token: resource.erc20TokenAddress,
+  resolver.addReceiver({
+    type: "EvmAddress",
+    address: withdrawToAddress,
     quantity: amount,
-    keyring,
+    token,
   });
 
-  const [authorized] = authorizeCreatedResources(
-    [burnResourceSet],
-    keyring.authorityKeyPair.privateKey
+  const resolved = resolver.build(
+    availableResources,
+    anomaPayConfig.forwarderAddress
   );
 
-  const parameters = transferBuilder.buildBurnParameters(
-    authorized,
-    keyring,
-    resource.erc20TokenAddress,
-    withdrawToAddress
-  );
+  const parameters = new PayloadBuilder(keyring, resolved)
+    .withAuthorization()
+    .build();
 
-  const { transaction_hash: uuid } = await backend.transfer(parameters);
-  return uuid;
+  const backend = new TransferBackendClient(anomaPayConfig.backendUrl);
+  const { transaction_hash: txId } = await backend.transfer(parameters);
+  return txId;
 }
 ```
+
+## 10. Fee estimation
+
+Before submitting a transaction, you can query the backend for the exact fee amount. The fee breaks down into a flat base fee, a per-resource component, and a percentage of the transfer amount.
+
+```ts
+import {
+  TransferBackendClient,
+  type Parameters,
+  type SupportedFeeToken,
+} from "@anonma/anomapay-sdk";
+import { anomaPayConfig } from "../config";
+
+async function estimateFee(
+  parameters: Parameters,
+  feeToken: SupportedFeeToken = "USDC"
+) {
+  const backend = new TransferBackendClient(anomaPayConfig.backendUrl);
+  const fee = await backend.estimateFee({
+    fee_token: feeToken,
+    transaction: parameters,
+  });
+
+  // fee.base_fee + fee.base_fee_per_resource + fee.percentage_fee = total cost
+  const total = fee.base_fee + fee.base_fee_per_resource + fee.percentage_fee;
+  console.log(`Estimated fee: ${total} ${fee.token_type}`);
+  return fee;
+}
+```
+
+Supported fee tokens are `"USDC"`, `"USDT"`, `"WETH"`, and `"XAN"`.
+
+## 11. Poll transaction status
+
+After submission, poll until the transaction is proven or has failed:
+
+```ts
+import { TransferBackendClient } from "@anonma/anomapay-sdk";
+import { anomaPayConfig } from "../config";
+
+async function waitForProof(txId: string): Promise<string> {
+  const backend = new TransferBackendClient(anomaPayConfig.backendUrl);
+  const terminalStates = new Set(["Proven", "Failed", "Unprocessable"]);
+
+  while (true) {
+    const { status, hash } = await backend.transactionStatus(txId);
+
+    if (status === "Proven") return hash;
+    if (terminalStates.has(status)) {
+      throw new Error(`Transaction ended with status: ${status}`);
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 5_000));
+  }
+}
+```
+
+::: tip Proof time
+Each resource requires an independent ZK proof. Budget approximately 20 seconds per resource — a simple transfer with no split takes around 60 seconds total.
+:::
 
 ## What's next
 

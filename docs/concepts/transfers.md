@@ -43,13 +43,16 @@ sender's resource → [Transfer] → receiver's resource
 
 If the sender's resource is larger than the transfer amount, the remainder is automatically split back to the sender as a new resource.
 
-The transfer flow requires:
-1. Fetch the sender's available resources via `IndexerClient.resources()`.
-2. Select the optimal resource(s) via `selectTransferResources()`.
-3. `TransferLogic.createTransferResource()` — creates the new resource for the receiver.
-4. `authorizeCreatedResources()` — signs the action tree with the sender's authority key.
-5. `TransferBuilder.buildTransferParameters()` — assembles `Parameters`.
-6. `TransferBackendClient.transfer()` — submits to the proving backend.
+The transfer flow uses the high-level builder API:
+
+1. `TransferBuilder.init()` — loads the WASM module.
+2. `new ParametersDraftResolver(transferBuilder, keyring)` — creates the orchestrator.
+3. `resolver.addReceiver({ type: "AnomaAddress", userPublicKeys, quantity, token })` — declares the recipient.
+4. `resolver.build(availableResources, forwarderAddress)` — selects resources, creates the resource pair, and handles any remainder automatically.
+5. `new PayloadBuilder(keyring, resolved).withAuthorization().build()` — signs the action tree and serializes to `Parameters`.
+6. `TransferBackendClient.transfer(parameters)` — submits to the proving backend.
+
+You can call `addReceiver` multiple times to send to several recipients in one atomic transaction.
 
 ### Burn (withdrawal)
 
@@ -59,13 +62,20 @@ A user withdraws tokens back to their EVM wallet. Their private resource is cons
 private resource → [Burn] → ERC-20 wallet balance
 ```
 
-The burn flow follows the same steps as a transfer, using `TransferLogic.createBurnResource()` and `TransferBuilder.buildBurnParameters()`.
+The burn flow is identical to a transfer, except the receiver is declared with `type: "EvmAddress"` and an `address` field instead of `userPublicKeys`.
 
-## Fee transfers
+## Fee estimation
 
-Every transaction also requires a separate **fee transfer** to a Heliax-controlled fee collector. The SDK handles this transparently via `TransferLogic.createFeeTransferResource()` and `TransferBuilder.buildFeeTransferParameters()`. Fee amounts are obtained from `TransferBackendClient.estimateFee()`.
+Use `TransferBackendClient.estimateFee({ fee_token, transaction })` to query the cost before submitting. The response breaks down as:
 
-Supported fee tokens: `WETH`, `USDC`, `XAN`.
+| Field | Meaning |
+| --- | --- |
+| `base_fee` | Flat fee per transaction |
+| `base_fee_per_resource` | Additional fee per resource |
+| `percentage_fee` | Percentage of the transfer amount |
+| `token_type` | Symbol of the fee token |
+
+Supported fee tokens: `"USDC"`, `"USDT"`, `"WETH"`, `"XAN"`.
 
 ## Transaction lifecycle
 
@@ -84,10 +94,16 @@ Poll `TransferBackendClient.transactionStatus(uuid)` until the status reaches `P
 
 ## Resource selection
 
-When a user wants to transfer `N` tokens, `selectTransferResources()` automatically picks the fewest resources needed:
+When a user wants to transfer `N` tokens, `selectTransferResources(resources, amount)` automatically picks the fewest resources needed and returns `{ selected, remaining }`:
 
+- `selected` — `TransferResourceWithAmount[]`, each pairing a resource with the target amount to consume from it.
+- `remaining` — leftover resources not needed for this transfer.
+
+The selection strategy:
 1. If a resource with exactly `N` exists, use it.
 2. If resources can be summed to exactly `N`, use the minimum subset.
-3. Otherwise, use a resource larger than `N` and split the remainder back to the sender.
+3. Otherwise, use a resource larger than `N`; `ParametersDraftResolver` automatically creates a change-back resource for the remainder.
+
+In practice, you rarely call `selectTransferResources` directly — `ParametersDraftResolver.build()` calls it internally.
 
 See the [Private Transfer App guide](/guides/private-transfer-app) for a complete worked example.

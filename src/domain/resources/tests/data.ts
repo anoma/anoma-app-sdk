@@ -1,6 +1,7 @@
-import type { EncodedResource } from "wasm";
+import { EthereumSepoliaForwarderContract } from "lib-constants";
+import type { AppResource } from "types";
 
-export const transferResources: EncodedResource[] = [
+export const transferResources: AppResource[] = [
   {
     quantity: 1000000n,
     is_ephemeral: false,
@@ -8,8 +9,11 @@ export const transferResources: EncodedResource[] = [
     label_ref: "label_ref",
     value_ref: "value_ref",
     nonce: "nonce",
-    rand_seed: "rand_seed",
+    rand_seed: "rand_seed_1",
     nk_commitment: "nk_commitment",
+    isConsumed: false,
+    erc20TokenAddress: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+    forwarder: EthereumSepoliaForwarderContract,
   },
   {
     quantity: 2000000n,
@@ -18,8 +22,11 @@ export const transferResources: EncodedResource[] = [
     label_ref: "label_ref",
     value_ref: "value_ref",
     nonce: "nonce",
-    rand_seed: "rand_seed",
+    rand_seed: "rand_seed_2",
     nk_commitment: "nk_commitment",
+    isConsumed: false,
+    erc20TokenAddress: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+    forwarder: EthereumSepoliaForwarderContract,
   },
   {
     quantity: 3000000n,
@@ -28,8 +35,11 @@ export const transferResources: EncodedResource[] = [
     label_ref: "label_ref",
     value_ref: "value_ref",
     nonce: "nonce",
-    rand_seed: "rand_seed",
+    rand_seed: "rand_seed_3",
     nk_commitment: "nk_commitment",
+    isConsumed: false,
+    erc20TokenAddress: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+    forwarder: EthereumSepoliaForwarderContract,
   },
   {
     quantity: 4000000n,
@@ -38,7 +48,10 @@ export const transferResources: EncodedResource[] = [
     label_ref: "label_ref",
     value_ref: "value_ref",
     nonce: "nonce",
-    rand_seed: "rand_seed",
+    rand_seed: "rand_seed_4",
     nk_commitment: "nk_commitment",
+    isConsumed: false,
+    erc20TokenAddress: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+    forwarder: EthereumSepoliaForwarderContract,
   },
 ];
