@@ -212,17 +212,6 @@ export function invariant(
   throw new Error(message);
 }
 
-export const hasTouchScreen = () => navigator.maxTouchPoints > 0;
-
-export const isMobileDevice = () =>
-  window.matchMedia("(pointer: coarse)").matches ||
-  window.matchMedia("(hover: none)").matches;
-
-export const isIOS = () =>
-  /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-  // deprecated but required for iPadOS detection
-  (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-
 /**
  * Builds the block explorer URL for a transaction.
  * @param chainId - The chain ID to get the explorer URL for
