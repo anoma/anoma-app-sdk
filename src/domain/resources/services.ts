@@ -1,6 +1,5 @@
 import type {
   IndexerEVMTransaction,
-  IndexerId,
   IndexerResource,
   NullifierRecord,
 } from "api";
@@ -302,48 +301,6 @@ export const selectTransferResources = (
     selected,
     remaining,
   };
-};
-
-type TransactionResourceGroup = {
-  tx: IndexerEVMTransaction;
-  createdResources: AppResource[];
-  consumedResources: AppResource[];
-};
-
-/**
- * Groups resources by their associated transaction ID.
- *
- * For each resource, classifies it as created or consumed based on
- * the presence of `consumedIn`, and groups it under the relevant transaction.
- * Resources without a `createdIn` transaction are skipped.
- *
- * @param resources - The list of app resources to group.
- * @returns A map from {@link IndexerId} to its {@link TransactionResourceGroup},
- *          containing the transaction metadata and its created/consumed resources.
- */
-export const groupResourcesByTransaction = (resources: AppResource[]) => {
-  const transactionMap = new Map<IndexerId, TransactionResourceGroup>();
-  resources?.forEach(resource => {
-    const { createdIn, consumedIn } = resource;
-
-    if (createdIn) {
-      const entry = transactionMap.get(createdIn.id);
-      const createdResources = consumedIn ? [] : [resource];
-      const consumedResources = consumedIn ? [resource] : [];
-
-      if (entry) {
-        entry.createdResources.push(...createdResources);
-        entry.consumedResources.push(...consumedResources);
-      } else {
-        transactionMap.set(createdIn.id, {
-          tx: createdIn,
-          createdResources,
-          consumedResources,
-        });
-      }
-    }
-  });
-  return transactionMap;
 };
 
 export type AggregatedTokenBalancesOutput = {
