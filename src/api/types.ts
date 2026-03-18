@@ -42,9 +42,9 @@ export class ResponseError extends Error {
  */
 export type IndexerId = `${number}_${Address}`; // {chainId}_{address}
 
-export type IndexerTag = {
+export type NullifierRecord = {
   id: IndexerId;
-  tagHash: Address;
+  nullifier: Hex;
   transaction: IndexerTransaction;
 };
 
@@ -60,7 +60,7 @@ export type IndexerEVMTransaction = {
   timestamp: number;
 };
 
-export type ConsumedTagsResponse = IndexerTag[];
+export type NullifierRecordResponse = NullifierRecord[];
 
 export type IndexerBlob = {
   blob: Hex;

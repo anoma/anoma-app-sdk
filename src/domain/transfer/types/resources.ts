@@ -1,10 +1,4 @@
-import type {
-  AuthoritySignature,
-  EncodedResource,
-  MerkleTree,
-  NullifierKey,
-  Resource,
-} from "wasm";
+import type { EncodedResource, MerkleTree, NullifierKey, Resource } from "wasm";
 
 import type { TokenRegistry, UserKeyring, UserPublicKeys } from "types";
 import type { Address } from "viem";
@@ -25,24 +19,6 @@ export type CreateMintProps = {
   keyring: UserKeyring;
 };
 
-export type CreateTransferProps = {
-  resource: Resource;
-  forwarderAddress: Address;
-  token: Address;
-  quantity: bigint;
-  nullifierKey: NullifierKey;
-  receiverKeyring: UserPublicKeys;
-};
-
-export type CreateBurnProps = {
-  resource: Resource;
-  forwarderAddress: Address;
-  token: Address;
-  receiverAddress: Address;
-  quantity: bigint;
-  nullifierKey: NullifierKey;
-};
-
 export type CreateFeeTransferProps = {
   resource: Resource;
   tokenContractAddress: Address;
@@ -56,21 +32,6 @@ export type MintResources = {
   consumedResource: Resource;
   createdResource: Resource;
 };
-/**
- * Created resource return types
- */
-export type CreatedResources = {
-  actions: string[];
-  consumedResource: Resource;
-  createdResource: Resource;
-  paddingResource?: Resource;
-  remainderResource?: Resource;
-};
-
-export type AuthorizedResources = CreatedResources & {
-  authSig: AuthoritySignature;
-};
-
 /**
  * Resources
  */
