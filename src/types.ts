@@ -12,10 +12,10 @@ export * from "domain/transfer/types";
 export type AuthType = "wallet" | "passkey";
 
 export type AppResource = EncodedResource & {
-  isConsumed: boolean;
   erc20TokenAddress: Address;
   forwarder: Address;
-  transaction?: IndexerEVMTransaction;
+  createdIn?: IndexerEVMTransaction;
+  consumedIn?: IndexerEVMTransaction;
 };
 
 export const TRANSACTION_STATUS = [

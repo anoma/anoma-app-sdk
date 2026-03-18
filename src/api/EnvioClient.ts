@@ -1,5 +1,5 @@
 import { ApiClient } from "./ApiClient";
-import type { ConsumedTagsResponse } from "./types";
+import type { NullifierRecordResponse } from "./types";
 
 type GraphQLError = {
   message: string;
@@ -19,11 +19,11 @@ export class EnvioClient extends ApiClient {
   async publicNullifiers(
     logicRef: string,
     timestamp = 0
-  ): Promise<ConsumedTagsResponse> {
+  ): Promise<NullifierRecordResponse> {
     const envioEndpoint = this.url;
 
     const query = `
-      query GetConsumedTags {
+      query GetPublicNullifiers {
         Tag(
           where: {
             isConsumed: {_eq: true},
@@ -43,7 +43,7 @@ export class EnvioClient extends ApiClient {
           }
         ) {
           id
-          tagHash
+          nullifier: tagHash
           transaction {
             id
             evmTransaction {
@@ -68,7 +68,7 @@ export class EnvioClient extends ApiClient {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const result: GraphQLResponse<{ Tag: ConsumedTagsResponse }> =
+    const result: GraphQLResponse<{ Tag: NullifierRecordResponse }> =
       await response.json();
 
     if (result.errors) {

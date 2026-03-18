@@ -11,7 +11,7 @@ export const transferResources: AppResource[] = [
     nonce: "nonce",
     rand_seed: "rand_seed_1",
     nk_commitment: "nk_commitment",
-    isConsumed: false,
+
     erc20TokenAddress: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
     forwarder: EthereumSepoliaForwarderContract,
   },
@@ -24,7 +24,7 @@ export const transferResources: AppResource[] = [
     nonce: "nonce",
     rand_seed: "rand_seed_2",
     nk_commitment: "nk_commitment",
-    isConsumed: false,
+
     erc20TokenAddress: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
     forwarder: EthereumSepoliaForwarderContract,
   },
@@ -37,7 +37,7 @@ export const transferResources: AppResource[] = [
     nonce: "nonce",
     rand_seed: "rand_seed_3",
     nk_commitment: "nk_commitment",
-    isConsumed: false,
+
     erc20TokenAddress: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
     forwarder: EthereumSepoliaForwarderContract,
   },
@@ -50,7 +50,7 @@ export const transferResources: AppResource[] = [
     nonce: "nonce",
     rand_seed: "rand_seed_4",
     nk_commitment: "nk_commitment",
-    isConsumed: false,
+
     erc20TokenAddress: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
     forwarder: EthereumSepoliaForwarderContract,
   },

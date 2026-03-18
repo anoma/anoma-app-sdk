@@ -8,7 +8,6 @@ import type {
   CreatedWitnessDataSchema,
   Parameters,
   ResolvedParameters,
-  UserKeyring,
 } from "types";
 import { PublicKey, type AuthoritySignature, type Digest } from "wasm";
 import { authorizeActions } from "../services";
@@ -22,19 +21,17 @@ const formatPayloadKey = (key: Uint8Array<ArrayBufferLike>) =>
  * and authorization signing.
  */
 export class PayloadBuilder {
-  keyring: UserKeyring;
   consumingResources: ConsumedResourceDraft[];
   creatingResources: CreatedResourceDraft[];
   authorizationSignature: AuthoritySignature | undefined;
 
-  constructor(keyring: UserKeyring, resolvedParameters: ResolvedParameters) {
-    this.keyring = keyring;
+  constructor(resolvedParameters: ResolvedParameters) {
     this.consumingResources = resolvedParameters.consumedResourceDrafts;
     this.creatingResources = resolvedParameters.createdResourceDrafts;
   }
 
   /** Signs all consumed/created resource pairs and stores the authorization signature. */
-  withAuthorization() {
+  withAuthorization(authorityPrivateKey: Uint8Array<ArrayBuffer>) {
     const actions: Digest[] = [];
     for (let i = 0; i < this.consumingResources.length; i++) {
       actions.push(
@@ -46,7 +43,7 @@ export class PayloadBuilder {
     }
     this.authorizationSignature = authorizeActions(
       actions,
-      this.keyring.authorityKeyPair.privateKey
+      authorityPrivateKey
     );
     return this;
   }
