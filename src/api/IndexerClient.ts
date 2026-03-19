@@ -41,7 +41,7 @@ export class IndexerClient extends ApiClient {
    * ```
    */
   async addKeys(keypair: EncodedKeypair): Promise<void> {
-    this.post<EncodedKeypair, string>(IndexerPaths.AddKeys, keypair);
+    await this.post<EncodedKeypair, string>(IndexerPaths.AddKeys, keypair);
   }
 
   /**
