@@ -12,8 +12,6 @@ export const getUserPublicKeysFromKeyring = (
   };
 };
 
-export const getPayAddressFromKeyring = (
-  keyring?: UserKeyring
-): PayAddress | undefined => {
-  return keyring && encodePayAddress(getUserPublicKeysFromKeyring(keyring));
+export const getPayAddressFromKeyring = (keyring: UserKeyring): PayAddress => {
+  return encodePayAddress(getUserPublicKeysFromKeyring(keyring));
 };

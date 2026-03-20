@@ -147,6 +147,18 @@ export function serializeBigInt(_key: string, value: unknown): unknown {
   return value;
 }
 
+/** JSON replacer for lossless bigint encoding. Pair with bigIntReviver. */
+export function bigIntReplacer(_key: string, value: unknown): unknown {
+  if (typeof value === "bigint") return String(value);
+  return value;
+}
+
+/** JSON replacer for storage — lossless bigint encoding. Pair with bigintReviver. */
+export function buildBigIntReviver(keys: string[]) {
+  return (key: string, value: unknown) =>
+    typeof value === "string" && keys.includes(key) ? BigInt(value) : value;
+}
+
 export const fromHexToBase64 = (hex: Hex) => toBase64(fromHex(hex));
 
 /** Normalize a hex string by lowercasing and stripping a leading 0x. */
