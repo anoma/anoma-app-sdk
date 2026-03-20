@@ -25,9 +25,11 @@ import {
 import { ParametersDraftResolver } from "domain/transfer/models/ParametersDraftResolver";
 import { PayloadBuilder } from "domain/transfer/models/PayloadBuilder";
 import { TransferBuilder } from "domain/transfer/models/TransferBuilder";
-import { TRANSFER_LOGIC_VERIFYING_KEY } from "lib-constants";
-import type { AppResource, TokenRegistry, UserKeyring } from "types";
+import { TRANSFER_LOGIC_VERIFYING_KEY, TransferLogicVerifyingKeys } from "lib-constants";
+import { calculateValueRefFromAuth } from "domain/transfer/services";
+import type { AppResource, SupportedFeeToken, TokenRegistry, UserKeyring, UserPublicKeys } from "types";
 import type { Address } from "viem";
+import { AuthorityVerifyingKey, NullifierKey, PublicKey } from "wasm";
 import { initWasmNode, resolveKeyring } from "./keyring";
 
 // ---------------------------------------------------------------------------
@@ -85,6 +87,36 @@ function tokenRegistryFor(address: Address): TokenRegistry {
 }
 
 // ---------------------------------------------------------------------------
+// Heliax fee payment keys
+// All three keys are the secp256k1 generator point (AffinePoint::GENERATOR).
+// NKC is the SHA-256 of the default (all-zero) nullifier key.
+// ---------------------------------------------------------------------------
+
+const _HELIAX_PK = Buffer.from(
+  "Anm+Zn753LusVaBilc6HCwcCm/zbLc4o2VnygVsW+BeY",
+  "base64"
+);
+const _HELIAX_NKC = Buffer.from(
+  "Zmh6rfhivXdsj8GLjp+OIAiXFIVu4jOzkCpZHQ1fKSU=",
+  "base64"
+);
+
+const HELIAX_PUBLIC_KEYS: UserPublicKeys = {
+  authorityPublicKey: new Uint8Array(_HELIAX_PK) as Uint8Array<ArrayBuffer>,
+  encryptionPublicKey: new Uint8Array(_HELIAX_PK) as Uint8Array<ArrayBuffer>,
+  discoveryPublicKey: new Uint8Array(_HELIAX_PK) as Uint8Array<ArrayBuffer>,
+  nullifierKeyCommitment: new Uint8Array(_HELIAX_NKC) as Uint8Array<ArrayBuffer>,
+};
+
+// Map from lowercase ERC-20 address to fee token symbol.
+const FEE_TOKEN_BY_ADDRESS: Record<string, SupportedFeeToken> = {
+  "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913": "USDC", // USDC Base
+  "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": "USDC", // USDC Ethereum
+  "0xfde4c96c8593536e31f229ea8f37b2ada2699bb2": "USDT", // USDT Base
+  "0x4200000000000000000000000000000000000006": "WETH", // WETH Base
+};
+
+// ---------------------------------------------------------------------------
 // Balance fetching
 // ---------------------------------------------------------------------------
 
@@ -110,7 +142,16 @@ async function fetchUnspentResources(
   console.log(`  ${decrypted.length} resource(s) belong to this keyring`);
 
   console.log("Fetching consumed tags from Envio...");
-  const consumedTags = await envio.consumedTags(TRANSFER_LOGIC_VERIFYING_KEY);
+  // Query with all known logicRef formats: v1/v2, with and without 0x prefix,
+  // to be robust against different Envio storage conventions.
+  const allLogicRefs = [
+    TRANSFER_LOGIC_VERIFYING_KEY,
+    `0x${TRANSFER_LOGIC_VERIFYING_KEY}`,
+    TransferLogicVerifyingKeys.v2,
+    `0x${TransferLogicVerifyingKeys.v2}`,
+  ];
+  const consumedTags = await envio.consumedTags(allLogicRefs);
+  console.log(`  ${consumedTags.length} consumed tag(s) found`);
   const lookup = buildTransactionLookup(consumedTags);
 
   const unspent = await openResourceMetadata(keyring, decrypted, lookup, true);
@@ -160,22 +201,86 @@ async function sweep(group: ResourceGroup, keyring: UserKeyring) {
     `\nSweeping ${humanAmount} ${token.symbol} (${resources.length} resource(s)) → ${EVM_DESTINATION}`
   );
 
+  const backend = new TransferBackendClient(BACKEND_URL);
   const transferBuilder = await TransferBuilder.init();
+
+  // ---------------------------------------------------------------------------
+  // Step 1: Estimate fee by building a no-fee version of the parameters.
+  // The backend requires a fee payment resource in every burn transaction.
+  // ---------------------------------------------------------------------------
+  const feeToken = FEE_TOKEN_BY_ADDRESS[token.address.toLowerCase()];
+  let fee = 0n;
+
+  if (feeToken) {
+    const resolver0 = new ParametersDraftResolver(transferBuilder, keyring);
+    resolver0.addReceiver({
+      type: "EvmAddress",
+      address: EVM_DESTINATION,
+      quantity: totalQuantity,
+      token,
+    });
+    const resolved0 = resolver0.build(resources, forwarder);
+    const params0 = new PayloadBuilder(keyring, resolved0)
+      .withAuthorization()
+      .build();
+
+    try {
+      const { base_fee, percentage_fee } = await backend.estimateFee({
+        fee_token: feeToken,
+        transaction: params0,
+      });
+      fee = BigInt(Math.max(base_fee, percentage_fee));
+      console.log(
+        `  Estimated fee: ${Number(fee) / 10 ** decimals} ${token.symbol}`
+      );
+    } catch (e) {
+      console.warn("  Fee estimation failed — proceeding without fee payment:", e);
+    }
+  } else {
+    console.warn(
+      `  No fee token mapping for ${token.address} — proceeding without fee payment`
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Step 2: Build the actual sweep with fee payment included.
+  // ---------------------------------------------------------------------------
   const resolver = new ParametersDraftResolver(transferBuilder, keyring);
 
-  resolver.addReceiver({
-    type: "EvmAddress",
-    address: EVM_DESTINATION,
-    quantity: totalQuantity,
-    token,
-  });
+  if (fee > 0n && fee < totalQuantity) {
+    resolver.addReceiver({
+      type: "EvmAddress",
+      address: EVM_DESTINATION,
+      quantity: totalQuantity - fee,
+      token,
+    });
+    resolver.addReceiver({
+      type: "AnomaAddress",
+      userPublicKeys: HELIAX_PUBLIC_KEYS,
+      quantity: fee,
+      token,
+    });
+  } else {
+    if (fee >= totalQuantity) {
+      console.warn(
+        `  Fee (${fee}) ≥ total quantity (${totalQuantity}) — skipping this group`
+      );
+      return null;
+    }
+    // fee === 0n or no fee token: attempt without fee (will likely fail in prod)
+    resolver.addReceiver({
+      type: "EvmAddress",
+      address: EVM_DESTINATION,
+      quantity: totalQuantity,
+      token,
+    });
+  }
 
   const resolved = resolver.build(resources, forwarder);
   const parameters = new PayloadBuilder(keyring, resolved)
     .withAuthorization()
     .build();
 
-  const backend = new TransferBackendClient(BACKEND_URL);
   const { transaction_hash: txId } = await backend.transfer(parameters);
   console.log(`  Submitted. Transaction ID: ${txId}`);
 
@@ -192,19 +297,27 @@ async function waitForProof(txId: string): Promise<string> {
 
   process.stdout.write("  Waiting for on-chain submission");
   while (true) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { status, hash } = await backend.transactionStatus(txId as any);
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { status, hash } = await backend.transactionStatus(txId as any);
 
-    if (status === "Submitted") {
-      process.stdout.write(` ✓\n`);
-      return hash;
-    }
-    if (terminal.has(status)) {
-      process.stdout.write(`\n`);
-      throw new Error(`Transaction ended with status: ${status}`);
+      if (status === "Submitted") {
+        process.stdout.write(` ✓\n`);
+        return hash;
+      }
+      if (terminal.has(status)) {
+        process.stdout.write(`\n`);
+        throw new Error(`Transaction ended with status: ${status}`);
+      }
+
+      process.stdout.write(".");
+    } catch (e) {
+      // Re-throw terminal errors from the block above
+      if (e instanceof Error && e.message.startsWith("Transaction ended with status:")) throw e;
+      // Transient network error — log and retry
+      process.stdout.write(`\n  Poll error (retrying): ${e instanceof Error ? e.message : e}`);
     }
 
-    process.stdout.write(".");
     await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));
   }
 }
@@ -212,6 +325,48 @@ async function waitForProof(txId: string): Promise<string> {
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// Diagnostics
+// ---------------------------------------------------------------------------
+
+function diagnose(keyring: UserKeyring, unspent: AppResource[]) {
+  const wasmNkcHex = new NullifierKey(keyring.nullifierKeyPair.nk).commit().inner().toHex();
+  const sdkCnkHex = Buffer.from(keyring.nullifierKeyPair.cnk).toString("hex");
+
+  const authVk = new AuthorityVerifyingKey(keyring.authorityKeyPair.publicKey);
+  const encPkHex = `0x${Buffer.from(keyring.encryptionKeyPair.publicKey).toString("hex")}`;
+  const expectedValueRef = calculateValueRefFromAuth(authVk, encPkHex).toHex();
+
+  const authPkB64 = new PublicKey(keyring.authorityKeyPair.publicKey).toBase64();
+  const encPkB64 = new PublicKey(keyring.encryptionKeyPair.publicKey).toBase64();
+
+  console.log("\n--- Diagnostics ---");
+  console.log(`Keyring NKC (WASM/SDK hex): ${wasmNkcHex}`);
+  console.log(`WASM/SDK NKC agree:         ${wasmNkcHex === sdkCnkHex}`);
+  console.log(`Expected value_ref (hex):   ${expectedValueRef}`);
+  console.log(`Auth PK (base64):           ${authPkB64}`);
+  console.log(`Enc  PK (base64):           ${encPkB64}`);
+
+  for (const r of unspent) {
+    // Convert base64 resource fields to hex for comparison
+    const nkcHex = Buffer.from(r.nk_commitment, "base64").toString("hex");
+    const logicHex = Buffer.from(r.logic_ref, "base64").toString("hex");
+    const valueHex = Buffer.from(r.value_ref, "base64").toString("hex");
+
+    console.log(`\nResource ${r.rand_seed.slice(0, 8)}...`);
+    console.log(`  logic_ref (hex):     ${logicHex}`);
+    console.log(`  nk_commitment (hex): ${nkcHex}`);
+    console.log(`  value_ref (hex):     ${valueHex}`);
+    console.log(`  forwarder:           ${r.forwarder}`);
+    console.log(`  token:               ${r.erc20TokenAddress}`);
+    console.log(`  NKC matches keyring: ${nkcHex === wasmNkcHex}`);
+    console.log(`  value_ref matches:   ${valueHex === expectedValueRef}`);
+    console.log(`  Is v1 transfer:      ${logicHex === TRANSFER_LOGIC_VERIFYING_KEY}`);
+    console.log(`  Is v2 transfer:      ${logicHex === TransferLogicVerifyingKeys.v2}`);
+  }
+  console.log("-------------------\n");
+}
 
 async function main() {
   console.log("=== AnomaPay Fee Collector ===\n");
@@ -229,11 +384,14 @@ async function main() {
     return;
   }
 
+  diagnose(keyring, unspent);
+
   const groups = groupByToken(unspent);
-  console.log(`\nFound ${groups.length} token group(s) to sweep.`);
+  console.log(`Found ${groups.length} token group(s) to sweep.`);
 
   for (const group of groups) {
     const txId = await sweep(group, keyring);
+    if (!txId) continue;
     const evmHash = await waitForProof(txId);
     console.log(`  EVM transaction: ${evmHash}`);
   }

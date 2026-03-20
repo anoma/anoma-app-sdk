@@ -18,7 +18,7 @@ import {
   openResourceMetadata,
   parseIndexerResourceResponse,
 } from "domain/resources/services";
-import { TRANSFER_LOGIC_VERIFYING_KEY } from "lib-constants";
+import { TRANSFER_LOGIC_VERIFYING_KEY, TransferLogicVerifyingKeys } from "lib-constants";
 import type { Address } from "viem";
 import { initWasmNode, resolveKeyring } from "./keyring";
 
@@ -58,7 +58,15 @@ async function main() {
     keyring,
     indexerResources
   );
-  const consumedTags = await envio.consumedTags(TRANSFER_LOGIC_VERIFYING_KEY);
+  // Query with all known logicRef formats (v1/v2, with/without 0x prefix)
+  const allLogicRefs = [
+    TRANSFER_LOGIC_VERIFYING_KEY,
+    `0x${TRANSFER_LOGIC_VERIFYING_KEY}`,
+    TransferLogicVerifyingKeys.v2,
+    `0x${TransferLogicVerifyingKeys.v2}`,
+  ];
+  const consumedTags = await envio.consumedTags(allLogicRefs);
+  console.log(`${consumedTags.length} consumed tag(s) found in Envio`);
   const lookup = buildTransactionLookup(consumedTags);
   const unspent = await openResourceMetadata(keyring, decrypted, lookup, true);
 
