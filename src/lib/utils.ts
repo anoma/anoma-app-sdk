@@ -167,20 +167,6 @@ export function validHexBytes(hex: string, byteLength: number) {
 export const validHexString = (hex: string) =>
   hex.replace(/^0x/, "").match(/^[0-9A-Fa-f]+$/);
 
-export function promiseWithResolvers<T>(): [
-  Promise<T>,
-  (value: T) => void,
-  (error: Error) => void,
-] {
-  let resolver: (value: T) => void;
-  let rejecter: (error: Error) => void;
-  const promise = new Promise<T>((resolve, reject) => {
-    resolver = resolve;
-    rejecter = reject;
-  });
-  return [promise, resolver!, rejecter!];
-}
-
 export const generateRandomBytes = (size = 32): Uint8Array<ArrayBuffer> => {
   const uint8Array = new Uint8Array(size);
   crypto.getRandomValues(uint8Array);
