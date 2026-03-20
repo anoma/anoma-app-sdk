@@ -47,7 +47,7 @@ function draftToReceipt(
     status,
     token,
     quantity,
-    dateTime: new Date(tx.timestamp * 1000),
+    timestamp: tx.timestamp * 1000,
   };
 }
 

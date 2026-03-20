@@ -38,7 +38,7 @@ export type TransactionReceipt = {
   status: TransactionStatus;
   token: TokenRegistry;
   quantity: bigint;
-  dateTime: Date;
+  timestamp: number;
 };
 
 export type TokenRegistry = {
