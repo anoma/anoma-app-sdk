@@ -18,9 +18,7 @@ const call = (
 
 describe("exceedsDepositLimit", () => {
   it("blocks when existing balance already exceeds the limit", () => {
-    expect(call({ currentBalanceInUsd: maxBalanceInUsd + 0.01 })).toBe(
-      `Your balance would exceed the maximum allowed limit of $${maxBalanceInUsd}`
-    );
+    expect(call({ currentBalanceInUsd: maxBalanceInUsd + 0.01 })).toBe(true);
   });
 
   it("blocks when deposit would push balance over the limit", () => {
@@ -29,15 +27,13 @@ describe("exceedsDepositLimit", () => {
         currentBalanceInUsd: maxBalanceInUsd * 0.5,
         depositAmount: String(maxBalanceInUsd * 0.6),
       })
-    ).toBe(
-      `Your balance would exceed the maximum allowed limit of $${maxBalanceInUsd}`
-    );
+    ).toBe(true);
   });
 
   it("allows when projected balance equals the limit exactly", () => {
     expect(
       call({ currentBalanceInUsd: 0, depositAmount: String(maxBalanceInUsd) })
-    ).toBeUndefined();
+    ).toBe(false);
   });
 
   it("allows when projected balance is below the limit", () => {
@@ -46,18 +42,16 @@ describe("exceedsDepositLimit", () => {
         currentBalanceInUsd: 0,
         depositAmount: String(maxBalanceInUsd * 0.5),
       })
-    ).toBeUndefined();
+    ).toBe(false);
   });
 
   it("allows when no token is selected (price defaults to 0)", () => {
-    expect(
-      call({ tokenAddress: undefined, depositAmount: "999" })
-    ).toBeUndefined();
+    expect(call({ tokenAddress: undefined, depositAmount: "999" })).toBe(false);
   });
 
   it("allows when balances are not loaded yet", () => {
-    expect(
-      call({ currentBalanceInUsd: undefined, depositAmount: "999" })
-    ).toBeUndefined();
+    expect(call({ currentBalanceInUsd: undefined, depositAmount: "999" })).toBe(
+      false
+    );
   });
 });
