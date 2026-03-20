@@ -30,3 +30,11 @@ storybook-static
 pkg
 target
 .NOTES
+
+# VitePress build output and cache
+docs/.vitepress/dist
+docs/.vitepress/cache
+
+# TypeDoc generated API reference
+docs/api
+fee-account-seed.txt
