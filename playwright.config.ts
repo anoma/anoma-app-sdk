@@ -2,8 +2,9 @@ import { defineConfig, devices } from "@playwright/test";
 import { loadEnv } from "vite";
 
 const env = loadEnv(process.env.NODE_ENV ?? "development", process.cwd(), "");
-const baseURL = env.PLAYWRIGHT_BASE_URL ?? "http://localhost:5173";
-const isRemoteBaseURL = Boolean(baseURL && !baseURL.includes("localhost"));
+const baseURL =
+  env.PLAYWRIGHT_BASE_URL ||
+  (process.env.CI ? "http://localhost:4173" : "http://localhost:5173");
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -23,10 +24,10 @@ export default defineConfig({
     },
   ],
   webServer:
-    isRemoteBaseURL ? undefined : (
+    env.PLAYWRIGHT_BASE_URL ? undefined : (
       {
-        command: "npm run dev",
-        url: baseURL ?? "http://localhost:5173",
+        command: process.env.CI ? "npm run preview" : "npm run dev",
+        url: baseURL,
         reuseExistingServer: !process.env.CI,
       }
     ),
