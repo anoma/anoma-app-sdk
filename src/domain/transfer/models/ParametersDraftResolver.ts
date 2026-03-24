@@ -159,7 +159,7 @@ export class ParametersDraftResolver {
 
       // Params that will be shared between different resource creation methods (burn vs transfer)
       const commonParams = {
-        forwarderAddress: appConfig.forwarderAddress,
+        forwarderAddress: appConfig.chain.forwarderAddress,
         token: receiver.token.address,
         quantity: receiver.quantity,
         resource: consumedResource,

@@ -1,4 +1,4 @@
-import { EthereumSepoliaForwarderContract } from "app-constants";
+import { chainByNetwork } from "app-constants";
 import type { AppResource } from "types";
 
 export const transferResources: AppResource[] = [
@@ -13,7 +13,7 @@ export const transferResources: AppResource[] = [
     nk_commitment: "nk_commitment",
 
     erc20TokenAddress: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
-    forwarder: EthereumSepoliaForwarderContract,
+    forwarder: chainByNetwork["ethereum-sepolia"].forwarderAddress,
   },
   {
     quantity: 2000000n,
@@ -26,7 +26,7 @@ export const transferResources: AppResource[] = [
     nk_commitment: "nk_commitment",
 
     erc20TokenAddress: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
-    forwarder: EthereumSepoliaForwarderContract,
+    forwarder: chainByNetwork["ethereum-sepolia"].forwarderAddress,
   },
   {
     quantity: 3000000n,
@@ -39,7 +39,7 @@ export const transferResources: AppResource[] = [
     nk_commitment: "nk_commitment",
 
     erc20TokenAddress: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
-    forwarder: EthereumSepoliaForwarderContract,
+    forwarder: chainByNetwork["ethereum-sepolia"].forwarderAddress,
   },
   {
     quantity: 4000000n,
@@ -52,6 +52,6 @@ export const transferResources: AppResource[] = [
     nk_commitment: "nk_commitment",
 
     erc20TokenAddress: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
-    forwarder: EthereumSepoliaForwarderContract,
+    forwarder: chainByNetwork["ethereum-sepolia"].forwarderAddress,
   },
 ];

@@ -1,5 +1,7 @@
 import { fromBase64 } from "lib/utils";
-import type { Network, SupportedChainId, UserPublicKeys } from "types";
+import type { UserPublicKeys } from "types";
+import type { Address, Chain } from "viem";
+import { base, bsc, mainnet, sepolia } from "viem/chains";
 
 // Verifying Key for TrivialLogicWitness
 // https://github.com/anoma/arm-risc0/blob/main/arm/src/constants.rs#L23
@@ -51,46 +53,79 @@ export const statsQueueRefetchIntervalInMs = 20_000;
 // How many times some mutations query should retry before throwing an error:
 export const retryMutationsCount = 3;
 
-export const EthereumMainnetChainId = 1;
-export const EthereumSepoliaChainId = 11155111;
-export const BaseMainnetChainId = 8453;
-
 // Blocks deposit if total amount is bigger than maxBalanceInUsd
 export const maxBalanceInUsd = Number(
   import.meta.env?.VITE_APP_MAX_DEPOSIT_AMOUNT_IN_USD ?? 1.0
 );
 
-export const EthereumMainnetForwarderContract =
-  "0x775C81A47F2618a8594a7a7f4A3Df2a300337559";
-export const EthereumSepoliaForwarderContract =
-  "0x0A62bE41E66841f693f922991C4e40C89cb0CFDF";
-export const BaseMainnetForwarderContract =
-  "0xfAa9DE773Be11fc759A16F294d32BB2261bF818B";
+// --- Chain configuration ---
 
-export const ChainIdByNetwork: Record<Network, SupportedChainId | 0> = {
-  ["ethereum"]: EthereumMainnetChainId,
-  ["ethereum-sepolia"]: EthereumSepoliaChainId,
-  ["base"]: BaseMainnetChainId,
-  ["unknown"]: 0,
+export type Network =
+  | "base"
+  | "ethereum"
+  | "ethereum-sepolia"
+  | "bsc"
+  | "unknown";
+
+export type SupportedChain = Chain & {
+  network: Exclude<Network, "unknown">;
+  forwarderAddress: Address;
+  iconName: string;
+  explorerUrl: string;
+  explorerName: string;
 };
 
-export const NetworkName: Record<SupportedChainId, string> = {
-  [BaseMainnetChainId]: "base",
-  [EthereumMainnetChainId]: "eth",
-  [EthereumSepoliaChainId]: "eth",
-};
+const defineSupportedChain = <const T extends Chain>(
+  chain: T,
+  config: Pick<SupportedChain, "network" | "forwarderAddress" | "iconName">
+) =>
+  ({
+    ...chain,
+    ...config,
+    explorerUrl: chain.blockExplorers?.default.url,
+    explorerName: chain.blockExplorers?.default.name,
+  }) as SupportedChain & T;
 
-export const TxExplorerUrlByChainId: Record<SupportedChainId, string> = {
-  [BaseMainnetChainId]: "https://basescan.org/tx/",
-  [EthereumMainnetChainId]: "https://etherscan.io/tx/",
-  [EthereumSepoliaChainId]: "https://sepolia.etherscan.io/tx/",
-};
+export const supportedChains = [
+  defineSupportedChain(mainnet, {
+    network: "ethereum",
+    forwarderAddress: "0x775C81A47F2618a8594a7a7f4A3Df2a300337559",
+    iconName: "eth",
+  }),
+  defineSupportedChain(sepolia, {
+    network: "ethereum-sepolia",
+    forwarderAddress: "0x0A62bE41E66841f693f922991C4e40C89cb0CFDF",
+    iconName: "eth",
+  }),
+  defineSupportedChain(base, {
+    network: "base",
+    forwarderAddress: "0xfAa9DE773Be11fc759A16F294d32BB2261bF818B",
+    iconName: "base",
+  }),
+  defineSupportedChain(bsc, {
+    network: "bsc",
+    forwarderAddress: "0xDe6A308ed57AF26BFf059e6C550BD4908aC1840e",
+    iconName: "bsc",
+  }),
+];
 
-export const ExplorerNameByChainId: Record<SupportedChainId, string> = {
-  [BaseMainnetChainId]: "BaseScan",
-  [EthereumMainnetChainId]: "EtherScan",
-  [EthereumSepoliaChainId]: "EtherScan",
-};
+export type SupportedChainId = (typeof supportedChains)[number]["id"];
+
+export const chainById = supportedChains.reduce(
+  (acc, chain) => {
+    acc[chain.id] = chain;
+    return acc;
+  },
+  {} as Record<SupportedChainId, SupportedChain>
+);
+
+export const chainByNetwork = supportedChains.reduce(
+  (acc, chain) => {
+    acc[chain.network] = chain;
+    return acc;
+  },
+  {} as Record<Exclude<Network, "unknown">, SupportedChain>
+);
 
 /**
  * Heliax Public Keys to pay Fees to

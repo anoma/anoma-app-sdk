@@ -5,7 +5,7 @@ import {
   TokenIcon,
   WalletIcon,
 } from "@web3icons/react/dynamic";
-import { TxExplorerUrlByChainId } from "app-constants";
+import { chainById } from "app-constants";
 import clsx, { type ClassValue } from "clsx";
 import type { ReactElement } from "react";
 import { twMerge } from "tailwind-merge";
@@ -217,7 +217,7 @@ export function invariant(
  * @returns The full URL to view the transaction on the block explorer
  */
 export const getTxUrl = (chainId: SupportedChainId, prefixedTxHash: string) => {
-  return TxExplorerUrlByChainId[chainId] + prefixedTxHash;
+  return `${chainById[chainId].explorerUrl}/tx/${prefixedTxHash}`;
 };
 
 export const maxBigInt = (a: bigint, b: bigint): bigint => (a > b ? a : b);
