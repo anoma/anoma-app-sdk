@@ -24,6 +24,9 @@ export const getFirstErrorMessage = (
     if (hasProp(json, "errors") && hasProp(json.errors, "detail")) {
       return json.errors.detail?.toString();
     }
+    if (hasProp(json, "message")) {
+      return json.message?.toString();
+    }
   }
 
   if (error instanceof ZodError && error.issues.length > 0) {
