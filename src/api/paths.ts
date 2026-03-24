@@ -11,7 +11,4 @@ export const IndexerPaths = {
   Health: "/health",
   AddKeys: "/add_key",
   Tags: "/tags",
-  LatestRoot: "/latest_root",
-  GenerateProof: "/generate_proof",
-  AllowList: "/rating",
 } as const;
