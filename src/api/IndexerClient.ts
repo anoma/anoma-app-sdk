@@ -1,4 +1,4 @@
-import type { Address, Hex } from "viem";
+import type { Hex } from "viem";
 import type { EncodedKeypair } from "wasm";
 import { ApiClient } from "./ApiClient";
 import { IndexerPaths } from "./paths";
@@ -7,7 +7,6 @@ import {
   type IndexerContract,
   type IndexerHealthResponse,
   type IndexerResourceResponse,
-  type ResponseJson,
 } from "./types";
 
 export class IndexerClient extends ApiClient {
@@ -39,17 +38,5 @@ export class IndexerClient extends ApiClient {
     return {
       resources: responses.flatMap(r => r.resources),
     };
-  }
-
-  async latestRoot(): Promise<string> {
-    return this.get(IndexerPaths.LatestRoot);
-  }
-
-  async generateProof(leaf: string): Promise<ResponseJson> {
-    return this.get(`${IndexerPaths.GenerateProof}/${leaf}`);
-  }
-
-  async checkAllowedAddress(address: Address): Promise<{ allowed: boolean }> {
-    return this.get(`${IndexerPaths.AllowList}/${address}`);
   }
 }
