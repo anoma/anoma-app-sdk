@@ -1,11 +1,8 @@
 import type { IndexerEVMTransaction, IndexerId } from "api";
-import {
-  BaseMainnetChainId,
-  EthereumMainnetChainId,
-  EthereumSepoliaChainId,
-} from "app-constants";
+import type { Network, SupportedChain } from "app-constants";
 import type { Address } from "viem";
 import type { EncodedResource } from "wasm";
+export type { Network, SupportedChain, SupportedChainId } from "app-constants";
 export * from "domain/keys/types";
 export * from "domain/transfer/types";
 
@@ -53,22 +50,6 @@ export type TokenBalance = {
   amount: bigint;
 };
 
-export const chainIds = [
-  EthereumMainnetChainId,
-  EthereumSepoliaChainId,
-  BaseMainnetChainId,
-] as const;
-export type SupportedChainId = (typeof chainIds)[number];
-export type ChainSettings = {
-  forwarderAddress: Address;
-  chainId: SupportedChainId;
-  network: Network;
-};
-
-export type ChainLookup = Record<SupportedChainId, ChainSettings>;
-
-export type Network = "base" | "ethereum" | "ethereum-sepolia" | "unknown";
-
 export type TokenId = `${Network}:${string}`; // {network}:{symbol}
 export type NetworkAddress = `${Network}:${Address}`; // {network}:{address}
 
@@ -77,15 +58,11 @@ export type TokenRegistryIndex = {
   byAddress: Record<NetworkAddress, TokenRegistry>;
 };
 
-/**
- * Represents the runtime configuration of Transfer Example
- */
 export type Config = {
   permit2Address: Address;
   permit2DeadlineOffset: number;
-  forwarderAddress: Address;
   backendUrl: string;
   indexerUrl: string;
   envioUrl: string;
-  chain: ChainSettings;
+  chain: SupportedChain;
 };

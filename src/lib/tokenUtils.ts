@@ -1,8 +1,4 @@
-import {
-  BaseMainnetForwarderContract,
-  EthereumMainnetForwarderContract,
-  EthereumSepoliaForwarderContract,
-} from "app-constants";
+import { supportedChains } from "app-constants";
 import type { AggregatedTokenBalance } from "domain/resources/types";
 import type { WalletBalance } from "hooks/resources/useWalletBalances";
 import type {
@@ -26,11 +22,9 @@ const getNotFoundToken = (values?: Partial<TokenRegistry>): TokenRegistry => ({
   ...values,
 });
 
-const networkMap: Record<string, Network> = {
-  [EthereumMainnetForwarderContract.toLowerCase()]: "ethereum",
-  [EthereumSepoliaForwarderContract.toLowerCase()]: "ethereum-sepolia",
-  [BaseMainnetForwarderContract.toLowerCase()]: "base",
-};
+const networkMap: Record<string, Network> = Object.fromEntries(
+  supportedChains.map(c => [c.forwarderAddress.toLowerCase(), c.network])
+);
 
 /** Resolves a forwarder contract address to its corresponding network. */
 export const getNetworkByForwarder = (forwarder: Address): Network => {

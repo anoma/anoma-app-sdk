@@ -87,7 +87,7 @@ Environment variables:
 | `VITE_APP_INDEXER_BASE_URL` | Yes      | `https://galileo.dev.heliax.fyi`             | Galileo indexer base URL.                                 |
 | `VITE_APP_ENVIO_BASE_URL`   | Yes      | `https://hasura.dev.heliax.fyi/v1/graphql`   | Envio GraphQL endpoint base URL.                          |
 | `VITE_APP_PERMIT2_ADDRESS`  | Yes      | `0x000000000022D473030F116dDEE9F6B43aC78BA3` | Permit2 contract address for token approvals.             |
-| `VITE_APP_CHAIN_ID`         | No       | `8453`                                       | EVM chain ID (Base Mainnet). Must match backend/indexers. |
+| `VITE_APP_CHAIN_ID`         | No       | `56`                                         | EVM chain ID (Base Mainnet). Must match backend/indexers. |
 | `VITE_APP_PRIVATE_BETA`     | No       | `false`                                      | Enables private beta UI gating.                           |
 | `PLAYWRIGHT_BASE_URL`       | No       | `http://localhost:5173`                      | E2E test base URL for Playwright.                         |
 
