@@ -1,17 +1,11 @@
 import type {
   IndexerEVMTransaction,
-  IndexerId,
   IndexerResource,
-  IndexerTag,
+  NullifierRecord,
 } from "api";
 import { getTokenByResource, tokenId } from "lib/tokenUtils";
 import { formatBalance, fromHex, normalizeHex } from "lib/utils";
-import type {
-  AppResource,
-  TokenId,
-  TokenRegistryIndex,
-  UserKeyring,
-} from "types";
+import type { AppResource, TokenId, TokenRegistryIndex } from "types";
 import { type Address, type Hex, formatUnits } from "viem";
 import { NullifierKey, Resource, ResourceWithLabel } from "wasm";
 import { InsufficientResourcesError } from "./errors";
@@ -34,19 +28,21 @@ type ResourceWithDetails = {
 };
 
 /** Creates lookup maps for transactions indexed by nullifier hash and transaction hash. */
-export function buildTransactionLookup(tags: IndexerTag[]): TransactionLookup {
+export function buildTransactionLookup(
+  nullifierRecordList: NullifierRecord[]
+): TransactionLookup {
   const lookup: TransactionLookup = {
     byNullifier: new Map(),
     byTxHash: new Map(),
   };
-  for (const tag of tags) {
+  for (const data of nullifierRecordList) {
     lookup.byNullifier.set(
-      normalizeHex(tag.tagHash),
-      tag.transaction.evmTransaction
+      normalizeHex(data.nullifier),
+      data.transaction.evmTransaction
     );
     lookup.byTxHash.set(
-      tag.transaction.evmTransaction.txHash,
-      tag.transaction.evmTransaction
+      data.transaction.evmTransaction.txHash,
+      data.transaction.evmTransaction
     );
   }
   return lookup;
@@ -61,13 +57,13 @@ function deserializeResourcePayload(
 }
 
 const tryToDeserializeResourcePayload = (
-  keyring: UserKeyring,
+  encryptionPrivateKey: Uint8Array<ArrayBuffer>,
   indexerResource: IndexerResource
 ) => {
   try {
     return deserializeResourcePayload(
       indexerResource.resource_payload.blob,
-      keyring.encryptionKeyPair.privateKey
+      encryptionPrivateKey
     );
   } catch {
     return false;
@@ -76,11 +72,11 @@ const tryToDeserializeResourcePayload = (
 
 /** Decrypts and deserializes indexer resource payloads using the user's encryption key. */
 export const parseIndexerResourceResponse = async (
-  keyring: UserKeyring,
+  encryptionPrivateKey: Uint8Array<ArrayBuffer>,
   resourceResponseCollection: IndexerResource[]
 ): Promise<ResourceWithDetails[]> => {
   return resourceResponseCollection.flatMap(item => {
-    const payload = tryToDeserializeResourcePayload(keyring, item);
+    const payload = tryToDeserializeResourcePayload(encryptionPrivateKey, item);
     if (!payload) {
       return [];
     }
@@ -101,43 +97,42 @@ export const pickNonEphemeralResources = (
 };
 
 /** Computes nullifiers and consumption status for each resource, returning enriched AppResource entries. */
-export const openResourceMetadata = async (
-  keyring: UserKeyring,
+export const buildAppResources = async (
   resources: ResourceWithDetails[],
   transactionLookup: TransactionLookup,
+  nullifierKey: NullifierKey,
   onlyAvailableResources = true
 ): Promise<AppResource[]> => {
   const updatedResources: AppResource[] = [];
-  const nullifierKey = new NullifierKey(keyring.nullifierKeyPair.nk);
 
-  // Step 1: Compute optimistic balance from all decrypted resources quantities
   for (const deserializedResource of resources) {
     const { resource, erc20TokenAddress, forwarder, transactionHash } =
       deserializedResource;
 
     const resourceProps = resource.encode();
 
-    // Step 2: Compute nullifier for each resource
+    // Compute the nullifier for the resource
     let nullifierHex: string | undefined;
     try {
       nullifierHex = normalizeHex(resource.nullifier(nullifierKey).toHex());
     } catch {
-      console.warn("Couldn't nullify resource " + resourceProps.nonce);
+      console.warn(
+        "Couldn't compute nullifier for resource " + resourceProps.nonce
+      );
     }
 
     if (nullifierHex) {
-      // Step 3: Compare computed nullifier with indexer-provided nullifiers
-      // Update the actual consumed status based on nullifier comparison
-      const transaction = transactionLookup.byTxHash.get(transactionHash);
-      const isConsumed = transactionLookup.byNullifier.has(nullifierHex);
+      // Resolve creation and consumption transactions
+      const createdIn = transactionLookup.byTxHash.get(transactionHash);
+      const consumedIn = transactionLookup.byNullifier.get(nullifierHex);
 
-      if (!onlyAvailableResources || !isConsumed) {
+      if (!onlyAvailableResources || !consumedIn) {
         updatedResources.push({
           ...resourceProps,
-          isConsumed,
           erc20TokenAddress,
           forwarder,
-          transaction,
+          createdIn,
+          consumedIn,
         });
       }
     }
@@ -306,49 +301,6 @@ export const selectTransferResources = (
     selected,
     remaining,
   };
-};
-
-type TransactionResourceGroup = {
-  tx: IndexerEVMTransaction;
-  createdResources: AppResource[];
-  consumedResources: AppResource[];
-};
-
-/**
- * Groups resources by their associated transaction ID.
- *
- * For each resource that has a `transaction`, the resource is classified as either
- * created or consumed (based on `isConsumed`) and placed into the corresponding
- * bucket of a {@link TransactionResourceGroup}. Resources without a transaction
- * are skipped.
- *
- * @param resources - The list of app resources to group.
- * @returns A map from {@link IndexerId} to its {@link TransactionResourceGroup},
- *          containing the transaction metadata and its created/consumed resources.
- */
-export const groupResourcesByTransaction = (resources: AppResource[]) => {
-  const transactionMap = new Map<IndexerId, TransactionResourceGroup>();
-  resources?.forEach(resource => {
-    const { transaction, isConsumed } = resource;
-
-    if (transaction) {
-      const entry = transactionMap.get(transaction.id);
-      const createdResources = isConsumed ? [] : [resource];
-      const consumedResources = isConsumed ? [resource] : [];
-
-      if (entry) {
-        entry.createdResources.push(...createdResources);
-        entry.consumedResources.push(...consumedResources);
-      } else {
-        transactionMap.set(transaction.id, {
-          tx: transaction,
-          createdResources,
-          consumedResources,
-        });
-      }
-    }
-  });
-  return transactionMap;
 };
 
 export type AggregatedTokenBalancesOutput = {

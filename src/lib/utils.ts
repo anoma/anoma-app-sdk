@@ -1,5 +1,5 @@
-import { TxExplorerUrlByChainId } from "lib-constants";
-import type { SupportedChainId, TokenRegistry } from "types";
+import { chainById, type SupportedChainId } from "lib-constants";
+import type { TokenRegistry } from "types";
 import {
   bytesToHex,
   formatUnits,
@@ -121,6 +121,18 @@ export function serializeBigInt(_key: string, value: unknown): unknown {
   return value;
 }
 
+/** JSON replacer for lossless bigint encoding. Pair with bigIntReviver. */
+export function bigIntReplacer(_key: string, value: unknown): unknown {
+  if (typeof value === "bigint") return String(value);
+  return value;
+}
+
+/** JSON replacer for storage — lossless bigint encoding. Pair with bigintReviver. */
+export function buildBigIntReviver(keys: string[]) {
+  return (key: string, value: unknown) =>
+    typeof value === "string" && keys.includes(key) ? BigInt(value) : value;
+}
+
 export const fromHexToBase64 = (hex: Hex) => toBase64(fromHex(hex));
 
 /** Normalize a hex string by lowercasing and stripping a leading 0x. */
@@ -140,20 +152,6 @@ export function validHexBytes(hex: string, byteLength: number) {
  */
 export const validHexString = (hex: string) =>
   hex.replace(/^0x/, "").match(/^[0-9A-Fa-f]+$/);
-
-export function promiseWithResolvers<T>(): [
-  Promise<T>,
-  (value: T) => void,
-  (error: Error) => void,
-] {
-  let resolver: (value: T) => void;
-  let rejecter: (error: Error) => void;
-  const promise = new Promise<T>((resolve, reject) => {
-    resolver = resolve;
-    rejecter = reject;
-  });
-  return [promise, resolver!, rejecter!];
-}
 
 export const generateRandomBytes = (size = 32): Uint8Array<ArrayBuffer> => {
   const uint8Array = new Uint8Array(size);
@@ -186,17 +184,6 @@ export function invariant(
   throw new Error(message);
 }
 
-export const hasTouchScreen = () => navigator.maxTouchPoints > 0;
-
-export const isMobileDevice = () =>
-  window.matchMedia("(pointer: coarse)").matches ||
-  window.matchMedia("(hover: none)").matches;
-
-export const isIOS = () =>
-  /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-  // deprecated but required for iPadOS detection
-  (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-
 /**
  * Builds the block explorer URL for a transaction.
  * @param chainId - The chain ID to get the explorer URL for
@@ -204,5 +191,7 @@ export const isIOS = () =>
  * @returns The full URL to view the transaction on the block explorer
  */
 export const getTxUrl = (chainId: SupportedChainId, prefixedTxHash: string) => {
-  return TxExplorerUrlByChainId[chainId] + prefixedTxHash;
+  return `${chainById[chainId].explorerUrl}/tx/${prefixedTxHash}`;
 };
+
+export const maxBigInt = (a: bigint, b: bigint): bigint => (a > b ? a : b);

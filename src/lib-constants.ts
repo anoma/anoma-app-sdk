@@ -1,4 +1,7 @@
-import type { Network, SupportedChainId } from "types";
+import { fromBase64 } from "lib/utils";
+import type { UserPublicKeys } from "types";
+import type { Address, Chain } from "viem";
+import { base, bsc, mainnet, sepolia } from "viem/chains";
 
 // Verifying Key for TrivialLogicWitness
 // https://github.com/anoma/arm-risc0/blob/main/arm/src/constants.rs#L23
@@ -9,15 +12,6 @@ export const TRIVIAL_LOGIC_VERIFYING_KEY =
 // https://github.com/anoma/anomapay-backend/blob/main/simple_transfer/transfer_library/src/lib.rs#L27
 export const TRANSFER_LOGIC_VERIFYING_KEY =
   "bc12323668c37c3d381ca798f11116f35fb1639d12239b29da7810df3985e7ad";
-
-// TODO: How do we want do this?
-// Should everything be determined by PA address instead?
-export const TransferLogicVerifyingKeys = {
-  v1: "bc12323668c37c3d381ca798f11116f35fb1639d12239b29da7810df3985e7ad",
-  // See:
-  // https://github.com/anoma/anomapay-backend/blob/e2cc88686e845fa7ae7a2d1d1bc0af1c9c69ca82/simple_transfer/transfer_library_v2/src/lib.rs#L31
-  v2: "7da9a32dd1c2822fa7507bef6876354a6df81656a177fbe7e2980298bbc1f6c7",
-};
 
 // Authorization signature domain
 export const AUTH_SIGNATURE_DOMAIN = "TokenTransferAuthorization";
@@ -59,38 +53,94 @@ export const statsQueueRefetchIntervalInMs = 20_000;
 // How many times some mutations query should retry before throwing an error:
 export const retryMutationsCount = 3;
 
-export const EthereumMainnetChainId = 1;
-export const EthereumSepoliaChainId = 11155111;
-export const BaseMainnetChainId = 8453;
+// --- Chain configuration ---
 
-export const EthereumMainnetForwarderContract =
-  "0x775C81A47F2618a8594a7a7f4A3Df2a300337559";
-export const EthereumSepoliaForwarderContract =
-  "0x0A62bE41E66841f693f922991C4e40C89cb0CFDF";
-export const BaseMainnetForwarderContract =
-  "0xfAa9DE773Be11fc759A16F294d32BB2261bF818B";
+export type Network =
+  | "base"
+  | "ethereum"
+  | "ethereum-sepolia"
+  | "bsc"
+  | "unknown";
 
-export const ChainIdByNetwork: Record<Network, SupportedChainId | 0> = {
-  ["ethereum"]: EthereumMainnetChainId,
-  ["ethereum-sepolia"]: EthereumSepoliaChainId,
-  ["base"]: BaseMainnetChainId,
-  ["unknown"]: 0,
+export type SupportedChain = Chain & {
+  network: Exclude<Network, "unknown">;
+  forwarderAddress: Address;
+  iconName: string;
+  explorerUrl: string;
+  explorerName: string;
 };
 
-export const NetworkName: Record<SupportedChainId, string> = {
-  [BaseMainnetChainId]: "base",
-  [EthereumMainnetChainId]: "eth",
-  [EthereumSepoliaChainId]: "eth",
+const defineSupportedChain = <const T extends Chain>(
+  chain: T,
+  config: Pick<SupportedChain, "network" | "forwarderAddress" | "iconName">
+) =>
+  ({
+    ...chain,
+    ...config,
+    explorerUrl: chain.blockExplorers?.default.url,
+    explorerName: chain.blockExplorers?.default.name,
+  }) as SupportedChain & T;
+
+export const supportedChains = [
+  defineSupportedChain(mainnet, {
+    network: "ethereum",
+    forwarderAddress: "0x775C81A47F2618a8594a7a7f4A3Df2a300337559",
+    iconName: "eth",
+  }),
+  defineSupportedChain(sepolia, {
+    network: "ethereum-sepolia",
+    forwarderAddress: "0x0A62bE41E66841f693f922991C4e40C89cb0CFDF",
+    iconName: "eth",
+  }),
+  defineSupportedChain(base, {
+    network: "base",
+    forwarderAddress: "0xfAa9DE773Be11fc759A16F294d32BB2261bF818B",
+    iconName: "base",
+  }),
+  defineSupportedChain(bsc, {
+    network: "bsc",
+    forwarderAddress: "0xDe6A308ed57AF26BFf059e6C550BD4908aC1840e",
+    iconName: "bsc",
+  }),
+];
+
+export type SupportedChainId = (typeof supportedChains)[number]["id"];
+
+export const chainById = supportedChains.reduce(
+  (acc, chain) => {
+    acc[chain.id] = chain;
+    return acc;
+  },
+  {} as Record<SupportedChainId, SupportedChain>
+);
+
+export const chainByNetwork = supportedChains.reduce(
+  (acc, chain) => {
+    acc[chain.network] = chain;
+    return acc;
+  },
+  {} as Record<Exclude<Network, "unknown">, SupportedChain>
+);
+
+/**
+ * Heliax Public Keys to pay Fees to
+ */
+export const HeliaxKeys = {
+  HELIAX_FEE_DISCOVERY_PK: "Anm+Zn753LusVaBilc6HCwcCm/zbLc4o2VnygVsW+BeY",
+  HELIAX_FEE_ENCRYPTION_PK: "Anm+Zn753LusVaBilc6HCwcCm/zbLc4o2VnygVsW+BeY",
+  HELIAX_FEE_AUTHORITY_PK: "Anm+Zn753LusVaBilc6HCwcCm/zbLc4o2VnygVsW+BeY",
+  HELIAX_FEE_NULLIFIER_KEY_COMMITMENT:
+    "Zmh6rfhivXdsj8GLjp+OIAiXFIVu4jOzkCpZHQ1fKSU=",
 };
 
-export const TxExplorerUrlByChainId: Record<SupportedChainId, string> = {
-  [BaseMainnetChainId]: "https://basescan.org/tx/",
-  [EthereumMainnetChainId]: "https://etherscan.io/tx/",
-  [EthereumSepoliaChainId]: "https://sepolia.etherscan.io/tx/",
+export const HeliaxPublicKeys: UserPublicKeys = {
+  discoveryPublicKey: fromBase64(HeliaxKeys.HELIAX_FEE_DISCOVERY_PK),
+  encryptionPublicKey: fromBase64(HeliaxKeys.HELIAX_FEE_ENCRYPTION_PK),
+  authorityPublicKey: fromBase64(HeliaxKeys.HELIAX_FEE_AUTHORITY_PK),
+  nullifierKeyCommitment: fromBase64(
+    HeliaxKeys.HELIAX_FEE_NULLIFIER_KEY_COMMITMENT
+  ),
 };
 
-export const ExplorerNameByChainId: Record<SupportedChainId, string> = {
-  [BaseMainnetChainId]: "BaseScan",
-  [EthereumMainnetChainId]: "EtherScan",
-  [EthereumSepoliaChainId]: "EtherScan",
-};
+// Token price can fluctuate between fee estimates, so accept convergence within 5%.
+export const FeeFluctuationPercentage = 5n;

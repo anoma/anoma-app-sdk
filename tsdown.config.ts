@@ -4,14 +4,19 @@ export default defineConfig({
   entry: [
     "./src/index.ts",
     "./src/api",
+    { constants: "./src/lib-constants.ts" },
     "./src/domain",
-    "./src/domain",
+    "./src/lib",
     "./src/wasm",
+    "./src/types",
   ],
   format: ["esm", "cjs"],
   exports: true,
   dts: {
     build: true,
+  },
+  deps: {
+    onlyBundle: ["abitype"],
   },
   outDir: "./dist",
   copy: [

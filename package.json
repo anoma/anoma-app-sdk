@@ -7,6 +7,7 @@
   },
   "types": "./dist/index.d.cts",
   "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
   "files": [
     "./dist/*"
   ],
@@ -19,9 +20,21 @@
       "import": "./dist/api.mjs",
       "require": "./dist/api.cjs"
     },
+    "./constants": {
+      "import": "./dist/constants.mjs",
+      "require": "./dist/constants.cjs"
+    },
     "./domain": {
       "import": "./dist/domain.mjs",
       "require": "./dist/domain.cjs"
+    },
+    "./lib": {
+      "import": "./dist/lib.mjs",
+      "require": "./dist/lib.cjs"
+    },
+    "./types": {
+      "import": "./dist/types.mjs",
+      "require": "./dist/types.cjs"
     },
     "./wasm": {
       "import": "./dist/wasm.mjs",
@@ -32,7 +45,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "prebuild": "npm run clean && node -p \"'export const ANOMAPAY_SDK_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
-    "build": "tsdown && npm pack",
+    "build": "tsdown",
     "build:docs": "typedoc --plugin typedoc-plugin-markdown --out ./docs src/index.ts",
     "build:wasm": "node ./scripts/build.mjs --release",
     "build:wasm:dev": "node ./scripts/build.mjs",
@@ -48,6 +61,7 @@
     "@noble/hashes": "1.8.0",
     "@noble/secp256k1": "3.0.0",
     "@uniswap/permit2-sdk": "1.4.0",
+    "bs58": "^6.0.0",
     "crc-32": "1.2.2",
     "viem": "2.38.5",
     "wagmi": "3.1.1",
@@ -83,5 +97,7 @@
       "prettier --write"
     ]
   },
-  "module": "./dist/index.mjs"
+  "inlinedDependencies": {
+    "abitype": "1.1.0"
+  }
 }

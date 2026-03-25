@@ -1,12 +1,7 @@
 import type { AggregatedTokenBalance } from "domain/resources/types";
-import {
-  BaseMainnetForwarderContract,
-  EthereumMainnetForwarderContract,
-  EthereumSepoliaForwarderContract,
-} from "lib-constants";
+import { supportedChains, type Network } from "lib-constants";
 import type {
   AppResource,
-  Network,
   NetworkAddress,
   TokenBalance,
   TokenId,
@@ -25,11 +20,9 @@ const getNotFoundToken = (values?: Partial<TokenRegistry>): TokenRegistry => ({
   ...values,
 });
 
-const networkMap: Record<string, Network> = {
-  [EthereumMainnetForwarderContract.toLowerCase()]: "ethereum",
-  [EthereumSepoliaForwarderContract.toLowerCase()]: "ethereum-sepolia",
-  [BaseMainnetForwarderContract.toLowerCase()]: "base",
-};
+const networkMap: Record<string, Network> = Object.fromEntries(
+  supportedChains.map(c => [c.forwarderAddress.toLowerCase(), c.network])
+);
 
 /** Resolves a forwarder contract address to its corresponding network. */
 export const getNetworkByForwarder = (forwarder: Address): Network => {
@@ -100,7 +93,6 @@ export const convertAggregatedToTokenBalance = (
     return { token, amount: balancesPerToken[id].raw };
   });
 };
-
 /** Finds the balance entry matching a given token registry by both network and symbol. */
 export const findBalanceByToken = (
   balances: TokenBalance[],

@@ -1,6 +1,6 @@
+import bs58 from "bs58";
 import CRC32 from "crc-32";
 import type { UserPublicKeys } from "types";
-import { fromBase64Url, toBase64Url } from "./base64url";
 
 // TODO: this shouldn't be here
 export type PayAddress = string;
@@ -29,7 +29,7 @@ export const encodePayAddress = (key: UserPublicKeys): PayAddress => {
   ]);
   const crcBytes = getCrc32(keyBytes);
   const payAddressBytes = new Uint8Array([...keyBytes, ...crcBytes]);
-  return toBase64Url(payAddressBytes);
+  return bs58.encode(payAddressBytes);
 };
 
 export const decodePayAddress = (payAddress: PayAddress): UserPublicKeys => {
@@ -37,7 +37,7 @@ export const decodePayAddress = (payAddress: PayAddress): UserPublicKeys => {
     throw new Error("Pay address cannot be empty");
   }
 
-  const payAddressBytes = fromBase64Url(payAddress);
+  const payAddressBytes = bs58.decode(payAddress);
 
   // Validate expected length: 33 + 33 + 33 + 32 + 4 = 135 bytes
   const expectedLength = 135;

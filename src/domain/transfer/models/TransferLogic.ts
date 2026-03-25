@@ -2,20 +2,13 @@ import {
   calculateLabelRef,
   calculateValueRefFromAuth,
   calculateValueRefFromUserAddress,
-  checkConstructSplit,
 } from "domain/transfer/services";
 import {
   TRANSFER_LOGIC_VERIFYING_KEY,
   TRIVIAL_LOGIC_VERIFYING_KEY,
 } from "lib-constants";
 import { toHex } from "lib/utils";
-import type {
-  CreateMintProps,
-  CreateTransferProps,
-  CreatedResources,
-  MintResources,
-  UserPublicKeys,
-} from "types";
+import type { CreateMintProps, MintResources, UserPublicKeys } from "types";
 import type { Address } from "viem";
 import {
   AuthorityVerifyingKey,
@@ -60,10 +53,8 @@ export class TransferLogic extends Client {
     );
   }
 
-  // TODO merge createTransferResource2 and createBurnResource2
-
   /** Creates a transfer resource destined for an Anoma address receiver. */
-  createTransferResource2({
+  createTransferResource({
     forwarderAddress,
     nullifierKey,
     quantity,
@@ -130,33 +121,6 @@ export class TransferLogic extends Client {
     );
   }
 
-  /** Creates an ephemeral consumed resource representing a deposit from an EVM wallet. */
-  createEphemeralConsumedResource({
-    forwarderAddress,
-    nullifierKey,
-    quantity,
-    userAddress,
-    tokenAddress,
-  }: {
-    forwarderAddress: Address;
-    nullifierKey: NullifierKey;
-    quantity: bigint;
-    userAddress: Address;
-    tokenAddress: Address;
-  }): Resource {
-    const logicRef = Digest.fromHex(this.digest);
-    const labelRef = calculateLabelRef(forwarderAddress, tokenAddress);
-    return Resource.create(
-      logicRef,
-      labelRef,
-      BigInt(quantity),
-      calculateValueRefFromUserAddress(userAddress),
-      true,
-      Digest.fromBytes(randomBytes()),
-      nullifierKey.commit()
-    );
-  }
-
   /** Creates a consumed/created resource pair for minting tokens into the Anoma shielded pool. */
   createMintResources(props: CreateMintProps): MintResources {
     const { userAddress, forwarderAddress, token, quantity, keyring } = props;
@@ -204,59 +168,6 @@ export class TransferLogic extends Client {
       actionTree,
       createdResource,
       consumedResource,
-    };
-  }
-
-  /** Creates a transfer resource with automatic split handling when resource quantity exceeds target. */
-  createTransferResource(props: CreateTransferProps): CreatedResources {
-    const {
-      forwarderAddress,
-      quantity,
-      token,
-      resource,
-      nullifierKey,
-      receiverKeyring,
-    } = props;
-
-    const receiverAuthVerifyingKey = new AuthorityVerifyingKey(
-      receiverKeyring.authorityPublicKey
-    );
-
-    const transferredResourceNullifier = resource.nullifier(nullifierKey);
-    const logicRef = Digest.fromHex(this.digest);
-    const labelRef = calculateLabelRef(forwarderAddress, token);
-    const createdValueRef = calculateValueRefFromAuth(
-      receiverAuthVerifyingKey,
-      toHex(receiverKeyring.encryptionPublicKey)
-    );
-    const createdResource = Resource.create(
-      logicRef,
-      labelRef,
-      BigInt(quantity),
-      createdValueRef,
-      false,
-      transferredResourceNullifier,
-      new NullifierKeyCommitment(receiverKeyring.nullifierKeyCommitment)
-    );
-    const createdResourceCommitment = createdResource.commitment();
-
-    const actions: string[] = [
-      transferredResourceNullifier.toHex(),
-      createdResourceCommitment.toHex(),
-    ];
-
-    const {
-      paddingResource,
-      remainderResource,
-      splitActions = [],
-    } = checkConstructSplit(resource, quantity);
-
-    return {
-      actions: [...actions, ...splitActions],
-      createdResource,
-      consumedResource: resource,
-      paddingResource,
-      remainderResource,
     };
   }
 }

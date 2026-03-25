@@ -181,7 +181,7 @@ export class ParametersDraftResolver {
       // Resource destination -> Anoma address (public keys)
       if (receiver.type === "AnomaAddress") {
         return {
-          resource: this.transferBuilder.client.createTransferResource2({
+          resource: this.transferBuilder.client.createTransferResource({
             ...commonParams,
             receiverKeyring: receiver.userPublicKeys,
           }),
