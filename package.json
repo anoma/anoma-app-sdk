@@ -1,34 +1,38 @@
 {
   "name": "@anoma/anomapay-sdk",
-  "version": "0.1.0",
+  "version": "0.7.1",
   "type": "module",
   "engines": {
     "node": ">=22"
   },
-  "types": "./dist/index.d.ts",
-  "main": "dist/index.js",
+  "types": "./dist/index.d.cts",
+  "main": "./dist/index.cjs",
   "files": [
     "./dist/*"
   ],
   "exports": {
-    ".": "./dist/index.js",
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
     "./api": {
-      "import": "./dist/api/index.js"
+      "import": "./dist/api.mjs",
+      "require": "./dist/api.cjs"
     },
     "./domain": {
-      "import": "./dist/domain/index.js"
-    },
-    "./lib": {
-      "import": "./dist/domain/index.js"
+      "import": "./dist/domain.mjs",
+      "require": "./dist/domain.cjs"
     },
     "./wasm": {
-      "import": "./dist/wasm/index.js"
-    }
+      "import": "./dist/wasm.mjs",
+      "require": "./dist/wasm.cjs"
+    },
+    "./package.json": "./package.json"
   },
   "scripts": {
     "clean": "rimraf dist",
     "prebuild": "npm run clean && node -p \"'export const ANOMAPAY_SDK_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
-    "build": "tsc --noEmit false -p tsconfig.app.json && cp ./src/wasm/arm_bindings.* ./dist/wasm/",
+    "build": "tsdown && npm pack",
     "build:docs": "typedoc --plugin typedoc-plugin-markdown --out ./docs src/index.ts",
     "build:wasm": "node ./scripts/build.mjs --release",
     "build:wasm:dev": "node ./scripts/build.mjs",
@@ -57,7 +61,7 @@
     "prettier": "^3.6.2",
     "prettier-plugin-organize-imports": "^4.3.0",
     "rimraf": "^6.1.3",
-    "rolldown-plugin-wasm": "^0.2.1",
+    "tsdown": "^0.21.5",
     "typedoc": "^0.28.17",
     "typedoc-plugin-markdown": "^4.10.0",
     "typescript": "~5.9.3",
@@ -78,5 +82,6 @@
     "*.{json,css,md}": [
       "prettier --write"
     ]
-  }
+  },
+  "module": "./dist/index.mjs"
 }
