@@ -4,14 +4,7 @@ import {
   TRIVIAL_LOGIC_VERIFYING_KEY,
 } from "lib-constants";
 import { fromHex, normalizeHex, toBase64 } from "lib/utils";
-import type {
-  AuthorizedResources,
-  CreatedResources,
-  CreatedWitnessData,
-  FeeCompatibleERC20,
-  Parameters,
-  UserKeyring,
-} from "types";
+import type { CreatedWitnessData, Parameters, UserKeyring } from "types";
 import type { Address, Hex } from "viem";
 import {
   AuthoritySignature,
@@ -19,7 +12,6 @@ import {
   AuthorityVerifyingKey,
   Digest,
   hashBytes,
-  HeliaxKeys,
   MerkleTree,
   NullifierKey,
   PublicKey,
@@ -27,6 +19,7 @@ import {
   Resource,
 } from "wasm";
 
+/** Estimates the total proving time for a transfer based on the number of resources. */
 export const estimateTransferTimeInSeconds = (parameters?: Parameters) => {
   const averageProofPerResource = 1;
   const resourcesAmount =
@@ -38,6 +31,7 @@ export const estimateTransferTimeInSeconds = (parameters?: Parameters) => {
   );
 };
 
+/** Computes the label reference digest from a forwarder and token contract address. */
 export function calculateLabelRef(
   forwarderAddress: Address,
   tokenAddress: Address
@@ -47,6 +41,7 @@ export function calculateLabelRef(
   return hashBytes(new Uint8Array([...forwarderBytes, ...erc20Bytes]));
 }
 
+/** Computes the value reference digest from an authority verifying key and encryption public key. */
 export function calculateValueRefFromAuth(
   authorizationVerifyingKey: AuthorityVerifyingKey,
   encryptionPublicKey: Hex
@@ -59,29 +54,12 @@ export function calculateValueRefFromAuth(
   );
 }
 
+/** Computes the value reference digest from an EVM user address, zero-padded to 32 bytes. */
 export function calculateValueRefFromUserAddress(userAddress: string): Digest {
   // Padding with zero to fill the 32 bytes required by value_ref
   const paddedAddress = normalizeHex(userAddress).padEnd(64, "0");
   return Digest.fromHex(paddedAddress);
 }
-
-export const tokenSymbolToLabelRef = (tokenSymbol: FeeCompatibleERC20) => {
-  const {
-    HELIAX_FEE_LABEL_REF_WETH,
-    HELIAX_FEE_LABEL_REF_XAN,
-    HELIAX_FEE_LABEL_REF_USDC,
-  } = HeliaxKeys;
-  switch (tokenSymbol) {
-    case "USDC":
-      return HELIAX_FEE_LABEL_REF_USDC;
-    case "XAN":
-      return HELIAX_FEE_LABEL_REF_XAN;
-    case "WETH":
-      return HELIAX_FEE_LABEL_REF_WETH;
-    default:
-      throw new Error("Invalid fee token!");
-  }
-};
 
 /**
  * This method copmares a resource with a target quantity, and if the Resource
@@ -101,7 +79,7 @@ export function checkConstructSplit(
 ): {
   paddingResource?: Resource;
   remainderResource?: Resource;
-  splitActions?: Digest[];
+  splitActions?: string[];
 } {
   const encodedResource = resource.encode();
   const remainder = encodedResource.quantity - quantity;
@@ -124,9 +102,9 @@ export function checkConstructSplit(
       nonce: toBase64(paddingResourceNullifier.toBytes()),
     });
 
-    const splitActions: Digest[] = [
-      paddingResourceNullifier,
-      remainderResource.commitment(),
+    const splitActions: string[] = [
+      paddingResourceNullifier.toHex(),
+      remainderResource.commitment().toHex(),
     ];
 
     return {
@@ -180,19 +158,6 @@ export function checkMergeSplitParameters(
     });
   }
   return parameters;
-}
-
-export function authorizeCreatedResources(
-  createdResourcesArray: CreatedResources[],
-  authorizationKeyBytes: Uint8Array
-): AuthorizedResources[] {
-  const actions = createdResourcesArray.map(({ actions }) => actions).flat();
-  const authSig = authorizeActions(actions, authorizationKeyBytes);
-
-  return createdResourcesArray.map(createdResources => ({
-    ...createdResources,
-    authSig,
-  }));
 }
 
 /**

@@ -57,6 +57,20 @@ npm run lint
 npm run test
 ```
 
+## Contributing to the Docs
+
+You can run this locally via:
+
+```bash
+npm install
+```
+
+and:
+
+```bash
+npm run docs:dev
+```
+
 ## Project Structure
 
 ```
