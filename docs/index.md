@@ -2,9 +2,9 @@
 layout: home
 
 hero:
-  name: "AnomaPay SDK"
-  text: "Privacy-preserving payments for any app"
-  tagline: A TypeScript SDK for building private payment applications powered by the Anoma Resource Machine.
+  name: "Anoma App SDK"
+  text: "Privacy-preserving applications on any chain"
+  tagline: A TypeScript SDK for building private applications on any chain powered by the Anoma Distributed Operating System (DOS) and the Anoma Resource Machine (ARM).
   actions:
     - theme: brand
       text: Get Started
@@ -14,7 +14,7 @@ hero:
       link: https://github.com/anoma/anomapay-sdk
 
 features:
-  - title: Privacy by default
+  - title: Privacy
     details: Transfers are shielded end-to-end. Token balances and transaction graphs are hidden from observers, with cryptographic guarantees enforced on-chain.
   - title: EVM-native
     details: Built on top of ERC-20 tokens and Permit2. Deposits and withdrawals are plain EVM transactions — no new wallets or chains required.

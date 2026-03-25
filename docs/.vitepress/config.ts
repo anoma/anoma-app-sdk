@@ -78,7 +78,7 @@ export default defineConfig({
 
     footer: {
       message: "Released under the MIT License.",
-      copyright: "Copyright © Heliax Inc.",
+      copyright: "Copyright © Anoma Foundation",
     },
 
     search: {
