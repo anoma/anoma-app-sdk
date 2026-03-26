@@ -11,7 +11,8 @@ export default defineConfig({
     "./src/types",
   ],
   format: ["esm", "cjs"],
-  exports: true,
+  // Uncomment the following to generate exports in package.json
+  // exports: true,
   dts: {
     build: true,
   },
@@ -19,10 +20,4 @@ export default defineConfig({
     onlyBundle: ["abitype"],
   },
   outDir: "./dist",
-  copy: [
-    {
-      from: "./src/wasm/arm_bindings_bg.wasm",
-      to: "./dist/",
-    },
-  ],
 });

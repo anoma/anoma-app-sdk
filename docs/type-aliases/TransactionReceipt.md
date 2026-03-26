@@ -1,113 +1,59 @@
-[**@anoma/anomapay-sdk**](../README.md)
+[**@anoma/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anomapay-sdk](../globals.md) / TransactionReceipt
+[@anoma/anoma-app-sdk](../globals.md) / TransactionReceipt
 
-# Type Alias: TransactionReceipt\<T\>
+# Type Alias: TransactionReceipt
 
-> **TransactionReceipt**\<`T`\> = `object`
+> **TransactionReceipt** = `object`
 
-Defined in: [src/api/types.ts:88](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/types.ts#L88)
-
-## Type Parameters
-
-### T
-
-`T` = [`ResponseJson`](ResponseJson.md)
+Defined in: [src/types.ts:31](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/types.ts#L31)
 
 ## Properties
 
-### blockHash
+### hash
 
-> **blockHash**: `string`
+> **hash**: `Address`
 
-Defined in: [src/api/types.ts:92](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/types.ts#L92)
-
-***
-
-### blockNumber
-
-> **blockNumber**: `string`
-
-Defined in: [src/api/types.ts:93](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/types.ts#L93)
+Defined in: [src/types.ts:33](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/types.ts#L33)
 
 ***
 
-### contractAddress?
+### id
 
-> `optional` **contractAddress**: `string`
+> **id**: [`IndexerId`](IndexerId.md)
 
-Defined in: [src/api/types.ts:100](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/types.ts#L100)
-
-***
-
-### effectiveGasPrice
-
-> **effectiveGasPrice**: `string`
-
-Defined in: [src/api/types.ts:97](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/types.ts#L97)
+Defined in: [src/types.ts:32](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/types.ts#L32)
 
 ***
 
-### from
+### quantity
 
-> **from**: `string`
+> **quantity**: `bigint`
 
-Defined in: [src/api/types.ts:98](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/types.ts#L98)
-
-***
-
-### gasUsed
-
-> **gasUsed**: `string`
-
-Defined in: [src/api/types.ts:94](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/types.ts#L94)
-
-***
-
-### inner
-
-> **inner**: `T`
-
-Defined in: [src/api/types.ts:89](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/types.ts#L89)
-
-***
-
-### logsBloom
-
-> **logsBloom**: `string`
-
-Defined in: [src/api/types.ts:95](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/types.ts#L95)
+Defined in: [src/types.ts:36](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/types.ts#L36)
 
 ***
 
 ### status
 
-> **status**: `string`
+> **status**: [`TransactionStatus`](TransactionStatus.md)
 
-Defined in: [src/api/types.ts:96](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/types.ts#L96)
-
-***
-
-### to?
-
-> `optional` **to**: `string`
-
-Defined in: [src/api/types.ts:99](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/types.ts#L99)
+Defined in: [src/types.ts:34](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/types.ts#L34)
 
 ***
 
-### transactionHash
+### timestamp
 
-> **transactionHash**: `string`
+> **timestamp**: `number`
 
-Defined in: [src/api/types.ts:90](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/types.ts#L90)
+Defined in: [src/types.ts:37](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/types.ts#L37)
 
 ***
 
-### transactionIndex?
+### token
 
-> `optional` **transactionIndex**: `string`
+> **token**: [`TokenRegistry`](TokenRegistry.md)
 
-Defined in: [src/api/types.ts:91](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/types.ts#L91)
+Defined in: [src/types.ts:35](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/types.ts#L35)

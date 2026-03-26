@@ -1,12 +1,12 @@
-[**@anoma/anomapay-sdk**](../README.md)
+[**@anoma/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anomapay-sdk](../globals.md) / NullifierKey
+[@anoma/anoma-app-sdk](../globals.md) / NullifierKey
 
 # Class: NullifierKey
 
-Defined in: [src/wasm/arm\_bindings.d.ts:145](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L145)
+Defined in: [src/wasm/arm\_bindings.d.ts:144](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L144)
 
 ## Constructors
 
@@ -14,7 +14,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:145](https://github.com/anoma/anomapay-
 
 > **new NullifierKey**(`nk_bytes`): `NullifierKey`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:148](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L148)
+Defined in: [src/wasm/arm\_bindings.d.ts:147](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L147)
 
 #### Parameters
 
@@ -32,7 +32,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:148](https://github.com/anoma/anomapay-
 
 > **\[dispose\]**(): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:147](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L147)
+Defined in: [src/wasm/arm\_bindings.d.ts:146](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L146)
 
 #### Returns
 
@@ -44,7 +44,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:147](https://github.com/anoma/anomapay-
 
 > **commit**(): [`NullifierKeyCommitment`](NullifierKeyCommitment.md)
 
-Defined in: [src/wasm/arm\_bindings.d.ts:149](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L149)
+Defined in: [src/wasm/arm\_bindings.d.ts:148](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L148)
 
 #### Returns
 
@@ -56,7 +56,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:149](https://github.com/anoma/anomapay-
 
 > **free**(): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:146](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L146)
+Defined in: [src/wasm/arm\_bindings.d.ts:145](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L145)
 
 #### Returns
 
@@ -68,7 +68,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:146](https://github.com/anoma/anomapay-
 
 > **inner**(): `Uint8Array`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:150](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L150)
+Defined in: [src/wasm/arm\_bindings.d.ts:149](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L149)
 
 #### Returns
 
@@ -80,7 +80,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:150](https://github.com/anoma/anomapay-
 
 > **toBase64**(): `string`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:152](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L152)
+Defined in: [src/wasm/arm\_bindings.d.ts:151](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L151)
 
 #### Returns
 
@@ -92,7 +92,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:152](https://github.com/anoma/anomapay-
 
 > `static` **default**(): `NullifierKey`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:154](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L154)
+Defined in: [src/wasm/arm\_bindings.d.ts:153](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L153)
 
 #### Returns
 
@@ -104,7 +104,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:154](https://github.com/anoma/anomapay-
 
 > `static` **fromBase64**(`encoded`): `NullifierKey`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:153](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L153)
+Defined in: [src/wasm/arm\_bindings.d.ts:152](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L152)
 
 #### Parameters
 
@@ -122,7 +122,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:153](https://github.com/anoma/anomapay-
 
 > `static` **random**(): [`NullifierKeyPair`](NullifierKeyPair.md)
 
-Defined in: [src/wasm/arm\_bindings.d.ts:151](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L151)
+Defined in: [src/wasm/arm\_bindings.d.ts:150](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L150)
 
 #### Returns
 

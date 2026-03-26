@@ -1,12 +1,12 @@
-[**@anoma/anomapay-sdk**](../README.md)
+[**@anoma/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anomapay-sdk](../globals.md) / InitialRoot
+[@anoma/anoma-app-sdk](../globals.md) / InitialRoot
 
 # Class: InitialRoot
 
-Defined in: [src/wasm/arm\_bindings.d.ts:112](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L112)
+Defined in: [src/wasm/arm\_bindings.d.ts:111](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L111)
 
 ## Methods
 
@@ -14,7 +14,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:112](https://github.com/anoma/anomapay-
 
 > **\[dispose\]**(): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:115](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L115)
+Defined in: [src/wasm/arm\_bindings.d.ts:114](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L114)
 
 #### Returns
 
@@ -26,7 +26,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:115](https://github.com/anoma/anomapay-
 
 > **free**(): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:114](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L114)
+Defined in: [src/wasm/arm\_bindings.d.ts:113](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L113)
 
 #### Returns
 
@@ -38,7 +38,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:114](https://github.com/anoma/anomapay-
 
 > `static` **bytes**(): `Uint8Array`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:116](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L116)
+Defined in: [src/wasm/arm\_bindings.d.ts:115](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L115)
 
 #### Returns
 

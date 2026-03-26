@@ -1,4 +1,3 @@
-import { chainById, type SupportedChainId } from "lib-constants";
 import type { TokenRegistry } from "types";
 import {
   bytesToHex,
@@ -111,20 +110,9 @@ export function stringToBytes(str: string): Uint8Array<ArrayBuffer> {
   return viemStringToBytes(str) as Uint8Array<ArrayBuffer>;
 }
 
-/**
- * Serialize BigInt to string
- */
-export function serializeBigInt(_key: string, value: unknown): unknown {
-  if (typeof value === "bigint") {
-    return parseInt(value.toString());
-  }
-  return value;
-}
-
 /** JSON replacer for lossless bigint encoding. Pair with bigIntReviver. */
 export function bigIntReplacer(_key: string, value: unknown): unknown {
-  if (typeof value === "bigint") return String(value);
-  return value;
+  return typeof value === "bigint" ? value.toString() : value;
 }
 
 /** JSON replacer for storage — lossless bigint encoding. Pair with bigintReviver. */
@@ -183,15 +171,5 @@ export function invariant(
   if (condition) return;
   throw new Error(message);
 }
-
-/**
- * Builds the block explorer URL for a transaction.
- * @param chainId - The chain ID to get the explorer URL for
- * @param prefixedTxHash - The transaction hash with 0x prefix
- * @returns The full URL to view the transaction on the block explorer
- */
-export const getTxUrl = (chainId: SupportedChainId, prefixedTxHash: string) => {
-  return `${chainById[chainId].explorerUrl}/tx/${prefixedTxHash}`;
-};
 
 export const maxBigInt = (a: bigint, b: bigint): bigint => (a > b ? a : b);

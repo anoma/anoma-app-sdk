@@ -81,21 +81,21 @@ const defineSupportedChain = <const T extends Chain>(
     explorerName: chain.blockExplorers?.default.name,
   }) as SupportedChain & T;
 
-export const supportedChains = [
+export const allSupportedChains = [
   defineSupportedChain(mainnet, {
     network: "ethereum",
     forwarderAddress: "0x775C81A47F2618a8594a7a7f4A3Df2a300337559",
-    iconName: "eth",
-  }),
-  defineSupportedChain(sepolia, {
-    network: "ethereum-sepolia",
-    forwarderAddress: "0x0A62bE41E66841f693f922991C4e40C89cb0CFDF",
-    iconName: "eth",
+    iconName: "ethereum",
   }),
   defineSupportedChain(base, {
     network: "base",
     forwarderAddress: "0xfAa9DE773Be11fc759A16F294d32BB2261bF818B",
     iconName: "base",
+  }),
+  defineSupportedChain(sepolia, {
+    network: "ethereum-sepolia",
+    forwarderAddress: "0x0A62bE41E66841f693f922991C4e40C89cb0CFDF",
+    iconName: "ethereum",
   }),
   defineSupportedChain(bsc, {
     network: "bsc",
@@ -103,24 +103,6 @@ export const supportedChains = [
     iconName: "bsc",
   }),
 ];
-
-export type SupportedChainId = (typeof supportedChains)[number]["id"];
-
-export const chainById = supportedChains.reduce(
-  (acc, chain) => {
-    acc[chain.id] = chain;
-    return acc;
-  },
-  {} as Record<SupportedChainId, SupportedChain>
-);
-
-export const chainByNetwork = supportedChains.reduce(
-  (acc, chain) => {
-    acc[chain.network] = chain;
-    return acc;
-  },
-  {} as Record<Exclude<Network, "unknown">, SupportedChain>
-);
 
 /**
  * Heliax Public Keys to pay Fees to

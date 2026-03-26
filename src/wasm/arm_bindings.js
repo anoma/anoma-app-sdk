@@ -536,13 +536,6 @@ export class CallType {
         const ret = wasm.calltype_Unwrap();
         return CallType.__wrap(ret);
     }
-    /**
-     * @returns {CallType}
-     */
-    static get Migrate() {
-        const ret = wasm.calltype_Migrate();
-        return CallType.__wrap(ret);
-    }
 }
 if (Symbol.dispose) CallType.prototype[Symbol.dispose] = CallType.prototype.free;
 

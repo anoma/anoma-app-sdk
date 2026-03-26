@@ -1,14 +1,14 @@
-[**@anoma/anomapay-sdk**](../README.md)
+[**@anoma/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anomapay-sdk](../globals.md) / TransferBackendPaths
+[@anoma/anoma-app-sdk](../globals.md) / TransferBackendPaths
 
 # Variable: TransferBackendPaths
 
 > `const` **TransferBackendPaths**: `object`
 
-Defined in: [src/api/paths.ts:1](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/paths.ts#L1)
+Defined in: [src/api/paths.ts:1](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/paths.ts#L1)
 
 ## Type Declaration
 

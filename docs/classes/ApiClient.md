@@ -1,19 +1,20 @@
-[**@anoma/anomapay-sdk**](../README.md)
+[**@anoma/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anomapay-sdk](../globals.md) / ApiClient
+[@anoma/anoma-app-sdk](../globals.md) / ApiClient
 
 # Class: ApiClient\<P\>
 
-Defined in: [src/api/ApiClient.ts:7](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/ApiClient.ts#L7)
+Defined in: [src/api/ApiClient.ts:7](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/ApiClient.ts#L7)
 
 Generic ApiClient base class
 
 ## Extended by
 
-- [`IndexerClient`](IndexerClient.md)
 - [`EnvioClient`](EnvioClient.md)
+- [`FeedbackClient`](FeedbackClient.md)
+- [`IndexerClient`](IndexerClient.md)
 - [`TransferBackendClient`](TransferBackendClient.md)
 
 ## Type Parameters
@@ -28,7 +29,7 @@ Generic ApiClient base class
 
 > **new ApiClient**\<`P`\>(`url`): `ApiClient`\<`P`\>
 
-Defined in: [src/api/ApiClient.ts:10](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/ApiClient.ts#L10)
+Defined in: [src/api/ApiClient.ts:10](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/ApiClient.ts#L10)
 
 #### Parameters
 
@@ -46,7 +47,7 @@ Defined in: [src/api/ApiClient.ts:10](https://github.com/anoma/anomapay-sdk/blob
 
 > `protected` **url**: `string`
 
-Defined in: [src/api/ApiClient.ts:8](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/ApiClient.ts#L8)
+Defined in: [src/api/ApiClient.ts:8](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/ApiClient.ts#L8)
 
 ## Methods
 
@@ -54,7 +55,7 @@ Defined in: [src/api/ApiClient.ts:8](https://github.com/anoma/anomapay-sdk/blob/
 
 > `protected` **get**\<`T`\>(`path`, `headers?`): `Promise`\<`T`\>
 
-Defined in: [src/api/ApiClient.ts:25](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/ApiClient.ts#L25)
+Defined in: [src/api/ApiClient.ts:25](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/ApiClient.ts#L25)
 
 Generic GET request
 
@@ -84,7 +85,7 @@ Generic GET request
 
 > `protected` **post**\<`T`, `U`\>(`path`, `props`, `headers?`): `Promise`\<`U`\>
 
-Defined in: [src/api/ApiClient.ts:47](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/ApiClient.ts#L47)
+Defined in: [src/api/ApiClient.ts:47](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/ApiClient.ts#L47)
 
 Generic POST request
 

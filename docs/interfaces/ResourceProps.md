@@ -1,12 +1,12 @@
-[**@anoma/anomapay-sdk**](../README.md)
+[**@anoma/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anomapay-sdk](../globals.md) / ResourceProps
+[@anoma/anoma-app-sdk](../globals.md) / ResourceProps
 
 # Interface: ResourceProps
 
-Defined in: [src/wasm/arm\_bindings.d.ts:13](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L13)
+Defined in: [src/wasm/arm\_bindings.d.ts:8](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L8)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:13](https://github.com/anoma/anomapay-s
 
 > **isEphemeral**: `boolean`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:14](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L14)
+Defined in: [src/wasm/arm\_bindings.d.ts:9](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L9)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:14](https://github.com/anoma/anomapay-s
 
 > **labelRef**: `string`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:17](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L17)
+Defined in: [src/wasm/arm\_bindings.d.ts:12](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L12)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:17](https://github.com/anoma/anomapay-s
 
 > **logicRef**: `string`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:16](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L16)
+Defined in: [src/wasm/arm\_bindings.d.ts:11](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L11)
 
 ***
 
@@ -38,7 +38,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:16](https://github.com/anoma/anomapay-s
 
 > **nkCommitment**: `string`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:21](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L21)
+Defined in: [src/wasm/arm\_bindings.d.ts:16](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L16)
 
 ***
 
@@ -46,7 +46,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:21](https://github.com/anoma/anomapay-s
 
 > **nonce**: `string`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:19](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L19)
+Defined in: [src/wasm/arm\_bindings.d.ts:14](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L14)
 
 ***
 
@@ -54,7 +54,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:19](https://github.com/anoma/anomapay-s
 
 > **quantity**: `bigint`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:15](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L15)
+Defined in: [src/wasm/arm\_bindings.d.ts:10](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L10)
 
 ***
 
@@ -62,7 +62,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:15](https://github.com/anoma/anomapay-s
 
 > **randSeed**: `string`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:20](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L20)
+Defined in: [src/wasm/arm\_bindings.d.ts:15](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L15)
 
 ***
 
@@ -70,4 +70,4 @@ Defined in: [src/wasm/arm\_bindings.d.ts:20](https://github.com/anoma/anomapay-s
 
 > **valueRef**: `string`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:18](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L18)
+Defined in: [src/wasm/arm\_bindings.d.ts:13](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L13)

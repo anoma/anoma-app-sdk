@@ -1,12 +1,12 @@
-[**@anoma/anomapay-sdk**](../README.md)
+[**@anoma/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anomapay-sdk](../globals.md) / EnvioClient
+[@anoma/anoma-app-sdk](../globals.md) / EnvioClient
 
 # Class: EnvioClient
 
-Defined in: [src/api/EnvioClient.ts:17](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/EnvioClient.ts#L17)
+Defined in: [src/api/EnvioClient.ts:17](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/EnvioClient.ts#L17)
 
 Generic ApiClient base class
 
@@ -20,7 +20,7 @@ Generic ApiClient base class
 
 > **new EnvioClient**(`url`): `EnvioClient`
 
-Defined in: [src/api/ApiClient.ts:10](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/ApiClient.ts#L10)
+Defined in: [src/api/ApiClient.ts:10](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/ApiClient.ts#L10)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [src/api/ApiClient.ts:10](https://github.com/anoma/anomapay-sdk/blob
 
 > `protected` **url**: `string`
 
-Defined in: [src/api/ApiClient.ts:8](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/ApiClient.ts#L8)
+Defined in: [src/api/ApiClient.ts:8](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/ApiClient.ts#L8)
 
 #### Inherited from
 
@@ -50,29 +50,11 @@ Defined in: [src/api/ApiClient.ts:8](https://github.com/anoma/anomapay-sdk/blob/
 
 ## Methods
 
-### consumedTags()
-
-> **consumedTags**(`logicRef`): `Promise`\<[`ConsumedTagsResponse`](../type-aliases/ConsumedTagsResponse.md)\>
-
-Defined in: [src/api/EnvioClient.ts:19](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/EnvioClient.ts#L19)
-
-#### Parameters
-
-##### logicRef
-
-`string`
-
-#### Returns
-
-`Promise`\<[`ConsumedTagsResponse`](../type-aliases/ConsumedTagsResponse.md)\>
-
-***
-
 ### get()
 
 > `protected` **get**\<`T`\>(`path`, `headers?`): `Promise`\<`T`\>
 
-Defined in: [src/api/ApiClient.ts:25](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/ApiClient.ts#L25)
+Defined in: [src/api/ApiClient.ts:25](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/ApiClient.ts#L25)
 
 Generic GET request
 
@@ -106,7 +88,7 @@ Generic GET request
 
 > `protected` **post**\<`T`, `U`\>(`path`, `props`, `headers?`): `Promise`\<`U`\>
 
-Defined in: [src/api/ApiClient.ts:47](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/ApiClient.ts#L47)
+Defined in: [src/api/ApiClient.ts:47](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/ApiClient.ts#L47)
 
 Generic POST request
 
@@ -141,3 +123,25 @@ Generic POST request
 #### Inherited from
 
 [`ApiClient`](ApiClient.md).[`post`](ApiClient.md#post)
+
+***
+
+### publicNullifiers()
+
+> **publicNullifiers**(`logicRef`, `timestamp?`): `Promise`\<[`NullifierRecordResponse`](../type-aliases/NullifierRecordResponse.md)\>
+
+Defined in: [src/api/EnvioClient.ts:19](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/EnvioClient.ts#L19)
+
+#### Parameters
+
+##### logicRef
+
+`string`
+
+##### timestamp?
+
+`number` = `0`
+
+#### Returns
+
+`Promise`\<[`NullifierRecordResponse`](../type-aliases/NullifierRecordResponse.md)\>

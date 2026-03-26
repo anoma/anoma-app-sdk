@@ -1,12 +1,12 @@
-[**@anoma/anomapay-sdk**](../README.md)
+[**@anoma/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anomapay-sdk](../globals.md) / MerkleTree
+[@anoma/anoma-app-sdk](../globals.md) / MerkleTree
 
 # Class: MerkleTree
 
-Defined in: [src/wasm/arm\_bindings.d.ts:133](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L133)
+Defined in: [src/wasm/arm\_bindings.d.ts:132](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L132)
 
 ## Constructors
 
@@ -14,7 +14,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:133](https://github.com/anoma/anomapay-
 
 > **new MerkleTree**(`leaves`): `MerkleTree`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:136](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L136)
+Defined in: [src/wasm/arm\_bindings.d.ts:135](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L135)
 
 #### Parameters
 
@@ -32,7 +32,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:136](https://github.com/anoma/anomapay-
 
 > **\[dispose\]**(): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:135](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L135)
+Defined in: [src/wasm/arm\_bindings.d.ts:134](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L134)
 
 #### Returns
 
@@ -44,7 +44,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:135](https://github.com/anoma/anomapay-
 
 > **free**(): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:134](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L134)
+Defined in: [src/wasm/arm\_bindings.d.ts:133](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L133)
 
 #### Returns
 
@@ -56,7 +56,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:134](https://github.com/anoma/anomapay-
 
 > **root**(): [`Digest`](Digest.md)
 
-Defined in: [src/wasm/arm\_bindings.d.ts:137](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L137)
+Defined in: [src/wasm/arm\_bindings.d.ts:136](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L136)
 
 #### Returns
 
@@ -68,7 +68,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:137](https://github.com/anoma/anomapay-
 
 > **toWitness**(): `string`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:142](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L142)
+Defined in: [src/wasm/arm\_bindings.d.ts:141](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L141)
 
 Returns hex string representing the actionTreeRoot bytes needed for
 Permit2 signing. This is only available in a browser wasm target.

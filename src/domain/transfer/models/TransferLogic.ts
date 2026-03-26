@@ -27,8 +27,8 @@ import { Client, initClient } from "wasm/client";
  * Anoma Simple Transfer Application
  */
 export class TransferLogic extends Client {
-  static async init(): Promise<TransferLogic> {
-    return initClient(TransferLogic, TRANSFER_LOGIC_VERIFYING_KEY);
+  static async init(wasmUrl?: string): Promise<TransferLogic> {
+    return initClient(TransferLogic, TRANSFER_LOGIC_VERIFYING_KEY, wasmUrl);
   }
 
   createPaddingResource(props?: {

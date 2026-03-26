@@ -1,7 +1,6 @@
 import type { AggregatedTokenBalance } from "domain/resources/types";
-import { supportedChains, type Network } from "lib-constants";
+import { type Network } from "lib-constants";
 import type {
-  AppResource,
   NetworkAddress,
   TokenBalance,
   TokenId,
@@ -20,15 +19,6 @@ const getNotFoundToken = (values?: Partial<TokenRegistry>): TokenRegistry => ({
   ...values,
 });
 
-const networkMap: Record<string, Network> = Object.fromEntries(
-  supportedChains.map(c => [c.forwarderAddress.toLowerCase(), c.network])
-);
-
-/** Resolves a forwarder contract address to its corresponding network. */
-export const getNetworkByForwarder = (forwarder: Address): Network => {
-  return networkMap[forwarder.toLowerCase()] ?? "unknown";
-};
-
 /** Builds a `NetworkAddress` key by combining a network and a normalized EVM address. */
 export const networkAddress = (
   network: Network,
@@ -40,24 +30,6 @@ export const tokenId = (
   tokenRegistry: Pick<TokenRegistry, "network" | "symbol">
 ): TokenId => {
   return `${tokenRegistry.network}:${tokenRegistry.symbol.toLowerCase()}`;
-};
-
-/**
- * Gets the token registry entry for a given resource.
- * @param registry - The token registry index to search
- * @param resource - The encoded resource with status information
- * @returns The matching token registry or a placeholder for unknown tokens
- */
-export const getTokenByResource = (
-  registry: TokenRegistryIndex,
-  resource: AppResource
-): TokenRegistry => {
-  const address = resource.erc20TokenAddress;
-  const network = getNetworkByForwarder(resource.forwarder);
-  return (
-    registry.byAddress[networkAddress(network, address)] ??
-    getNotFoundToken({ address, network })
-  );
 };
 
 /** Looks up a token in the registry by its network and contract address. */

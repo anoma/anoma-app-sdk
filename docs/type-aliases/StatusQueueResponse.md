@@ -1,14 +1,14 @@
-[**@anoma/anomapay-sdk**](../README.md)
+[**@anoma/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anomapay-sdk](../globals.md) / StatusQueueResponse
+[@anoma/anoma-app-sdk](../globals.md) / StatusQueueResponse
 
 # Type Alias: StatusQueueResponse
 
 > **StatusQueueResponse** = `object`
 
-Defined in: [src/api/types.ts:126](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/types.ts#L126)
+Defined in: [src/api/types.ts:126](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L126)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [src/api/types.ts:126](https://github.com/anoma/anomapay-sdk/blob/82
 
 > **completed**: `number`
 
-Defined in: [src/api/types.ts:128](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/types.ts#L128)
+Defined in: [src/api/types.ts:128](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L128)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [src/api/types.ts:128](https://github.com/anoma/anomapay-sdk/blob/82
 
 > **created**: `number`
 
-Defined in: [src/api/types.ts:127](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/types.ts#L127)
+Defined in: [src/api/types.ts:127](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L127)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [src/api/types.ts:127](https://github.com/anoma/anomapay-sdk/blob/82
 
 > **processing**: `number`
 
-Defined in: [src/api/types.ts:129](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/types.ts#L129)
+Defined in: [src/api/types.ts:129](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L129)

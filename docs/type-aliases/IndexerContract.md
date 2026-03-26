@@ -1,14 +1,14 @@
-[**@anoma/anomapay-sdk**](../README.md)
+[**@anoma/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anomapay-sdk](../globals.md) / IndexerContract
+[@anoma/anoma-app-sdk](../globals.md) / IndexerContract
 
 # Type Alias: IndexerContract
 
 > **IndexerContract** = `object`
 
-Defined in: [src/api/types.ts:132](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/types.ts#L132)
+Defined in: [src/api/types.ts:132](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L132)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [src/api/types.ts:132](https://github.com/anoma/anomapay-sdk/blob/82
 
 > **chain\_id**: `number`
 
-Defined in: [src/api/types.ts:133](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/types.ts#L133)
+Defined in: [src/api/types.ts:133](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L133)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [src/api/types.ts:133](https://github.com/anoma/anomapay-sdk/blob/82
 
 > **contract\_address**: `Address`
 
-Defined in: [src/api/types.ts:134](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/types.ts#L134)
+Defined in: [src/api/types.ts:134](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L134)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [src/api/types.ts:134](https://github.com/anoma/anomapay-sdk/blob/82
 
 > **last\_block**: `number`
 
-Defined in: [src/api/types.ts:135](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/types.ts#L135)
+Defined in: [src/api/types.ts:135](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L135)

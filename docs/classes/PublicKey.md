@@ -1,12 +1,12 @@
-[**@anoma/anomapay-sdk**](../README.md)
+[**@anoma/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anomapay-sdk](../globals.md) / PublicKey
+[@anoma/anoma-app-sdk](../globals.md) / PublicKey
 
 # Class: PublicKey
 
-Defined in: [src/wasm/arm\_bindings.d.ts:178](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L178)
+Defined in: [src/wasm/arm\_bindings.d.ts:177](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L177)
 
 ## Constructors
 
@@ -14,7 +14,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:178](https://github.com/anoma/anomapay-
 
 > **new PublicKey**(`bytes`): `PublicKey`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:181](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L181)
+Defined in: [src/wasm/arm\_bindings.d.ts:180](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L180)
 
 #### Parameters
 
@@ -32,7 +32,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:181](https://github.com/anoma/anomapay-
 
 > **\[dispose\]**(): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:180](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L180)
+Defined in: [src/wasm/arm\_bindings.d.ts:179](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L179)
 
 #### Returns
 
@@ -44,7 +44,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:180](https://github.com/anoma/anomapay-
 
 > **encode**(): `Uint8Array`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:189](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L189)
+Defined in: [src/wasm/arm\_bindings.d.ts:188](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L188)
 
 #### Returns
 
@@ -56,7 +56,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:189](https://github.com/anoma/anomapay-
 
 > **free**(): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:179](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L179)
+Defined in: [src/wasm/arm\_bindings.d.ts:178](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L178)
 
 #### Returns
 
@@ -68,7 +68,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:179](https://github.com/anoma/anomapay-
 
 > **toAffinePointBytes**(): `Uint8Array`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:187](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L187)
+Defined in: [src/wasm/arm\_bindings.d.ts:186](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L186)
 
 #### Returns
 
@@ -80,7 +80,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:187](https://github.com/anoma/anomapay-
 
 > **toBase64**(): `string`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:183](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L183)
+Defined in: [src/wasm/arm\_bindings.d.ts:182](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L182)
 
 #### Returns
 
@@ -92,7 +92,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:183](https://github.com/anoma/anomapay-
 
 > **toBytes**(): `Uint8Array`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:186](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L186)
+Defined in: [src/wasm/arm\_bindings.d.ts:185](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L185)
 
 #### Returns
 
@@ -104,7 +104,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:186](https://github.com/anoma/anomapay-
 
 > **toHex**(): `string`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:185](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L185)
+Defined in: [src/wasm/arm\_bindings.d.ts:184](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L184)
 
 #### Returns
 
@@ -116,7 +116,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:185](https://github.com/anoma/anomapay-
 
 > `static` **fromAffinePointBytes**(`bytes`): `PublicKey`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:188](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L188)
+Defined in: [src/wasm/arm\_bindings.d.ts:187](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L187)
 
 #### Parameters
 
@@ -134,7 +134,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:188](https://github.com/anoma/anomapay-
 
 > `static` **fromBase64**(`pk_b64`): `PublicKey`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:182](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L182)
+Defined in: [src/wasm/arm\_bindings.d.ts:181](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L181)
 
 #### Parameters
 
@@ -152,7 +152,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:182](https://github.com/anoma/anomapay-
 
 > `static` **fromHex**(`pk_hex`): `PublicKey`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:184](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/wasm/arm_bindings.d.ts#L184)
+Defined in: [src/wasm/arm\_bindings.d.ts:183](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L183)
 
 #### Parameters
 

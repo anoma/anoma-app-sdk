@@ -1,6 +1,7 @@
 {
-  "name": "@anoma/anomapay-sdk",
-  "version": "0.7.1",
+  "name": "@anoma/anoma-app-sdk",
+  "version": "0.7.0",
+  "license": "GPL-3.0",
   "type": "module",
   "engines": {
     "node": ">=22"
@@ -40,12 +41,15 @@
       "import": "./dist/wasm.mjs",
       "require": "./dist/wasm.cjs"
     },
+    "./anomaPayArm.wasm": {
+      "default": "./dist/arm_bindings_bg.wasm"
+    },
     "./package.json": "./package.json"
   },
   "scripts": {
     "clean": "rimraf dist",
-    "prebuild": "npm run clean && node -p \"'export const ANOMAPAY_SDK_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
-    "build": "tsdown",
+    "prebuild": "npm run clean && node -p \"'export const ANOMA_APP_SDK_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
+    "build": "tsdown && cp ./src/wasm/arm_bindings_bg.wasm ./dist",
     "build:docs": "typedoc --plugin typedoc-plugin-markdown --out ./docs src/index.ts",
     "build:wasm": "node ./scripts/build.mjs --release",
     "build:wasm:dev": "node ./scripts/build.mjs",

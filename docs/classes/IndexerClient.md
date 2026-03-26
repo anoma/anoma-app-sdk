@@ -1,12 +1,12 @@
-[**@anoma/anomapay-sdk**](../README.md)
+[**@anoma/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anomapay-sdk](../globals.md) / IndexerClient
+[@anoma/anoma-app-sdk](../globals.md) / IndexerClient
 
 # Class: IndexerClient
 
-Defined in: [src/api/IndexerClient.ts:11](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/IndexerClient.ts#L11)
+Defined in: [src/api/IndexerClient.ts:12](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/IndexerClient.ts#L12)
 
 Generic ApiClient base class
 
@@ -20,7 +20,7 @@ Generic ApiClient base class
 
 > **new IndexerClient**(`url`): `IndexerClient`
 
-Defined in: [src/api/ApiClient.ts:10](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/ApiClient.ts#L10)
+Defined in: [src/api/ApiClient.ts:10](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/ApiClient.ts#L10)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [src/api/ApiClient.ts:10](https://github.com/anoma/anomapay-sdk/blob
 
 > `protected` **url**: `string`
 
-Defined in: [src/api/ApiClient.ts:8](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/ApiClient.ts#L8)
+Defined in: [src/api/ApiClient.ts:8](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/ApiClient.ts#L8)
 
 #### Inherited from
 
@@ -52,55 +52,37 @@ Defined in: [src/api/ApiClient.ts:8](https://github.com/anoma/anomapay-sdk/blob/
 
 ### addKeys()
 
-> **addKeys**(`keypair`): `Promise`\<`void`\>
+> **addKeys**(`keypair`): `Promise`\<[`IndexerAddKeysResponse`](../type-aliases/IndexerAddKeysResponse.md)\>
 
-Defined in: [src/api/IndexerClient.ts:12](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/IndexerClient.ts#L12)
+Defined in: [src/api/IndexerClient.ts:17](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/IndexerClient.ts#L17)
 
 #### Parameters
 
 ##### keypair
 
-[`EncodedKeypair`](../interfaces/EncodedKeypair.md)
+###### public_key
 
-#### Returns
+`` `0x${string}` ``
 
-`Promise`\<`void`\>
-
-***
-
-### checkAllowedAddress()
-
-> **checkAllowedAddress**(`address`): `Promise`\<\{ `allowed`: `boolean`; \}\>
-
-Defined in: [src/api/IndexerClient.ts:42](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/IndexerClient.ts#L42)
-
-#### Parameters
-
-##### address
+###### secret_key
 
 `` `0x${string}` ``
 
 #### Returns
 
-`Promise`\<\{ `allowed`: `boolean`; \}\>
+`Promise`\<[`IndexerAddKeysResponse`](../type-aliases/IndexerAddKeysResponse.md)\>
 
 ***
 
-### generateProof()
+### config()
 
-> **generateProof**(`leaf`): `Promise`\<[`ResponseJson`](../type-aliases/ResponseJson.md)\>
+> **config**(): `Promise`\<[`IndexerHealthResponse`](../type-aliases/IndexerHealthResponse.md)\>
 
-Defined in: [src/api/IndexerClient.ts:38](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/IndexerClient.ts#L38)
-
-#### Parameters
-
-##### leaf
-
-`string`
+Defined in: [src/api/IndexerClient.ts:13](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/IndexerClient.ts#L13)
 
 #### Returns
 
-`Promise`\<[`ResponseJson`](../type-aliases/ResponseJson.md)\>
+`Promise`\<[`IndexerHealthResponse`](../type-aliases/IndexerHealthResponse.md)\>
 
 ***
 
@@ -108,7 +90,7 @@ Defined in: [src/api/IndexerClient.ts:38](https://github.com/anoma/anomapay-sdk/
 
 > `protected` **get**\<`T`\>(`path`, `headers?`): `Promise`\<`T`\>
 
-Defined in: [src/api/ApiClient.ts:25](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/ApiClient.ts#L25)
+Defined in: [src/api/ApiClient.ts:25](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/ApiClient.ts#L25)
 
 Generic GET request
 
@@ -138,23 +120,11 @@ Generic GET request
 
 ***
 
-### latestRoot()
-
-> **latestRoot**(): `Promise`\<`string`\>
-
-Defined in: [src/api/IndexerClient.ts:34](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/IndexerClient.ts#L34)
-
-#### Returns
-
-`Promise`\<`string`\>
-
-***
-
 ### post()
 
 > `protected` **post**\<`T`, `U`\>(`path`, `props`, `headers?`): `Promise`\<`U`\>
 
-Defined in: [src/api/ApiClient.ts:47](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/ApiClient.ts#L47)
+Defined in: [src/api/ApiClient.ts:47](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/ApiClient.ts#L47)
 
 Generic POST request
 
@@ -194,15 +164,19 @@ Generic POST request
 
 ### resources()
 
-> **resources**(`discoveryPrivateKey`): `Promise`\<[`IndexerResourceResponse`](../type-aliases/IndexerResourceResponse.md)\>
+> **resources**(`discoveryPrivateKey`, `contracts`): `Promise`\<[`IndexerResourceResponse`](../type-aliases/IndexerResourceResponse.md)\>
 
-Defined in: [src/api/IndexerClient.ts:16](https://github.com/anoma/anomapay-sdk/blob/824ba013045b822f2227b59fc245bda057b10ef4/src/api/IndexerClient.ts#L16)
+Defined in: [src/api/IndexerClient.ts:27](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/IndexerClient.ts#L27)
 
 #### Parameters
 
 ##### discoveryPrivateKey
 
-`string`
+`` `0x${string}` ``
+
+##### contracts
+
+[`IndexerContract`](../type-aliases/IndexerContract.md)[]
 
 #### Returns
 

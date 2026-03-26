@@ -1,8 +1,8 @@
-[**@anoma/anomapay-sdk**](../README.md)
+[**@anoma/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anomapay-sdk](../globals.md) / create
+[@anoma/anoma-app-sdk](../globals.md) / create
 
 # Function: create()
 

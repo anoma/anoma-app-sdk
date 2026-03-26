@@ -1,5 +1,5 @@
 import bs58 from "bs58";
-import CRC32 from "crc-32";
+import * as CRC32 from "crc-32";
 import type { UserPublicKeys } from "types";
 
 // TODO: this shouldn't be here
