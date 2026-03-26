@@ -86,7 +86,7 @@ const defineSupportedChain = <const T extends Chain>(
     explorerName: chain.blockExplorers?.default.name,
   }) as SupportedChain & T;
 
-export const supportedChains = [
+const allSupportedChains = [
   defineSupportedChain(mainnet, {
     network: "ethereum",
     forwarderAddress: "0x775C81A47F2618a8594a7a7f4A3Df2a300337559",
@@ -108,6 +108,11 @@ export const supportedChains = [
     iconName: "bsc",
   }),
 ];
+
+export const supportedChains = allSupportedChains.filter(
+  // TODO update this condition when the backend supports multi chain
+  chain => chain.id === Number(import.meta.env.VITE_APP_CHAIN_ID)
+);
 
 export type SupportedChainId = (typeof supportedChains)[number]["id"];
 
