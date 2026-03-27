@@ -1,14 +1,14 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / toHex
+[@anomaorg/anoma-app-sdk](../globals.md) / toHex
 
 # Function: toHex()
 
 > **toHex**(`bytes`): `` `0x${string}` ``
 
-Defined in: [src/lib/utils.ts:106](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/lib/utils.ts#L106)
+Defined in: [src/lib/utils.ts:105](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/lib/utils.ts#L105)
 
 Convert a byte array to a hex string
 

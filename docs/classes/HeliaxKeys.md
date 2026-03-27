@@ -1,12 +1,12 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / HeliaxKeys
+[@anomaorg/anoma-app-sdk](../globals.md) / HeliaxKeys
 
 # Class: HeliaxKeys
 
-Defined in: [src/wasm/arm\_bindings.d.ts:97](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L97)
+Defined in: [src/wasm/arm\_bindings.d.ts:97](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L97)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:97](https://github.com/anoma/anoma-app-
 
 > `readonly` `static` **HELIAX\_FEE\_DISCOVERY\_PK**: `string`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:107](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L107)
+Defined in: [src/wasm/arm\_bindings.d.ts:107](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L107)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:107](https://github.com/anoma/anoma-app
 
 > `readonly` `static` **HELIAX\_FEE\_ENCRYPTION\_PK**: `string`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:108](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L108)
+Defined in: [src/wasm/arm\_bindings.d.ts:108](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L108)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:108](https://github.com/anoma/anoma-app
 
 > `readonly` `static` **HELIAX\_FEE\_LABEL\_REF\_USDC**: `string`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:103](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L103)
+Defined in: [src/wasm/arm\_bindings.d.ts:103](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L103)
 
 ***
 
@@ -38,7 +38,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:103](https://github.com/anoma/anoma-app
 
 > `readonly` `static` **HELIAX\_FEE\_LABEL\_REF\_WETH**: `string`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:102](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L102)
+Defined in: [src/wasm/arm\_bindings.d.ts:102](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L102)
 
 ***
 
@@ -46,7 +46,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:102](https://github.com/anoma/anoma-app
 
 > `readonly` `static` **HELIAX\_FEE\_LABEL\_REF\_XAN**: `string`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:104](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L104)
+Defined in: [src/wasm/arm\_bindings.d.ts:104](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L104)
 
 ***
 
@@ -54,7 +54,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:104](https://github.com/anoma/anoma-app
 
 > `readonly` `static` **HELIAX\_FEE\_LOGIC\_REF**: `string`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:101](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L101)
+Defined in: [src/wasm/arm\_bindings.d.ts:101](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L101)
 
 ***
 
@@ -62,7 +62,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:101](https://github.com/anoma/anoma-app
 
 > `readonly` `static` **HELIAX\_FEE\_NULLIFIER\_KEY\_COMMITMENT**: `string`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:106](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L106)
+Defined in: [src/wasm/arm\_bindings.d.ts:106](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L106)
 
 ***
 
@@ -70,7 +70,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:106](https://github.com/anoma/anoma-app
 
 > `readonly` `static` **HELIAX\_FEE\_VALUE\_REF**: `string`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:105](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L105)
+Defined in: [src/wasm/arm\_bindings.d.ts:105](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L105)
 
 ## Methods
 
@@ -78,7 +78,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:105](https://github.com/anoma/anoma-app
 
 > **\[dispose\]**(): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:100](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L100)
+Defined in: [src/wasm/arm\_bindings.d.ts:100](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L100)
 
 #### Returns
 
@@ -90,7 +90,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:100](https://github.com/anoma/anoma-app
 
 > **free**(): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:99](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L99)
+Defined in: [src/wasm/arm\_bindings.d.ts:99](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L99)
 
 #### Returns
 

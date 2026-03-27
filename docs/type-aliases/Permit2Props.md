@@ -1,14 +1,14 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / Permit2Props
+[@anomaorg/anoma-app-sdk](../globals.md) / Permit2Props
 
 # Type Alias: Permit2Props
 
 > **Permit2Props** = `object`
 
-Defined in: [src/lib/permit2.ts:20](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/lib/permit2.ts#L20)
+Defined in: [src/lib/permit2.ts:20](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/lib/permit2.ts#L20)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [src/lib/permit2.ts:20](https://github.com/anoma/anoma-app-sdk/blob/
 
 > **actionTreeRoot**: `string`
 
-Defined in: [src/lib/permit2.ts:26](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/lib/permit2.ts#L26)
+Defined in: [src/lib/permit2.ts:26](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/lib/permit2.ts#L26)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [src/lib/permit2.ts:26](https://github.com/anoma/anoma-app-sdk/blob/
 
 > **amount**: `bigint`
 
-Defined in: [src/lib/permit2.ts:28](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/lib/permit2.ts#L28)
+Defined in: [src/lib/permit2.ts:28](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/lib/permit2.ts#L28)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [src/lib/permit2.ts:28](https://github.com/anoma/anoma-app-sdk/blob/
 
 > **chainId**: `number`
 
-Defined in: [src/lib/permit2.ts:24](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/lib/permit2.ts#L24)
+Defined in: [src/lib/permit2.ts:24](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/lib/permit2.ts#L24)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [src/lib/permit2.ts:24](https://github.com/anoma/anoma-app-sdk/blob/
 
 > **deadline**: `bigint`
 
-Defined in: [src/lib/permit2.ts:23](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/lib/permit2.ts#L23)
+Defined in: [src/lib/permit2.ts:23](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/lib/permit2.ts#L23)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [src/lib/permit2.ts:23](https://github.com/anoma/anoma-app-sdk/blob/
 
 > **nonce**: `bigint`
 
-Defined in: [src/lib/permit2.ts:25](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/lib/permit2.ts#L25)
+Defined in: [src/lib/permit2.ts:25](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/lib/permit2.ts#L25)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [src/lib/permit2.ts:25](https://github.com/anoma/anoma-app-sdk/blob/
 
 > **permit2Address**: `Hex`
 
-Defined in: [src/lib/permit2.ts:21](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/lib/permit2.ts#L21)
+Defined in: [src/lib/permit2.ts:21](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/lib/permit2.ts#L21)
 
 ***
 
@@ -64,7 +64,7 @@ Defined in: [src/lib/permit2.ts:21](https://github.com/anoma/anoma-app-sdk/blob/
 
 > **spenderAddress**: `Hex`
 
-Defined in: [src/lib/permit2.ts:22](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/lib/permit2.ts#L22)
+Defined in: [src/lib/permit2.ts:22](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/lib/permit2.ts#L22)
 
 ***
 
@@ -72,4 +72,4 @@ Defined in: [src/lib/permit2.ts:22](https://github.com/anoma/anoma-app-sdk/blob/
 
 > **token**: `string`
 
-Defined in: [src/lib/permit2.ts:27](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/lib/permit2.ts#L27)
+Defined in: [src/lib/permit2.ts:27](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/lib/permit2.ts#L27)

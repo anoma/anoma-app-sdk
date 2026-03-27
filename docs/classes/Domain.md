@@ -1,8 +1,8 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / Domain
+[@anomaorg/anoma-app-sdk](../globals.md) / Domain
 
 # Class: Domain
 

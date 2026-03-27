@@ -1,14 +1,14 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / TransactionReceiptResonse
+[@anomaorg/anoma-app-sdk](../globals.md) / TransactionReceiptResonse
 
 # Type Alias: TransactionReceiptResonse\<T\>
 
 > **TransactionReceiptResonse**\<`T`\> = `object`
 
-Defined in: [src/api/types.ts:88](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L88)
+Defined in: [src/api/types.ts:88](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L88)
 
 ## Type Parameters
 
@@ -22,7 +22,7 @@ Defined in: [src/api/types.ts:88](https://github.com/anoma/anoma-app-sdk/blob/3f
 
 > **blockHash**: `string`
 
-Defined in: [src/api/types.ts:92](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L92)
+Defined in: [src/api/types.ts:92](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L92)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [src/api/types.ts:92](https://github.com/anoma/anoma-app-sdk/blob/3f
 
 > **blockNumber**: `string`
 
-Defined in: [src/api/types.ts:93](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L93)
+Defined in: [src/api/types.ts:93](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L93)
 
 ***
 
@@ -38,7 +38,7 @@ Defined in: [src/api/types.ts:93](https://github.com/anoma/anoma-app-sdk/blob/3f
 
 > `optional` **contractAddress**: `string`
 
-Defined in: [src/api/types.ts:100](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L100)
+Defined in: [src/api/types.ts:100](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L100)
 
 ***
 
@@ -46,7 +46,7 @@ Defined in: [src/api/types.ts:100](https://github.com/anoma/anoma-app-sdk/blob/3
 
 > **effectiveGasPrice**: `string`
 
-Defined in: [src/api/types.ts:97](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L97)
+Defined in: [src/api/types.ts:97](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L97)
 
 ***
 
@@ -54,7 +54,7 @@ Defined in: [src/api/types.ts:97](https://github.com/anoma/anoma-app-sdk/blob/3f
 
 > **from**: `string`
 
-Defined in: [src/api/types.ts:98](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L98)
+Defined in: [src/api/types.ts:98](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L98)
 
 ***
 
@@ -62,7 +62,7 @@ Defined in: [src/api/types.ts:98](https://github.com/anoma/anoma-app-sdk/blob/3f
 
 > **gasUsed**: `string`
 
-Defined in: [src/api/types.ts:94](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L94)
+Defined in: [src/api/types.ts:94](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L94)
 
 ***
 
@@ -70,7 +70,7 @@ Defined in: [src/api/types.ts:94](https://github.com/anoma/anoma-app-sdk/blob/3f
 
 > **inner**: `T`
 
-Defined in: [src/api/types.ts:89](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L89)
+Defined in: [src/api/types.ts:89](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L89)
 
 ***
 
@@ -78,7 +78,7 @@ Defined in: [src/api/types.ts:89](https://github.com/anoma/anoma-app-sdk/blob/3f
 
 > **logsBloom**: `string`
 
-Defined in: [src/api/types.ts:95](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L95)
+Defined in: [src/api/types.ts:95](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L95)
 
 ***
 
@@ -86,7 +86,7 @@ Defined in: [src/api/types.ts:95](https://github.com/anoma/anoma-app-sdk/blob/3f
 
 > **status**: `string`
 
-Defined in: [src/api/types.ts:96](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L96)
+Defined in: [src/api/types.ts:96](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L96)
 
 ***
 
@@ -94,7 +94,7 @@ Defined in: [src/api/types.ts:96](https://github.com/anoma/anoma-app-sdk/blob/3f
 
 > `optional` **to**: `string`
 
-Defined in: [src/api/types.ts:99](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L99)
+Defined in: [src/api/types.ts:99](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L99)
 
 ***
 
@@ -102,7 +102,7 @@ Defined in: [src/api/types.ts:99](https://github.com/anoma/anoma-app-sdk/blob/3f
 
 > **transactionHash**: `string`
 
-Defined in: [src/api/types.ts:90](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L90)
+Defined in: [src/api/types.ts:90](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L90)
 
 ***
 
@@ -110,4 +110,4 @@ Defined in: [src/api/types.ts:90](https://github.com/anoma/anoma-app-sdk/blob/3f
 
 > `optional` **transactionIndex**: `string`
 
-Defined in: [src/api/types.ts:91](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L91)
+Defined in: [src/api/types.ts:91](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L91)

@@ -1,12 +1,12 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / AuthorityVerifyingKey
+[@anomaorg/anoma-app-sdk](../globals.md) / AuthorityVerifyingKey
 
 # Class: AuthorityVerifyingKey
 
-Defined in: [src/wasm/arm\_bindings.d.ts:54](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L54)
+Defined in: [src/wasm/arm\_bindings.d.ts:54](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L54)
 
 ## Constructors
 
@@ -14,7 +14,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:54](https://github.com/anoma/anoma-app-
 
 > **new AuthorityVerifyingKey**(`pk_bytes`): `AuthorityVerifyingKey`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:57](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L57)
+Defined in: [src/wasm/arm\_bindings.d.ts:57](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L57)
 
 #### Parameters
 
@@ -32,7 +32,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:57](https://github.com/anoma/anoma-app-
 
 > **\[dispose\]**(): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:56](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L56)
+Defined in: [src/wasm/arm\_bindings.d.ts:56](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L56)
 
 #### Returns
 
@@ -44,7 +44,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:56](https://github.com/anoma/anoma-app-
 
 > **free**(): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:55](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L55)
+Defined in: [src/wasm/arm\_bindings.d.ts:55](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L55)
 
 #### Returns
 
@@ -56,7 +56,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:55](https://github.com/anoma/anoma-app-
 
 > **toBytes**(): `Uint8Array`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:61](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L61)
+Defined in: [src/wasm/arm\_bindings.d.ts:61](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L61)
 
 #### Returns
 
@@ -68,7 +68,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:61](https://github.com/anoma/anoma-app-
 
 > **verify**(`domain`, `message`, `signature`): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:59](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L59)
+Defined in: [src/wasm/arm\_bindings.d.ts:59](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L59)
 
 #### Parameters
 
@@ -94,7 +94,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:59](https://github.com/anoma/anoma-app-
 
 > `static` **fromHex**(`pk_hex`): `AuthorityVerifyingKey`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:60](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L60)
+Defined in: [src/wasm/arm\_bindings.d.ts:60](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L60)
 
 #### Parameters
 
@@ -112,7 +112,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:60](https://github.com/anoma/anoma-app-
 
 > `static` **fromSigningKey**(`signing_key`): `AuthorityVerifyingKey`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:58](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L58)
+Defined in: [src/wasm/arm\_bindings.d.ts:58](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L58)
 
 #### Parameters
 

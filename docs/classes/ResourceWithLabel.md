@@ -1,12 +1,12 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / ResourceWithLabel
+[@anomaorg/anoma-app-sdk](../globals.md) / ResourceWithLabel
 
 # Class: ResourceWithLabel
 
-Defined in: [src/wasm/arm\_bindings.d.ts:203](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L203)
+Defined in: [src/wasm/arm\_bindings.d.ts:203](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L203)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:203](https://github.com/anoma/anoma-app
 
 > `readonly` **erc20TokenAddress**: `string`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:219](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L219)
+Defined in: [src/wasm/arm\_bindings.d.ts:219](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L219)
 
 Get erc20_token_addr as hex
 
@@ -24,7 +24,7 @@ Get erc20_token_addr as hex
 
 > `readonly` **forwarder**: `string`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:215](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L215)
+Defined in: [src/wasm/arm\_bindings.d.ts:215](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L215)
 
 Get forwarder as hex
 
@@ -34,7 +34,7 @@ Get forwarder as hex
 
 > `readonly` **resource**: [`Resource`](Resource.md)
 
-Defined in: [src/wasm/arm\_bindings.d.ts:211](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L211)
+Defined in: [src/wasm/arm\_bindings.d.ts:211](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L211)
 
 Get resource instance
 
@@ -44,7 +44,7 @@ Get resource instance
 
 > **\[dispose\]**(): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:206](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L206)
+Defined in: [src/wasm/arm\_bindings.d.ts:206](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L206)
 
 #### Returns
 
@@ -56,7 +56,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:206](https://github.com/anoma/anoma-app
 
 > **free**(): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:205](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L205)
+Defined in: [src/wasm/arm\_bindings.d.ts:205](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L205)
 
 #### Returns
 
@@ -68,7 +68,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:205](https://github.com/anoma/anoma-app
 
 > `static` **fromEncrypted**(`payload`, `sk_bytes`): `ResourceWithLabel`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:207](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L207)
+Defined in: [src/wasm/arm\_bindings.d.ts:207](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L207)
 
 #### Parameters
 

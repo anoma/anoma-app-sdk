@@ -1,12 +1,12 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / SecretKey
+[@anomaorg/anoma-app-sdk](../globals.md) / SecretKey
 
 # Class: SecretKey
 
-Defined in: [src/wasm/arm\_bindings.d.ts:222](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L222)
+Defined in: [src/wasm/arm\_bindings.d.ts:222](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L222)
 
 ## Constructors
 
@@ -14,7 +14,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:222](https://github.com/anoma/anoma-app
 
 > **new SecretKey**(`bytes`): `SecretKey`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:225](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L225)
+Defined in: [src/wasm/arm\_bindings.d.ts:225](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L225)
 
 #### Parameters
 
@@ -32,7 +32,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:225](https://github.com/anoma/anoma-app
 
 > **\[dispose\]**(): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:224](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L224)
+Defined in: [src/wasm/arm\_bindings.d.ts:224](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L224)
 
 #### Returns
 
@@ -44,7 +44,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:224](https://github.com/anoma/anoma-app
 
 > **free**(): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:223](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L223)
+Defined in: [src/wasm/arm\_bindings.d.ts:223](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L223)
 
 #### Returns
 
@@ -56,7 +56,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:223](https://github.com/anoma/anoma-app
 
 > **toBase64**(): `string`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:231](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L231)
+Defined in: [src/wasm/arm\_bindings.d.ts:231](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L231)
 
 #### Returns
 
@@ -68,7 +68,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:231](https://github.com/anoma/anoma-app
 
 > **toBytes**(): `Uint8Array`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:229](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L229)
+Defined in: [src/wasm/arm\_bindings.d.ts:229](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L229)
 
 #### Returns
 
@@ -80,7 +80,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:229](https://github.com/anoma/anoma-app
 
 > **toHex**(): `string`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:233](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L233)
+Defined in: [src/wasm/arm\_bindings.d.ts:233](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L233)
 
 #### Returns
 
@@ -92,7 +92,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:233](https://github.com/anoma/anoma-app
 
 > **toPublicKey**(): [`PublicKey`](PublicKey.md)
 
-Defined in: [src/wasm/arm\_bindings.d.ts:227](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L227)
+Defined in: [src/wasm/arm\_bindings.d.ts:227](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L227)
 
 #### Returns
 
@@ -104,7 +104,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:227](https://github.com/anoma/anoma-app
 
 > `static` **fromBase64**(`sk_b64`): `SecretKey`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:230](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L230)
+Defined in: [src/wasm/arm\_bindings.d.ts:230](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L230)
 
 #### Parameters
 
@@ -122,7 +122,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:230](https://github.com/anoma/anoma-app
 
 > `static` **fromBytes**(`bytes`): `SecretKey`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:228](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L228)
+Defined in: [src/wasm/arm\_bindings.d.ts:228](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L228)
 
 #### Parameters
 
@@ -140,7 +140,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:228](https://github.com/anoma/anoma-app
 
 > `static` **fromHex**(`sk_hex`): `SecretKey`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:232](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L232)
+Defined in: [src/wasm/arm\_bindings.d.ts:232](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L232)
 
 #### Parameters
 
@@ -158,7 +158,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:232](https://github.com/anoma/anoma-app
 
 > `static` **random**(): `SecretKey`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:226](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L226)
+Defined in: [src/wasm/arm\_bindings.d.ts:226](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L226)
 
 #### Returns
 

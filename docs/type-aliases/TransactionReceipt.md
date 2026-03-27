@@ -1,14 +1,14 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / TransactionReceipt
+[@anomaorg/anoma-app-sdk](../globals.md) / TransactionReceipt
 
 # Type Alias: TransactionReceipt
 
 > **TransactionReceipt** = `object`
 
-Defined in: [src/types.ts:31](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/types.ts#L31)
+Defined in: [src/types.ts:31](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L31)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [src/types.ts:31](https://github.com/anoma/anoma-app-sdk/blob/3fed91
 
 > **hash**: `Address`
 
-Defined in: [src/types.ts:33](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/types.ts#L33)
+Defined in: [src/types.ts:33](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L33)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [src/types.ts:33](https://github.com/anoma/anoma-app-sdk/blob/3fed91
 
 > **id**: [`IndexerId`](IndexerId.md)
 
-Defined in: [src/types.ts:32](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/types.ts#L32)
+Defined in: [src/types.ts:32](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L32)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [src/types.ts:32](https://github.com/anoma/anoma-app-sdk/blob/3fed91
 
 > **quantity**: `bigint`
 
-Defined in: [src/types.ts:36](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/types.ts#L36)
+Defined in: [src/types.ts:36](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L36)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [src/types.ts:36](https://github.com/anoma/anoma-app-sdk/blob/3fed91
 
 > **status**: [`TransactionStatus`](TransactionStatus.md)
 
-Defined in: [src/types.ts:34](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/types.ts#L34)
+Defined in: [src/types.ts:34](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L34)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [src/types.ts:34](https://github.com/anoma/anoma-app-sdk/blob/3fed91
 
 > **timestamp**: `number`
 
-Defined in: [src/types.ts:37](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/types.ts#L37)
+Defined in: [src/types.ts:37](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L37)
 
 ***
 
@@ -56,4 +56,4 @@ Defined in: [src/types.ts:37](https://github.com/anoma/anoma-app-sdk/blob/3fed91
 
 > **token**: [`TokenRegistry`](TokenRegistry.md)
 
-Defined in: [src/types.ts:35](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/types.ts#L35)
+Defined in: [src/types.ts:35](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L35)

@@ -1,14 +1,14 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / FeeResponse
+[@anomaorg/anoma-app-sdk](../globals.md) / FeeResponse
 
 # Type Alias: FeeResponse
 
 > **FeeResponse** = `object`
 
-Defined in: [src/domain/transfer/types/resources.ts:124](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/transfer/types/resources.ts#L124)
+Defined in: [src/domain/transfer/types/resources.ts:124](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L124)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [src/domain/transfer/types/resources.ts:124](https://github.com/anom
 
 > **base\_fee**: `number`
 
-Defined in: [src/domain/transfer/types/resources.ts:125](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/transfer/types/resources.ts#L125)
+Defined in: [src/domain/transfer/types/resources.ts:125](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L125)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [src/domain/transfer/types/resources.ts:125](https://github.com/anom
 
 > **base\_fee\_per\_resource**: `number`
 
-Defined in: [src/domain/transfer/types/resources.ts:126](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/transfer/types/resources.ts#L126)
+Defined in: [src/domain/transfer/types/resources.ts:126](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L126)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [src/domain/transfer/types/resources.ts:126](https://github.com/anom
 
 > **percentage**: `number`
 
-Defined in: [src/domain/transfer/types/resources.ts:127](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/transfer/types/resources.ts#L127)
+Defined in: [src/domain/transfer/types/resources.ts:127](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L127)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [src/domain/transfer/types/resources.ts:127](https://github.com/anom
 
 > **percentage\_fee**: `number`
 
-Defined in: [src/domain/transfer/types/resources.ts:128](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/transfer/types/resources.ts#L128)
+Defined in: [src/domain/transfer/types/resources.ts:128](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L128)
 
 ***
 
@@ -48,4 +48,4 @@ Defined in: [src/domain/transfer/types/resources.ts:128](https://github.com/anom
 
 > **token\_type**: `string`
 
-Defined in: [src/domain/transfer/types/resources.ts:129](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/transfer/types/resources.ts#L129)
+Defined in: [src/domain/transfer/types/resources.ts:129](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L129)

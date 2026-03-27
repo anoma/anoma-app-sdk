@@ -1,12 +1,12 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / ResponseError
+[@anomaorg/anoma-app-sdk](../globals.md) / ResponseError
 
 # Class: ResponseError
 
-Defined in: [src/api/types.ts:24](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L24)
+Defined in: [src/api/types.ts:24](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L24)
 
 ## Extends
 
@@ -18,7 +18,7 @@ Defined in: [src/api/types.ts:24](https://github.com/anoma/anoma-app-sdk/blob/3f
 
 > **new ResponseError**(`message`, `json?`, `status`): `ResponseError`
 
-Defined in: [src/api/types.ts:32](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L32)
+Defined in: [src/api/types.ts:32](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L32)
 
 #### Parameters
 
@@ -66,7 +66,7 @@ Defined in: node\_modules/typescript/lib/lib.es2022.error.d.ts:26
 
 > **json**: [`ResponseJson`](../type-aliases/ResponseJson.md)
 
-Defined in: [src/api/types.ts:25](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L25)
+Defined in: [src/api/types.ts:25](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L25)
 
 ***
 
@@ -110,7 +110,7 @@ Defined in: node\_modules/typescript/lib/lib.es5.d.ts:1078
 
 > **status**: `number`
 
-Defined in: [src/api/types.ts:26](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L26)
+Defined in: [src/api/types.ts:26](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L26)
 
 ***
 

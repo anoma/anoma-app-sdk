@@ -1,14 +1,14 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / fromHex
+[@anomaorg/anoma-app-sdk](../globals.md) / fromHex
 
 # Function: fromHex()
 
 > **fromHex**(`hexString`): `Uint8Array`\<`ArrayBuffer`\>
 
-Defined in: [src/lib/utils.ts:97](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/lib/utils.ts#L97)
+Defined in: [src/lib/utils.ts:96](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/lib/utils.ts#L96)
 
 Convert hex string to a byte array
 

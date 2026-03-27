@@ -1,14 +1,14 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / UserKeyring
+[@anomaorg/anoma-app-sdk](../globals.md) / UserKeyring
 
 # Type Alias: UserKeyring
 
 > **UserKeyring** = `object`
 
-Defined in: [src/domain/keys/types.ts:21](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/keys/types.ts#L21)
+Defined in: [src/domain/keys/types.ts:21](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/keys/types.ts#L21)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [src/domain/keys/types.ts:21](https://github.com/anoma/anoma-app-sdk
 
 > **authorityKeyPair**: `KeyPair`
 
-Defined in: [src/domain/keys/types.ts:22](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/keys/types.ts#L22)
+Defined in: [src/domain/keys/types.ts:22](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/keys/types.ts#L22)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [src/domain/keys/types.ts:22](https://github.com/anoma/anoma-app-sdk
 
 > **discoveryKeyPair**: `KeyPair`
 
-Defined in: [src/domain/keys/types.ts:23](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/keys/types.ts#L23)
+Defined in: [src/domain/keys/types.ts:23](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/keys/types.ts#L23)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [src/domain/keys/types.ts:23](https://github.com/anoma/anoma-app-sdk
 
 > **encryptionKeyPair**: `KeyPair`
 
-Defined in: [src/domain/keys/types.ts:24](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/keys/types.ts#L24)
+Defined in: [src/domain/keys/types.ts:24](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/keys/types.ts#L24)
 
 ***
 
@@ -40,4 +40,4 @@ Defined in: [src/domain/keys/types.ts:24](https://github.com/anoma/anoma-app-sdk
 
 > **nullifierKeyPair**: `NullifierKeyPair`
 
-Defined in: [src/domain/keys/types.ts:25](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/keys/types.ts#L25)
+Defined in: [src/domain/keys/types.ts:25](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/keys/types.ts#L25)

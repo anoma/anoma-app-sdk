@@ -1,14 +1,14 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / CreateFeeTransferProps
+[@anomaorg/anoma-app-sdk](../globals.md) / CreateFeeTransferProps
 
 # Type Alias: CreateFeeTransferProps
 
 > **CreateFeeTransferProps** = `object`
 
-Defined in: [src/domain/transfer/types/resources.ts:22](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/transfer/types/resources.ts#L22)
+Defined in: [src/domain/transfer/types/resources.ts:22](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L22)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [src/domain/transfer/types/resources.ts:22](https://github.com/anoma
 
 > **forwarderAddress**: `Address`
 
-Defined in: [src/domain/transfer/types/resources.ts:25](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/transfer/types/resources.ts#L25)
+Defined in: [src/domain/transfer/types/resources.ts:25](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L25)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [src/domain/transfer/types/resources.ts:25](https://github.com/anoma
 
 > **keyring**: [`UserKeyring`](UserKeyring.md)
 
-Defined in: [src/domain/transfer/types/resources.ts:27](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/transfer/types/resources.ts#L27)
+Defined in: [src/domain/transfer/types/resources.ts:27](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L27)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [src/domain/transfer/types/resources.ts:27](https://github.com/anoma
 
 > **quantity**: `bigint`
 
-Defined in: [src/domain/transfer/types/resources.ts:26](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/transfer/types/resources.ts#L26)
+Defined in: [src/domain/transfer/types/resources.ts:26](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L26)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [src/domain/transfer/types/resources.ts:26](https://github.com/anoma
 
 > **resource**: [`Resource`](../classes/Resource.md)
 
-Defined in: [src/domain/transfer/types/resources.ts:23](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/transfer/types/resources.ts#L23)
+Defined in: [src/domain/transfer/types/resources.ts:23](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L23)
 
 ***
 
@@ -48,4 +48,4 @@ Defined in: [src/domain/transfer/types/resources.ts:23](https://github.com/anoma
 
 > **tokenContractAddress**: `Address`
 
-Defined in: [src/domain/transfer/types/resources.ts:24](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/transfer/types/resources.ts#L24)
+Defined in: [src/domain/transfer/types/resources.ts:24](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L24)

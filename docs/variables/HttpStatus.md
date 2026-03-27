@@ -1,14 +1,14 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / HttpStatus
+[@anomaorg/anoma-app-sdk](../globals.md) / HttpStatus
 
 # Variable: HttpStatus
 
 > `const` **HttpStatus**: `object`
 
-Defined in: [src/api/types.ts:5](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/api/types.ts#L5)
+Defined in: [src/api/types.ts:5](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L5)
 
 ## Type Declaration
 

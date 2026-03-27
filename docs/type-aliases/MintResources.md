@@ -1,14 +1,14 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / MintResources
+[@anomaorg/anoma-app-sdk](../globals.md) / MintResources
 
 # Type Alias: MintResources
 
 > **MintResources** = `object`
 
-Defined in: [src/domain/transfer/types/resources.ts:30](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/transfer/types/resources.ts#L30)
+Defined in: [src/domain/transfer/types/resources.ts:30](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L30)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [src/domain/transfer/types/resources.ts:30](https://github.com/anoma
 
 > **actionTree**: [`MerkleTree`](../classes/MerkleTree.md)
 
-Defined in: [src/domain/transfer/types/resources.ts:31](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/transfer/types/resources.ts#L31)
+Defined in: [src/domain/transfer/types/resources.ts:31](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L31)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [src/domain/transfer/types/resources.ts:31](https://github.com/anoma
 
 > **consumedResource**: [`Resource`](../classes/Resource.md)
 
-Defined in: [src/domain/transfer/types/resources.ts:32](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/transfer/types/resources.ts#L32)
+Defined in: [src/domain/transfer/types/resources.ts:32](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L32)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [src/domain/transfer/types/resources.ts:32](https://github.com/anoma
 
 > **createdResource**: [`Resource`](../classes/Resource.md)
 
-Defined in: [src/domain/transfer/types/resources.ts:33](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/transfer/types/resources.ts#L33)
+Defined in: [src/domain/transfer/types/resources.ts:33](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L33)

@@ -1,14 +1,14 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / TokenRegistryIndex
+[@anomaorg/anoma-app-sdk](../globals.md) / TokenRegistryIndex
 
 # Type Alias: TokenRegistryIndex
 
 > **TokenRegistryIndex** = `object`
 
-Defined in: [src/types.ts:55](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/types.ts#L55)
+Defined in: [src/types.ts:55](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L55)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [src/types.ts:55](https://github.com/anoma/anoma-app-sdk/blob/3fed91
 
 > **byAddress**: `Record`\<[`NetworkAddress`](NetworkAddress.md), [`TokenRegistry`](TokenRegistry.md)\>
 
-Defined in: [src/types.ts:57](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/types.ts#L57)
+Defined in: [src/types.ts:57](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L57)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: [src/types.ts:57](https://github.com/anoma/anoma-app-sdk/blob/3fed91
 
 > **byTokenId**: `Record`\<[`TokenId`](TokenId.md), [`TokenRegistry`](TokenRegistry.md)\>
 
-Defined in: [src/types.ts:56](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/types.ts#L56)
+Defined in: [src/types.ts:56](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L56)

@@ -1,4 +1,4 @@
-# @anoma/anoma-app-sdk
+# @anomaorg/anoma-app-sdk
 
 This repository contains most of the code related to the Anoma App shared functionality, including all functionality needed for interacting with AnomaPay backends.
 

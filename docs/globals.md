@@ -1,8 +1,8 @@
-[**@anoma/anoma-app-sdk**](README.md)
+[**@anomaorg/anoma-app-sdk**](README.md)
 
 ***
 
-# @anoma/anoma-app-sdk
+# @anomaorg/anoma-app-sdk
 
 ## Classes
 
@@ -135,14 +135,11 @@
 - [generateRandomBytes](functions/generateRandomBytes.md)
 - [getBinanceDeepLink](functions/getBinanceDeepLink.md)
 - [getFirstErrorMessage](functions/getFirstErrorMessage.md)
-- [getNetworkByForwarder](functions/getNetworkByForwarder.md)
 - [getPayAddressFromKeyring](functions/getPayAddressFromKeyring.md)
 - [getPermit2Data](functions/getPermit2Data.md)
 - [getResourcesForToken](functions/getResourcesForToken.md)
 - [getTokenByAddress](functions/getTokenByAddress.md)
 - [getTokenById](functions/getTokenById.md)
-- [getTokenByResource](functions/getTokenByResource.md)
-- [getTxUrl](functions/getTxUrl.md)
 - [getUserPublicKeysFromKeyring](functions/getUserPublicKeysFromKeyring.md)
 - [hashBytes](functions/hashBytes.md)
 - [hashTwo](functions/hashTwo.md)

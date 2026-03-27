@@ -1,14 +1,14 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / formatBalance
+[@anomaorg/anoma-app-sdk](../globals.md) / formatBalance
 
 # Function: formatBalance()
 
 > **formatBalance**(`amount`, `tokenDenom?`, `decimals?`): `string`
 
-Defined in: [src/lib/utils.ts:23](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/lib/utils.ts#L23)
+Defined in: [src/lib/utils.ts:22](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/lib/utils.ts#L22)
 
 ## Parameters
 

@@ -1,14 +1,14 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / validHexString
+[@anomaorg/anoma-app-sdk](../globals.md) / validHexString
 
 # Function: validHexString()
 
 > **validHexString**(`hex`): `RegExpMatchArray` \| `null`
 
-Defined in: [src/lib/utils.ts:142](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/lib/utils.ts#L142)
+Defined in: [src/lib/utils.ts:141](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/lib/utils.ts#L141)
 
 Validate contents of a hexadecimal string
 

@@ -1,14 +1,14 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / fromHexToBase64
+[@anomaorg/anoma-app-sdk](../globals.md) / fromHexToBase64
 
 # Function: fromHexToBase64()
 
 > **fromHexToBase64**(`hex`): `string`
 
-Defined in: [src/lib/utils.ts:125](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/lib/utils.ts#L125)
+Defined in: [src/lib/utils.ts:124](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/lib/utils.ts#L124)
 
 ## Parameters
 

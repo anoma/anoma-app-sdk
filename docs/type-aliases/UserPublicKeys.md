@@ -1,14 +1,14 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / UserPublicKeys
+[@anomaorg/anoma-app-sdk](../globals.md) / UserPublicKeys
 
 # Type Alias: UserPublicKeys
 
 > **UserPublicKeys** = `object`
 
-Defined in: [src/domain/keys/types.ts:28](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/keys/types.ts#L28)
+Defined in: [src/domain/keys/types.ts:28](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/keys/types.ts#L28)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [src/domain/keys/types.ts:28](https://github.com/anoma/anoma-app-sdk
 
 > **authorityPublicKey**: `Uint8Array`\<`ArrayBuffer`\>
 
-Defined in: [src/domain/keys/types.ts:29](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/keys/types.ts#L29)
+Defined in: [src/domain/keys/types.ts:29](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/keys/types.ts#L29)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [src/domain/keys/types.ts:29](https://github.com/anoma/anoma-app-sdk
 
 > **discoveryPublicKey**: `Uint8Array`\<`ArrayBuffer`\>
 
-Defined in: [src/domain/keys/types.ts:31](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/keys/types.ts#L31)
+Defined in: [src/domain/keys/types.ts:31](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/keys/types.ts#L31)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [src/domain/keys/types.ts:31](https://github.com/anoma/anoma-app-sdk
 
 > **encryptionPublicKey**: `Uint8Array`\<`ArrayBuffer`\>
 
-Defined in: [src/domain/keys/types.ts:32](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/keys/types.ts#L32)
+Defined in: [src/domain/keys/types.ts:32](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/keys/types.ts#L32)
 
 ***
 
@@ -40,4 +40,4 @@ Defined in: [src/domain/keys/types.ts:32](https://github.com/anoma/anoma-app-sdk
 
 > **nullifierKeyCommitment**: `Uint8Array`\<`ArrayBuffer`\>
 
-Defined in: [src/domain/keys/types.ts:30](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/domain/keys/types.ts#L30)
+Defined in: [src/domain/keys/types.ts:30](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/keys/types.ts#L30)

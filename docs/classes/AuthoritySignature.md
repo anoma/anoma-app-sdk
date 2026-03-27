@@ -1,12 +1,12 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / AuthoritySignature
+[@anomaorg/anoma-app-sdk](../globals.md) / AuthoritySignature
 
 # Class: AuthoritySignature
 
-Defined in: [src/wasm/arm\_bindings.d.ts:36](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L36)
+Defined in: [src/wasm/arm\_bindings.d.ts:36](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L36)
 
 ## Methods
 
@@ -14,7 +14,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:36](https://github.com/anoma/anoma-app-
 
 > **\[dispose\]**(): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:39](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L39)
+Defined in: [src/wasm/arm\_bindings.d.ts:39](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L39)
 
 #### Returns
 
@@ -26,7 +26,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:39](https://github.com/anoma/anoma-app-
 
 > **free**(): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:38](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L38)
+Defined in: [src/wasm/arm\_bindings.d.ts:38](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L38)
 
 #### Returns
 
@@ -38,7 +38,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:38](https://github.com/anoma/anoma-app-
 
 > **toBytes**(): `Uint8Array`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:40](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L40)
+Defined in: [src/wasm/arm\_bindings.d.ts:40](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L40)
 
 #### Returns
 
@@ -50,7 +50,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:40](https://github.com/anoma/anoma-app-
 
 > `static` **fromBytes**(`bytes`): `AuthoritySignature`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:41](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L41)
+Defined in: [src/wasm/arm\_bindings.d.ts:41](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L41)
 
 #### Parameters
 

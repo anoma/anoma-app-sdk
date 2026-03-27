@@ -1,12 +1,12 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / InitialRoot
+[@anomaorg/anoma-app-sdk](../globals.md) / InitialRoot
 
 # Class: InitialRoot
 
-Defined in: [src/wasm/arm\_bindings.d.ts:111](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L111)
+Defined in: [src/wasm/arm\_bindings.d.ts:111](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L111)
 
 ## Methods
 
@@ -14,7 +14,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:111](https://github.com/anoma/anoma-app
 
 > **\[dispose\]**(): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:114](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L114)
+Defined in: [src/wasm/arm\_bindings.d.ts:114](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L114)
 
 #### Returns
 
@@ -26,7 +26,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:114](https://github.com/anoma/anoma-app
 
 > **free**(): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:113](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L113)
+Defined in: [src/wasm/arm\_bindings.d.ts:113](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L113)
 
 #### Returns
 
@@ -38,7 +38,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:113](https://github.com/anoma/anoma-app
 
 > `static` **bytes**(): `Uint8Array`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:115](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L115)
+Defined in: [src/wasm/arm\_bindings.d.ts:115](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L115)
 
 #### Returns
 

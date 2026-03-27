@@ -1,12 +1,12 @@
-[**@anoma/anoma-app-sdk**](../README.md)
+[**@anomaorg/anoma-app-sdk**](../README.md)
 
 ***
 
-[@anoma/anoma-app-sdk](../globals.md) / Ciphertext
+[@anomaorg/anoma-app-sdk](../globals.md) / Ciphertext
 
 # Class: Ciphertext
 
-Defined in: [src/wasm/arm\_bindings.d.ts:73](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L73)
+Defined in: [src/wasm/arm\_bindings.d.ts:73](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L73)
 
 ## Methods
 
@@ -14,7 +14,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:73](https://github.com/anoma/anoma-app-
 
 > **\[dispose\]**(): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:76](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L76)
+Defined in: [src/wasm/arm\_bindings.d.ts:76](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L76)
 
 #### Returns
 
@@ -26,7 +26,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:76](https://github.com/anoma/anoma-app-
 
 > **asWords**(): `Uint32Array`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:80](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L80)
+Defined in: [src/wasm/arm\_bindings.d.ts:80](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L80)
 
 #### Returns
 
@@ -38,7 +38,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:80](https://github.com/anoma/anoma-app-
 
 > **decrypt**(`sk`): `Uint8Array`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:82](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L82)
+Defined in: [src/wasm/arm\_bindings.d.ts:82](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L82)
 
 #### Parameters
 
@@ -56,7 +56,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:82](https://github.com/anoma/anoma-app-
 
 > **free**(): `void`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:75](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L75)
+Defined in: [src/wasm/arm\_bindings.d.ts:75](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L75)
 
 #### Returns
 
@@ -68,7 +68,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:75](https://github.com/anoma/anoma-app-
 
 > **inner**(): `Uint8Array`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:79](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L79)
+Defined in: [src/wasm/arm\_bindings.d.ts:79](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L79)
 
 #### Returns
 
@@ -80,7 +80,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:79](https://github.com/anoma/anoma-app-
 
 > **toJson**(): `any`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:83](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L83)
+Defined in: [src/wasm/arm\_bindings.d.ts:83](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L83)
 
 #### Returns
 
@@ -92,7 +92,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:83](https://github.com/anoma/anoma-app-
 
 > `static` **encrypt**(`message`, `receiver_pk`, `sender_sk`): `Ciphertext`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:81](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L81)
+Defined in: [src/wasm/arm\_bindings.d.ts:81](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L81)
 
 #### Parameters
 
@@ -118,7 +118,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:81](https://github.com/anoma/anoma-app-
 
 > `static` **fromBytes**(`bytes`): `Ciphertext`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:77](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L77)
+Defined in: [src/wasm/arm\_bindings.d.ts:77](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L77)
 
 #### Parameters
 
@@ -136,7 +136,7 @@ Defined in: [src/wasm/arm\_bindings.d.ts:77](https://github.com/anoma/anoma-app-
 
 > `static` **fromWords**(`words`): `Ciphertext`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:78](https://github.com/anoma/anoma-app-sdk/blob/3fed919240620868a9ef9a4946a28272083572d4/src/wasm/arm_bindings.d.ts#L78)
+Defined in: [src/wasm/arm\_bindings.d.ts:78](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L78)
 
 #### Parameters
 
