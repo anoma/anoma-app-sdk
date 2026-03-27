@@ -1,5 +1,5 @@
 import { fromBase64 } from "lib/utils";
-import type { UserPublicKeys } from "types";
+import type { TokenId, UserPublicKeys } from "types";
 import type { Address, Chain } from "viem";
 import { base, bsc, mainnet, sepolia } from "viem/chains";
 
@@ -38,6 +38,8 @@ export const averageTimePerProofInSeconds = 20;
 
 // Polling interval to check for user balances:
 export const balanceRefetchIntervalInMs = 10_000;
+
+export const defaultTokenId: TokenId = "bsc:usdc";
 
 /**
  * The folloiwng constants determine the normal load threshhold,
