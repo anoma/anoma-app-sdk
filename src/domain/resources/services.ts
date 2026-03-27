@@ -24,7 +24,7 @@ type ResourceWithDetails = {
   resource: Resource;
   forwarder: Address;
   erc20TokenAddress: Address;
-  transactionHash: Address;
+  transactionHash: string;
 };
 
 /** Creates lookup maps for transactions indexed by nullifier hash and transaction hash. */
@@ -123,8 +123,13 @@ export const buildAppResources = async (
 
     if (nullifierHex) {
       // Resolve creation and consumption transactions
-      const createdIn = transactionLookup.byTxHash.get(transactionHash);
+      const createdInTxHash: Address = `0x${transactionHash.toLowerCase()}`;
+      const createdIn = transactionLookup.byTxHash.get(createdInTxHash);
       const consumedIn = transactionLookup.byNullifier.get(nullifierHex);
+
+      if (!createdIn) {
+        console.warn("Resource missing createdIn", createdInTxHash);
+      }
 
       if (!onlyAvailableResources || !consumedIn) {
         updatedResources.push({
