@@ -108,6 +108,17 @@ export const convertWalletBalanceToTokenBalance = (
     return { token, amount: b.value };
   });
 
+/** Builds a `Record<TokenId, TokenBalance>` index for O(1) balance lookups. */
+export const buildBalanceIndex = (
+  balances: TokenBalance[]
+): Record<TokenId, TokenBalance> => {
+  const map = {} as Record<TokenId, TokenBalance>;
+  for (const b of balances) {
+    map[tokenId(b.token)] = b;
+  }
+  return map;
+};
+
 /** Finds the balance entry matching a given token registry by both network and symbol. */
 export const findBalanceByToken = (
   balances: TokenBalance[],
