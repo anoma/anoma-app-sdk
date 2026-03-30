@@ -138,11 +138,11 @@ export const chainByNetwork = supportedChains.reduce(
  * Heliax Public Keys to pay Fees to
  */
 export const HeliaxKeys = {
-  HELIAX_FEE_DISCOVERY_PK: "Anm+Zn753LusVaBilc6HCwcCm/zbLc4o2VnygVsW+BeY",
-  HELIAX_FEE_ENCRYPTION_PK: "Anm+Zn753LusVaBilc6HCwcCm/zbLc4o2VnygVsW+BeY",
-  HELIAX_FEE_AUTHORITY_PK: "Anm+Zn753LusVaBilc6HCwcCm/zbLc4o2VnygVsW+BeY",
+  HELIAX_FEE_DISCOVERY_PK: "Ap9haPXEOu5gYvT903ZIob4rIoSKi+PH38Z505xAaVaT",
+  HELIAX_FEE_ENCRYPTION_PK: "AyMKcm5ufUoQW7YLkfsWqYZYSLGjgU3KxFa4VW3GV5jJ",
+  HELIAX_FEE_AUTHORITY_PK: "A+NjLMDHguD8QSDhx8utlsN0lBtB3hNQaSsZxmatfJhs",
   HELIAX_FEE_NULLIFIER_KEY_COMMITMENT:
-    "Zmh6rfhivXdsj8GLjp+OIAiXFIVu4jOzkCpZHQ1fKSU=",
+    "dEKxSTtQu7sDslLCUHTOAY/c119fDvLJVD8MgFLHOd8=",
 };
 
 export const HeliaxPublicKeys: UserPublicKeys = {
