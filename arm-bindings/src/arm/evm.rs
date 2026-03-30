@@ -5,8 +5,7 @@ sol! {
     #[derive(Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq)]
     enum CallType {
         Wrap,
-        Unwrap,
-        Migrate
+        Unwrap
     }
 }
 
@@ -35,10 +34,5 @@ impl CallTypeJs {
     #[wasm_bindgen(getter, js_name = "Unwrap")]
     pub fn unwrap() -> CallTypeJs {
         CallTypeJs(CallType::Unwrap)
-    }
-
-    #[wasm_bindgen(getter, js_name = "Migrate")]
-    pub fn migrate() -> CallTypeJs {
-        CallTypeJs(CallType::Migrate)
     }
 }

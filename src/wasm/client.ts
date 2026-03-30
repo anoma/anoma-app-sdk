@@ -42,7 +42,8 @@ export abstract class Client {
  */
 export async function initClient<T extends Client>(
   client: new (digest?: string) => T,
-  id: string
+  id: string,
+  wasmUrl?: string
 ): Promise<T> {
-  return initWasm().then(() => new client(id));
+  return initWasm(wasmUrl).then(() => new client(id));
 }

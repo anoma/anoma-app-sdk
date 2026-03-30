@@ -1,13 +1,18 @@
-import type { IndexerEVMTransaction, IndexerResource, IndexerTag } from "api";
+import type {
+  IndexerEVMTransaction,
+  IndexerResource,
+  NullifierRecord,
+} from "api";
 import { fromHex, normalizeHex } from "lib/utils";
-import type { AppResource, Parameters, UserKeyring } from "types";
+import type { AppResource, TokenId } from "types";
 import { type Address, type Hex } from "viem";
-import {
-  NullifierKey,
-  Resource,
-  ResourceWithLabel,
-  type EncodedResource,
-} from "wasm";
+import { NullifierKey, Resource, ResourceWithLabel } from "wasm";
+import { InsufficientResourcesError } from "./errors";
+import type {
+  AggregatedTokenBalance,
+  TransferResources,
+  TransferResourceWithAmount,
+} from "./types";
 
 type TransactionLookup = {
   byNullifier: Map<string, IndexerEVMTransaction>;
@@ -18,28 +23,31 @@ type ResourceWithDetails = {
   resource: Resource;
   forwarder: Address;
   erc20TokenAddress: Address;
-  transactionHash: Address;
+  transactionHash: string;
 };
 
-export function buildTransactionLookup(tags: IndexerTag[]): TransactionLookup {
+/** Creates lookup maps for transactions indexed by nullifier hash and transaction hash. */
+export function buildTransactionLookup(
+  nullifierRecordList: NullifierRecord[]
+): TransactionLookup {
   const lookup: TransactionLookup = {
     byNullifier: new Map(),
     byTxHash: new Map(),
   };
-  for (const tag of tags) {
+  for (const data of nullifierRecordList) {
     lookup.byNullifier.set(
-      normalizeHex(tag.tagHash),
-      tag.transaction.evmTransaction
+      normalizeHex(data.nullifier),
+      data.transaction.evmTransaction
     );
     lookup.byTxHash.set(
-      tag.transaction.evmTransaction.txHash,
-      tag.transaction.evmTransaction
+      data.transaction.evmTransaction.txHash,
+      data.transaction.evmTransaction
     );
   }
   return lookup;
 }
 
-export function deserializeResourcePayload(
+function deserializeResourcePayload(
   blobHex: Hex,
   encryptionPrivateKey: Uint8Array
 ): ResourceWithLabel {
@@ -48,25 +56,26 @@ export function deserializeResourcePayload(
 }
 
 const tryToDeserializeResourcePayload = (
-  keyring: UserKeyring,
+  encryptionPrivateKey: Uint8Array<ArrayBuffer>,
   indexerResource: IndexerResource
 ) => {
   try {
     return deserializeResourcePayload(
       indexerResource.resource_payload.blob,
-      keyring.encryptionKeyPair.privateKey
+      encryptionPrivateKey
     );
   } catch {
     return false;
   }
 };
 
+/** Decrypts and deserializes indexer resource payloads using the user's encryption key. */
 export const parseIndexerResourceResponse = async (
-  keyring: UserKeyring,
+  encryptionPrivateKey: Uint8Array<ArrayBuffer>,
   resourceResponseCollection: IndexerResource[]
 ): Promise<ResourceWithDetails[]> => {
   return resourceResponseCollection.flatMap(item => {
-    const payload = tryToDeserializeResourcePayload(keyring, item);
+    const payload = tryToDeserializeResourcePayload(encryptionPrivateKey, item);
     if (!payload) {
       return [];
     }
@@ -79,52 +88,55 @@ export const parseIndexerResourceResponse = async (
   });
 };
 
+/** Filters out ephemeral resources, returning only persistent ones. */
 export const pickNonEphemeralResources = (
   resources: ResourceWithDetails[]
 ): ResourceWithDetails[] => {
   return resources.filter(item => !item.resource.encode().is_ephemeral);
 };
 
-export const openResourceMetadata = async (
-  keyring: UserKeyring,
+/** Computes nullifiers and consumption status for each resource, returning enriched AppResource entries. */
+export const buildAppResources = async (
   resources: ResourceWithDetails[],
   transactionLookup: TransactionLookup,
+  nullifierKey: NullifierKey,
   onlyAvailableResources = true
 ): Promise<AppResource[]> => {
   const updatedResources: AppResource[] = [];
-  const nullifierKey = new NullifierKey(keyring.nullifierKeyPair.nk);
 
-  // Step 1: Compute optimistic balance from all decrypted resources quantities
   for (const deserializedResource of resources) {
     const { resource, erc20TokenAddress, forwarder, transactionHash } =
       deserializedResource;
 
     const resourceProps = resource.encode();
 
-    // Step 2: Compute nullifier for each resource
+    // Compute the nullifier for the resource
     let nullifierHex: string | undefined;
     try {
       nullifierHex = normalizeHex(resource.nullifier(nullifierKey).toHex());
     } catch {
-      console.warn("Couldn't nullify resource " + resourceProps.nonce);
+      console.warn(
+        "Couldn't compute nullifier for resource " + resourceProps.nonce
+      );
     }
 
     if (nullifierHex) {
-      // Step 3: Compare computed nullifier with indexer-provided nullifiers
-      // Update the actual consumed status based on nullifier comparison
-      const createdTransaction =
-        transactionLookup.byTxHash.get(transactionHash);
-      const consumedTransaction =
-        transactionLookup.byNullifier.get(nullifierHex);
-      const isConsumed = !!consumedTransaction;
-      if (!onlyAvailableResources || !isConsumed) {
+      // Resolve creation and consumption transactions
+      const createdInTxHash: Address = `0x${transactionHash.toLowerCase()}`;
+      const createdIn = transactionLookup.byTxHash.get(createdInTxHash);
+      const consumedIn = transactionLookup.byNullifier.get(nullifierHex);
+
+      if (!createdIn) {
+        console.warn("Resource missing createdIn", createdInTxHash);
+      }
+
+      if (!onlyAvailableResources || !consumedIn) {
         updatedResources.push({
           ...resourceProps,
-          isConsumed,
           erc20TokenAddress,
           forwarder,
-          createdTransaction,
-          consumedTransaction,
+          createdIn,
+          consumedIn,
         });
       }
     }
@@ -133,17 +145,29 @@ export const openResourceMetadata = async (
   return updatedResources;
 };
 
+function omitSelectedFromRemaining(
+  selected: TransferResourceWithAmount[],
+  remaining: AppResource[]
+): TransferResources {
+  return {
+    selected,
+    remaining: remaining.filter(
+      r => !selected.some(s => s.resource.rand_seed === r.rand_seed)
+    ),
+  };
+}
+
 /**
  * Given a collection of Resources, return an array of the fewest resources
  * whose quantities sum to the exact target quantity
  */
-export function findMinResourceQuantitySum(
-  resources: EncodedResource[],
+function findMinResourceQuantitySum(
+  resources: AppResource[],
   targetQuantity: bigint
-): EncodedResource[] | undefined {
+): AppResource[] | undefined {
   if (resources.length === 0) return undefined;
 
-  let min: EncodedResource[] | undefined;
+  let min: AppResource[] | undefined;
   for (let i = 0; i < resources.length; i++) {
     // If a quantity equals the targetQuantity, it is the shortest set of length 1
     if (resources[i].quantity === targetQuantity) return [resources[i]];
@@ -164,45 +188,46 @@ export function findMinResourceQuantitySum(
 }
 
 /**
- * A collection of transfer resources with the amount to transfer.
- * NOTE: Amount may be less than resource quantity, in this case,
- * we have a split:
- */
-export type TransferResourceWithAmount = [EncodedResource, bigint];
-export type TransferResources = TransferResourceWithAmount[];
-
-/**
  * Return first resource which can fulfill a transfer either with exact
  * quantity or by splitting
  */
-export function findMinTransferResource(
-  resources: EncodedResource[],
-  targetQuantity: bigint
-): TransferResourceWithAmount | undefined {
+function findMinTransferResource(
+  resources: AppResource[],
+  targetAmount: bigint
+): [TransferResourceWithAmount, AppResource[]] | undefined {
   // Sort by ascending quantity to find first resource which might fulfill targetQuantity
-  const sortedResources = resources.sort((a, b) =>
+  const sortedResources = [...resources].sort((a, b) =>
     Number(a.quantity - b.quantity)
   );
-
   // return first matching resource which can provide target amount
-  const match = sortedResources.find(
-    ({ quantity }) => quantity >= targetQuantity
+  const matchIndex = sortedResources.findIndex(
+    ({ quantity }) => quantity >= targetAmount
   );
 
-  if (match) {
-    return [match, targetQuantity];
+  if (matchIndex > -1) {
+    const resource = sortedResources.splice(matchIndex, 1)[0];
+    return [
+      {
+        resource,
+        targetAmount,
+      },
+      sortedResources,
+    ];
   }
 }
+
 /**
  * If we know that there is not an exact quantity match, or subset of resources
  * whose quantities sum to an exact target quantity, iterate through resources
  * until we have enough summed quantities plus a split to fulfill transfer
  */
-export function findTransferResourcesWithSplit(
-  resources: EncodedResource[],
+
+function findTransferResourcesWithSplit(
+  resources: AppResource[],
   targetQuantity: bigint
-): TransferResources {
-  const transferResources: TransferResources = [];
+): [TransferResourceWithAmount[], AppResource[]] {
+  const selected: TransferResourceWithAmount[] = [];
+  const remaining: AppResource[] = [];
 
   // Sort by descending quantity to find *fewest* number of resources for transfer
   const sortedResources = resources.sort((a, b) =>
@@ -210,18 +235,26 @@ export function findTransferResourcesWithSplit(
   );
   let missingQuantity = targetQuantity;
   for (let i = 0; i < sortedResources.length; i++) {
-    const resource = resources[i];
+    const resource = sortedResources[i];
     const quantity =
       missingQuantity < resource.quantity ? missingQuantity : resource.quantity;
-    transferResources.push([resource, quantity]);
+    selected.push({ resource, targetAmount: quantity });
     missingQuantity -= quantity;
     if (missingQuantity === 0n) {
       // This is the last item we want, and is a split, so break
+      remaining.push(...sortedResources.slice(i + 1));
       break;
     }
   }
 
-  return transferResources;
+  if (missingQuantity > 0) {
+    throw new InsufficientResourcesError(
+      targetQuantity,
+      targetQuantity - missingQuantity
+    );
+  }
+
+  return [selected, remaining];
 }
 
 /**
@@ -229,54 +262,53 @@ export function findTransferResourcesWithSplit(
  * to sum, a resource to split, or both
  */
 export const selectTransferResources = (
-  resources: EncodedResource[],
-  targetQuantity: bigint
+  resources: AppResource[],
+  targetAmount: bigint
 ): TransferResources => {
   if (resources.length === 0) {
     throw new Error("No resources provided!");
   }
-  if (targetQuantity === 0n) {
+  if (targetAmount === 0n) {
     throw new Error("Must specify a quantity greater than 0");
   }
 
   // Check if a single resource can provide target amount
-  const match = findMinTransferResource(resources, targetQuantity);
+  const [match, unmatchedResources = resources] =
+    findMinTransferResource(resources, targetAmount) ?? [];
 
   if (match) {
     // Either a resource with matched quantity or a split resource
-    return [match];
+    return {
+      selected: [match],
+      remaining: unmatchedResources,
+    };
   }
 
   // Check if summing can provide target quantity
-  const summedResources =
-    findMinResourceQuantitySum(resources, targetQuantity) || [];
+  const summedResources = findMinResourceQuantitySum(resources, targetAmount);
 
-  if (summedResources.length > 0) {
-    // Resources whose quantities sum to exact targetQuantity
-    return summedResources.map(summedResource => [
-      summedResource,
-      summedResource.quantity,
-    ]);
+  if (summedResources) {
+    return omitSelectedFromRemaining(
+      summedResources.map(sr => ({
+        resource: sr,
+        targetAmount: sr.quantity,
+      })),
+      resources
+    );
   }
 
-  // Resources to sum plus a split resource
-  return findTransferResourcesWithSplit(resources, targetQuantity);
+  const [selected, remaining] = findTransferResourcesWithSplit(
+    resources,
+    targetAmount
+  );
+  return {
+    selected,
+    remaining,
+  };
 };
 
-/**
- * Given multiple Parameters objects. merge into one in order received
- */
-export const mergeParameters = (parameters: Parameters[]): Parameters =>
-  parameters.reduce(
-    (mergedParameters, parameters) => ({
-      consumed_resources: [
-        ...mergedParameters.consumed_resources,
-        ...parameters.consumed_resources,
-      ],
-      created_resources: [
-        ...mergedParameters.created_resources,
-        ...parameters.created_resources,
-      ],
-    }),
-    { consumed_resources: [], created_resources: [] }
-  );
+export type AggregatedTokenBalancesOutput = {
+  totalInUsd: number;
+  balancesPerToken: Record<TokenId, AggregatedTokenBalance>;
+  resources: AppResource[];
+};

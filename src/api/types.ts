@@ -42,9 +42,9 @@ export class ResponseError extends Error {
  */
 export type IndexerId = `${number}_${Address}`; // {chainId}_{address}
 
-export type IndexerTag = {
+export type NullifierRecord = {
   id: IndexerId;
-  tagHash: Address;
+  nullifier: Hex;
   transaction: IndexerTransaction;
 };
 
@@ -60,7 +60,7 @@ export type IndexerEVMTransaction = {
   timestamp: number;
 };
 
-export type ConsumedTagsResponse = IndexerTag[];
+export type NullifierRecordResponse = NullifierRecord[];
 
 export type IndexerBlob = {
   blob: Hex;
@@ -85,7 +85,7 @@ export type MerkleProofResponse = {
 };
 
 // Protocol adaptor transaction receipt response
-export type TransactionReceipt<T = ResponseJson> = {
+export type TransactionReceiptResonse<T = ResponseJson> = {
   inner: T;
   transactionHash: string;
   transactionIndex?: string;
@@ -102,7 +102,7 @@ export type TransactionReceipt<T = ResponseJson> = {
 };
 
 export type TransactionResponse<T = ResponseJson> = {
-  receipt: TransactionReceipt<T>;
+  receipt: TransactionReceiptResonse<T>;
 };
 
 export type TransactionHashResponse = {
@@ -139,4 +139,8 @@ export type IndexerHealthResponse = {
   status: "ok";
   version: string; // "1.0.0",
   indexed_contracts: IndexerContract[];
+};
+
+export type IndexerAddKeysResponse = {
+  status: "ok";
 };

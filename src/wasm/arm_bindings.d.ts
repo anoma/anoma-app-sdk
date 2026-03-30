@@ -5,11 +5,6 @@ export interface EncodedKeypair {
     public_key: string;
 }
 
-export interface EncodedNullifierKeyPair {
-    nk: string;
-    cnk: string;
-}
-
 export interface ResourceProps {
     isEphemeral: boolean;
     quantity: bigint;
@@ -30,6 +25,11 @@ export interface EncodedResource {
     nonce: string;
     rand_seed: string;
     nk_commitment: string;
+}
+
+export interface EncodedNullifierKeyPair {
+    nk: string;
+    cnk: string;
 }
 
 
@@ -68,7 +68,6 @@ export class CallType {
   toVec(): Uint8Array;
   static readonly Wrap: CallType;
   static readonly Unwrap: CallType;
-  static readonly Migrate: CallType;
 }
 
 export class Ciphertext {
@@ -319,6 +318,19 @@ export interface InitOutput {
   readonly heliaxkeys_HELIAX_FEE_NULLIFIER_KEY_COMMITMENT: () => [number, number];
   readonly heliaxkeys_HELIAX_FEE_DISCOVERY_PK: () => [number, number];
   readonly heliaxkeys_HELIAX_FEE_ENCRYPTION_PK: () => [number, number];
+  readonly __wbg_resource_free: (a: number, b: number) => void;
+  readonly resource_new: (a: any) => [number, number, number];
+  readonly resource_create: (a: number, b: number, c: bigint, d: bigint, e: number, f: number, g: number, h: number) => number;
+  readonly resource_encode: (a: number) => any;
+  readonly resource_decode: (a: any) => [number, number, number];
+  readonly resource_commitment: (a: number) => number;
+  readonly resource_nullifier: (a: number, b: number) => [number, number, number];
+  readonly resource_fromBytes: (a: number, b: number) => [number, number, number];
+  readonly __wbg_resourcewithlabel_free: (a: number, b: number) => void;
+  readonly resourcewithlabel_fromEncrypted: (a: number, b: number, c: number, d: number) => [number, number, number];
+  readonly resourcewithlabel_resource: (a: number) => number;
+  readonly resourcewithlabel_forwarder: (a: number) => [number, number];
+  readonly resourcewithlabel_erc20TokenAddress: (a: number) => [number, number];
   readonly __wbg_nullifierkey_free: (a: number, b: number) => void;
   readonly nullifierkey_new: (a: number, b: number) => [number, number, number];
   readonly nullifierkey_commit: (a: number) => number;
@@ -342,23 +354,6 @@ export interface InitOutput {
   readonly nullifierkeypair_fromJson: (a: any) => [number, number, number];
   readonly nullifierkeypair_encode: (a: number) => any;
   readonly nullifierkeypair_decode: (a: any) => [number, number, number];
-  readonly __wbg_resource_free: (a: number, b: number) => void;
-  readonly resource_new: (a: any) => [number, number, number];
-  readonly resource_create: (a: number, b: number, c: bigint, d: bigint, e: number, f: number, g: number, h: number) => number;
-  readonly resource_encode: (a: number) => any;
-  readonly resource_decode: (a: any) => [number, number, number];
-  readonly resource_commitment: (a: number) => number;
-  readonly resource_nullifier: (a: number, b: number) => [number, number, number];
-  readonly resource_fromBytes: (a: number, b: number) => [number, number, number];
-  readonly __wbg_resourcewithlabel_free: (a: number, b: number) => void;
-  readonly resourcewithlabel_fromEncrypted: (a: number, b: number, c: number, d: number) => [number, number, number];
-  readonly resourcewithlabel_resource: (a: number) => number;
-  readonly resourcewithlabel_forwarder: (a: number) => [number, number];
-  readonly resourcewithlabel_erc20TokenAddress: (a: number) => [number, number];
-  readonly hashBytes: (a: number, b: number) => number;
-  readonly hashTwo: (a: number, b: number) => number;
-  readonly bytesToWords: (a: number, b: number) => [number, number];
-  readonly wordsToBytes: (a: number, b: number) => [number, number];
   readonly __wbg_authoritysigningkey_free: (a: number, b: number) => void;
   readonly authoritysigningkey_new: () => number;
   readonly authoritysigningkey_sign: (a: number, b: number, c: number, d: number, e: number) => number;
@@ -378,7 +373,10 @@ export interface InitOutput {
   readonly calltype_toVec: (a: number) => [number, number];
   readonly calltype_Wrap: () => number;
   readonly calltype_Unwrap: () => number;
-  readonly calltype_Migrate: () => number;
+  readonly hashBytes: (a: number, b: number) => number;
+  readonly hashTwo: (a: number, b: number) => number;
+  readonly bytesToWords: (a: number, b: number) => [number, number];
+  readonly wordsToBytes: (a: number, b: number) => [number, number];
   readonly sys_verify_integrity: (a: number, b: number) => void;
   readonly sys_verify_integrity2: (a: number, b: number) => void;
   readonly sys_read: (a: number, b: number, c: number) => number;

@@ -1,21 +1,14 @@
-import { promiseWithResolvers } from "lib/utils";
-import { default as initLib, initSync as initLibSync } from "./arm_bindings";
+import { default as initLib, initSync as initLibSync } from "wasm/arm_bindings";
 
 /**
  * Provide reference to single wasm init promise
  */
-let isInitialized = false;
-const [initPromise, initResolver] = promiseWithResolvers<WebAssembly.Module>();
-
-export const initWasm = async (): Promise<WebAssembly.Module> => {
-  if (!isInitialized) {
-    const module = await initLib().then(module => {
-      return module;
-    });
-    isInitialized = true;
-    initResolver(module);
+let wasmInstance: Promise<WebAssembly.Module>;
+export const initWasm = async (url?: string): Promise<WebAssembly.Module> => {
+  if (!wasmInstance) {
+    wasmInstance = initLib(url);
   }
-  return initPromise;
+  return wasmInstance;
 };
 
 /**

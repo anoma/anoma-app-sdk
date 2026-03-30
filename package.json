@@ -1,35 +1,71 @@
 {
-  "name": "@anonma/anomapay-sdk",
-  "version": "0.1.0",
+  "name": "@anomaorg/anoma-app-sdk",
+  "version": "0.7.0",
+  "license": "GPL-3.0",
   "type": "module",
   "engines": {
     "node": ">=22"
   },
-  "main": "./dist/anomapay-sdk.cjs",
-  "module": "./dist/anomapay-sdk.js",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/index.d.cts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "files": [
+    "./dist/*"
+  ],
   "exports": {
     ".": {
-      "import": "./dist/anomapay-sdk.js",
-      "require": "./dist/anomapay-sdk.umd.cjs"
-    }
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./api": {
+      "import": "./dist/api.mjs",
+      "require": "./dist/api.cjs"
+    },
+    "./constants": {
+      "import": "./dist/constants.mjs",
+      "require": "./dist/constants.cjs"
+    },
+    "./domain": {
+      "import": "./dist/domain.mjs",
+      "require": "./dist/domain.cjs"
+    },
+    "./lib": {
+      "import": "./dist/lib.mjs",
+      "require": "./dist/lib.cjs"
+    },
+    "./types": {
+      "import": "./dist/types.mjs",
+      "require": "./dist/types.cjs"
+    },
+    "./wasm": {
+      "import": "./dist/wasm.mjs",
+      "require": "./dist/wasm.cjs"
+    },
+    "./anomaPayArm.wasm": {
+      "default": "./dist/arm_bindings_bg.wasm"
+    },
+    "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "tsc -b && vite build",
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean && node -p \"'export const ANOMA_APP_SDK_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
+    "build": "tsdown && cp ./src/wasm/arm_bindings_bg.wasm ./dist",
+    "build:docs": "typedoc --plugin typedoc-plugin-markdown --out ./docs src/index.ts",
+    "build:wasm": "node ./scripts/build.mjs --release",
+    "build:wasm:dev": "node ./scripts/build.mjs",
     "lint": "eslint .",
     "tsc": "tsc -b",
     "tsc-check": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.{ts,js,json,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,js,json,md}\"",
     "test": "vitest",
-    "prepare": "husky",
-    "build:wasm": "node ./scripts/build.mjs --release",
-    "build:wasm:dev": "node ./scripts/build.mjs"
+    "prepare": "husky"
   },
   "dependencies": {
     "@noble/hashes": "1.8.0",
     "@noble/secp256k1": "3.0.0",
     "@uniswap/permit2-sdk": "1.4.0",
+    "bs58": "^6.0.0",
     "crc-32": "1.2.2",
     "viem": "2.38.5",
     "wagmi": "3.1.1",
@@ -42,12 +78,19 @@
     "husky": "^9.1.7",
     "prettier": "^3.6.2",
     "prettier-plugin-organize-imports": "^4.3.0",
+    "rimraf": "^6.1.3",
+    "tsdown": "^0.21.5",
+    "typedoc": "^0.28.17",
+    "typedoc-plugin-markdown": "^4.10.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.45.0",
     "vite": "^7.1.7",
     "vite-plugin-dts": "^4.5.4",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^4.0.6"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "lint-staged": {
     "*.{ts,js}": [
@@ -57,5 +100,8 @@
     "*.{json,css,md}": [
       "prettier --write"
     ]
+  },
+  "inlinedDependencies": {
+    "abitype": "1.1.0"
   }
 }

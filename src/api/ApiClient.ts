@@ -1,4 +1,4 @@
-import { serializeBigInt } from "lib/utils";
+import { bigIntReplacer } from "lib/utils";
 import { ResponseError } from "./types";
 
 /**
@@ -55,7 +55,7 @@ export class ApiClient<P extends string = string> {
         "Content-Type": "application/json",
         ...headers,
       },
-      body: JSON.stringify(props, serializeBigInt),
+      body: JSON.stringify(props, bigIntReplacer),
     });
     if (!response.ok) {
       throw new ResponseError(
