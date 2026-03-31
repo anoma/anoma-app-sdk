@@ -194,7 +194,7 @@ npm run test:e2e:ui
 
 ## Pay Address Format
 
-Anoma Pay uses a custom address format that encodes multiple public keys into a single Base64URL string. The address structure consists of:
+Anoma Pay uses a custom address format that encodes multiple public keys into a single Base58 string. The address structure consists of:
 
 | Field                    | Size (bytes) |
 | ------------------------ | ------------ |
@@ -205,7 +205,7 @@ Anoma Pay uses a custom address format that encodes multiple public keys into a 
 | CRC32 Checksum           | 4            |
 | **Total**                | **135**      |
 
-The raw bytes are concatenated in the order shown above and then encoded using Base64URL encoding. The CRC32 checksum at the end provides integrity verification when decoding addresses.
+The raw bytes are concatenated in the order shown above and then encoded using Base58 encoding. The CRC32 checksum at the end provides integrity verification when decoding addresses.
 
 For implementation details, see [`src/lib/payAddress.ts`](./src/lib/payAddress.ts).
 
