@@ -20,11 +20,29 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "erasableSyntaxOnly": false,
+    "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "baseUrl": "./src",
     "paths": {
-      "tests/*": ["../tests/*"]
+      "api": ["./src/api/index.ts"],
+      "api/*": ["./src/api/*"],
+      "assets/*": ["./src/assets/*"],
+      "config/*": ["./src/config/*"],
+      "domain/*": ["./src/domain/*"],
+      "hooks/*": ["./src/hooks/*"],
+      "lib/*": ["./src/lib/*"],
+      "providers": ["./src/providers/index.ts"],
+      "providers/*": ["./src/providers/*"],
+      "schemas/*": ["./src/schemas/*"],
+      "store/*": ["./src/store/*"],
+      "ui/*": ["./src/ui/*"],
+      "wasm": ["./src/wasm/index.ts"],
+      "wasm/*": ["./src/wasm/*"],
+      "app-constants": ["./src/app-constants.ts"],
+      "types": ["./src/types.ts"],
+      "urls": ["./src/urls.ts"],
+      "signing-message": ["./src/signing-message.ts"],
+      "routeTree.gen": ["./src/routeTree.gen.ts"],
+      "tests/*": ["./tests/*"]
     }
   },
   "include": ["src"]

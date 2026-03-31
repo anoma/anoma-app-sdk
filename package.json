@@ -88,11 +88,16 @@
     "prettier-plugin-organize-imports": "^4.3.0",
     "storybook": "^10.1.10",
     "tailwindcss": "^4.1.16",
-    "typescript": "~5.9.3",
-    "typescript-eslint": "^8.45.0",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.58.0",
     "vite": "^7.1.7",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^4.0.6"
+  },
+  "overrides": {
+    "@web3icons/core": {
+      "typescript": "$typescript"
+    }
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
