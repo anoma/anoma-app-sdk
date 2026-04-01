@@ -16,7 +16,8 @@ type TransactionReceiptDraft = {
 /** Converts a `TransactionReceiptDraft` into a `TransactionReceipt`. */
 function draftToReceipt(
   draft: TransactionReceiptDraft,
-  tokenRegistry: TokenRegistryIndex
+  tokenRegistry: TokenRegistryIndex,
+  networkMap: Record<string, string>
 ): TransactionReceipt {
   const { tx, createdResources, consumedResources } = draft;
 
@@ -38,7 +39,8 @@ function draftToReceipt(
 
   const token = getTokenByResource(
     tokenRegistry,
-    createdResources[0] ?? consumedResources[0]
+    createdResources[0] ?? consumedResources[0],
+    networkMap
   );
 
   return {
@@ -54,7 +56,8 @@ function draftToReceipt(
 /** Groups resources by transaction and returns receipts sorted most-recent first. */
 export function buildTransactionHistory(
   resources: AppResource[],
-  tokenRegistry: TokenRegistryIndex
+  tokenRegistry: TokenRegistryIndex,
+  networkMap: Record<string, string>
 ): TransactionReceipt[] {
   const draftMap = new Map<IndexerId, TransactionReceiptDraft>();
 
@@ -81,5 +84,5 @@ export function buildTransactionHistory(
 
   return Array.from(draftMap.values())
     .sort((a, b) => b.tx.timestamp - a.tx.timestamp)
-    .map(entry => draftToReceipt(entry, tokenRegistry));
+    .map(entry => draftToReceipt(entry, tokenRegistry, networkMap));
 }

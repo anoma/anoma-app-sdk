@@ -329,7 +329,8 @@ export type AggregatedTokenBalancesOutput = {
 export const aggregateTokenBalances = (
   resources: AppResource[],
   registry: TokenRegistryIndex,
-  prices: Record<Address, number>
+  prices: Record<Address, number>,
+  networkMap: Record<string, string>
 ): AggregatedTokenBalancesOutput => {
   const output: AggregatedTokenBalancesOutput = {
     totalInUsd: 0,
@@ -338,7 +339,7 @@ export const aggregateTokenBalances = (
   };
 
   resources.forEach(item => {
-    const token = getTokenByResource(registry, item);
+    const token = getTokenByResource(registry, item, networkMap);
     const id = tokenId(token);
     const amount = Number(formatUnits(item.quantity, token.decimals));
 
