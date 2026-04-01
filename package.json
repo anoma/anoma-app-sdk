@@ -14,6 +14,7 @@
     "./wasm": "./src/wasm/index.ts",
     "./wasm/*": "./src/wasm/*",
     "./types": "./src/types.ts",
+    "./constants": "./src/lib-constants.ts",
     "./lib-constants": "./src/lib-constants.ts"
   },
   "scripts": {
@@ -25,7 +26,17 @@
     "test": "vitest",
     "test:run": "vitest run",
     "build:wasm": "node ./scripts/build.mjs --release",
-    "build:wasm:dev": "node ./scripts/build.mjs"
+    "build:wasm:dev": "node ./scripts/build.mjs",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css,md}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@noble/hashes": "1.8.0",
@@ -37,9 +48,13 @@
     "zod": "4.1.13"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
     "@eslint/js": "^9.36.0",
     "@types/node": "^24.12.0",
     "eslint": "^9.36.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "prettier": "^3.6.2",
     "prettier-plugin-organize-imports": "^4.3.0",
     "typescript": "~6.0.2",
