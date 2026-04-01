@@ -12,4 +12,7 @@ export default defineConfig({
   },
   format: ["esm", "cjs"],
   dts: true,
+  deps: {
+    alwaysBundle: ["@uniswap/permit2-sdk"],
+  },
 });

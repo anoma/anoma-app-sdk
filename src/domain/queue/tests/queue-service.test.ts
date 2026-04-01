@@ -1,7 +1,11 @@
 import { expect, test } from "vitest";
 import { isHeavyLoad } from "../services";
 
-const opts = { estimatedTxTimeInSeconds: 120, proofPerTx: 3 };
+const opts = {
+  estimatedTxTimeInSeconds: 120,
+  proofPerTx: 3,
+  averageTimePerProofInSeconds: 20,
+};
 
 test("Should set a proper threshold for normal load", () => {
   const numGPUs = 2;

@@ -15,6 +15,3 @@ export const AUTH_SIGNATURE_DOMAIN = "TokenTransferAuthorization";
 export const KEYRING_SALT = "anoma-pay:keyring-seed";
 export const PASSKEY_DOMAIN = "anoma-pay:passkeys";
 export const RETURNING_USER_STORAGE_KEY = "anoma-pay:returning_user";
-
-// Estimate time to calculate a proof:
-export const averageTimePerProofInSeconds = 20;

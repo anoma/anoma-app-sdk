@@ -1,7 +1,4 @@
-import {
-  AUTH_SIGNATURE_DOMAIN,
-  averageTimePerProofInSeconds,
-} from "lib-constants";
+import { AUTH_SIGNATURE_DOMAIN } from "lib-constants";
 import { fromHex, normalizeHex } from "lib/utils";
 import type { Parameters } from "types";
 import type { Address, Hex } from "viem";
@@ -15,15 +12,17 @@ import {
 } from "wasm";
 
 /** Estimates the total proving time for a transfer based on the number of resources. */
-export const estimateTransferTimeInSeconds = (parameters?: Parameters) => {
+export const estimateTransferTimeInSeconds = (
+  parameters?: Parameters,
+  opts?: { averageTimePerProofInSeconds: number }
+) => {
   const averageProofPerResource = 1;
+  const averageTimePerProof = opts?.averageTimePerProofInSeconds ?? 0;
   const resourcesAmount =
     parameters ?
       parameters.consumed_resources.length + parameters.created_resources.length
     : 0;
-  return (
-    resourcesAmount * averageTimePerProofInSeconds * averageProofPerResource
-  );
+  return resourcesAmount * averageTimePerProof * averageProofPerResource;
 };
 
 /** Computes the label reference digest from a forwarder and token contract address. */
