@@ -1,4 +1,3 @@
-import { supportedChains } from "lib-constants";
 import type { AggregatedTokenBalance } from "domain/resources/types";
 import type {
   AppResource,
@@ -28,12 +27,19 @@ const getNotFoundToken = (values?: Partial<TokenRegistry>): TokenRegistry => ({
   ...values,
 });
 
-const networkMap: Record<string, Network> = Object.fromEntries(
-  supportedChains.map(c => [c.forwarderAddress.toLowerCase(), c.network])
-);
+/** Builds a network map from supported chains for forwarder lookups. */
+export const buildNetworkMap = (
+  chains: { forwarderAddress: Address; network: Network }[]
+): Record<string, Network> =>
+  Object.fromEntries(
+    chains.map(c => [c.forwarderAddress.toLowerCase(), c.network])
+  );
 
 /** Resolves a forwarder contract address to its corresponding network. */
-export const getNetworkByForwarder = (forwarder: Address): Network => {
+export const getNetworkByForwarder = (
+  forwarder: Address,
+  networkMap: Record<string, Network>
+): Network => {
   return networkMap[forwarder.toLowerCase()] ?? "unknown";
 };
 
@@ -58,10 +64,11 @@ export const tokenId = (
  */
 export const getTokenByResource = (
   registry: TokenRegistryIndex,
-  resource: AppResource
+  resource: AppResource,
+  networkMap: Record<string, Network>
 ): TokenRegistry => {
   const address = resource.erc20TokenAddress;
-  const network = getNetworkByForwarder(resource.forwarder);
+  const network = getNetworkByForwarder(resource.forwarder, networkMap);
   return (
     registry.byAddress[networkAddress(network, address)] ??
     getNotFoundToken({ address, network })

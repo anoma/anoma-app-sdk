@@ -1,9 +1,9 @@
-import { maxBalanceInUsd } from "lib-constants";
 import type { Address } from "viem";
 import { describe, expect, it } from "vitest";
 import { checkIfExceedsDepositLimit } from "../depositValidation";
 
 const TOKEN: Address = "0x0000000000000000000000000000000000000001";
+const maxBalanceInUsd = 1.0;
 
 const call = (
   overrides: Partial<Parameters<typeof checkIfExceedsDepositLimit>[0]> = {}
@@ -13,6 +13,7 @@ const call = (
     depositAmount: "0",
     tokenAddress: TOKEN,
     tokenPrices: { [TOKEN]: 1 },
+    maxBalanceInUsd,
     ...overrides,
   });
 

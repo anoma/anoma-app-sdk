@@ -1,10 +1,24 @@
 import type { IndexerEVMTransaction, IndexerId } from "api";
-import type { Network, SupportedChain } from "lib-constants";
 import type { Address } from "viem";
 import type { EncodedResource } from "wasm";
-export type { Network, SupportedChain, SupportedChainId } from "lib-constants";
 export * from "domain/keys/types";
 export * from "domain/transfer/types";
+
+export type Network =
+  | "base"
+  | "ethereum"
+  | "ethereum-sepolia"
+  | "bsc"
+  | "unknown";
+
+export type SupportedChain = {
+  id: number;
+  network: Exclude<Network, "unknown">;
+  forwarderAddress: Address;
+  iconName: string;
+  explorerUrl: string;
+  explorerName: string;
+};
 
 export type AuthType = "wallet" | "passkey";
 

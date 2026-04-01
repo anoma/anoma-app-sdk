@@ -1,4 +1,3 @@
-import type { SupportedChain } from "lib-constants";
 import { selectTransferResources } from "domain/resources";
 import type { TransferResourceWithAmount } from "domain/resources/types";
 import { getUserPublicKeysFromKeyring } from "lib/keyUtils";
@@ -10,6 +9,7 @@ import type {
   CreatedResourceDraft,
   Receiver,
   ResolvedParameters,
+  SupportedChain,
   TokenId,
   TokenRegistry,
   UserKeyring,
@@ -37,7 +37,11 @@ export class ParametersDraftResolver {
   protected chain: SupportedChain;
   protected receivers: Receiver[] = [];
 
-  constructor(transferBuilder: TransferBuilder, keyring: UserKeyring, chain: SupportedChain) {
+  constructor(
+    transferBuilder: TransferBuilder,
+    keyring: UserKeyring,
+    chain: SupportedChain
+  ) {
     this.keyring = keyring;
     this.transferBuilder = transferBuilder;
     this.chain = chain;
