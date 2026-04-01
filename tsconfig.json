@@ -13,6 +13,7 @@
     "resolveJsonModule": true,
     "noEmit": true,
     "strict": true,
+    "preserveSymlinks": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
