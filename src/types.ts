@@ -4,16 +4,9 @@ import type { EncodedResource } from "wasm";
 export * from "domain/keys/types";
 export * from "domain/transfer/types";
 
-export type Network =
-  | "base"
-  | "ethereum"
-  | "ethereum-sepolia"
-  | "bsc"
-  | "unknown";
-
 export type SupportedChain = {
   id: number;
-  network: Exclude<Network, "unknown">;
+  network: string;
   forwarderAddress: Address;
   iconName: string;
   explorerUrl: string;
@@ -56,7 +49,7 @@ export type TokenRegistry = {
   symbol: string;
   address: Address;
   decimals: number;
-  network: Network;
+  network: string;
 };
 
 export type TokenBalance = {
@@ -64,8 +57,8 @@ export type TokenBalance = {
   amount: bigint;
 };
 
-export type TokenId = `${Network}:${string}`; // {network}:{symbol}
-export type NetworkAddress = `${Network}:${Address}`; // {network}:{address}
+export type TokenId = `${string}:${string}`; // {network}:{symbol}
+export type NetworkAddress = `${string}:${Address}`; // {network}:{address}
 
 export type TokenRegistryIndex = {
   byTokenId: Record<TokenId, TokenRegistry>;

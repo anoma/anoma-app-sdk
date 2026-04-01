@@ -1,7 +1,6 @@
 import type { AggregatedTokenBalance } from "domain/resources/types";
 import type {
   AppResource,
-  Network,
   NetworkAddress,
   TokenBalance,
   TokenId,
@@ -29,8 +28,8 @@ const getNotFoundToken = (values?: Partial<TokenRegistry>): TokenRegistry => ({
 
 /** Builds a network map from supported chains for forwarder lookups. */
 export const buildNetworkMap = (
-  chains: { forwarderAddress: Address; network: Network }[]
-): Record<string, Network> =>
+  chains: { forwarderAddress: Address; network: string }[]
+): Record<string, string> =>
   Object.fromEntries(
     chains.map(c => [c.forwarderAddress.toLowerCase(), c.network])
   );
@@ -38,14 +37,14 @@ export const buildNetworkMap = (
 /** Resolves a forwarder contract address to its corresponding network. */
 export const getNetworkByForwarder = (
   forwarder: Address,
-  networkMap: Record<string, Network>
-): Network => {
+  networkMap: Record<string, string>
+): string => {
   return networkMap[forwarder.toLowerCase()] ?? "unknown";
 };
 
 /** Builds a `NetworkAddress` key by combining a network and a normalized EVM address. */
 export const networkAddress = (
-  network: Network,
+  network: string,
   address: Address
 ): NetworkAddress => `${network}:${normalizeEvmAddress(address)}`;
 
@@ -65,7 +64,7 @@ export const tokenId = (
 export const getTokenByResource = (
   registry: TokenRegistryIndex,
   resource: AppResource,
-  networkMap: Record<string, Network>
+  networkMap: Record<string, string>
 ): TokenRegistry => {
   const address = resource.erc20TokenAddress;
   const network = getNetworkByForwarder(resource.forwarder, networkMap);
@@ -78,7 +77,7 @@ export const getTokenByResource = (
 /** Looks up a token in the registry by its network and contract address. */
 export const getTokenByAddress = (
   registry: TokenRegistryIndex,
-  network: Network,
+  network: string,
   address?: Address
 ): TokenRegistry =>
   (address && registry.byAddress[networkAddress(network, address)]) ??
@@ -112,7 +111,7 @@ export const convertAggregatedToTokenBalance = (
 /** Converts raw wallet balances into `TokenBalance` entries, filtering out tokens not in the registry. */
 export const convertWalletBalanceToTokenBalance = (
   registry: TokenRegistryIndex,
-  network: Network,
+  network: string,
   balances: WalletBalance[] = []
 ): TokenBalance[] =>
   balances.flatMap(b => {
