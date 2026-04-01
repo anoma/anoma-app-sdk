@@ -1,12 +1,16 @@
 {
   "name": "@anomaorg/anoma-app-sdk",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "type": "module",
   "main": "dist/index.js",
   "private": false,
   "engines": {
     "node": ">=22"
   },
+  "files": [
+    "./dist/*",
+    "README.md"
+  ],
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
