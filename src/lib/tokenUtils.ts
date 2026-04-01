@@ -1,6 +1,5 @@
 import { supportedChains } from "app-constants";
 import type { AggregatedTokenBalance } from "domain/resources/types";
-import type { WalletBalance } from "hooks/resources/useWalletBalances";
 import type {
   AppResource,
   Network,
@@ -12,6 +11,13 @@ import type {
 } from "types";
 import type { Address } from "viem";
 import { normalizeEvmAddress } from "./utils";
+
+export interface WalletBalance {
+  address: Address;
+  value: bigint;
+  decimals: number;
+  symbol: string;
+}
 
 /** Creates a placeholder token registry entry for unknown or unresolved tokens. */
 const getNotFoundToken = (values?: Partial<TokenRegistry>): TokenRegistry => ({
