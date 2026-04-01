@@ -1,4 +1,4 @@
-import { supportedChains } from "app-constants";
+import { supportedChains } from "lib-constants";
 import type { AggregatedTokenBalance } from "domain/resources/types";
 import type {
   AppResource,

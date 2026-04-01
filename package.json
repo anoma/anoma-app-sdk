@@ -14,7 +14,7 @@
     "./wasm": "./src/wasm/index.ts",
     "./wasm/*": "./src/wasm/*",
     "./types": "./src/types.ts",
-    "./app-constants": "./src/app-constants.ts"
+    "./lib-constants": "./src/lib-constants.ts"
   },
   "scripts": {
     "lint": "eslint .",
@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
-    "@types/node": "^24.6.0",
+    "@types/node": "^24.12.0",
     "eslint": "^9.36.0",
     "prettier": "^3.6.2",
     "prettier-plugin-organize-imports": "^4.3.0",

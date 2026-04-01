@@ -1,4 +1,4 @@
-import { maxBalanceInUsd } from "app-constants";
+import { maxBalanceInUsd } from "lib-constants";
 import type { Address } from "viem";
 
 export function checkIfExceedsDepositLimit(opts: {

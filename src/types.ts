@@ -1,8 +1,8 @@
 import type { IndexerEVMTransaction, IndexerId } from "api";
-import type { Network, SupportedChain } from "app-constants";
+import type { Network, SupportedChain } from "lib-constants";
 import type { Address } from "viem";
 import type { EncodedResource } from "wasm";
-export type { Network, SupportedChain, SupportedChainId } from "app-constants";
+export type { Network, SupportedChain, SupportedChainId } from "lib-constants";
 export * from "domain/keys/types";
 export * from "domain/transfer/types";
 

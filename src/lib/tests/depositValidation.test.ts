@@ -1,4 +1,4 @@
-import { maxBalanceInUsd } from "app-constants";
+import { maxBalanceInUsd } from "lib-constants";
 import type { Address } from "viem";
 import { describe, expect, it } from "vitest";
 import { checkIfExceedsDepositLimit } from "../depositValidation";

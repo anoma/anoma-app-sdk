@@ -1,7 +1,7 @@
 import {
   AUTH_SIGNATURE_DOMAIN,
   averageTimePerProofInSeconds,
-} from "app-constants";
+} from "lib-constants";
 import { fromHex, normalizeHex } from "lib/utils";
 import type { Parameters } from "types";
 import type { Address, Hex } from "viem";

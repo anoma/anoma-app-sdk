@@ -1,7 +1,7 @@
 import {
   TRANSFER_LOGIC_VERIFYING_KEY,
   TRIVIAL_LOGIC_VERIFYING_KEY,
-} from "app-constants";
+} from "lib-constants";
 import {
   calculateLabelRef,
   calculateValueRefFromAuth,

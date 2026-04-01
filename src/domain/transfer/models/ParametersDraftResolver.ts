@@ -1,4 +1,4 @@
-import type { SupportedChain } from "app-constants";
+import type { SupportedChain } from "lib-constants";
 import { selectTransferResources } from "domain/resources";
 import type { TransferResourceWithAmount } from "domain/resources/types";
 import { getUserPublicKeysFromKeyring } from "lib/keyUtils";
