@@ -156,3 +156,6 @@ export const HeliaxPublicKeys: UserPublicKeys = {
 
 // Token price can fluctuate between fee estimates, so accept convergence within 5%.
 export const FeeFluctuationPercentage = 5n;
+
+// Maximum number of decimal places to display for token amounts
+export const MAX_DECIMALS = 6;
