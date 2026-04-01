@@ -1,14 +1,13 @@
 import { hmac } from "@noble/hashes/hmac";
 import { sha256 } from "@noble/hashes/sha2";
 import * as secp256k1 from "@noble/secp256k1";
-import type { Address } from "viem";
-import { beforeAll, describe, expect, it } from "vitest";
 import {
   createUserKeyring,
   KeyPair,
   KeyPairSerializer,
   NullifierKeyPair,
-} from "..";
+} from "domain/keys";
+import { fromBase64, fromHex, toHex } from "lib/utils";
 import {
   authorityKeyPair,
   nullifierKeyPair,
@@ -17,8 +16,9 @@ import {
   serializedNullifierKeyPair,
   staticDiscoverKeyPair,
   staticEncryptionKeyPair,
-} from "../../../../tests/data.json";
-import { fromBase64, fromHex, toHex } from "../../../lib/utils";
+} from "./data.json";
+import type { Address } from "viem";
+import { beforeAll, describe, expect, it } from "vitest";
 
 describe("Key functions", () => {
   beforeAll(() => {

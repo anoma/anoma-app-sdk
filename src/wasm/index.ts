@@ -1,12 +1,12 @@
-import { default as initLib, initSync as initLibSync } from "wasm/arm_bindings";
+import { default as initLib, initSync as initLibSync } from "./arm_bindings";
 
 /**
  * Provide reference to single wasm init promise
  */
 let wasmInstance: Promise<WebAssembly.Module>;
-export const initWasm = async (url?: string): Promise<WebAssembly.Module> => {
+export const initWasm = async (): Promise<WebAssembly.Module> => {
   if (!wasmInstance) {
-    wasmInstance = initLib(url);
+    wasmInstance = initLib();
   }
   return wasmInstance;
 };

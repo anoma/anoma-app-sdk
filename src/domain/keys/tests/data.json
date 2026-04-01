@@ -1,0 +1,21 @@
+{
+  "seed": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+  "authorityKeyPair": {
+    "privateKey": "0x92f753828268a59de728eeb0e549acbbf19407d4f50706fa5867b10e4d61c0b4",
+    "publicKey": "0x03206be06042ee804781f514890dc184c704c7d0d5dcf479cf6e85180bf48b35ba"
+  },
+  "nullifierKeyPair": {
+    "nk": "0x9c47ec8951aa5c8f0b4fe9c45d0ddd65355657ef1302dea5fc837eadac1ff654",
+    "cnk": "0x060291d07e149a38a9b6fd3fd5373aa8d66cf267a31037c39dabaabaa1e9a056"
+  },
+  "serializedKeyPair": "{\"privateKey\":\"0x92f753828268a59de728eeb0e549acbbf19407d4f50706fa5867b10e4d61c0b4\",\"publicKey\":\"0x03206be06042ee804781f514890dc184c704c7d0d5dcf479cf6e85180bf48b35ba\"}",
+  "serializedNullifierKeyPair": "{\"nk\":\"0x9c47ec8951aa5c8f0b4fe9c45d0ddd65355657ef1302dea5fc837eadac1ff654\",\"cnk\":\"0x060291d07e149a38a9b6fd3fd5373aa8d66cf267a31037c39dabaabaa1e9a056\"}",
+  "staticDiscoverKeyPair": {
+    "privateKey": "0x0a15993399fd4ecf5d53517ad4752884c17b80ecedf73cb935e11d21ca3f9fdd",
+    "publicKey": "0x02c3bfd65ec376165103c80aa1030e4ed78c1074ed3a5808563cc8ec485ee04960"
+  },
+  "staticEncryptionKeyPair": {
+    "privateKey": "0x2785cae08fc68878a43818e5818c9c2045313c7ea446e6cd8c1e06cba1bf70ce",
+    "publicKey": "0x0374af1f74c134cae7f2c0dfba7b6dc05bc601880574f0adb17e9ffb8f5c505f70"
+  }
+}

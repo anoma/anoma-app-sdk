@@ -1,23 +1,15 @@
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
-  entry: [
-    "./src/index.ts",
-    "./src/api",
-    { constants: "./src/lib-constants.ts" },
-    "./src/domain",
-    "./src/lib",
-    "./src/wasm",
-    "./src/types",
-  ],
+  entry: {
+    index: "src/index.ts",
+    api: "src/api/index.ts",
+    domain: "src/domain/index.ts",
+    lib: "src/lib/index.ts",
+    types: "src/types.ts",
+    wasm: "src/wasm/index.ts",
+    "lib-constants": "src/lib-constants.ts",
+  },
   format: ["esm", "cjs"],
-  // Uncomment the following to generate exports in package.json
-  // exports: true,
-  dts: {
-    build: true,
-  },
-  deps: {
-    onlyBundle: ["abitype"],
-  },
-  outDir: "./dist",
+  dts: true,
 });

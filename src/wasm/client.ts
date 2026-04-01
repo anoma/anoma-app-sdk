@@ -1,9 +1,9 @@
 import { invariant, validHexBytes, validHexString } from "lib/utils";
-import type { Address } from "viem";
-import { initWasm, type EncodedResource } from "wasm";
+import { initWasm } from "wasm";
 
 const DIGEST_BYTES_LENGTH = 32;
 const DIGEST_HEX_LENGTH = DIGEST_BYTES_LENGTH * 2;
+
 /**
  * Generic Anoma App Client
  *
@@ -12,8 +12,6 @@ const DIGEST_HEX_LENGTH = DIGEST_BYTES_LENGTH * 2;
  */
 export abstract class Client {
   digest: string;
-
-  migrateResource?(_resource: EncodedResource, _paAddress: Address) {}
 
   constructor(digest?: string) {
     if (digest) {
@@ -42,8 +40,7 @@ export abstract class Client {
  */
 export async function initClient<T extends Client>(
   client: new (digest?: string) => T,
-  id: string,
-  wasmUrl?: string
+  id: string
 ): Promise<T> {
-  return initWasm(wasmUrl).then(() => new client(id));
+  return initWasm().then(() => new client(id));
 }

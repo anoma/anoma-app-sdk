@@ -1,11 +1,11 @@
 import { hkdf } from "@noble/hashes/hkdf";
 import { sha256 } from "@noble/hashes/sha2";
+import { KEYRING_SALT } from "lib-constants";
 import {
   KeyPair,
   KeyPairSerializer,
   NullifierKeyPair,
 } from "domain/keys/models";
-import { KEYRING_SALT } from "lib-constants";
 import { invariant } from "lib/utils";
 import type { UserKeyring, UserPublicKeys } from "types";
 

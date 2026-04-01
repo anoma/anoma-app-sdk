@@ -5,7 +5,18 @@ import {
   type Witness,
 } from "@uniswap/permit2-sdk";
 import { type Hex, hexToNumber, slice, type TypedDataDomain } from "viem";
-import type { SignTypedDataMutateAsync } from "wagmi/query";
+
+/**
+ * Function that signs EIP-712 typed data, compatible with wagmi's signTypedData.
+ * Accepts typed data parameters and returns the hex-encoded signature.
+ */
+type SignTypedDataFn = (args: {
+  account: Hex;
+  domain: TypedDataDomain;
+  message: Record<string, unknown>;
+  primaryType: string;
+  types: Record<string, Array<{ name: string; type: string }>>;
+}) => Promise<Hex>;
 
 /**
  * Components of an EIP-712 signature returned by Permit2.
@@ -94,7 +105,7 @@ export const getPermit2Data = ({
  * @returns Split signature along with the original signature hex string.
  */
 export const signPermit = async (
-  signTypedData: SignTypedDataMutateAsync,
+  signTypedData: SignTypedDataFn,
   props: Permit2Props,
   ownerAddress: Hex
 ): Promise<PermitSignature> => {

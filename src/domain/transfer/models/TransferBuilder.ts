@@ -14,8 +14,8 @@ export class TransferBuilder {
     this.client = client;
   }
 
-  static async init(wasmUrl?: string): Promise<TransferBuilder> {
-    const client = await TransferLogic.init(wasmUrl);
+  static async init(): Promise<TransferBuilder> {
+    const client = await TransferLogic.init();
     return new TransferBuilder(client);
   }
 
