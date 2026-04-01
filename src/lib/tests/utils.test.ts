@@ -1,5 +1,60 @@
 import { describe, expect, it } from "vitest";
-import { formatFiatAmount } from "../utils";
+import { extractNumericValue, formatFiatAmount } from "../utils";
+
+describe("extractNumericValue", () => {
+  it("returns plain integers", () => {
+    expect(extractNumericValue("350")).toBe("350");
+  });
+
+  it("returns plain decimals with period", () => {
+    expect(extractNumericValue("350.50")).toBe("350.50");
+  });
+
+  it("returns plain decimals when string finishes with . or ,", () => {
+    expect(extractNumericValue("350.")).toBe("350");
+    expect(extractNumericValue("350,")).toBe("350");
+  });
+
+  it("normalizes comma to period", () => {
+    expect(extractNumericValue("350,50")).toBe("350.50");
+  });
+
+  it("extracts number from '350USD'", () => {
+    expect(extractNumericValue("350USD")).toBe("350");
+  });
+
+  it("extracts number from '350 USD'", () => {
+    expect(extractNumericValue("350 USD")).toBe("350");
+  });
+
+  it("extracts number from '350.1234 CURRENCY'", () => {
+    expect(extractNumericValue("350.1234 CURRENCY")).toBe("350.1234");
+  });
+
+  it("normalizes comma from '350,50 EUR'", () => {
+    expect(extractNumericValue("350,50 EUR")).toBe("350.50");
+  });
+
+  it("trims surrounding whitespace", () => {
+    expect(extractNumericValue("  350 USD  ")).toBe("350");
+  });
+
+  it("returns null for non-numeric text", () => {
+    expect(extractNumericValue("hello world")).toBeNull();
+  });
+
+  it("returns null for currency prefix like 'USD350'", () => {
+    expect(extractNumericValue("USD350")).toBeNull();
+  });
+
+  it("returns null for empty string", () => {
+    expect(extractNumericValue("")).toBeNull();
+  });
+
+  it("returns null for only whitespace", () => {
+    expect(extractNumericValue("   ")).toBeNull();
+  });
+});
 
 describe("formatFiatAmount", () => {
   it("returns '0.00' for zero", () => {

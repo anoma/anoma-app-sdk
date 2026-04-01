@@ -210,3 +210,35 @@ export const getTxUrl = (chainId: SupportedChainId, prefixedTxHash: string) => {
 };
 
 export const maxBigInt = (a: bigint, b: bigint): bigint => (a > b ? a : b);
+
+/**
+ * Extracts a numeric decimal value from a string that may include a currency suffix.
+ * Accepts plain decimals ("350.50"), values with currency codes ("350USD", "350 USD",
+ * "350.1234 CURRENCY"), and comma-separated decimals ("350,50 EUR").
+ * Normalizes commas to periods for consistent decimal handling.
+ * @returns The extracted numeric string, or null if the input is not a valid amount.
+ */
+export const extractNumericValue = (
+  text: string,
+  allowTrailingSeparator = false
+): string | null => {
+  const trimmed = text.trim();
+
+  // Handle plain decimals that end with a period or comma (e.g., "350." or "350,")
+  if (/^\d+[.,]?$/.test(trimmed) && !allowTrailingSeparator) {
+    return trimmed.replace(/[.,]$/, "");
+  }
+
+  // Plain decimal number (with optional comma as decimal separator)
+  if (/^\d*[.,]?\d*$/.test(trimmed) && trimmed !== "") {
+    return trimmed.replace(",", ".");
+  }
+
+  // Number followed by optional whitespace and currency letters
+  const match = trimmed.match(/^(\d+[.,]?\d*)\s*[a-zA-Z]+$/);
+  if (!match) {
+    return null;
+  }
+
+  return match[1].replace(",", ".");
+};
