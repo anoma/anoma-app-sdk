@@ -16,7 +16,7 @@ import {
   serializedNullifierKeyPair,
   staticDiscoverKeyPair,
   staticEncryptionKeyPair,
-} from "tests/data.json";
+} from "./data.json";
 import type { Address } from "viem";
 import { beforeAll, describe, expect, it } from "vitest";
 
