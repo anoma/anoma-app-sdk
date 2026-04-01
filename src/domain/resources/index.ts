@@ -1,3 +1,3 @@
-export * from "domain/resources/errors";
-export * from "domain/resources/services";
-export * from "domain/resources/types";
+export * from "./errors.ts";
+export * from "./services.ts";
+export * from "./types.ts";

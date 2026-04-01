@@ -9,11 +9,11 @@ import type {
   CreatedResourceDraft,
   Receiver,
   ResolvedParameters,
+  SupportedChain,
   TokenId,
   TokenRegistry,
   UserKeyring,
 } from "types";
-import type { Address } from "viem";
 import { NullifierKey, Resource } from "wasm";
 import type { TransferBuilder } from "./TransferBuilder";
 
@@ -34,11 +34,17 @@ type TokenResourceWithAmount = {
 export class ParametersDraftResolver {
   protected transferBuilder: TransferBuilder;
   protected keyring: UserKeyring;
+  protected chain: SupportedChain;
   protected receivers: Receiver[] = [];
 
-  constructor(transferBuilder: TransferBuilder, keyring: UserKeyring) {
+  constructor(
+    transferBuilder: TransferBuilder,
+    keyring: UserKeyring,
+    chain: SupportedChain
+  ) {
     this.keyring = keyring;
     this.transferBuilder = transferBuilder;
+    this.chain = chain;
   }
 
   /** Adds a receiver to the transfer. */
@@ -149,8 +155,7 @@ export class ParametersDraftResolver {
    */
   getCreatedResourceDraftList(
     consumedResources: ConsumedResourceDraft[],
-    receivers: Receiver[],
-    forwarderAddress: Address
+    receivers: Receiver[]
   ): CreatedResourceDraft[] {
     return receivers.map((receiver, i) => {
       const { resource: consumedResource, nullifierKey } = consumedResources[i];
@@ -160,7 +165,7 @@ export class ParametersDraftResolver {
 
       // Params that will be shared between different resource creation methods (burn vs transfer)
       const commonParams = {
-        forwarderAddress,
+        forwarderAddress: this.chain.forwarderAddress,
         token: receiver.token.address,
         quantity: receiver.quantity,
         resource: consumedResource,
@@ -220,10 +225,7 @@ export class ParametersDraftResolver {
    * consumed/created entries, balancing with padding, authorizing, and
    * serializing into the Parameters structure.
    */
-  build(
-    userResources: AppResource[],
-    forwarderAddress: Address
-  ): ResolvedParameters {
+  build(userResources: AppResource[]): ResolvedParameters {
     // Select user resources
     const selectedResources = this.selectResources(userResources);
     const remainderReceivers = this.checkForRemainders(selectedResources);
@@ -246,11 +248,7 @@ export class ParametersDraftResolver {
 
     // Create resources using the (now padded) consumed resources
     const createdResourceDrafts: CreatedResourceDraft[] = [
-      ...this.getCreatedResourceDraftList(
-        consumedResourceDrafts,
-        receivers,
-        forwarderAddress
-      ),
+      ...this.getCreatedResourceDraftList(consumedResourceDrafts, receivers),
     ];
 
     // Pad created resources if consumed still outnumbers them

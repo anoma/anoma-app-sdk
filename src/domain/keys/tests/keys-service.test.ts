@@ -1,11 +1,11 @@
-import { expect, test } from "vitest";
 import {
   createUserKeyring,
   createUserKeyringFromIkm,
   deserializeUserKeyring,
   serializeUserKeyring,
-} from "..";
-import { generateRandomBytes } from "../../../lib/utils";
+} from "domain/keys";
+import { generateRandomBytes } from "lib/utils";
+import { expect, test } from "vitest";
 
 test("should create user keyring correctly", () => {
   const keyring = createUserKeyring();

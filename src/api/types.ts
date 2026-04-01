@@ -85,7 +85,7 @@ export type MerkleProofResponse = {
 };
 
 // Protocol adaptor transaction receipt response
-export type TransactionReceiptResonse<T = ResponseJson> = {
+export type TransactionReceiptResponse<T = ResponseJson> = {
   inner: T;
   transactionHash: string;
   transactionIndex?: string;
@@ -102,7 +102,7 @@ export type TransactionReceiptResonse<T = ResponseJson> = {
 };
 
 export type TransactionResponse<T = ResponseJson> = {
-  receipt: TransactionReceiptResonse<T>;
+  receipt: TransactionReceiptResponse<T>;
 };
 
 export type TransactionHashResponse = {

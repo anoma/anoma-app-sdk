@@ -1,6 +1,6 @@
 import type { AggregatedTokenBalance } from "domain/resources/types";
-import { type Network } from "lib-constants";
 import type {
+  AppResource,
   NetworkAddress,
   TokenBalance,
   TokenId,
@@ -9,6 +9,13 @@ import type {
 } from "types";
 import type { Address } from "viem";
 import { normalizeEvmAddress } from "./utils";
+
+export interface WalletBalance {
+  address: Address;
+  value: bigint;
+  decimals: number;
+  symbol: string;
+}
 
 /** Creates a placeholder token registry entry for unknown or unresolved tokens. */
 const getNotFoundToken = (values?: Partial<TokenRegistry>): TokenRegistry => ({
@@ -19,9 +26,25 @@ const getNotFoundToken = (values?: Partial<TokenRegistry>): TokenRegistry => ({
   ...values,
 });
 
+/** Builds a network map from supported chains for forwarder lookups. */
+export const buildNetworkMap = (
+  chains: { forwarderAddress: Address; network: string }[]
+): Record<string, string> =>
+  Object.fromEntries(
+    chains.map(c => [c.forwarderAddress.toLowerCase(), c.network])
+  );
+
+/** Resolves a forwarder contract address to its corresponding network. */
+export const getNetworkByForwarder = (
+  forwarder: Address,
+  networkMap: Record<string, string>
+): string => {
+  return networkMap[forwarder.toLowerCase()] ?? "unknown";
+};
+
 /** Builds a `NetworkAddress` key by combining a network and a normalized EVM address. */
 export const networkAddress = (
-  network: Network,
+  network: string,
   address: Address
 ): NetworkAddress => `${network}:${normalizeEvmAddress(address)}`;
 
@@ -32,10 +55,29 @@ export const tokenId = (
   return `${tokenRegistry.network}:${tokenRegistry.symbol.toLowerCase()}`;
 };
 
+/**
+ * Gets the token registry entry for a given resource.
+ * @param registry - The token registry index to search
+ * @param resource - The encoded resource with status information
+ * @returns The matching token registry or a placeholder for unknown tokens
+ */
+export const getTokenByResource = (
+  registry: TokenRegistryIndex,
+  resource: AppResource,
+  networkMap: Record<string, string>
+): TokenRegistry => {
+  const address = resource.erc20TokenAddress;
+  const network = getNetworkByForwarder(resource.forwarder, networkMap);
+  return (
+    registry.byAddress[networkAddress(network, address)] ??
+    getNotFoundToken({ address, network })
+  );
+};
+
 /** Looks up a token in the registry by its network and contract address. */
 export const getTokenByAddress = (
   registry: TokenRegistryIndex,
-  network: Network,
+  network: string,
   address?: Address
 ): TokenRegistry =>
   (address && registry.byAddress[networkAddress(network, address)]) ??
@@ -65,6 +107,30 @@ export const convertAggregatedToTokenBalance = (
     return { token, amount: balancesPerToken[id].raw };
   });
 };
+
+/** Converts raw wallet balances into `TokenBalance` entries, filtering out tokens not in the registry. */
+export const convertWalletBalanceToTokenBalance = (
+  registry: TokenRegistryIndex,
+  network: string,
+  balances: WalletBalance[] = []
+): TokenBalance[] =>
+  balances.flatMap(b => {
+    const token = registry.byAddress[networkAddress(network, b.address)];
+    if (!token) return [];
+    return { token, amount: b.value };
+  });
+
+/** Builds a `Record<TokenId, TokenBalance>` index for O(1) balance lookups. */
+export const buildBalanceIndex = (
+  balances: TokenBalance[]
+): Record<TokenId, TokenBalance> => {
+  const map = {} as Record<TokenId, TokenBalance>;
+  for (const b of balances) {
+    map[tokenId(b.token)] = b;
+  }
+  return map;
+};
+
 /** Finds the balance entry matching a given token registry by both network and symbol. */
 export const findBalanceByToken = (
   balances: TokenBalance[],

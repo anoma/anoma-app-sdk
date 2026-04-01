@@ -3,9 +3,10 @@ import type {
   IndexerResource,
   NullifierRecord,
 } from "api";
-import { fromHex, normalizeHex } from "lib/utils";
-import type { AppResource, TokenId } from "types";
-import { type Address, type Hex } from "viem";
+import { getTokenByResource, tokenId } from "lib/tokenUtils";
+import { formatBalance, fromHex, normalizeHex } from "lib/utils";
+import type { AppResource, TokenId, TokenRegistryIndex } from "types";
+import { type Address, type Hex, formatUnits } from "viem";
 import { NullifierKey, Resource, ResourceWithLabel } from "wasm";
 import { InsufficientResourcesError } from "./errors";
 import type {
@@ -311,4 +312,53 @@ export type AggregatedTokenBalancesOutput = {
   totalInUsd: number;
   balancesPerToken: Record<TokenId, AggregatedTokenBalance>;
   resources: AppResource[];
+};
+
+/**
+ * Aggregates a flat list of resources into per-token balances with USD totals.
+ *
+ * Groups resources by their token (resolved via registry), sums raw quantities,
+ * computes a USD total using the provided price map, and formats each balance
+ * for display.
+ *
+ * @param resources - Decoded app resources (consumed or available).
+ * @param registry - Token registry index for resolving resource → token.
+ * @param prices - Map of ERC-20 address → USD price.
+ * @returns Aggregated balances per token and a grand total in USD.
+ */
+export const aggregateTokenBalances = (
+  resources: AppResource[],
+  registry: TokenRegistryIndex,
+  prices: Record<Address, number>,
+  networkMap: Record<string, string>
+): AggregatedTokenBalancesOutput => {
+  const output: AggregatedTokenBalancesOutput = {
+    totalInUsd: 0,
+    balancesPerToken: {},
+    resources,
+  };
+
+  resources.forEach(item => {
+    const token = getTokenByResource(registry, item, networkMap);
+    const id = tokenId(token);
+    const amount = Number(formatUnits(item.quantity, token.decimals));
+
+    const price = prices[item.erc20TokenAddress] ?? 0;
+    output.totalInUsd += amount * price;
+
+    const prev = output.balancesPerToken[id];
+    output.balancesPerToken[id] = {
+      raw: (prev?.raw ?? 0n) + item.quantity,
+      formatted: "",
+      token,
+      resources: (prev?.resources ?? []).concat(item),
+    };
+  });
+
+  for (const id of Object.keys(output.balancesPerToken) as TokenId[]) {
+    const item = output.balancesPerToken[id];
+    item.formatted = formatBalance(item.raw, item.token.decimals);
+  }
+
+  return output;
 };

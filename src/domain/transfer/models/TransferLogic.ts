@@ -1,12 +1,12 @@
 import {
+  TRANSFER_LOGIC_VERIFYING_KEY,
+  TRIVIAL_LOGIC_VERIFYING_KEY,
+} from "lib-constants";
+import {
   calculateLabelRef,
   calculateValueRefFromAuth,
   calculateValueRefFromUserAddress,
 } from "domain/transfer/services";
-import {
-  TRANSFER_LOGIC_VERIFYING_KEY,
-  TRIVIAL_LOGIC_VERIFYING_KEY,
-} from "lib-constants";
 import { toHex } from "lib/utils";
 import type { CreateMintProps, MintResources, UserPublicKeys } from "types";
 import type { Address } from "viem";
@@ -27,8 +27,8 @@ import { Client, initClient } from "wasm/client";
  * Anoma Simple Transfer Application
  */
 export class TransferLogic extends Client {
-  static async init(wasmUrl?: string): Promise<TransferLogic> {
-    return initClient(TransferLogic, TRANSFER_LOGIC_VERIFYING_KEY, wasmUrl);
+  static async init(): Promise<TransferLogic> {
+    return initClient(TransferLogic, TRANSFER_LOGIC_VERIFYING_KEY);
   }
 
   createPaddingResource(props?: {
