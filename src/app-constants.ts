@@ -1,5 +1,4 @@
-import { fromBase64 } from "lib/utils";
-import type { TokenId, UserPublicKeys } from "types";
+import type { TokenId } from "types";
 import type { Address, Chain } from "viem";
 import { base, bsc, mainnet, sepolia } from "viem/chains";
 
@@ -133,26 +132,6 @@ export const chainByNetwork = supportedChains.reduce(
   },
   {} as Record<Exclude<Network, "unknown">, SupportedChain>
 );
-
-/**
- * Heliax Public Keys to pay Fees to
- */
-export const HeliaxKeys = {
-  HELIAX_FEE_DISCOVERY_PK: "Ap9haPXEOu5gYvT903ZIob4rIoSKi+PH38Z505xAaVaT",
-  HELIAX_FEE_ENCRYPTION_PK: "AyMKcm5ufUoQW7YLkfsWqYZYSLGjgU3KxFa4VW3GV5jJ",
-  HELIAX_FEE_AUTHORITY_PK: "A+NjLMDHguD8QSDhx8utlsN0lBtB3hNQaSsZxmatfJhs",
-  HELIAX_FEE_NULLIFIER_KEY_COMMITMENT:
-    "dEKxSTtQu7sDslLCUHTOAY/c119fDvLJVD8MgFLHOd8=",
-};
-
-export const HeliaxPublicKeys: UserPublicKeys = {
-  discoveryPublicKey: fromBase64(HeliaxKeys.HELIAX_FEE_DISCOVERY_PK),
-  encryptionPublicKey: fromBase64(HeliaxKeys.HELIAX_FEE_ENCRYPTION_PK),
-  authorityPublicKey: fromBase64(HeliaxKeys.HELIAX_FEE_AUTHORITY_PK),
-  nullifierKeyCommitment: fromBase64(
-    HeliaxKeys.HELIAX_FEE_NULLIFIER_KEY_COMMITMENT
-  ),
-};
 
 // Token price can fluctuate between fee estimates, so accept convergence within 5%.
 export const FeeFluctuationPercentage = 5n;
