@@ -1,15 +1,4 @@
-import type { IconComponent } from "@web3icons/react";
-import {
-  ExchangeIcon,
-  NetworkIcon,
-  TokenIcon,
-  WalletIcon,
-} from "@web3icons/react/dynamic";
-import { chainById } from "app-constants";
-import clsx, { type ClassValue } from "clsx";
-import type { ReactElement } from "react";
-import { twMerge } from "tailwind-merge";
-import type { SupportedChainId, TokenRegistry } from "types";
+import type { TokenRegistry } from "types";
 import {
   bytesToHex,
   formatUnits,
@@ -21,10 +10,6 @@ import {
 } from "viem";
 import z from "zod";
 
-export const cn = (...inputs: ClassValue[]) => {
-  return twMerge(clsx(inputs));
-};
-
 export const shortenAddress = (address: string, head = 6, tail = 4) => {
   return `${address.slice(0, 2 + head)}…${address.slice(-tail)}`;
 };
@@ -32,18 +17,6 @@ export const shortenAddress = (address: string, head = 6, tail = 4) => {
 export const normalizeEvmAddress = (address: string): Address => {
   const normalized = address.toLowerCase();
   return isAddress(normalized) ? normalized : `0x${normalized}`;
-};
-
-export const checkForWeb3Icons = (
-  el: ReactElement
-): el is ReactElement<IconComponent> => {
-  if (!el || typeof el !== "object") return false;
-  return (
-    el.type === TokenIcon ||
-    el.type === NetworkIcon ||
-    el.type === WalletIcon ||
-    el.type === ExchangeIcon
-  );
 };
 
 export const formatBalance = (
@@ -198,15 +171,5 @@ export function invariant(
   if (condition) return;
   throw new Error(message);
 }
-
-/**
- * Builds the block explorer URL for a transaction.
- * @param chainId - The chain ID to get the explorer URL for
- * @param prefixedTxHash - The transaction hash with 0x prefix
- * @returns The full URL to view the transaction on the block explorer
- */
-export const getTxUrl = (chainId: SupportedChainId, prefixedTxHash: string) => {
-  return `${chainById[chainId].explorerUrl}/tx/${prefixedTxHash}`;
-};
 
 export const maxBigInt = (a: bigint, b: bigint): bigint => (a > b ? a : b);
