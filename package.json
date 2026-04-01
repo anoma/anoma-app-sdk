@@ -1,5 +1,5 @@
 {
-  "name": "@anomaorg/anoma-pay-sdk",
+  "name": "@anomaorg/anoma-app-sdk",
   "version": "0.8.0",
   "type": "module",
   "main": "dist/index.js",
