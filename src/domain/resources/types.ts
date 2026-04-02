@@ -17,6 +17,7 @@ export type TransferResources = {
 
 export type AggregatedTokenBalance = {
   raw: bigint;
+  formattedRounded: string;
   formatted: string;
   token: TokenRegistry;
   resources: AppResource[];

@@ -4,7 +4,12 @@ import type {
   NullifierRecord,
 } from "api";
 import { getTokenByResource, tokenId } from "lib/tokenUtils";
-import { formatBalance, fromHex, normalizeHex } from "lib/utils";
+import {
+  formatBalance,
+  formatTokenAmount,
+  fromHex,
+  normalizeHex,
+} from "lib/utils";
 import type { AppResource, TokenId, TokenRegistryIndex } from "types";
 import { type Address, type Hex, formatUnits } from "viem";
 import { NullifierKey, Resource, ResourceWithLabel } from "wasm";
@@ -350,6 +355,7 @@ export const aggregateTokenBalances = (
     output.balancesPerToken[id] = {
       raw: (prev?.raw ?? 0n) + item.quantity,
       formatted: "",
+      formattedRounded: "",
       token,
       resources: (prev?.resources ?? []).concat(item),
     };
@@ -358,6 +364,7 @@ export const aggregateTokenBalances = (
   for (const id of Object.keys(output.balancesPerToken) as TokenId[]) {
     const item = output.balancesPerToken[id];
     item.formatted = formatBalance(item.raw, item.token.decimals);
+    item.formattedRounded = formatTokenAmount(item.formatted, item.token);
   }
 
   return output;
