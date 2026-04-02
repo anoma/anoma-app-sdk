@@ -1,6 +1,6 @@
 {
   "name": "@anomaorg/anoma-app-sdk",
-  "version": "0.8.2",
+  "version": "0.9.0",
   "type": "module",
   "main": "dist/index.js",
   "private": false,
