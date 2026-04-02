@@ -11,6 +11,7 @@ export default defineConfig({
     "lib-constants": "src/lib-constants.ts",
   },
   format: ["esm", "cjs"],
+  platform: "browser",
   dts: true,
   deps: {
     alwaysBundle: ["@uniswap/permit2-sdk"],

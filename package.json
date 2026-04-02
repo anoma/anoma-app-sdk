@@ -13,38 +13,38 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
+      "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
     "./api": {
-      "import": "./dist/api.mjs",
+      "import": "./dist/api.js",
       "require": "./dist/api.cjs"
     },
     "./constants": {
-      "import": "./dist/lib-constants.mjs",
+      "import": "./dist/lib-constants.js",
       "require": "./dist/lib-constants.cjs"
     },
     "./domain": {
-      "import": "./dist/domain.mjs",
+      "import": "./dist/domain.js",
       "require": "./dist/domain.cjs"
     },
     "./lib": {
-      "import": "./dist/lib.mjs",
+      "import": "./dist/lib.js",
       "require": "./dist/lib.cjs"
     },
     "./types": {
-      "import": "./dist/types.mjs",
+      "import": "./dist/types.js",
       "require": "./dist/types.cjs"
     },
     "./wasm": {
-      "import": "./dist/wasm.mjs",
+      "import": "./dist/wasm.js",
       "require": "./dist/wasm.cjs"
     },
     "./anomaPayArm.wasm": {
       "default": "./dist/arm_bindings_bg.wasm"
     },
     "./lib-constants": {
-      "import": "./dist/lib-constants.mjs",
+      "import": "./dist/lib-constants.js",
       "require": "./dist/lib-constants.cjs"
     },
     "./package.json": "./package.json"
@@ -76,6 +76,7 @@
     "@noble/secp256k1": "3.0.0",
     "@uniswap/permit2-sdk": "1.4.0",
     "bs58": "^6.0.0",
+    "buffer": "^6.0.3",
     "crc-32": "1.2.2",
     "viem": "2.38.5",
     "zod": "4.1.13"
@@ -90,11 +91,11 @@
     "lint-staged": "^16.4.0",
     "prettier": "^3.6.2",
     "prettier-plugin-organize-imports": "^4.3.0",
+    "tsdown": "^0.21.5",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.58.0",
     "vite": "^7.1.7",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^4.0.6",
-    "tsdown": "^0.21.5"
+    "vitest": "^4.0.6"
   }
 }
