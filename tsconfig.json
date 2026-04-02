@@ -23,7 +23,7 @@
       "api": ["./src/api/index.ts"],
       "api/*": ["./src/api/*"],
       "domain/*": ["./src/domain/*"],
-      "lib": ["src/lib/index.ts"],
+      "lib": ["./src/lib/index.ts"],
       "lib/*": ["./src/lib/*"],
       "wasm": ["./src/wasm/index.ts"],
       "wasm/*": ["./src/wasm/*"],
