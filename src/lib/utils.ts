@@ -111,14 +111,9 @@ export function stringToBytes(str: string): Uint8Array<ArrayBuffer> {
   return viemStringToBytes(str) as Uint8Array<ArrayBuffer>;
 }
 
-/**
- * Serialize BigInt to string
- */
-export function serializeBigInt(_key: string, value: unknown): unknown {
-  if (typeof value === "bigint") {
-    return parseInt(value.toString());
-  }
-  return value;
+/** JSON replacer for lossless bigint encoding. Pair with bigIntReviver. */
+export function bigIntReplacer(_key: string, value: unknown): unknown {
+  return typeof value === "bigint" ? value.toString() : value;
 }
 
 export const fromHexToBase64 = (hex: Hex) => toBase64(fromHex(hex));

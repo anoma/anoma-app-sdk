@@ -48,6 +48,8 @@ const INDEXER_URL = process.env.INDEXER_URL ?? "https://indexer.anoma.money";
 const ENVIO_URL =
   process.env.ENVIO_URL ?? "https://envio.anoma.money/v1/graphql";
 const POLL_INTERVAL_MS = Number(process.env.POLL_INTERVAL_MS ?? 5_000);
+// The backend hard-limits transactions to 5 resource pairs (created_resources.len() * 2 <= 10).
+const BATCH_SIZE = Number(process.env.BATCH_SIZE ?? 5);
 
 // ---------------------------------------------------------------------------
 // Known tokens
@@ -57,24 +59,22 @@ const POLL_INTERVAL_MS = Number(process.env.POLL_INTERVAL_MS ?? 5_000);
 // ---------------------------------------------------------------------------
 
 const KNOWN_TOKENS: Record<string, Omit<TokenRegistry, "address">> = {
-  // USDC on Base mainnet
-  "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913": {
-    symbol: "USDC",
-    decimals: 6,
-    network: "base",
-  },
-  // USDC on Ethereum mainnet
-  "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
-    symbol: "USDC",
-    decimals: 6,
-    network: "ethereum",
-  },
-  // WETH on Base mainnet
-  "0x4200000000000000000000000000000000000006": {
-    symbol: "WETH",
-    decimals: 18,
-    network: "base",
-  },
+  // USDC (BSC uses 18 dec override)
+  "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { symbol: "USDC", decimals: 6,  network: "ethereum" },
+  "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913": { symbol: "USDC", decimals: 6,  network: "base" },
+  "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d": { symbol: "USDC", decimals: 18, network: "bsc" },
+  // USDT (BSC uses 18 dec override)
+  "0xdac17f958d2ee523a2206206994597c13d831ec7": { symbol: "USDT", decimals: 6,  network: "ethereum" },
+  "0xfde4c96c8593536e31f229ea8f37b2ada2699bb2": { symbol: "USDT", decimals: 6,  network: "base" },
+  "0x55d398326f99059ff775485246999027b3197955": { symbol: "USDT", decimals: 18, network: "bsc" },
+  // WETH
+  "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": { symbol: "WETH", decimals: 18, network: "ethereum" },
+  "0x4200000000000000000000000000000000000006": { symbol: "WETH", decimals: 18, network: "base" },
+  "0x2170ed0880ac9a755fd29b2688956bd959f933f8": { symbol: "WETH", decimals: 18, network: "bsc" },
+  // XAN
+  "0xcedbea37c8872c4171259cdfd5255cb8923cf8e7": { symbol: "XAN",  decimals: 18, network: "ethereum" },
+  "0xf1b53d35c8516151f4c1f6a99e35e45b9c759983": { symbol: "XAN",  decimals: 18, network: "base" },
+  "0x7427bd9542e64d1ac207a540cfce194b7390a07f": { symbol: "XAN",  decimals: 18, network: "bsc" },
 };
 
 function tokenRegistryFor(address: Address): TokenRegistry {
@@ -110,10 +110,18 @@ const HELIAX_PUBLIC_KEYS: UserPublicKeys = {
 
 // Map from lowercase ERC-20 address to fee token symbol.
 const FEE_TOKEN_BY_ADDRESS: Record<string, SupportedFeeToken> = {
-  "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913": "USDC", // USDC Base
   "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": "USDC", // USDC Ethereum
+  "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913": "USDC", // USDC Base
+  "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d": "USDC", // USDC BSC
+  "0xdac17f958d2ee523a2206206994597c13d831ec7": "USDT", // USDT Ethereum
   "0xfde4c96c8593536e31f229ea8f37b2ada2699bb2": "USDT", // USDT Base
+  "0x55d398326f99059ff775485246999027b3197955": "USDT", // USDT BSC
+  "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": "WETH", // WETH Ethereum
   "0x4200000000000000000000000000000000000006": "WETH", // WETH Base
+  "0x2170ed0880ac9a755fd29b2688956bd959f933f8": "WETH", // WETH BSC
+  "0xcedbea37c8872c4171259cdfd5255cb8923cf8e7": "XAN",  // XAN Ethereum
+  "0xf1b53d35c8516151f4c1f6a99e35e45b9c759983": "XAN",  // XAN Base
+  "0x7427bd9542e64d1ac207a540cfce194b7390a07f": "XAN",  // XAN BSC
 };
 
 // ---------------------------------------------------------------------------
@@ -335,7 +343,7 @@ function diagnose(keyring: UserKeyring, unspent: AppResource[]) {
   const sdkCnkHex = Buffer.from(keyring.nullifierKeyPair.cnk).toString("hex");
 
   const authVk = new AuthorityVerifyingKey(keyring.authorityKeyPair.publicKey);
-  const encPkHex = `0x${Buffer.from(keyring.encryptionKeyPair.publicKey).toString("hex")}`;
+  const encPkHex = `0x${Buffer.from(keyring.encryptionKeyPair.publicKey).toString("hex")}` as `0x${string}`;
   const expectedValueRef = calculateValueRefFromAuth(authVk, encPkHex).toHex();
 
   const authPkB64 = new PublicKey(keyring.authorityKeyPair.publicKey).toBase64();
@@ -386,14 +394,42 @@ async function main() {
 
   diagnose(keyring, unspent);
 
-  const groups = groupByToken(unspent);
+  const spendable = unspent.filter((r) => r.quantity > 0n);
+  if (spendable.length < unspent.length) {
+    console.log(
+      `  Skipping ${unspent.length - spendable.length} zero-quantity resource(s)`
+    );
+  }
+
+  const groups = groupByToken(spendable);
   console.log(`Found ${groups.length} token group(s) to sweep.`);
 
   for (const group of groups) {
-    const txId = await sweep(group, keyring);
-    if (!txId) continue;
-    const evmHash = await waitForProof(txId);
-    console.log(`  EVM transaction: ${evmHash}`);
+    const batches: ResourceGroup[] = [];
+    for (let i = 0; i < group.resources.length; i += BATCH_SIZE) {
+      const batchResources = group.resources.slice(i, i + BATCH_SIZE);
+      batches.push({
+        token: group.token,
+        forwarder: group.forwarder,
+        resources: batchResources,
+        totalQuantity: batchResources.reduce((sum, r) => sum + r.quantity, 0n),
+      });
+    }
+
+    console.log(`  ${batches.length} batch(es) of up to ${BATCH_SIZE} resource(s) each`);
+
+    for (let b = 0; b < batches.length; b++) {
+      console.log(`\n  Batch ${b + 1}/${batches.length}`);
+      try {
+        const txId = await sweep(batches[b], keyring);
+        if (!txId) continue;
+        const evmHash = await waitForProof(txId);
+        console.log(`  EVM transaction: ${evmHash}`);
+      } catch (e) {
+        console.error(`  Batch failed: ${e instanceof Error ? e.message : e}`);
+        console.error("  Skipping batch — restart the script to retry.");
+      }
+    }
   }
 
   console.log("\nSweep complete.");

@@ -1,6 +1,7 @@
 import type { IndexerEVMTransaction, IndexerId } from "api";
 import {
   BaseMainnetChainId,
+  BscMainnetChainId,
   EthereumMainnetChainId,
   EthereumSepoliaChainId,
 } from "lib-constants";
@@ -113,6 +114,7 @@ export const chainIds = [
   EthereumMainnetChainId,
   EthereumSepoliaChainId,
   BaseMainnetChainId,
+  BscMainnetChainId,
 ] as const;
 
 /** Union type of the numeric chain IDs supported by Anoma Pay. */
@@ -132,7 +134,7 @@ export type ChainSettings = {
 export type ChainLookup = Record<SupportedChainId, ChainSettings>;
 
 /** Human-readable network identifier used throughout the SDK. */
-export type Network = "base" | "ethereum" | "ethereum-sepolia" | "unknown";
+export type Network = "base" | "ethereum" | "ethereum-sepolia" | "bsc" | "unknown";
 
 /** Composite key identifying a token by network and symbol: `"{network}:{symbol}"`. */
 export type TokenId = `${Network}:${string}`;

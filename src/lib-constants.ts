@@ -62,6 +62,7 @@ export const retryMutationsCount = 3;
 export const EthereumMainnetChainId = 1;
 export const EthereumSepoliaChainId = 11155111;
 export const BaseMainnetChainId = 8453;
+export const BscMainnetChainId = 56;
 
 // Blocks deposit if total amount is bigger than maxBalanceInUsd
 export const maxBalanceInUsd = Number(
@@ -79,6 +80,7 @@ export const ChainIdByNetwork: Record<Network, SupportedChainId | 0> = {
   ["ethereum"]: EthereumMainnetChainId,
   ["ethereum-sepolia"]: EthereumSepoliaChainId,
   ["base"]: BaseMainnetChainId,
+  ["bsc"]: BscMainnetChainId,
   ["unknown"]: 0,
 };
 
@@ -86,16 +88,19 @@ export const NetworkName: Record<SupportedChainId, string> = {
   [BaseMainnetChainId]: "base",
   [EthereumMainnetChainId]: "eth",
   [EthereumSepoliaChainId]: "eth",
+  [BscMainnetChainId]: "bsc",
 };
 
 export const TxExplorerUrlByChainId: Record<SupportedChainId, string> = {
   [BaseMainnetChainId]: "https://basescan.org/tx/",
   [EthereumMainnetChainId]: "https://etherscan.io/tx/",
   [EthereumSepoliaChainId]: "https://sepolia.etherscan.io/tx/",
+  [BscMainnetChainId]: "https://bscscan.com/tx/",
 };
 
 export const ExplorerNameByChainId: Record<SupportedChainId, string> = {
   [BaseMainnetChainId]: "BaseScan",
   [EthereumMainnetChainId]: "EtherScan",
   [EthereumSepoliaChainId]: "EtherScan",
+  [BscMainnetChainId]: "BscScan",
 };
