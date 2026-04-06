@@ -24,6 +24,25 @@ export class IndexerClient extends ApiClient {
     );
   }
 
+  // TODO: temporary hardcoded base URL — should use this.url once the endpoint is on the main indexer
+  async rpc<T = unknown>(
+    chainId: number,
+    body: Record<string, unknown>
+  ): Promise<T> {
+    const response = await fetch(
+      `https://galileo.stag.heliax.fyi${IndexerPaths.Rpc}/${chainId}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`RPC call failed: ${response.status} ${response.statusText}`);
+    }
+    return response.json() as Promise<T>;
+  }
+
   async resources(
     discoveryPrivateKey: Hex,
     contracts: IndexerContract[]

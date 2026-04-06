@@ -11,4 +11,5 @@ export const IndexerPaths = {
   Health: "/health",
   AddKeys: "/add_key",
   Tags: "/tags",
+  Rpc: "/alchemy",
 } as const;
