@@ -75,7 +75,9 @@ export const roundDecimalString = (
   // Use BigInt to handle rounding without floating-point issues
   const kept = `${intPart}${decPart.slice(0, maxDecimals)}`;
   const roundUp = Number(decPart[maxDecimals]) >= 5;
-  const value = (BigInt(kept) + (roundUp ? 1n : 0n)).toString();
+  const value = (
+    BigInt(kept.replaceAll(",", "")) + (roundUp ? 1n : 0n)
+  ).toString();
 
   // Pad in case BigInt result is shorter than expected (e.g. "0.01" with 1 decimal)
   const padded = value.padStart(maxDecimals + 1, "0");
