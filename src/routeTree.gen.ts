@@ -25,11 +25,11 @@ import { Route as AuthenticatedAppDashboardRouteImport } from "./routes/_authent
 import { Route as AuthSignUpWalletRouteImport } from "./routes/_auth/sign-up/wallet";
 import { Route as AuthSignUpPasskeysRouteImport } from "./routes/_auth/sign-up/passkeys";
 import { Route as AuthLoginWalletRouteImport } from "./routes/_auth/login/wallet";
+import { Route as AuthLoginInAppRouteImport } from "./routes/_auth/login/in-app";
 import { Route as AuthenticatedOverlayReceiptIdRouteImport } from "./routes/_authenticated/_overlay/receipt.$id";
 import { Route as AuthenticatedModalPayRequestRouteImport } from "./routes/_authenticated/_modal/pay.request";
 import { Route as AuthenticatedModalPayReceiverRouteImport } from "./routes/_authenticated/_modal/pay.$receiver";
 import { Route as AuthenticatedModalClaimSeedRouteImport } from "./routes/_authenticated/_modal/claim.$seed";
-import { Route as AuthLoginInAppIdRouteImport } from "./routes/_auth/login/in-app.$id";
 
 const BetaRoute = BetaRouteImport.update({
   id: "/beta",
@@ -111,6 +111,11 @@ const AuthLoginWalletRoute = AuthLoginWalletRouteImport.update({
   path: "/login/wallet",
   getParentRoute: () => AuthRouteRoute,
 } as any);
+const AuthLoginInAppRoute = AuthLoginInAppRouteImport.update({
+  id: "/login/in-app",
+  path: "/login/in-app",
+  getParentRoute: () => AuthRouteRoute,
+} as any);
 const AuthenticatedOverlayReceiptIdRoute =
   AuthenticatedOverlayReceiptIdRouteImport.update({
     id: "/_overlay/receipt/$id",
@@ -135,15 +140,11 @@ const AuthenticatedModalClaimSeedRoute =
     path: "/claim/$seed",
     getParentRoute: () => AuthenticatedModalRouteRoute,
   } as any);
-const AuthLoginInAppIdRoute = AuthLoginInAppIdRouteImport.update({
-  id: "/login/in-app/$id",
-  path: "/login/in-app/$id",
-  getParentRoute: () => AuthRouteRoute,
-} as any);
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
   "/beta": typeof BetaRoute;
+  "/login/in-app": typeof AuthLoginInAppRoute;
   "/login/wallet": typeof AuthLoginWalletRoute;
   "/sign-up/passkeys": typeof AuthSignUpPasskeysRoute;
   "/sign-up/wallet": typeof AuthSignUpWalletRoute;
@@ -154,7 +155,6 @@ export interface FileRoutesByFullPath {
   "/withdraw": typeof AuthenticatedModalWithdrawRoute;
   "/login": typeof AuthLoginIndexRoute;
   "/sign-up": typeof AuthSignUpIndexRoute;
-  "/login/in-app/$id": typeof AuthLoginInAppIdRoute;
   "/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
   "/pay/$receiver": typeof AuthenticatedModalPayReceiverRoute;
   "/pay/request": typeof AuthenticatedModalPayRequestRoute;
@@ -163,6 +163,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
   "/beta": typeof BetaRoute;
+  "/login/in-app": typeof AuthLoginInAppRoute;
   "/login/wallet": typeof AuthLoginWalletRoute;
   "/sign-up/passkeys": typeof AuthSignUpPasskeysRoute;
   "/sign-up/wallet": typeof AuthSignUpWalletRoute;
@@ -173,7 +174,6 @@ export interface FileRoutesByTo {
   "/withdraw": typeof AuthenticatedModalWithdrawRoute;
   "/login": typeof AuthLoginIndexRoute;
   "/sign-up": typeof AuthSignUpIndexRoute;
-  "/login/in-app/$id": typeof AuthLoginInAppIdRoute;
   "/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
   "/pay/$receiver": typeof AuthenticatedModalPayReceiverRoute;
   "/pay/request": typeof AuthenticatedModalPayRequestRoute;
@@ -187,6 +187,7 @@ export interface FileRoutesById {
   "/beta": typeof BetaRoute;
   "/_authenticated/_app": typeof AuthenticatedAppRouteRouteWithChildren;
   "/_authenticated/_modal": typeof AuthenticatedModalRouteRouteWithChildren;
+  "/_auth/login/in-app": typeof AuthLoginInAppRoute;
   "/_auth/login/wallet": typeof AuthLoginWalletRoute;
   "/_auth/sign-up/passkeys": typeof AuthSignUpPasskeysRoute;
   "/_auth/sign-up/wallet": typeof AuthSignUpWalletRoute;
@@ -197,7 +198,6 @@ export interface FileRoutesById {
   "/_authenticated/_modal/withdraw": typeof AuthenticatedModalWithdrawRoute;
   "/_auth/login/": typeof AuthLoginIndexRoute;
   "/_auth/sign-up/": typeof AuthSignUpIndexRoute;
-  "/_auth/login/in-app/$id": typeof AuthLoginInAppIdRoute;
   "/_authenticated/_modal/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
   "/_authenticated/_modal/pay/$receiver": typeof AuthenticatedModalPayReceiverRoute;
   "/_authenticated/_modal/pay/request": typeof AuthenticatedModalPayRequestRoute;
@@ -208,6 +208,7 @@ export interface FileRouteTypes {
   fullPaths:
     | "/"
     | "/beta"
+    | "/login/in-app"
     | "/login/wallet"
     | "/sign-up/passkeys"
     | "/sign-up/wallet"
@@ -218,7 +219,6 @@ export interface FileRouteTypes {
     | "/withdraw"
     | "/login"
     | "/sign-up"
-    | "/login/in-app/$id"
     | "/claim/$seed"
     | "/pay/$receiver"
     | "/pay/request"
@@ -227,6 +227,7 @@ export interface FileRouteTypes {
   to:
     | "/"
     | "/beta"
+    | "/login/in-app"
     | "/login/wallet"
     | "/sign-up/passkeys"
     | "/sign-up/wallet"
@@ -237,7 +238,6 @@ export interface FileRouteTypes {
     | "/withdraw"
     | "/login"
     | "/sign-up"
-    | "/login/in-app/$id"
     | "/claim/$seed"
     | "/pay/$receiver"
     | "/pay/request"
@@ -250,6 +250,7 @@ export interface FileRouteTypes {
     | "/beta"
     | "/_authenticated/_app"
     | "/_authenticated/_modal"
+    | "/_auth/login/in-app"
     | "/_auth/login/wallet"
     | "/_auth/sign-up/passkeys"
     | "/_auth/sign-up/wallet"
@@ -260,7 +261,6 @@ export interface FileRouteTypes {
     | "/_authenticated/_modal/withdraw"
     | "/_auth/login/"
     | "/_auth/sign-up/"
-    | "/_auth/login/in-app/$id"
     | "/_authenticated/_modal/claim/$seed"
     | "/_authenticated/_modal/pay/$receiver"
     | "/_authenticated/_modal/pay/request"
@@ -388,6 +388,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthLoginWalletRouteImport;
       parentRoute: typeof AuthRouteRoute;
     };
+    "/_auth/login/in-app": {
+      id: "/_auth/login/in-app";
+      path: "/login/in-app";
+      fullPath: "/login/in-app";
+      preLoaderRoute: typeof AuthLoginInAppRouteImport;
+      parentRoute: typeof AuthRouteRoute;
+    };
     "/_authenticated/_overlay/receipt/$id": {
       id: "/_authenticated/_overlay/receipt/$id";
       path: "/receipt/$id";
@@ -416,32 +423,25 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthenticatedModalClaimSeedRouteImport;
       parentRoute: typeof AuthenticatedModalRouteRoute;
     };
-    "/_auth/login/in-app/$id": {
-      id: "/_auth/login/in-app/$id";
-      path: "/login/in-app/$id";
-      fullPath: "/login/in-app/$id";
-      preLoaderRoute: typeof AuthLoginInAppIdRouteImport;
-      parentRoute: typeof AuthRouteRoute;
-    };
   }
 }
 
 interface AuthRouteRouteChildren {
+  AuthLoginInAppRoute: typeof AuthLoginInAppRoute;
   AuthLoginWalletRoute: typeof AuthLoginWalletRoute;
   AuthSignUpPasskeysRoute: typeof AuthSignUpPasskeysRoute;
   AuthSignUpWalletRoute: typeof AuthSignUpWalletRoute;
   AuthLoginIndexRoute: typeof AuthLoginIndexRoute;
   AuthSignUpIndexRoute: typeof AuthSignUpIndexRoute;
-  AuthLoginInAppIdRoute: typeof AuthLoginInAppIdRoute;
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthLoginInAppRoute: AuthLoginInAppRoute,
   AuthLoginWalletRoute: AuthLoginWalletRoute,
   AuthSignUpPasskeysRoute: AuthSignUpPasskeysRoute,
   AuthSignUpWalletRoute: AuthSignUpWalletRoute,
   AuthLoginIndexRoute: AuthLoginIndexRoute,
   AuthSignUpIndexRoute: AuthSignUpIndexRoute,
-  AuthLoginInAppIdRoute: AuthLoginInAppIdRoute,
 };
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
