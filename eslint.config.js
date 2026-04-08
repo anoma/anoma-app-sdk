@@ -1,15 +1,19 @@
 import js from "@eslint/js";
-import tseslint from "typescript-eslint";
 import { defineConfig, globalIgnores } from "eslint/config";
+import tseslint from "typescript-eslint";
 
 export default defineConfig([
-  globalIgnores(["dist", ".claude"]),
+  globalIgnores([
+    "dist",
+    ".claude",
+    "anoma-apps-lib/*/pkg",
+    "./src/wasm/anomapay_lib/*",
+    "./src/wasm/anomapay_lib_v2/*",
+    "./src/wasm/arm_risc0_bindings/*",
+  ]),
   {
     files: ["**/*.{ts,js}"],
-    extends: [
-      js.configs.recommended,
-      tseslint.configs.recommended,
-    ],
+    extends: [js.configs.recommended, tseslint.configs.recommended],
     languageOptions: {
       ecmaVersion: 2020,
     },

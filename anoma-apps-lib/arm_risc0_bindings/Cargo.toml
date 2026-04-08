@@ -1,9 +1,9 @@
 [package]
-name = "arm-bindings"
+name = "arm-risc0-bindings"
 version = "0.1.0"
 edition = "2024"
 description = "Wasm bindings for arm-risc0"
-repository = "https://github.com/anoma/anoma-toolkit"
+repository = "https://github.com/anoma/anoma-app-sdk"
 license = "MIT"
 
 [lib]
@@ -12,6 +12,7 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.142"
+alloy-sol-types = "1.4.1"
 arm = { version = "1.0.0", default-features = false, features = ["transaction"], package = "anoma-rm-risc0" }
 arm-gadgets = { version = "1.0.0", package = "anoma-rm-risc0-gadgets"}
 base64 = "0.22.1"
@@ -25,4 +26,3 @@ wasm-bindgen = { version = "0.2.100" }
 console_error_panic_hook = { version = "0.1.7" }
 serde-wasm-bindgen = { version = "0.6.5" }
 tsify = { version = "0.5.5", features = ["js", "json", "wasm-bindgen" ] }
-alloy-sol-types = "1.4.1"

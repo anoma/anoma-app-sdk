@@ -1,0 +1,7 @@
+[workspace]
+resolver = "3"
+members = ["arm_risc0_bindings", "anomapay_lib", "anomapay_lib_v2"]
+
+[workspace.dependencies]
+# TODO: Common deps should go here!!! E.g., wasm-binding, tsify, getrandom, etc
+
