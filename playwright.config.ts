@@ -2,8 +2,12 @@ import { defineConfig, devices } from "@playwright/test";
 import { loadEnv } from "vite";
 
 const env = loadEnv(process.env.NODE_ENV ?? "development", process.cwd(), "");
+
+// Inject .env variables into process.env (avoids needing dotenv)
+Object.assign(process.env, env);
+
 const baseURL =
-  env.PLAYWRIGHT_BASE_URL ||
+  process.env.PLAYWRIGHT_BASE_URL ||
   (process.env.CI ? "http://localhost:4173" : "http://localhost:5173");
 
 export default defineConfig({
@@ -24,11 +28,11 @@ export default defineConfig({
     },
   ],
   webServer:
-    env.PLAYWRIGHT_BASE_URL ? undefined : (
-      {
+    process.env.PLAYWRIGHT_BASE_URL ?
+      undefined
+    : {
         command: process.env.CI ? "npm run preview" : "npm run dev",
         url: baseURL,
         reuseExistingServer: !process.env.CI,
-      }
-    ),
+      },
 });
