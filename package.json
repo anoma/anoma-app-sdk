@@ -41,7 +41,13 @@
       "require": "./dist/wasm.cjs"
     },
     "./anomaPayArm.wasm": {
-      "default": "./dist/arm_bindings_bg.wasm"
+      "default": "./dist/arm_risc0_bindings_bg.wasm"
+    },
+    "./anomaPayLib.wasm": {
+      "default": "./dist/anomapay_lib_bg.wasm"
+    },
+    "./anomaPayLibV2.wasm": {
+      "default": "./dist/anomapay_lib_v2_bg.wasm"
     },
     "./lib-constants": {
       "import": "./dist/lib-constants.js",
@@ -51,15 +57,15 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "tsc": "tsc -b",
-    "tsc-check": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.{ts,js,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,js,json,css,md}\"",
     "test": "vitest",
     "test:run": "vitest run",
-    "build": "tsdown && cp ./src/wasm/arm_bindings_bg.wasm ./dist",
+    "build": "npm run build:wasm && tsdown && npm run copy:wasm",
+    "build:ts": "tsdown",
     "build:wasm": "node ./scripts/build.mjs --release",
     "build:wasm:dev": "node ./scripts/build.mjs",
+    "copy:wasm": "node ./scripts/copy.mjs",
     "prepare": "husky"
   },
   "lint-staged": {

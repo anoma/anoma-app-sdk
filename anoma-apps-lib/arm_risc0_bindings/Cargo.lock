@@ -565,30 +565,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "arm-bindings"
-version = "0.1.0"
-dependencies = [
- "alloy-sol-types",
- "anoma-rm-risc0",
- "anoma-rm-risc0-gadgets",
- "base64",
- "bincode",
- "console_error_panic_hook",
- "getrandom 0.2.16",
- "getrandom 0.3.4",
- "hex",
- "k256",
- "risc0-zkvm",
- "serde",
- "serde-wasm-bindgen",
- "serde_json",
- "transfer_library",
- "transfer_library_v2",
- "tsify",
- "wasm-bindgen",
-]
-
-[[package]]
 name = "arrayvec"
 version = "0.7.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"

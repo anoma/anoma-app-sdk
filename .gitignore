@@ -9,6 +9,9 @@ dist/
 # Ignore Rust builds and wasm-pack pkg output
 pkg
 target
+src/wasm/anomapay_lib/
+src/wasm/anomapay_lib_v2/
+src/wasm/arm_risc0_bindings/
 
 # Ignore unused type-doc files
 docs/README.md

@@ -1,9 +1,9 @@
 [package]
-name = "arm-bindings"
+name = "arm-risc0-bindings"
 version = "0.1.0"
 edition = "2024"
 description = "Wasm bindings for arm-risc0"
-repository = "https://github.com/anoma/anoma-toolkit"
+repository = "https://github.com/anoma/anoma-app-sdk"
 license = "MIT"
 
 [lib]
@@ -26,7 +26,3 @@ wasm-bindgen = { version = "0.2.100" }
 console_error_panic_hook = { version = "0.1.7" }
 serde-wasm-bindgen = { version = "0.6.5" }
 tsify = { version = "0.5.5", features = ["js", "json", "wasm-bindgen" ] }
-transfer_library = { git = "ssh://git@github.com/anoma/anomapay-backend.git", branch = "justin/prove-feature-gate", default-features = false }
-transfer_library_v2 = { git = "ssh://git@github.com/anoma/anomapay-backend.git", branch = "justin/prove-feature-gate", default-features = false }
-# transfer_library = { path = "../../anomapay-backend/simple_transfer/transfer_library", default-features = false }
-#transfer_library_v2 = { path = "../../anomapay-backend/simple_transfer/transfer_library_v2", default-features = false }

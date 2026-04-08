@@ -6,8 +6,10 @@ export default defineConfig([
   globalIgnores([
     "dist",
     ".claude",
-    "arm-bindings",
-    "src/wasm/arm_bindings.js",
+    "anoma-apps-lib/*/pkg",
+    "./src/wasm/anomapay_lib/*",
+    "./src/wasm/anomapay_lib_v2/*",
+    "./src/wasm/arm_risc0_bindings/*",
   ]),
   {
     files: ["**/*.{ts,js}"],
