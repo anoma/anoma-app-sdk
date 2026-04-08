@@ -185,9 +185,9 @@ dependencies = [
 
 [[package]]
 name = "anoma-rm-risc0"
-version = "1.0.0"
+version = "1.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "26e987cb8962ddb8e72b43a32aadfb36c2d9abe9829c91d7b97fa742b3a1b998"
+checksum = "d3d19fa05e0ecdb7bf6205e6cb31aff30b531b113f455da6eac8db3550f171b1"
 dependencies = [
  "bincode",
  "bytemuck",
@@ -204,9 +204,9 @@ dependencies = [
 
 [[package]]
 name = "anoma-rm-risc0-gadgets"
-version = "1.0.0"
+version = "1.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1c126d90b10b9be4663490e80cc5309fb7612e2ed914e32aaca0a9fe516ebfe1"
+checksum = "35107a0e6485de895631e7807bd3709ead5e8c05f17ce0759105cfb5bd8796f5"
 dependencies = [
  "aes-gcm",
  "alloy-primitives",
@@ -582,6 +582,8 @@ dependencies = [
  "serde",
  "serde-wasm-bindgen",
  "serde_json",
+ "transfer_library",
+ "transfer_library_v2",
  "tsify",
  "wasm-bindgen",
 ]
@@ -2791,6 +2793,64 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0e0d2eaa99c3c2e41547cfa109e910a68ea03823cccad4a0525dcbc9b01e8c71"
 dependencies = [
  "tracing-core",
+]
+
+[[package]]
+name = "transfer_library"
+version = "2.0.4"
+source = "git+ssh://git@github.com/anoma/anomapay-backend.git?branch=justin%2Fprove-feature-gate#4a5b84de19fe1583f65c93caeed8d297f31f216e"
+dependencies = [
+ "anoma-rm-risc0",
+ "anoma-rm-risc0-gadgets",
+ "hex",
+ "k256",
+ "lazy_static",
+ "serde",
+ "transfer_witness",
+]
+
+[[package]]
+name = "transfer_library_v2"
+version = "2.0.4"
+source = "git+ssh://git@github.com/anoma/anomapay-backend.git?branch=justin%2Fprove-feature-gate#4a5b84de19fe1583f65c93caeed8d297f31f216e"
+dependencies = [
+ "anoma-rm-risc0",
+ "anoma-rm-risc0-gadgets",
+ "hex",
+ "k256",
+ "lazy_static",
+ "serde",
+ "transfer_witness",
+ "transfer_witness_v2",
+]
+
+[[package]]
+name = "transfer_witness"
+version = "2.0.4"
+source = "git+ssh://git@github.com/anoma/anomapay-backend.git?branch=justin%2Fprove-feature-gate#4a5b84de19fe1583f65c93caeed8d297f31f216e"
+dependencies = [
+ "alloy-primitives",
+ "alloy-sol-types",
+ "anoma-rm-risc0",
+ "anoma-rm-risc0-gadgets",
+ "bincode",
+ "k256",
+ "rand 0.9.2",
+ "serde",
+]
+
+[[package]]
+name = "transfer_witness_v2"
+version = "2.0.4"
+source = "git+ssh://git@github.com/anoma/anomapay-backend.git?branch=justin%2Fprove-feature-gate#4a5b84de19fe1583f65c93caeed8d297f31f216e"
+dependencies = [
+ "alloy-primitives",
+ "alloy-sol-types",
+ "anoma-rm-risc0",
+ "anoma-rm-risc0-gadgets",
+ "bincode",
+ "serde",
+ "transfer_witness",
 ]
 
 [[package]]

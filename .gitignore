@@ -2,3 +2,14 @@ node_modules/
 dist/
 *.tsbuildinfo
 .claude/
+
+# Ignore any local archives from npm pack
+*.tgz
+
+# Ignore Rust builds and wasm-pack pkg output
+pkg
+target
+
+# Ignore unused type-doc files
+docs/README.md
+docs/_media/

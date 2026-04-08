@@ -12,6 +12,7 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.142"
+alloy-sol-types = "1.4.1"
 arm = { version = "1.0.0", default-features = false, features = ["transaction"], package = "anoma-rm-risc0" }
 arm-gadgets = { version = "1.0.0", package = "anoma-rm-risc0-gadgets"}
 base64 = "0.22.1"
@@ -25,4 +26,7 @@ wasm-bindgen = { version = "0.2.100" }
 console_error_panic_hook = { version = "0.1.7" }
 serde-wasm-bindgen = { version = "0.6.5" }
 tsify = { version = "0.5.5", features = ["js", "json", "wasm-bindgen" ] }
-alloy-sol-types = "1.4.1"
+transfer_library = { git = "ssh://git@github.com/anoma/anomapay-backend.git", branch = "justin/prove-feature-gate", default-features = false }
+transfer_library_v2 = { git = "ssh://git@github.com/anoma/anomapay-backend.git", branch = "justin/prove-feature-gate", default-features = false }
+# transfer_library = { path = "../../anomapay-backend/simple_transfer/transfer_library", default-features = false }
+#transfer_library_v2 = { path = "../../anomapay-backend/simple_transfer/transfer_library_v2", default-features = false }
