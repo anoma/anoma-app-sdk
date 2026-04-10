@@ -28,7 +28,7 @@ import { Route as AuthLoginWalletRouteImport } from "./routes/_auth/login/wallet
 import { Route as AuthLoginInAppRouteImport } from "./routes/_auth/login/in-app";
 import { Route as AuthenticatedOverlayReceiptIdRouteImport } from "./routes/_authenticated/_overlay/receipt.$id";
 import { Route as AuthenticatedModalPayRequestRouteImport } from "./routes/_authenticated/_modal/pay.request";
-import { Route as AuthenticatedModalPayReceiverRouteImport } from "./routes/_authenticated/_modal/pay.$receiver";
+import { Route as AuthenticatedModalPayDataRouteImport } from "./routes/_authenticated/_modal/pay.$data";
 import { Route as AuthenticatedModalClaimSeedRouteImport } from "./routes/_authenticated/_modal/claim.$seed";
 
 const BetaRoute = BetaRouteImport.update({
@@ -128,10 +128,10 @@ const AuthenticatedModalPayRequestRoute =
     path: "/pay/request",
     getParentRoute: () => AuthenticatedModalRouteRoute,
   } as any);
-const AuthenticatedModalPayReceiverRoute =
-  AuthenticatedModalPayReceiverRouteImport.update({
-    id: "/pay/$receiver",
-    path: "/pay/$receiver",
+const AuthenticatedModalPayDataRoute =
+  AuthenticatedModalPayDataRouteImport.update({
+    id: "/pay/$data",
+    path: "/pay/$data",
     getParentRoute: () => AuthenticatedModalRouteRoute,
   } as any);
 const AuthenticatedModalClaimSeedRoute =
@@ -156,7 +156,7 @@ export interface FileRoutesByFullPath {
   "/login": typeof AuthLoginIndexRoute;
   "/sign-up": typeof AuthSignUpIndexRoute;
   "/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
-  "/pay/$receiver": typeof AuthenticatedModalPayReceiverRoute;
+  "/pay/$data": typeof AuthenticatedModalPayDataRoute;
   "/pay/request": typeof AuthenticatedModalPayRequestRoute;
   "/receipt/$id": typeof AuthenticatedOverlayReceiptIdRoute;
 }
@@ -175,7 +175,7 @@ export interface FileRoutesByTo {
   "/login": typeof AuthLoginIndexRoute;
   "/sign-up": typeof AuthSignUpIndexRoute;
   "/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
-  "/pay/$receiver": typeof AuthenticatedModalPayReceiverRoute;
+  "/pay/$data": typeof AuthenticatedModalPayDataRoute;
   "/pay/request": typeof AuthenticatedModalPayRequestRoute;
   "/receipt/$id": typeof AuthenticatedOverlayReceiptIdRoute;
 }
@@ -199,7 +199,7 @@ export interface FileRoutesById {
   "/_auth/login/": typeof AuthLoginIndexRoute;
   "/_auth/sign-up/": typeof AuthSignUpIndexRoute;
   "/_authenticated/_modal/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
-  "/_authenticated/_modal/pay/$receiver": typeof AuthenticatedModalPayReceiverRoute;
+  "/_authenticated/_modal/pay/$data": typeof AuthenticatedModalPayDataRoute;
   "/_authenticated/_modal/pay/request": typeof AuthenticatedModalPayRequestRoute;
   "/_authenticated/_overlay/receipt/$id": typeof AuthenticatedOverlayReceiptIdRoute;
 }
@@ -220,7 +220,7 @@ export interface FileRouteTypes {
     | "/login"
     | "/sign-up"
     | "/claim/$seed"
-    | "/pay/$receiver"
+    | "/pay/$data"
     | "/pay/request"
     | "/receipt/$id";
   fileRoutesByTo: FileRoutesByTo;
@@ -239,7 +239,7 @@ export interface FileRouteTypes {
     | "/login"
     | "/sign-up"
     | "/claim/$seed"
-    | "/pay/$receiver"
+    | "/pay/$data"
     | "/pay/request"
     | "/receipt/$id";
   id:
@@ -262,7 +262,7 @@ export interface FileRouteTypes {
     | "/_auth/login/"
     | "/_auth/sign-up/"
     | "/_authenticated/_modal/claim/$seed"
-    | "/_authenticated/_modal/pay/$receiver"
+    | "/_authenticated/_modal/pay/$data"
     | "/_authenticated/_modal/pay/request"
     | "/_authenticated/_overlay/receipt/$id";
   fileRoutesById: FileRoutesById;
@@ -409,11 +409,11 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthenticatedModalPayRequestRouteImport;
       parentRoute: typeof AuthenticatedModalRouteRoute;
     };
-    "/_authenticated/_modal/pay/$receiver": {
-      id: "/_authenticated/_modal/pay/$receiver";
-      path: "/pay/$receiver";
-      fullPath: "/pay/$receiver";
-      preLoaderRoute: typeof AuthenticatedModalPayReceiverRouteImport;
+    "/_authenticated/_modal/pay/$data": {
+      id: "/_authenticated/_modal/pay/$data";
+      path: "/pay/$data";
+      fullPath: "/pay/$data";
+      preLoaderRoute: typeof AuthenticatedModalPayDataRouteImport;
       parentRoute: typeof AuthenticatedModalRouteRoute;
     };
     "/_authenticated/_modal/claim/$seed": {
@@ -468,7 +468,7 @@ interface AuthenticatedModalRouteRouteChildren {
   AuthenticatedModalSendRoute: typeof AuthenticatedModalSendRoute;
   AuthenticatedModalWithdrawRoute: typeof AuthenticatedModalWithdrawRoute;
   AuthenticatedModalClaimSeedRoute: typeof AuthenticatedModalClaimSeedRoute;
-  AuthenticatedModalPayReceiverRoute: typeof AuthenticatedModalPayReceiverRoute;
+  AuthenticatedModalPayDataRoute: typeof AuthenticatedModalPayDataRoute;
   AuthenticatedModalPayRequestRoute: typeof AuthenticatedModalPayRequestRoute;
 }
 
@@ -478,7 +478,7 @@ const AuthenticatedModalRouteRouteChildren: AuthenticatedModalRouteRouteChildren
     AuthenticatedModalSendRoute: AuthenticatedModalSendRoute,
     AuthenticatedModalWithdrawRoute: AuthenticatedModalWithdrawRoute,
     AuthenticatedModalClaimSeedRoute: AuthenticatedModalClaimSeedRoute,
-    AuthenticatedModalPayReceiverRoute: AuthenticatedModalPayReceiverRoute,
+    AuthenticatedModalPayDataRoute: AuthenticatedModalPayDataRoute,
     AuthenticatedModalPayRequestRoute: AuthenticatedModalPayRequestRoute,
   };
 

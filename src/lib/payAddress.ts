@@ -5,6 +5,9 @@ import type { UserPublicKeys } from "types";
 // TODO: this shouldn't be here
 export type PayAddress = string;
 
+/** Size in bytes of a raw pay address: 33 + 33 + 33 + 32 (keys) + 4 (CRC32). */
+export const PAY_ADDRESS_BYTE_LENGTH = 135;
+
 const getCrc32 = (keyBytes: Uint8Array): Uint8Array => {
   const crc = CRC32.buf(keyBytes) >>> 0;
   const bytes = new Uint8Array(4);
@@ -39,8 +42,7 @@ export const decodePayAddress = (payAddress: PayAddress): UserPublicKeys => {
 
   const payAddressBytes = bs58.decode(payAddress);
 
-  // Validate expected length: 33 + 33 + 33 + 32 + 4 = 135 bytes
-  const expectedLength = 135;
+  const expectedLength = PAY_ADDRESS_BYTE_LENGTH;
   if (payAddressBytes.length !== expectedLength) {
     throw new Error(
       `Invalid Pay Address: expected ${expectedLength} bytes, got ${payAddressBytes.length}`
