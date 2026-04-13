@@ -224,9 +224,15 @@ dependencies = [
 name = "anomapay_lib"
 version = "0.1.0"
 dependencies = [
+ "anomapay_shared",
+ "arm-risc0-bindings",
  "getrandom 0.2.17",
  "getrandom 0.3.4",
+ "hex",
+ "serde",
+ "serde_json",
  "transfer_library",
+ "tsify",
  "wasm-bindgen",
 ]
 
@@ -234,9 +240,28 @@ dependencies = [
 name = "anomapay_lib_v2"
 version = "0.1.0"
 dependencies = [
+ "anomapay_shared",
+ "arm-risc0-bindings",
  "getrandom 0.2.17",
  "getrandom 0.3.4",
+ "hex",
+ "serde",
+ "serde_json",
  "transfer_library_v2",
+ "tsify",
+ "wasm-bindgen",
+]
+
+[[package]]
+name = "anomapay_shared"
+version = "0.1.0"
+dependencies = [
+ "getrandom 0.2.17",
+ "getrandom 0.3.4",
+ "hex",
+ "serde",
+ "serde_json",
+ "tsify",
  "wasm-bindgen",
 ]
 
@@ -591,6 +616,7 @@ dependencies = [
  "alloy-sol-types",
  "anoma-rm-risc0",
  "anoma-rm-risc0-gadgets",
+ "anomapay_shared",
  "base64",
  "bincode",
  "console_error_panic_hook",
