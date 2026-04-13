@@ -52,6 +52,9 @@ const wasmPackBuilder = crate => {
   execSync(`cp ${pkg}.d.ts ${destinationPath}/`);
 };
 
+/**
+ * Iterate through all workspace crates, producing separate wasm-pack builds
+ */
 crates.forEach(crate => {
   wasmPackBuilder(crate);
 });

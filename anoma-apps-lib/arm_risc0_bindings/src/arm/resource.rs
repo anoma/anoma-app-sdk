@@ -3,25 +3,12 @@ use crate::arm::{
     encryption::{Ciphertext, SecretKey},
     nullifier_key::{NullifierKey, NullifierKeyCommitment},
 };
+use anomapay_shared::types::ResourceProps;
 use arm::{nullifier_key::NullifierKeyCommitment as NKC, resource::Resource as R};
 use base64::{Engine as _, engine::general_purpose::STANDARD as b64};
 use serde::{self, Deserialize, Serialize};
 use tsify::Tsify;
 use wasm_bindgen::{JsError, prelude::wasm_bindgen};
-
-#[derive(Tsify, Debug, Serialize, Deserialize)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
-#[serde(rename_all = "camelCase")]
-pub struct ResourceProps {
-    is_ephemeral: bool,
-    quantity: u128,
-    logic_ref: String,
-    label_ref: String,
-    value_ref: String,
-    nonce: String,
-    rand_seed: String,
-    nk_commitment: String,
-}
 
 #[wasm_bindgen]
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -30,6 +17,10 @@ pub struct Resource(pub(crate) R);
 impl Resource {
     pub fn instance(&self) -> &R {
         &self.0
+    }
+
+    pub fn from_resource(resource: R) -> Resource {
+        Resource(resource)
     }
 }
 
