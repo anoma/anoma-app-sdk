@@ -224,9 +224,16 @@ dependencies = [
 name = "anomapay_lib"
 version = "0.1.0"
 dependencies = [
+ "anomapay_shared",
+ "arm-risc0-bindings",
  "getrandom 0.2.17",
  "getrandom 0.3.4",
+ "hex",
+ "serde",
+ "serde_json",
  "transfer_library",
+ "transfer_witness 2.0.0-rc2",
+ "tsify",
  "wasm-bindgen",
 ]
 
@@ -234,9 +241,28 @@ dependencies = [
 name = "anomapay_lib_v2"
 version = "0.1.0"
 dependencies = [
+ "anomapay_shared",
+ "arm-risc0-bindings",
  "getrandom 0.2.17",
  "getrandom 0.3.4",
+ "hex",
+ "serde",
+ "serde_json",
  "transfer_library_v2",
+ "tsify",
+ "wasm-bindgen",
+]
+
+[[package]]
+name = "anomapay_shared"
+version = "0.1.0"
+dependencies = [
+ "getrandom 0.2.17",
+ "getrandom 0.3.4",
+ "hex",
+ "serde",
+ "serde_json",
+ "tsify",
  "wasm-bindgen",
 ]
 
@@ -591,6 +617,7 @@ dependencies = [
  "alloy-sol-types",
  "anoma-rm-risc0",
  "anoma-rm-risc0-gadgets",
+ "anomapay_shared",
  "base64",
  "bincode",
  "console_error_panic_hook",
@@ -2856,8 +2883,8 @@ dependencies = [
 
 [[package]]
 name = "transfer_library"
-version = "2.0.4"
-source = "git+ssh://git@github.com/anoma/anomapay-backend.git?branch=justin%2Fprove-feature-gate#4a5b84de19fe1583f65c93caeed8d297f31f216e"
+version = "2.0.0-rc2"
+source = "git+ssh://git@github.com/anoma/anomapay-backend-multichain.git?branch=justin%2Fprove-feature-gate#8b61c550fcc861a73d4f6b53c10d29d0286da758"
 dependencies = [
  "anoma-rm-risc0",
  "anoma-rm-risc0-gadgets",
@@ -2865,7 +2892,7 @@ dependencies = [
  "k256",
  "lazy_static",
  "serde",
- "transfer_witness",
+ "transfer_witness 2.0.0-rc2",
 ]
 
 [[package]]
@@ -2879,8 +2906,23 @@ dependencies = [
  "k256",
  "lazy_static",
  "serde",
- "transfer_witness",
+ "transfer_witness 2.0.4",
  "transfer_witness_v2",
+]
+
+[[package]]
+name = "transfer_witness"
+version = "2.0.0-rc2"
+source = "git+ssh://git@github.com/anoma/anomapay-backend-multichain.git?branch=justin%2Fprove-feature-gate#8b61c550fcc861a73d4f6b53c10d29d0286da758"
+dependencies = [
+ "alloy-primitives",
+ "alloy-sol-types",
+ "anoma-rm-risc0",
+ "anoma-rm-risc0-gadgets",
+ "bincode",
+ "k256",
+ "rand 0.9.2",
+ "serde",
 ]
 
 [[package]]
@@ -2909,7 +2951,7 @@ dependencies = [
  "anoma-rm-risc0-gadgets",
  "bincode",
  "serde",
- "transfer_witness",
+ "transfer_witness 2.0.4",
 ]
 
 [[package]]

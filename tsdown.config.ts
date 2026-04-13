@@ -15,7 +15,9 @@ export default defineConfig({
   format: ["esm", "cjs"],
   platform: "browser",
   dts: true,
-  // deps: {
-  //   alwaysBundle: ["@uniswap/permit2-sdk"],
-  // },
+  sourcemap: true,
+  deps: {
+    alwaysBundle: ["@uniswap/permit2-sdk"],
+    neverBundle: ["tslib"],
+  },
 });
