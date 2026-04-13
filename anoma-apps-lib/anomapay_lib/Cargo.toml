@@ -10,8 +10,14 @@ license = "MIT"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
+arm-risc0-bindings = { path = "../arm_risc0_bindings" }
+anomapay_shared = { path = "../anomapay_shared" }
 transfer_library = { git = "ssh://git@github.com/anoma/anomapay-backend.git", branch = "justin/prove-feature-gate", default-features = false }
-# TODO: Use workspace dependency
-getrandom = { version = "0.3", default-features = false, features = ["std", "wasm_js"] }
-getrandom-v2 = { version = "0.2", package = "getrandom", default-features = false, features = ["std", "js"] }
-wasm-bindgen = { version = "0.2.100" }
+
+hex = { workspace = true }
+getrandom = { workspace = true }
+getrandom-v2 = { workspace = true }
+tsify = { workspace = true}
+wasm-bindgen = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
