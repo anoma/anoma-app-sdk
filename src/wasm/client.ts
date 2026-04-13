@@ -1,5 +1,5 @@
-import { invariant, validHexBytes, validHexString } from "lib/utils";
-import { initWasm } from "wasm";
+import { invariant, validHexBytes, validHexString } from "lib";
+import { initWasm } from "./armRisc0Bindings";
 
 const DIGEST_BYTES_LENGTH = 32;
 const DIGEST_HEX_LENGTH = DIGEST_BYTES_LENGTH * 2;
@@ -10,7 +10,7 @@ const DIGEST_HEX_LENGTH = DIGEST_BYTES_LENGTH * 2;
  * Requires instance of Digest (of identifying hash), which in turn requires the wasm module
  * from arm_risc0_bindings to first be initialized.
  */
-export abstract class Client {
+export abstract class LogicClient {
   digest: string;
 
   constructor(digest?: string) {
@@ -38,7 +38,7 @@ export abstract class Client {
  * represents the hash identifier of the Guest program compiled for this type of
  * resource logic (the bytes of this digest produce the `logic_ref`).
  */
-export async function initClient<T extends Client>(
+export async function initClient<T extends LogicClient>(
   client: new (digest?: string) => T,
   id: string
 ): Promise<T> {

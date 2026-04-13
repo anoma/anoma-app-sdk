@@ -1,12 +1,12 @@
 import {
-  TRANSFER_LOGIC_VERIFYING_KEY,
-  TRIVIAL_LOGIC_VERIFYING_KEY,
-} from "lib-constants";
-import {
   calculateLabelRef,
   calculateValueRefFromAuth,
   calculateValueRefFromUserAddress,
 } from "domain/transfer/services";
+import {
+  TRANSFER_LOGIC_VERIFYING_KEY,
+  TRIVIAL_LOGIC_VERIFYING_KEY,
+} from "lib-constants";
 import { toHex } from "lib/utils";
 import type { CreateMintProps, MintResources, UserPublicKeys } from "types";
 import type { Address } from "viem";
@@ -18,15 +18,15 @@ import {
   NullifierKeyCommitment,
   Resource,
   randomBytes,
-} from "wasm";
+} from "wasm/armRisc0Bindings";
 
-import { Client, initClient } from "wasm/client";
+import { LogicClient, initClient } from "wasm/client";
 
 /**
  * Transfer client which provies the necessary resource logic for
  * Anoma Simple Transfer Application
  */
-export class TransferLogic extends Client {
+export class TransferLogic extends LogicClient {
   static async init(): Promise<TransferLogic> {
     return initClient(TransferLogic, TRANSFER_LOGIC_VERIFYING_KEY);
   }

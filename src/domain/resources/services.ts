@@ -12,7 +12,11 @@ import {
 } from "lib/utils";
 import type { AppResource, TokenId, TokenRegistryIndex } from "types";
 import { type Address, type Hex, formatUnits } from "viem";
-import { NullifierKey, Resource, ResourceWithLabel } from "wasm";
+import {
+  NullifierKey,
+  Resource,
+  ResourceWithLabel,
+} from "wasm/armRisc0Bindings";
 import { InsufficientResourcesError } from "./errors";
 import type {
   AggregatedTokenBalance,

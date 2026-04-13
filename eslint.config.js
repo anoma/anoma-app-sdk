@@ -3,14 +3,7 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import tseslint from "typescript-eslint";
 
 export default defineConfig([
-  globalIgnores([
-    "dist",
-    ".claude",
-    "anoma-apps-lib/*/pkg",
-    "./src/wasm/anomapay_lib/*",
-    "./src/wasm/anomapay_lib_v2/*",
-    "./src/wasm/arm_risc0_bindings/*",
-  ]),
+  globalIgnores(["dist", ".claude"]),
   {
     files: ["**/*.{ts,js}"],
     extends: [js.configs.recommended, tseslint.configs.recommended],

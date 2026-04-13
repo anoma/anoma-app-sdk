@@ -3,11 +3,11 @@ use wasm_bindgen::prelude::wasm_bindgen;
 
 #[wasm_bindgen]
 pub struct ResourceBuilder {
-    logic: TransferLogic,
+    _logic: TransferLogic,
 }
 
 impl ResourceBuilder {
-    pub fn new() -> Self {
+    pub fn new() -> ResourceBuilder {
         todo!("Implement me!")
     }
 }

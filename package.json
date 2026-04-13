@@ -36,22 +36,26 @@
       "import": "./dist/types.js",
       "require": "./dist/types.cjs"
     },
-    "./wasm": {
-      "import": "./dist/wasm.js",
-      "require": "./dist/wasm.cjs"
+    "./anomaPay": {
+      "import": "./dist/anomaPayLib.js",
+      "require": "./dist/anomaPay.cjs"
     },
-    "./anomaPayArm.wasm": {
+    "./anomaPayV2": {
+      "import": "./dist/anomaPayV2Lib.js",
+      "require": "./dist/anomaPayV2.cjs"
+    },
+    "./armBindings": {
+      "import": "./dist/armBindings.js",
+      "require": "./dist/armBindings.cjs"
+    },
+    "./anomaArmRisc0.wasm": {
       "default": "./dist/arm_risc0_bindings_bg.wasm"
     },
-    "./anomaPayLib.wasm": {
+    "./anomaPayLogic.wasm": {
       "default": "./dist/anomapay_lib_bg.wasm"
     },
-    "./anomaPayLibV2.wasm": {
+    "./anomaPayLogicV2.wasm": {
       "default": "./dist/anomapay_lib_v2_bg.wasm"
-    },
-    "./lib-constants": {
-      "import": "./dist/lib-constants.js",
-      "require": "./dist/lib-constants.cjs"
     },
     "./package.json": "./package.json"
   },

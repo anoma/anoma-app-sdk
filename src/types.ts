@@ -1,6 +1,6 @@
 import type { IndexerEVMTransaction, IndexerId } from "api";
 import type { Address } from "viem";
-import type { EncodedResource } from "wasm";
+import type { EncodedResource } from "wasm/armRisc0Bindings";
 export * from "domain/keys/types";
 export * from "domain/transfer/types";
 

@@ -1,6 +1,7 @@
 import { execSync, spawnSync } from "child_process";
 import { resolve } from "node:path";
 import { parseArgs } from "util";
+import { pkgDestinations } from "./paths.mjs";
 
 /**
  * This build script supports the "anoma" Cargo workspace:
@@ -40,15 +41,15 @@ const wasmPackBuilder = crate => {
   }
 
   const pkg = resolve(`./${CARGO_WORKSPACE}/${crate}/pkg/${crate}`);
-  const destinationPath = resolve(`./src/wasm/${crate}`);
+  const destinationPath = resolve(`./src/wasm/${pkgDestinations[crate]}`);
 
   console.info(
     `[ \x1b[32mINFO\x1b[37m ] Copying \x1b[33m${pkg}* assets \x1b[37m to \x1b[35m${destinationPath}\x1b[37m`
   );
 
-  execSync(`cp ${pkg}_bg.wasm ${destinationPath}`);
-  execSync(`cp ${pkg}.js ${destinationPath}`);
-  execSync(`cp ${pkg}.d.ts ${destinationPath}`);
+  execSync(`cp ${pkg}_bg.wasm ${destinationPath}/`);
+  execSync(`cp ${pkg}.js ${destinationPath}/`);
+  execSync(`cp ${pkg}.d.ts ${destinationPath}/`);
 };
 
 crates.forEach(crate => {
