@@ -14,7 +14,7 @@ import type {
   TokenRegistry,
   UserKeyring,
 } from "types";
-import { NullifierKey, Resource } from "wasm";
+import { NullifierKey, Resource } from "wasm/armRisc0Bindings";
 import type { TransferBuilder } from "./TransferBuilder";
 
 type TokenAmount = {

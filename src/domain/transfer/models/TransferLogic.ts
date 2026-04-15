@@ -1,15 +1,13 @@
 import {
-  TRANSFER_LOGIC_VERIFYING_KEY,
-  TRIVIAL_LOGIC_VERIFYING_KEY,
-} from "lib-constants";
-import {
   calculateLabelRef,
   calculateValueRefFromAuth,
   calculateValueRefFromUserAddress,
 } from "domain/transfer/services";
+import { TRIVIAL_LOGIC_VERIFYING_KEY } from "lib-constants";
 import { toHex } from "lib/utils";
 import type { CreateMintProps, MintResources, UserPublicKeys } from "types";
 import type { Address } from "viem";
+import { ResourceBuilder } from "wasm/anomaPayLib";
 import {
   AuthorityVerifyingKey,
   Digest,
@@ -17,18 +15,18 @@ import {
   NullifierKey,
   NullifierKeyCommitment,
   Resource,
+  initWasm,
   randomBytes,
-} from "wasm";
-
-import { Client, initClient } from "wasm/client";
+} from "wasm/armRisc0Bindings";
 
 /**
  * Transfer client which provies the necessary resource logic for
  * Anoma Simple Transfer Application
  */
-export class TransferLogic extends Client {
+export class TransferLogic {
   static async init(): Promise<TransferLogic> {
-    return initClient(TransferLogic, TRANSFER_LOGIC_VERIFYING_KEY);
+    await initWasm();
+    return new TransferLogic();
   }
 
   createPaddingResource(props?: {
@@ -69,7 +67,7 @@ export class TransferLogic extends Client {
     resource: Resource;
     token: Address;
   }): Resource {
-    const logicRef = Digest.fromHex(this.digest);
+    const logicRef = Digest.fromHex(ResourceBuilder.id);
     const labelRef = calculateLabelRef(forwarderAddress, token);
     const nonce = resource.nullifier(nullifierKey);
     const receiverAuthVerifyingKey = new AuthorityVerifyingKey(
@@ -106,7 +104,12 @@ export class TransferLogic extends Client {
     resource: Resource;
     token: Address;
   }): Resource {
-    const logicRef = Digest.fromHex(this.digest);
+    // TODO: The following "ResourceBuilder.id" is here only to support build UNTIL
+    // this entire thing is completely replaced by the ResourceBuilder (wasm) itself!
+    // It may look silly here, but it will be obsolete by the end of this PR.
+    // We could even export  "Digest" instance from the respective TransferLogic* version,
+    // but our app won't even need to use it.
+    const logicRef = Digest.fromHex(ResourceBuilder.id);
     const labelRef = calculateLabelRef(forwarderAddress, token);
     const nonce = resource.nullifier(nullifierKey);
     const valueRef = calculateValueRefFromUserAddress(receiverAddress);
@@ -127,7 +130,8 @@ export class TransferLogic extends Client {
 
     const nk = new NullifierKey(keyring.nullifierKeyPair.nk);
     const nkCommitment = nk.commit();
-    const logicRef = Digest.fromHex(this.digest);
+
+    const logicRef = Digest.fromHex(ResourceBuilder.id);
     const labelRef = calculateLabelRef(forwarderAddress, token);
 
     const consumedResource = Resource.create(

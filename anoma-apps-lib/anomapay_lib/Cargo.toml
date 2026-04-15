@@ -1,0 +1,23 @@
+[package]
+name = "anomapay_lib"
+version = "0.1.0"
+edition = "2024"
+description = "Wasm bindings for the AnomaPay application"
+repository = "https://github.com/anoma/anoma-app-sdk"
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+arm-risc0-bindings = { path = "../arm_risc0_bindings" }
+anomapay_shared = { path = "../anomapay_shared" }
+transfer_library = { git = "ssh://git@github.com/anoma/anomapay-backend.git", branch = "justin/prove-feature-gate", default-features = false }
+
+hex = { workspace = true }
+getrandom = { workspace = true }
+getrandom-v2 = { workspace = true }
+tsify = { workspace = true}
+wasm-bindgen = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }

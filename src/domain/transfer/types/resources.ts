@@ -1,4 +1,9 @@
-import type { EncodedResource, MerkleTree, NullifierKey, Resource } from "wasm";
+import type {
+  EncodedResource,
+  MerkleTree,
+  NullifierKey,
+  Resource,
+} from "wasm/armRisc0Bindings";
 
 import type { TokenRegistry, UserKeyring, UserPublicKeys } from "types";
 import type { Address } from "viem";
