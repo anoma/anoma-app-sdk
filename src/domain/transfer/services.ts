@@ -9,7 +9,7 @@ import {
   Digest,
   hashBytes,
   MerkleTree,
-} from "wasm";
+} from "wasm/armRisc0Bindings";
 
 /** Estimates the total proving time for a transfer based on the number of resources. */
 export const estimateTransferTimeInSeconds = (

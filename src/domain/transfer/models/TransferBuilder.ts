@@ -1,7 +1,7 @@
 import { toBase64 } from "lib/utils";
 import type { Parameters, Permit2Data, UserKeyring } from "types";
 import type { Address } from "viem";
-import { PublicKey, type Resource } from "wasm";
+import { PublicKey, type Resource } from "wasm/armRisc0Bindings";
 import { TransferLogic } from "./TransferLogic";
 
 /**

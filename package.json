@@ -36,30 +36,40 @@
       "import": "./dist/types.js",
       "require": "./dist/types.cjs"
     },
-    "./wasm": {
-      "import": "./dist/wasm.js",
-      "require": "./dist/wasm.cjs"
+    "./anomaPay": {
+      "import": "./dist/anomaPayLib.js",
+      "require": "./dist/anomaPay.cjs"
     },
-    "./anomaPayArm.wasm": {
-      "default": "./dist/arm_bindings_bg.wasm"
+    "./anomaPayV2": {
+      "import": "./dist/anomaPayV2Lib.js",
+      "require": "./dist/anomaPayV2.cjs"
     },
-    "./lib-constants": {
-      "import": "./dist/lib-constants.js",
-      "require": "./dist/lib-constants.cjs"
+    "./armBindings": {
+      "import": "./dist/armBindings.js",
+      "require": "./dist/armBindings.cjs"
+    },
+    "./anomaArmRisc0.wasm": {
+      "default": "./dist/arm_risc0_bindings_bg.wasm"
+    },
+    "./anomaPayLogic.wasm": {
+      "default": "./dist/anomapay_lib_bg.wasm"
+    },
+    "./anomaPayLogicV2.wasm": {
+      "default": "./dist/anomapay_lib_v2_bg.wasm"
     },
     "./package.json": "./package.json"
   },
   "scripts": {
     "lint": "eslint .",
-    "tsc": "tsc -b",
-    "tsc-check": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.{ts,js,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,js,json,css,md}\"",
     "test": "vitest",
     "test:run": "vitest run",
-    "build": "tsdown && cp ./src/wasm/arm_bindings_bg.wasm ./dist",
+    "build": "npm run build:wasm && tsdown && npm run copy:wasm",
+    "build:ts": "tsdown",
     "build:wasm": "node ./scripts/build.mjs --release",
     "build:wasm:dev": "node ./scripts/build.mjs",
+    "copy:wasm": "node ./scripts/copy.mjs",
     "prepare": "husky"
   },
   "lint-staged": {
