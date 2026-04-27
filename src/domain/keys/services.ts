@@ -1,4 +1,5 @@
 import { hkdf } from "@noble/hashes/hkdf";
+import { hmac } from "@noble/hashes/hmac";
 import { sha256 } from "@noble/hashes/sha2";
 import { KEYRING_SALT } from "app-constants";
 import {
@@ -6,8 +7,22 @@ import {
   KeyPairSerializer,
   NullifierKeyPair,
 } from "domain/keys/models";
-import { invariant } from "lib/utils";
-import type { UserKeyring, UserPublicKeys } from "types";
+import { generateRandomBytes, invariant } from "lib/utils";
+import { PRFDomainMap, type UserKeyring, type UserPublicKeys } from "types";
+import { stringToBytes } from "viem";
+
+/**
+ * Derives a 256-bit AES key-encryption-key (KEK) for local storage encryption.
+ * Uses HMAC-SHA256 with the PRF domain separator, matching the same derivation
+ * scheme used for asymmetric keys but producing only a symmetric key.
+ */
+const deriveStorageKey = (
+  seed?: Uint8Array<ArrayBuffer>
+): Uint8Array<ArrayBuffer> => {
+  const actualSeed = seed ?? generateRandomBytes();
+  const domain = seed ? stringToBytes(PRFDomainMap.Storage) : stringToBytes("");
+  return hmac(sha256, actualSeed, domain) as Uint8Array<ArrayBuffer>;
+};
 
 /**
  * Derives all key pairs that make up a user keyring.
@@ -42,6 +57,8 @@ export const createUserKeyring = (
      * @param seed Optional seed to deterministically derive the key pair
      */
     discoveryKeyPair: KeyPair.create(seed, "Discovery"),
+
+    storageKey: deriveStorageKey(seed),
   };
 };
 
@@ -69,6 +86,7 @@ export const serializeUserKeyring = (keyring: UserKeyring): string => {
     authorityKeyPair: KeyPairSerializer.toJson(keyring.authorityKeyPair),
     discoveryKeyPair: KeyPairSerializer.toJson(keyring.discoveryKeyPair),
     encryptionKeyPair: KeyPairSerializer.toJson(keyring.encryptionKeyPair),
+    storageKey: Array.from(keyring.storageKey),
     nullifierKeyPair: KeyPairSerializer.toJson(keyring.nullifierKeyPair),
   });
 };
@@ -87,6 +105,7 @@ export const deserializeUserKeyring = (json: string): UserKeyring => {
       KeyPair,
       obj.encryptionKeyPair
     ),
+    storageKey: new Uint8Array(obj.storageKey) as Uint8Array<ArrayBuffer>,
     nullifierKeyPair: KeyPairSerializer.fromJson(
       NullifierKeyPair,
       obj.nullifierKeyPair

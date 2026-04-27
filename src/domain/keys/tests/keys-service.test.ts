@@ -19,6 +19,8 @@ test("should create user keyring correctly", () => {
   expect(keyring.encryptionKeyPair.publicKey).toBeInstanceOf(Uint8Array);
   expect(keyring.encryptionKeyPair.privateKey).toBeInstanceOf(Uint8Array);
 
+  expect(keyring.storageKey).toBeInstanceOf(Uint8Array);
+
   expect(keyring.nullifierKeyPair.cnk).toBeInstanceOf(Uint8Array);
   expect(keyring.nullifierKeyPair.nk).toBeInstanceOf(Uint8Array);
 });
@@ -63,6 +65,7 @@ test("should round-trip serialize and deserialize a user keyring", () => {
   expect(restored.encryptionKeyPair.privateKey).toEqual(
     keyring.encryptionKeyPair.privateKey
   );
+  expect(restored.storageKey).toEqual(keyring.storageKey);
   expect(restored.nullifierKeyPair.cnk).toEqual(keyring.nullifierKeyPair.cnk);
   expect(restored.nullifierKeyPair.nk).toEqual(keyring.nullifierKeyPair.nk);
 });

@@ -14,6 +14,7 @@ export const PRFDomainMap = {
   Nullifier: "ANOMA_NULLIFIER_KEY",
   Encryption: "ANOMA_STATIC_ENCRYPTION_KEY",
   Discovery: "ANOMA_STATIC_DISCOVERY_KEY",
+  Storage: "ANOMA_STATIC_STORAGE_KEY",
 } as const;
 
 export type PRFDomain = typeof PRFDomainMap;
@@ -22,6 +23,7 @@ export type UserKeyring = {
   authorityKeyPair: KeyPair;
   discoveryKeyPair: KeyPair;
   encryptionKeyPair: KeyPair;
+  storageKey: Uint8Array<ArrayBuffer>;
   nullifierKeyPair: NullifierKeyPair;
 };
 
