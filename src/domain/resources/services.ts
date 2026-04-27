@@ -3,7 +3,7 @@ import type {
   IndexerResource,
   NullifierRecord,
 } from "api";
-import { getTokenByResource, tokenId } from "lib/tokenUtils";
+import { getFiatAmount, getTokenByResource, tokenId } from "lib/tokenUtils";
 import {
   formatBalance,
   formatTokenAmount,
@@ -11,7 +11,7 @@ import {
   normalizeHex,
 } from "lib/utils";
 import type { AppResource, TokenId, TokenRegistryIndex } from "types";
-import { type Address, type Hex, formatUnits } from "viem";
+import type { Address, Hex } from "viem";
 import { NullifierKey, Resource, ResourceWithLabel } from "wasm";
 import { InsufficientResourcesError } from "./errors";
 import type {
@@ -345,16 +345,16 @@ export const aggregateTokenBalances = (
   resources.forEach(item => {
     const token = getTokenByResource(registry, item);
     const id = tokenId(token);
-    const amount = Number(formatUnits(item.quantity, token.decimals));
 
-    const price = prices[item.erc20TokenAddress] ?? 0;
-    output.totalInUsd += amount * price;
+    const itemAmountInUsd = getFiatAmount(token, item.quantity, prices);
+    output.totalInUsd += itemAmountInUsd;
 
     const prev = output.balancesPerToken[id];
     output.balancesPerToken[id] = {
       raw: (prev?.raw ?? 0n) + item.quantity,
       formattedRounded: "",
       formatted: "",
+      amountInUsd: (prev?.amountInUsd ?? 0) + itemAmountInUsd,
       token,
       resources: (prev?.resources ?? []).concat(item),
     };
@@ -363,7 +363,7 @@ export const aggregateTokenBalances = (
   for (const id of Object.keys(output.balancesPerToken) as TokenId[]) {
     const item = output.balancesPerToken[id];
     item.formatted = formatBalance(item.raw, item.token.decimals);
-    item.formattedRounded = formatTokenAmount(item.formatted, item.token);
+    item.formattedRounded = formatTokenAmount(item.formatted, item.token, true);
   }
 
   return output;

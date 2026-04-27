@@ -19,6 +19,7 @@ export type AggregatedTokenBalance = {
   raw: bigint;
   formattedRounded: string;
   formatted: string;
+  amountInUsd: number;
   token: TokenRegistry;
   resources: AppResource[];
 };

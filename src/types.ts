@@ -48,6 +48,7 @@ export type TokenRegistry = {
 export type TokenBalance = {
   token: TokenRegistry;
   amount?: bigint;
+  amountInUsd?: number;
 };
 
 export type TokenId = `${Network}:${string}`; // {network}:{symbol}

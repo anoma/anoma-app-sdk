@@ -10,7 +10,7 @@ import type {
   TokenRegistry,
   TokenRegistryIndex,
 } from "types";
-import type { Address } from "viem";
+import { formatUnits, type Address } from "viem";
 import { normalizeEvmAddress } from "./utils";
 
 /** Creates a placeholder token registry entry for unknown or unresolved tokens. */
@@ -92,7 +92,11 @@ export const convertAggregatedToTokenBalance = (
   return tokenIds.flatMap(id => {
     const token = registry.byTokenId[id];
     if (!token) return [];
-    return { token, amount: balancesPerToken[id].raw };
+    return {
+      token,
+      amount: balancesPerToken[id].raw,
+      amountInUsd: balancesPerToken[id].amountInUsd,
+    };
   });
 };
 
@@ -100,12 +104,17 @@ export const convertAggregatedToTokenBalance = (
 export const convertWalletBalanceToTokenBalance = (
   registry: TokenRegistryIndex,
   network: Network,
-  balances: WalletBalance[] = []
+  balances: WalletBalance[] = [],
+  prices?: Record<Address, number>
 ): TokenBalance[] =>
   balances.flatMap(b => {
     const token = registry.byAddress[networkAddress(network, b.address)];
     if (!token) return [];
-    return { token, amount: b.value };
+    return {
+      token,
+      amount: b.value,
+      amountInUsd: prices ? getFiatAmount(token, b.value, prices) : undefined,
+    };
   });
 
 /** Builds a `Record<TokenId, TokenBalance>` index for O(1) balance lookups. */
@@ -127,4 +136,15 @@ export const findBalanceByToken = (
   if (!token) return undefined;
   const id = tokenId(token);
   return balances.find(t => tokenId(t.token) === id);
+};
+
+/** Computes the USD value of `quantity` of `token` using a price map (address → USD). */
+export const getFiatAmount = (
+  token: TokenRegistry,
+  quantity: bigint,
+  prices: Record<Address, number>
+): number => {
+  const amount = Number(formatUnits(quantity, token.decimals));
+  const price = prices[normalizeEvmAddress(token.address)] ?? 0;
+  return amount * price;
 };
