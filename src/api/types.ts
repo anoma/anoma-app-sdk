@@ -144,3 +144,10 @@ export type IndexerHealthResponse = {
 export type IndexerAddKeysResponse = {
   status: "ok";
 };
+
+export type IndexerCheckKeysSyncResponse = Array<{
+  synced: boolean;
+  delay: number;
+  chain_id: number;
+  contract: string;
+}>;

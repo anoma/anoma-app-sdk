@@ -4,6 +4,7 @@ import { ApiClient } from "./ApiClient";
 import { IndexerPaths } from "./paths";
 import {
   type IndexerAddKeysResponse,
+  type IndexerCheckKeysSyncResponse,
   type IndexerContract,
   type IndexerHealthResponse,
   type IndexerResourceResponse,
@@ -21,6 +22,12 @@ export class IndexerClient extends ApiClient {
     return this.post<EncodedKeypair, IndexerAddKeysResponse>(
       IndexerPaths.AddKeys,
       keypair
+    );
+  }
+
+  async checkKeysSync(privateKey: Hex): Promise<IndexerCheckKeysSyncResponse> {
+    return this.get<IndexerCheckKeysSyncResponse>(
+      IndexerPaths.CheckKeysSync + "/" + privateKey
     );
   }
 
