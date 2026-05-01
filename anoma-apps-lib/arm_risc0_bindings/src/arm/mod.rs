@@ -4,6 +4,7 @@ pub mod compliance;
 pub mod digest;
 pub mod encryption;
 pub mod evm;
+pub mod merkle_path;
 pub mod nullifier_key;
 pub mod resource;
 pub mod utils;

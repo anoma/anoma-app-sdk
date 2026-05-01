@@ -1,0 +1,30 @@
+[package]
+name = "arm-risc0-bindings"
+version = "0.1.0"
+edition = "2024"
+description = "Wasm bindings for arm-risc0"
+repository = "https://github.com/anoma/anoma-app-sdk"
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+alloy-sol-types = "1.4.1"
+base64 = "0.22.1"
+bincode = "1.3.3"
+risc0-zkvm = { version = "3.0.3", features = ["std", "unstable"], default-features = false }
+k256 = { version = "=0.13.3", features = ["arithmetic", "serde", "expose-field", "std", "ecdsa", "hash2curve"], default-features = false }
+console_error_panic_hook = { version = "0.1.7" }
+serde-wasm-bindgen = { version = "0.6.5" }
+anomapay_shared = { path = "../anomapay_shared" }
+
+hex = { workspace = true }
+getrandom = { workspace = true }
+getrandom-v2 = { workspace = true }
+tsify = { workspace = true}
+wasm-bindgen = { workspace = true }
+arm = { workspace = true }
+arm-gadgets = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }

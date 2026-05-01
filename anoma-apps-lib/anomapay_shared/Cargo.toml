@@ -1,0 +1,20 @@
+[package]
+name = "anomapay_shared"
+version = "0.1.0"
+edition = "2024"
+description = "Shared functionality and types for AnomaPay crates"
+repository = "https://github.com/anoma/anoma-app-sdk"
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+
+[dependencies]
+hex = { workspace = true }
+getrandom = { workspace = true }
+getrandom-v2 = { workspace = true }
+tsify = { workspace = true}
+wasm-bindgen = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }

@@ -19,17 +19,7 @@
     "erasableSyntaxOnly": true,
     "types": ["vite/client"],
     "noFallthroughCasesInSwitch": true,
-    "paths": {
-      "api": ["./src/api/index.ts"],
-      "api/*": ["./src/api/*"],
-      "domain/*": ["./src/domain/*"],
-      "lib": ["./src/lib/index.ts"],
-      "lib/*": ["./src/lib/*"],
-      "wasm": ["./src/wasm/index.ts"],
-      "wasm/*": ["./src/wasm/*"],
-      "lib-constants": ["./src/lib-constants.ts"],
-      "types": ["./src/types.ts"]
-    }
+    "baseUrl": "./src"
   },
   "include": ["src"]
 }

@@ -1,5 +1,7 @@
 import { execSync, spawnSync } from "child_process";
+import { resolve } from "node:path";
 import { parseArgs } from "util";
+import { pkgDestinations } from "./paths.mjs";
 
 /**
  * This build script supports the "anoma" Cargo workspace:
@@ -17,7 +19,8 @@ const { release = false } = parseArgs({
   options: argsOptions,
 }).values;
 
-const crates = ["arm-bindings"];
+const CARGO_WORKSPACE = "anoma-apps-lib";
+const crates = ["arm_risc0_bindings", "anomapay_lib", "anomapay_lib_v2"];
 
 const wasmPackBuilder = crate => {
   // wasm-pack packages
@@ -26,7 +29,7 @@ const wasmPackBuilder = crate => {
     ["build", release ? "--release" : "--debug", ["--target", "web"]].flat(),
     {
       stdio: "inherit",
-      cwd: `./${crate}`,
+      cwd: resolve(`./${CARGO_WORKSPACE}/${crate}`),
       env: {
         ...process.env,
         RUSTFLAGS: '--cfg getrandom_backend="wasm_js"',
@@ -37,14 +40,21 @@ const wasmPackBuilder = crate => {
     process.exit(status);
   }
 
-  const pkg = `./${crate}/pkg/${crate.replace("-", "_")}`;
-  const destinationPath = "./src/wasm/";
+  const pkg = resolve(`./${CARGO_WORKSPACE}/${crate}/pkg/${crate}`);
+  const destinationPath = resolve(`./src/wasm/${pkgDestinations[crate]}`);
 
-  execSync(`cp ${pkg}_bg.wasm ${destinationPath}`);
-  execSync(`cp ${pkg}.js ${destinationPath}`);
-  execSync(`cp ${pkg}.d.ts ${destinationPath}`);
+  console.info(
+    `[ \x1b[32mINFO\x1b[37m ] Copying \x1b[33m${pkg}* assets \x1b[37m to \x1b[35m${destinationPath}\x1b[37m`
+  );
+
+  execSync(`cp ${pkg}_bg.wasm ${destinationPath}/`);
+  execSync(`cp ${pkg}.js ${destinationPath}/`);
+  execSync(`cp ${pkg}.d.ts ${destinationPath}/`);
 };
 
+/**
+ * Iterate through all workspace crates, producing separate wasm-pack builds
+ */
 crates.forEach(crate => {
   wasmPackBuilder(crate);
 });
