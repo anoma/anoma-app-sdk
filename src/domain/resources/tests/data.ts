@@ -10,7 +10,7 @@ export const transferResources: AppResource[] = [
     nonce: "nonce",
     rand_seed: "rand_seed_1",
     nk_commitment: "nk_commitment",
-
+    network: "bsc",
     erc20TokenAddress: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
     forwarder: "0x0A62bE41E66841f693f922991C4e40C89cb0CFDF",
   },
@@ -23,7 +23,7 @@ export const transferResources: AppResource[] = [
     nonce: "nonce",
     rand_seed: "rand_seed_2",
     nk_commitment: "nk_commitment",
-
+    network: "bsc",
     erc20TokenAddress: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
     forwarder: "0x0A62bE41E66841f693f922991C4e40C89cb0CFDF",
   },
@@ -36,7 +36,7 @@ export const transferResources: AppResource[] = [
     nonce: "nonce",
     rand_seed: "rand_seed_3",
     nk_commitment: "nk_commitment",
-
+    network: "bsc",
     erc20TokenAddress: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
     forwarder: "0x0A62bE41E66841f693f922991C4e40C89cb0CFDF",
   },
@@ -49,7 +49,7 @@ export const transferResources: AppResource[] = [
     nonce: "nonce",
     rand_seed: "rand_seed_4",
     nk_commitment: "nk_commitment",
-
+    network: "bsc",
     erc20TokenAddress: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
     forwarder: "0x0A62bE41E66841f693f922991C4e40C89cb0CFDF",
   },

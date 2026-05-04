@@ -1,14 +1,22 @@
-import type { IndexerEVMTransaction, IndexerId } from "api";
-import type { Network, SupportedChain } from "app-constants";
+import type {
+  IndexerEVMTransaction,
+  IndexerId,
+  NetworkConfigurationResponse,
+} from "api";
+import type { UserPublicKeys } from "types";
 import type { Address } from "viem";
 import type { EncodedResource } from "wasm";
-export type { Network, SupportedChain, SupportedChainId } from "app-constants";
 export * from "domain/keys/types";
 export * from "domain/transfer/types";
 
 export type AuthType = "wallet" | "passkey";
 
+export type Network = string;
+export type TokenId = `${string}:${string}`; // {network}:{symbol}
+export type NetworkAddress = `${Network}:${Address}`; // {network}:{address}
+
 export type AppResource = EncodedResource & {
+  network: Network;
   erc20TokenAddress: Address;
   forwarder: Address;
   createdIn?: IndexerEVMTransaction;
@@ -38,32 +46,33 @@ export type TransactionReceipt = {
   timestamp: number;
 };
 
-export type TokenRegistry = {
-  symbol: string;
-  address: Address;
-  decimals: number;
-  network: Network;
-};
-
 export type TokenBalance = {
   token: TokenRegistry;
   amount?: bigint;
   amountInUsd?: number;
 };
 
-export type TokenId = `${Network}:${string}`; // {network}:{symbol}
-export type NetworkAddress = `${Network}:${Address}`; // {network}:{address}
-
-export type TokenRegistryIndex = {
-  byTokenId: Record<TokenId, TokenRegistry>;
-  byAddress: Record<NetworkAddress, TokenRegistry>;
+export type TokenRegistry = {
+  address: Address;
+  decimals: number;
+  name: string;
+  symbol: string;
+  network: string;
+  feeEnabled: boolean;
 };
 
-export type Config = {
-  permit2Address: Address;
-  permit2DeadlineOffset: number;
-  backendUrl: string;
-  indexerUrl: string;
-  envioUrl: string;
-  chain: SupportedChain;
+export type SupportedChainConfig = Omit<
+  NetworkConfigurationResponse,
+  | "chain"
+  | "feeDiscoveryPk"
+  | "feeEncryptionPk"
+  | "feeAuthorityPk"
+  | "feeNullifierKeyCommitment"
+  | "tokens"
+> & {
+  network: Network;
+  tokens: TokenRegistry[];
+  feePublicKeys: UserPublicKeys;
+  explorerUrl?: string;
+  explorerName?: string;
 };

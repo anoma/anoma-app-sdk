@@ -2,7 +2,7 @@ import type { IndexerEVMTransaction, IndexerId } from "api";
 import { getTokenByResource } from "lib/tokenUtils";
 import type {
   AppResource,
-  TokenRegistryIndex,
+  TokenRegistry,
   TransactionReceipt,
   TransactionStatus,
 } from "types";
@@ -16,7 +16,7 @@ type TransactionReceiptDraft = {
 /** Converts a `TransactionReceiptDraft` into a `TransactionReceipt`. */
 function draftToReceipt(
   draft: TransactionReceiptDraft,
-  tokenRegistry: TokenRegistryIndex
+  tokens: TokenRegistry[]
 ): TransactionReceipt {
   const { tx, createdResources, consumedResources } = draft;
 
@@ -37,7 +37,7 @@ function draftToReceipt(
   }
 
   const token = getTokenByResource(
-    tokenRegistry,
+    tokens,
     createdResources[0] ?? consumedResources[0]
   );
 
@@ -54,7 +54,7 @@ function draftToReceipt(
 /** Groups resources by transaction and returns receipts sorted most-recent first. */
 export function buildTransactionHistory(
   resources: AppResource[],
-  tokenRegistry: TokenRegistryIndex
+  tokens: TokenRegistry[]
 ): TransactionReceipt[] {
   const draftMap = new Map<IndexerId, TransactionReceiptDraft>();
 
@@ -81,5 +81,5 @@ export function buildTransactionHistory(
 
   return Array.from(draftMap.values())
     .sort((a, b) => b.tx.timestamp - a.tx.timestamp)
-    .map(entry => draftToReceipt(entry, tokenRegistry));
+    .map(entry => draftToReceipt(entry, tokens));
 }

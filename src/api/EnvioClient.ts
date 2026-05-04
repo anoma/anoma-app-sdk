@@ -1,3 +1,4 @@
+import { normalizeHex } from "lib/utils";
 import { ApiClient } from "./ApiClient";
 import type { NullifierRecordResponse } from "./types";
 
@@ -17,20 +18,19 @@ type GraphQLResponse<TData = unknown> = {
 export class EnvioClient extends ApiClient {
   // Query for consumed tags, filtered by logicRef
   async publicNullifiers(
-    logicRef: string,
+    logicRefs: string[],
     timestamp = 0
   ): Promise<NullifierRecordResponse> {
     const envioEndpoint = this.url;
-
     const query = `
-      query GetPublicNullifiers {
+      query GetPublicNullifiers($logicRefs: [String!], $timestamp: Int!) {
         Tag(
           where: {
             isConsumed: {_eq: true},
-            logicRef: {_eq: "${logicRef}"},
+            logicRef: {_in: $logicRefs},
             transaction: {
               evmTransaction: {
-                timestamp: { _gte: ${timestamp} }
+                timestamp: { _gte: $timestamp }
               }
             }
           }
@@ -56,12 +56,22 @@ export class EnvioClient extends ApiClient {
       }
     `;
 
+    const uniqueLogicRefs = [...new Set(logicRefs)].map(
+      ref => `0x${normalizeHex(ref)}`
+    );
+
     const response = await fetch(envioEndpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ query }),
+      body: JSON.stringify({
+        query,
+        variables: {
+          logicRefs: uniqueLogicRefs,
+          timestamp,
+        },
+      }),
     });
 
     if (!response.ok) {

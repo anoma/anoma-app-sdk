@@ -3,6 +3,7 @@ import type {
   IndexerResource,
   NullifierRecord,
 } from "api";
+import { buildForwarderNetworkMap } from "lib/chainUtils";
 import { getFiatAmount, getTokenByResource, tokenId } from "lib/tokenUtils";
 import {
   formatBalance,
@@ -10,7 +11,13 @@ import {
   fromHex,
   normalizeHex,
 } from "lib/utils";
-import type { AppResource, TokenId, TokenRegistryIndex } from "types";
+import type {
+  AppResource,
+  NetworkAddress,
+  SupportedChainConfig,
+  TokenId,
+  TokenRegistry,
+} from "types";
 import type { Address, Hex } from "viem";
 import { NullifierKey, Resource, ResourceWithLabel } from "wasm";
 import { InsufficientResourcesError } from "./errors";
@@ -103,11 +110,13 @@ export const pickNonEphemeralResources = (
 
 /** Computes nullifiers and consumption status for each resource, returning enriched AppResource entries. */
 export const buildAppResources = async (
+  chainConfig: SupportedChainConfig[],
   resources: ResourceWithDetails[],
   transactionLookup: TransactionLookup,
   nullifierKey: NullifierKey,
   onlyAvailableResources = true
 ): Promise<AppResource[]> => {
+  const forwarderNetworkMap = buildForwarderNetworkMap(chainConfig);
   const updatedResources: AppResource[] = [];
 
   for (const deserializedResource of resources) {
@@ -126,7 +135,9 @@ export const buildAppResources = async (
       );
     }
 
-    if (nullifierHex) {
+    const network = forwarderNetworkMap.get(forwarder);
+
+    if (nullifierHex && network) {
       // Resolve creation and consumption transactions
       const createdInTxHash: Address = `0x${transactionHash.toLowerCase()}`;
       const createdIn = transactionLookup.byTxHash.get(createdInTxHash);
@@ -139,6 +150,7 @@ export const buildAppResources = async (
       if (!onlyAvailableResources || !consumedIn) {
         updatedResources.push({
           ...resourceProps,
+          network,
           erc20TokenAddress,
           forwarder,
           createdIn,
@@ -333,8 +345,8 @@ export type AggregatedTokenBalancesOutput = {
  */
 export const aggregateTokenBalances = (
   resources: AppResource[],
-  registry: TokenRegistryIndex,
-  prices: Record<Address, number>
+  tokens: TokenRegistry[],
+  prices: Record<NetworkAddress, number>
 ): AggregatedTokenBalancesOutput => {
   const output: AggregatedTokenBalancesOutput = {
     totalInUsd: 0,
@@ -343,7 +355,7 @@ export const aggregateTokenBalances = (
   };
 
   resources.forEach(item => {
-    const token = getTokenByResource(registry, item);
+    const token = getTokenByResource(tokens, item);
     const id = tokenId(token);
 
     const itemAmountInUsd = getFiatAmount(token, item.quantity, prices);

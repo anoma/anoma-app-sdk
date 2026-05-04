@@ -1,10 +1,21 @@
-export const TransferBackendPaths = {
-  EstimateFee: "/estimate_fee",
-  SendTransaction: "/send_transaction",
-  TransactionStatus: "/transaction-status",
-  StatsQueue: "/stats/queue",
-  TokenPrice: "/token_price",
-  TokenBalances: "/token_balances",
+export const ApiPaths = {
+  Configuration: () => `/api/v1/configuration/all`,
+  SendTransaction: (network: string) => `/api/v1/transactions/${network}`,
+  TransactionResult: (id: string) => `/api/v1/transactions/${id}`,
+  TransactionStatus: (id: string) => `/api/v1/transactions/${id}/status`,
+  EstimateFee: (network: string) =>
+    `/api/v1/transactions/${network}/estimate-fee`,
+
+  TokenPrices: (tokens: string[]) =>
+    `/api/v1/tokens/prices?tokens=${tokens.join(",")}`,
+  TokenBalances: (network: string, address: string) =>
+    `/api/v1/tokens/${network}/${address}/balances`,
+  Permit2Allowance: (network: string, owner: string, token: string) =>
+    `/api/v1/tokens/${network}/${owner}/permit2/${token}/allowance`,
+
+  EstimateDuration: (network: string) =>
+    `/api/v1/transactions/${network}/estimate-duration`,
+  Health: "/health",
 } as const;
 
 export const IndexerPaths = {

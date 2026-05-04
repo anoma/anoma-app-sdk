@@ -1,4 +1,3 @@
-import { appConfig } from "config/app";
 import { selectTransferResources } from "domain/resources";
 import type { TransferResourceWithAmount } from "domain/resources/types";
 import { getUserPublicKeysFromKeyring } from "lib/keyUtils";
@@ -10,6 +9,7 @@ import type {
   CreatedResourceDraft,
   Receiver,
   ResolvedParameters,
+  SupportedChainConfig,
   TokenId,
   TokenRegistry,
   UserKeyring,
@@ -32,13 +32,19 @@ type TokenResourceWithAmount = {
  * supporting multiple receivers and mixed address types.
  */
 export class ParametersDraftResolver {
+  protected chain: SupportedChainConfig;
   protected transferBuilder: TransferBuilder;
   protected keyring: UserKeyring;
   protected receivers: Receiver[] = [];
 
-  constructor(transferBuilder: TransferBuilder, keyring: UserKeyring) {
+  constructor(
+    transferBuilder: TransferBuilder,
+    keyring: UserKeyring,
+    chain: SupportedChainConfig
+  ) {
     this.keyring = keyring;
     this.transferBuilder = transferBuilder;
+    this.chain = chain;
   }
 
   /** Adds a receiver to the transfer. */
@@ -159,7 +165,7 @@ export class ParametersDraftResolver {
 
       // Params that will be shared between different resource creation methods (burn vs transfer)
       const commonParams = {
-        forwarderAddress: appConfig.chain.forwarderAddress,
+        forwarderAddress: this.chain.forwarderAddress,
         token: receiver.token.address,
         quantity: receiver.quantity,
         resource: consumedResource,

@@ -57,14 +57,14 @@ export class PayloadBuilder {
       return {
         TokenTransferPersistent: {
           // The signature will be addeed later, when all actions are already defined
-          sender_authorization_signature:
+          senderAuthorizationSignature:
             this.authorizationSignature ?
               toBase64(this.authorizationSignature.toBytes())
             : "",
-          sender_authorization_verifying_key: formatPayloadKey(
+          senderAuthorizationVerifyingKey: formatPayloadKey(
             item.userPublicKeys.authorityPublicKey
           ),
-          sender_encryption_public_key: formatPayloadKey(
+          senderEncryptionPublicKey: formatPayloadKey(
             item.userPublicKeys.encryptionPublicKey
           ),
         },
@@ -81,9 +81,9 @@ export class PayloadBuilder {
 
       return {
         TokenTransferEphemeralWrap: {
-          permit2_data: item.permit2Data,
-          sender_wallet_address: item.address,
-          token_contract_address: item.token.address,
+          permit2Data: item.permit2Data,
+          senderWalletAddress: item.address,
+          tokenContractAddress: item.token.address,
         },
       };
     }
@@ -114,16 +114,16 @@ export class PayloadBuilder {
     if (item.receiver.type === "AnomaAddress") {
       return {
         TokenTransferPersistent: {
-          receiver_discovery_public_key: formatPayloadKey(
+          receiverDiscoveryPublicKey: formatPayloadKey(
             item.receiver.userPublicKeys.discoveryPublicKey
           ),
-          receiver_encryption_public_key: formatPayloadKey(
+          receiverEncryptionPublicKey: formatPayloadKey(
             item.receiver.userPublicKeys.encryptionPublicKey
           ),
-          receiver_authorization_verifying_key: formatPayloadKey(
+          receiverAuthorizationVerifyingKey: formatPayloadKey(
             item.receiver.userPublicKeys.authorityPublicKey
           ),
-          token_contract_address: item.receiver.token.address,
+          tokenContractAddress: item.receiver.token.address,
         },
       };
     }
@@ -132,8 +132,8 @@ export class PayloadBuilder {
     if (item.receiver.type === "EvmAddress") {
       return {
         TokenTransferEphemeralUnwrap: {
-          token_contract_address: item.receiver.token.address,
-          receiver_wallet_address: item.receiver.address,
+          tokenContractAddress: item.receiver.token.address,
+          receiverWalletAddress: item.receiver.address,
         },
       };
     }
@@ -152,8 +152,8 @@ export class PayloadBuilder {
   getConsumedResourcePayload(item: ConsumedResourceDraft): ConsumedResource {
     return {
       resource: item.resource.encode(),
-      nullifier_key: item.nullifierKey.toBase64(),
-      witness_data: this.getWitnessForConsumedResource(item),
+      nullifierKey: item.nullifierKey.toBase64(),
+      witnessData: this.getWitnessForConsumedResource(item),
     };
   }
 
@@ -161,17 +161,17 @@ export class PayloadBuilder {
   getCreatedResourcesPayload(item: CreatedResourceDraft): CreatedResource {
     return {
       resource: item.resource.encode(),
-      witness_data: this.getWitnessForCreatedResource(item),
+      witnessData: this.getWitnessForCreatedResource(item),
     };
   }
 
   /** Builds the final Parameters object by encoding all consumed and created resources. */
   build(): Parameters {
     return {
-      consumed_resources: this.consumingResources.map(
+      consumedResources: this.consumingResources.map(
         this.getConsumedResourcePayload.bind(this)
       ),
-      created_resources: this.creatingResources.map(
+      createdResources: this.creatingResources.map(
         this.getCreatedResourcesPayload.bind(this)
       ),
     };

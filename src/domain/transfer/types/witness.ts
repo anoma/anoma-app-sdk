@@ -2,7 +2,7 @@ import type { Address } from "viem";
 
 // Permit2 Data
 export type Permit2Data = {
-  deadline: bigint;
+  deadline: number;
   nonce: string;
   signature: string;
 };
@@ -17,10 +17,10 @@ type CreatedEphemeral = Record<string, never>;
 
 // `token_transfer::CreatedPersistent`
 type TokenTransferCreatedPersistent = {
-  receiver_discovery_public_key: string;
-  receiver_encryption_public_key: string;
-  receiver_authorization_verifying_key?: string;
-  token_contract_address?: Address;
+  receiverDiscoveryPublicKey: string;
+  receiverEncryptionPublicKey: string;
+  receiverAuthorizationVerifyingKey?: string;
+  tokenContractAddress?: Address;
 };
 
 /**
@@ -28,22 +28,22 @@ type TokenTransferCreatedPersistent = {
  */
 // `token_transfer::CreatedEphemeral`
 type TokenTransferCreatedEphemeral = {
-  token_contract_address: string;
-  receiver_wallet_address: string;
+  tokenContractAddress: string;
+  receiverWalletAddress: string;
 };
 
 // token_transfer::ConsumedEphemeral
 type TokenTransferConsumedEphemeral = {
-  permit2_data: Permit2Data;
-  sender_wallet_address: string;
-  token_contract_address: string;
+  permit2Data: Permit2Data;
+  senderWalletAddress: string;
+  tokenContractAddress: string;
 };
 
 // token_transfer::ConsumedPersistent
 type TokenTransferConsumedPersistent = {
-  sender_authorization_verifying_key: string;
-  sender_authorization_signature: string;
-  sender_encryption_public_key: string;
+  senderAuthorizationVerifyingKey: string;
+  senderAuthorizationSignature: string;
+  senderEncryptionPublicKey: string;
 };
 
 //************************************************************************

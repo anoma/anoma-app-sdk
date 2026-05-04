@@ -1,9 +1,10 @@
 import { maxBalanceInUsd } from "app-constants";
-import type { Address } from "viem";
+import type { NetworkAddress } from "types";
 import { describe, expect, it } from "vitest";
 import { checkIfExceedsDepositLimit } from "../depositValidation";
 
-const TOKEN: Address = "0x0000000000000000000000000000000000000001";
+const TOKEN_ADDRESS: NetworkAddress =
+  "bsc:0x0000000000000000000000000000000000000001";
 
 const call = (
   overrides: Partial<Parameters<typeof checkIfExceedsDepositLimit>[0]> = {}
@@ -11,8 +12,8 @@ const call = (
   checkIfExceedsDepositLimit({
     currentBalanceInUsd: 0,
     depositAmount: "0",
-    tokenAddress: TOKEN,
-    tokenPrices: { [TOKEN]: 1 },
+    tokenAddress: TOKEN_ADDRESS,
+    tokenPrices: { [TOKEN_ADDRESS]: 1 },
     ...overrides,
   });
 

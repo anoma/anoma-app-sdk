@@ -1,4 +1,5 @@
 import type { UUID } from "crypto";
+import type { TokenRegistry } from "types";
 import type { Address, Hex } from "viem";
 
 // HTTP status codes we may want to check for
@@ -105,28 +106,66 @@ export type TransactionResponse<T = ResponseJson> = {
   receipt: TransactionReceipt<T>;
 };
 
-export type TransactionHashResponse = {
-  // TODO request for the backend team to rename this variable to transaction_uuid or something else
-  transaction_hash: UUID;
+export type ClientTransactionStatus =
+  | "pending"
+  | "validating"
+  | "proofGeneration"
+  | "broadcast"
+  | "completed"
+  | "failed";
+
+export type SendTransactionResponse = {
+  requestId: UUID;
 };
 
-export type TransactionStatusResponse = {
-  status:
-    | "New"
-    | "Proving"
-    | "Failed"
-    | "Submitted"
-    | "Submitting"
-    | "Unprocessable"
-    | "Proven";
-  transaction_uuid: UUID;
-  hash: string;
+export type TransactionResultResponse = {
+  requestId: string;
+  status: ClientTransactionStatus;
+  transactionHash?: string | null;
+  error?: string | null;
 };
 
-export type StatusQueueResponse = {
-  created: number;
-  completed: number;
-  processing: number;
+export type EstimateDurationResponse = {
+  estimatedProcessingSeconds: number;
+  estimatedQueueWaitSeconds: number;
+  estimatedTotalSeconds: number;
+  totalResources: number;
+};
+
+export type ChainEntry = {
+  chain: string;
+  chainId: number;
+};
+
+export type ChainsResponse = {
+  chains: ChainEntry[];
+};
+
+export type Permit2AllowanceResponse = {
+  erc20Allowance: string;
+};
+
+export type NetworkConfigurationResponse = {
+  chain: string;
+  chainId: number;
+  enabled: boolean;
+  testnet: boolean;
+  protocolAdapterAddress: Address;
+  trivialLogicVerifyingKey: string;
+  transferLogicVerifyingKey: string;
+  forwarderAddress: Address;
+  percentageFee: number;
+  baseFee: number;
+  resourceFee: number;
+  feeDiscoveryPk: string;
+  feeEncryptionPk: string;
+  feeAuthorityPk: string;
+  feeNullifierKeyCommitment: string;
+  tokens: Omit<TokenRegistry, "network">[];
+};
+
+export type NetworkConfigurationWrappedResponse = {
+  configurations: NetworkConfigurationResponse[];
 };
 
 export type IndexerContract = {

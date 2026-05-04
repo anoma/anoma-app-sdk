@@ -5,11 +5,11 @@ import {
   TokenIcon,
   WalletIcon,
 } from "@web3icons/react/dynamic";
-import { MAX_DECIMALS, chainById } from "app-constants";
+import { MAX_DECIMALS } from "app-constants";
 import clsx, { type ClassValue } from "clsx";
 import type { ReactElement } from "react";
 import { twMerge } from "tailwind-merge";
-import type { SupportedChainId, TokenRegistry } from "types";
+import type { NetworkAddress, TokenRegistry } from "types";
 import {
   bytesToHex,
   formatUnits,
@@ -32,6 +32,13 @@ export const shortenAddress = (address: string, head = 6, tail = 4) => {
 export const normalizeEvmAddress = (address: string): Address => {
   const normalized = address.toLowerCase();
   return isAddress(normalized) ? normalized : `0x${normalized}`;
+};
+
+export const normalizeEvmNetworkAddress = (
+  address: NetworkAddress
+): NetworkAddress => {
+  const [chain, addr] = address.split(":");
+  return `${chain}:${normalizeEvmAddress(addr)}`;
 };
 
 export const checkForWeb3Icons = (
@@ -253,8 +260,12 @@ export function invariant(
  * @param prefixedTxHash - The transaction hash with 0x prefix
  * @returns The full URL to view the transaction on the block explorer
  */
-export const getTxUrl = (chainId: SupportedChainId, prefixedTxHash: string) => {
-  return `${chainById[chainId].explorerUrl}/tx/${prefixedTxHash}`;
+export const getTxUrl = (
+  chain: { explorerUrl?: string },
+  prefixedTxHash: string
+) => {
+  if (!chain.explorerUrl) return undefined;
+  return `${chain.explorerUrl}/tx/${prefixedTxHash}`;
 };
 
 export const maxBigInt = (a: bigint, b: bigint): bigint => (a > b ? a : b);

@@ -1,4 +1,5 @@
 import {
+  PERMIT2_ADDRESS,
   type PermitTransferFrom,
   type PermitTransferFromData,
   SignatureTransfer,
@@ -20,7 +21,7 @@ export type PermitSignature = {
 export type Permit2Props = {
   permit2Address: Hex;
   spenderAddress: Hex;
-  deadline: bigint;
+  deadline: number;
   chainId: number;
   nonce: bigint;
   actionTreeRoot: string;
@@ -33,8 +34,8 @@ export type Permit2Props = {
  * Permit2 expresses expirations as deadlines, but JavaScript usually uses milliseconds,
  * so this is provided as a convenience function.
  */
-export function toDeadline(expiration: number): bigint {
-  return BigInt(Math.floor((Date.now() + expiration) / 1000));
+export function toDeadline(expiration: number): number {
+  return Math.floor((Date.now() + expiration) / 1000);
 }
 
 /**
@@ -45,7 +46,6 @@ export function toDeadline(expiration: number): bigint {
  */
 export const getPermit2Data = ({
   actionTreeRoot,
-  permit2Address,
   spenderAddress, // Forwarder Address
   amount,
   deadline,
@@ -73,7 +73,7 @@ export const getPermit2Data = ({
 
   const { domain, types, values } = SignatureTransfer.getPermitData(
     permitTransferFrom,
-    permit2Address,
+    PERMIT2_ADDRESS,
     chainId,
     witness
   );

@@ -14,8 +14,14 @@ export class TransferBuilder {
     this.client = client;
   }
 
-  static async init(): Promise<TransferBuilder> {
-    const client = await TransferLogic.init();
+  static async init(
+    transferLogicVerifyingKey: string,
+    trivialLogicVerifyingKey: string
+  ): Promise<TransferBuilder> {
+    const client = await TransferLogic.init(
+      transferLogicVerifyingKey,
+      trivialLogicVerifyingKey
+    );
     return new TransferBuilder(client);
   }
 
@@ -33,34 +39,34 @@ export class TransferBuilder {
     const { createdResource, consumedResource } = mintResources;
 
     return {
-      consumed_resources: [
+      consumedResources: [
         {
           resource: consumedResource.encode(),
-          nullifier_key: toBase64(keyring.nullifierKeyPair.nk),
-          witness_data: {
+          nullifierKey: toBase64(keyring.nullifierKeyPair.nk),
+          witnessData: {
             TokenTransferEphemeralWrap: {
-              permit2_data: permit2Data,
-              sender_wallet_address: evmAddress,
-              token_contract_address: tokenContractAddress,
+              permit2Data,
+              senderWalletAddress: evmAddress,
+              tokenContractAddress,
             },
           },
         },
       ],
-      created_resources: [
+      createdResources: [
         {
           resource: createdResource.encode(),
-          witness_data: {
+          witnessData: {
             TokenTransferPersistent: {
-              receiver_discovery_public_key: new PublicKey(
+              receiverDiscoveryPublicKey: new PublicKey(
                 keyring.discoveryKeyPair.publicKey
               ).toBase64(),
-              receiver_encryption_public_key: new PublicKey(
+              receiverEncryptionPublicKey: new PublicKey(
                 keyring.encryptionKeyPair.publicKey
               ).toBase64(),
-              receiver_authorization_verifying_key: new PublicKey(
+              receiverAuthorizationVerifyingKey: new PublicKey(
                 keyring.authorityKeyPair.publicKey
               ).toBase64(),
-              token_contract_address: tokenContractAddress,
+              tokenContractAddress,
             },
           },
         },

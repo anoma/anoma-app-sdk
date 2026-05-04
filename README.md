@@ -87,7 +87,6 @@ Environment variables:
 | `VITE_APP_INDEXER_BASE_URL`     | Yes      | `https://galileo.dev.heliax.fyi`             | Galileo indexer base URL.                                     |
 | `VITE_APP_ENVIO_BASE_URL`       | Yes      | `https://hasura.dev.heliax.fyi/v1/graphql`   | Envio GraphQL endpoint base URL.                              |
 | `VITE_APP_PERMIT2_ADDRESS`      | Yes      | `0x000000000022D473030F116dDEE9F6B43aC78BA3` | Permit2 contract address for token approvals.                 |
-| `VITE_APP_CHAIN_ID`             | No       | `56`                                         | EVM chain ID (Base Mainnet). Must match backend/indexers.     |
 | `VITE_APP_PRIVATE_BETA`         | No       | `false`                                      | Enables private beta UI gating.                               |
 | `PLAYWRIGHT_BASE_URL`           | No       | `http://localhost:5173`                      | E2E test base URL for Playwright.                             |
 | `PLAYWRIGHT_WALLET_PRIVATE_KEY` | No       |                                              | Private key used by the E2E test wallet to sign transactions. |
@@ -101,12 +100,10 @@ The UI can render without services, but core flows require external systems. Req
 | Transfer backend API (`VITE_APP_BACKEND_BASE_URL`) | Transfers, fee estimation, queue stats, token prices, token balances | Must implement the REST paths in `src/api/paths.ts` under `TransferBackendPaths`.       |
 | Galileo indexer (`VITE_APP_INDEXER_BASE_URL`)      | Resource discovery, proof generation, key storage                    | Must implement the REST paths in `src/api/paths.ts` under `IndexerPaths`.               |
 | Envio GraphQL indexer (`VITE_APP_ENVIO_BASE_URL`)  | Nullifier checks                                                     | Must expose `ProtocolAdapter_Transaction` with fields used in `src/api/EnvioClient.ts`. |
-| EVM wallet + RPC endpoint                          | On-chain actions and signing                                         | Wallet must be connected to the same chain as `VITE_APP_CHAIN_ID`.                      |
-| Permit2 contract on target chain                   | ERC-20 approvals                                                     | `VITE_APP_PERMIT2_ADDRESS` must exist on the configured chain.                          |
 
 ## Common Mistakes / Things to Check
 
-- `VITE_APP_CHAIN_ID`, wallet network, backend, and both indexers must all point to the same chain.
+- Supported chains are fetched dynamically from the backend configuration endpoint.
 - Base URLs must be reachable from the browser (CORS configured on backend/indexers).
 - If the UI appears to load but balances/transactions are empty, verify `VITE_APP_INDEXER_BASE_URL` and `VITE_APP_ENVIO_BASE_URL`.
 - Docker prod builds bake `VITE_*` values at build time. Rebuild when changing config.

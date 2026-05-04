@@ -11,7 +11,7 @@ export class ApiClient<P extends string = string> {
     this.url = url;
   }
 
-  private _endpoint(path: P | `${P}/${string}`): string {
+  endpoint(path: P): string {
     return `${this.url}${path}`;
   }
 
@@ -23,10 +23,10 @@ export class ApiClient<P extends string = string> {
    * Generic GET request
    */
   protected async get<T = unknown>(
-    path: P | `${P}/${string}`,
+    path: P,
     headers: Record<string, string> = {}
   ): Promise<T> {
-    const response = await fetch(this._endpoint(path), {
+    const response = await fetch(this.endpoint(path), {
       method: "GET",
       headers,
     });
@@ -49,7 +49,7 @@ export class ApiClient<P extends string = string> {
     props: T,
     headers: Record<string, string> = {}
   ): Promise<U> {
-    const response = await fetch(this._endpoint(path), {
+    const response = await fetch(this.endpoint(path), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

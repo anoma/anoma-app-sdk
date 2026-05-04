@@ -1,8 +1,4 @@
 import {
-  TRANSFER_LOGIC_VERIFYING_KEY,
-  TRIVIAL_LOGIC_VERIFYING_KEY,
-} from "app-constants";
-import {
   calculateLabelRef,
   calculateValueRefFromAuth,
   calculateValueRefFromUserAddress,
@@ -27,8 +23,15 @@ import { Client, initClient } from "wasm/client";
  * Anoma Simple Transfer Application
  */
 export class TransferLogic extends Client {
-  static async init(): Promise<TransferLogic> {
-    return initClient(TransferLogic, TRANSFER_LOGIC_VERIFYING_KEY);
+  trivialLogicVerifyingKey = "";
+
+  static async init(
+    transferLogicVerifyingKey: string,
+    trivialLogicVerifyingKey: string
+  ): Promise<TransferLogic> {
+    const client = await initClient(TransferLogic, transferLogicVerifyingKey);
+    client.trivialLogicVerifyingKey = trivialLogicVerifyingKey;
+    return client;
   }
 
   createPaddingResource(props?: {
@@ -43,7 +46,7 @@ export class TransferLogic extends Client {
       nonce = Digest.fromBytes(randomBytes());
     }
     return Resource.create(
-      Digest.fromHex(TRIVIAL_LOGIC_VERIFYING_KEY),
+      Digest.fromHex(this.trivialLogicVerifyingKey),
       Digest.default(),
       0n,
       Digest.default(),

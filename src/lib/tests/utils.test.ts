@@ -101,9 +101,11 @@ describe("formatFiatAmount", () => {
 
 const mockToken: TokenRegistry = {
   symbol: "usdc",
+  name: "USD Coin",
   address: "0x0000000000000000000000000000000000000000",
   decimals: 18,
   network: "bsc",
+  feeEnabled: false,
 };
 
 describe("formatTokenAmount", () => {

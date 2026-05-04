@@ -40,13 +40,13 @@ type ResourceWithWitness = {
 };
 
 export type CreatedResource = ResourceWithWitness & {
-  witness_data: CreatedWitnessData;
+  witnessData: CreatedWitnessData;
 };
 
 export type ConsumedResource = ResourceWithWitness & {
   resource: EncodedResource;
-  nullifier_key: string;
-  witness_data: ConsumedWitnessData;
+  nullifierKey: string;
+  witnessData: ConsumedWitnessData;
 };
 
 export type Resources = {
@@ -58,8 +58,8 @@ export type Resources = {
  * Parameters request
  */
 export type Parameters = {
-  created_resources: Resources["Created"][];
-  consumed_resources: Resources["Consumed"][];
+  createdResources: Resources["Created"][];
+  consumedResources: Resources["Consumed"][];
 };
 
 export type Receiver = { token: TokenRegistry; quantity: bigint } & (
@@ -103,38 +103,37 @@ export type ResolvedParameters = {
 };
 
 /**
- * Fees
- */
-export const FeeCompatibleERC20Tokens = [
-  "USDC",
-  "USDT",
-  "WETH",
-  "XAN",
-] as const;
-export type SupportedFeeToken = (typeof FeeCompatibleERC20Tokens)[number];
-
-/**
  * Fees request & response
  */
 export type FeeRequest = {
-  fee_token: SupportedFeeToken;
+  feeToken: string;
   transaction: Parameters;
 };
 
+export type TokenMetadataResponse = {
+  name: string;
+  symbol: string;
+  decimals: number;
+};
+
 export type FeeResponse = {
-  base_fee: number;
-  base_fee_per_resource: number;
-  percentage: number;
-  percentage_fee: number;
-  token_type: string;
+  baseFee: string;
+  percentageFee: string;
+  token: TokenMetadataResponse;
 };
 
 /**
  * Token price response
  */
-export type TokenPriceResponse = {
+export type TokenPriceEntry = {
+  network: string;
   address: Address;
-  usd_price: number;
+  usdPrice: number;
+  lastUpdatedAt: string;
+};
+
+export type TokenPriceResponse = {
+  prices: TokenPriceEntry[];
 };
 
 /**
