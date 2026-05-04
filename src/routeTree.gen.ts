@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from "./routes/__root";
+import { Route as EnterRouteImport } from "./routes/enter";
 import { Route as BetaRouteImport } from "./routes/beta";
 import { Route as AuthenticatedRouteRouteImport } from "./routes/_authenticated/route";
 import { Route as AuthRouteRouteImport } from "./routes/_auth/route";
@@ -31,6 +32,11 @@ import { Route as AuthenticatedModalPayRequestRouteImport } from "./routes/_auth
 import { Route as AuthenticatedModalPayDataRouteImport } from "./routes/_authenticated/_modal/pay.$data";
 import { Route as AuthenticatedModalClaimSeedRouteImport } from "./routes/_authenticated/_modal/claim.$seed";
 
+const EnterRoute = EnterRouteImport.update({
+  id: "/enter",
+  path: "/enter",
+  getParentRoute: () => rootRouteImport,
+} as any);
 const BetaRoute = BetaRouteImport.update({
   id: "/beta",
   path: "/beta",
@@ -144,6 +150,7 @@ const AuthenticatedModalClaimSeedRoute =
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
   "/beta": typeof BetaRoute;
+  "/enter": typeof EnterRoute;
   "/login/in-app": typeof AuthLoginInAppRoute;
   "/login/wallet": typeof AuthLoginWalletRoute;
   "/sign-up/passkeys": typeof AuthSignUpPasskeysRoute;
@@ -163,6 +170,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
   "/beta": typeof BetaRoute;
+  "/enter": typeof EnterRoute;
   "/login/in-app": typeof AuthLoginInAppRoute;
   "/login/wallet": typeof AuthLoginWalletRoute;
   "/sign-up/passkeys": typeof AuthSignUpPasskeysRoute;
@@ -185,6 +193,7 @@ export interface FileRoutesById {
   "/_auth": typeof AuthRouteRouteWithChildren;
   "/_authenticated": typeof AuthenticatedRouteRouteWithChildren;
   "/beta": typeof BetaRoute;
+  "/enter": typeof EnterRoute;
   "/_authenticated/_app": typeof AuthenticatedAppRouteRouteWithChildren;
   "/_authenticated/_modal": typeof AuthenticatedModalRouteRouteWithChildren;
   "/_auth/login/in-app": typeof AuthLoginInAppRoute;
@@ -208,6 +217,7 @@ export interface FileRouteTypes {
   fullPaths:
     | "/"
     | "/beta"
+    | "/enter"
     | "/login/in-app"
     | "/login/wallet"
     | "/sign-up/passkeys"
@@ -227,6 +237,7 @@ export interface FileRouteTypes {
   to:
     | "/"
     | "/beta"
+    | "/enter"
     | "/login/in-app"
     | "/login/wallet"
     | "/sign-up/passkeys"
@@ -248,6 +259,7 @@ export interface FileRouteTypes {
     | "/_auth"
     | "/_authenticated"
     | "/beta"
+    | "/enter"
     | "/_authenticated/_app"
     | "/_authenticated/_modal"
     | "/_auth/login/in-app"
@@ -272,10 +284,18 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren;
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren;
   BetaRoute: typeof BetaRoute;
+  EnterRoute: typeof EnterRoute;
 }
 
 declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
+    "/enter": {
+      id: "/enter";
+      path: "/enter";
+      fullPath: "/enter";
+      preLoaderRoute: typeof EnterRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     "/beta": {
       id: "/beta";
       path: "/beta";
@@ -507,6 +527,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   BetaRoute: BetaRoute,
+  EnterRoute: EnterRoute,
 };
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
