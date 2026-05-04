@@ -1,4 +1,5 @@
 import type { KeyPair, NullifierKeyPair } from "domain/keys/models";
+import type { Hex } from "viem";
 
 /**
  * KeyTuple is ordered [privateKey, publicKey] except for the case of
@@ -23,8 +24,18 @@ export type UserKeyring = {
   authorityKeyPair: KeyPair;
   discoveryKeyPair: KeyPair;
   encryptionKeyPair: KeyPair;
-  storageKey: Uint8Array<ArrayBuffer>;
   nullifierKeyPair: NullifierKeyPair;
+  storageKey: Uint8Array<ArrayBuffer>;
+};
+
+export type KeyPairJson = Record<string, Hex>;
+
+export type UserKeyringJson = {
+  authorityKeyPair: KeyPairJson;
+  discoveryKeyPair: KeyPairJson;
+  encryptionKeyPair: KeyPairJson;
+  nullifierKeyPair: KeyPairJson;
+  storageKey: Hex;
 };
 
 export type UserPublicKeys = {

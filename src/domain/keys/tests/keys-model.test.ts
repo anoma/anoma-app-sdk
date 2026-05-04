@@ -71,13 +71,13 @@ describe("Key functions", () => {
   it("Can serialize KeyPair", () => {
     const keyring = createUserKeyring(fromBase64(seed));
     const json = KeyPairSerializer.toJson(keyring.authorityKeyPair);
-    expect(json).toBe(serializedKeyPair);
+    expect(json).toEqual(serializedKeyPair);
   });
 
   it("Can serialize NullifierKeyPair", () => {
     const keyring = createUserKeyring(fromBase64(seed));
     const json = KeyPairSerializer.toJson(keyring.nullifierKeyPair);
-    expect(json).toBe(serializedNullifierKeyPair);
+    expect(json).toEqual(serializedNullifierKeyPair);
   });
 
   it("Can deserialize JSON to KeyPair", () => {
@@ -85,9 +85,7 @@ describe("Key functions", () => {
       KeyPair,
       serializedKeyPair
     );
-    expect(JSON.parse(KeyPairSerializer.toJson(restoredKeypair))).toEqual(
-      authorityKeyPair
-    );
+    expect(KeyPairSerializer.toJson(restoredKeypair)).toEqual(authorityKeyPair);
     expect(restoredKeypair.privateKey).toEqual(
       fromHex(authorityKeyPair.privateKey as Address)
     );

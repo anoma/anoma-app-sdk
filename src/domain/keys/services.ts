@@ -7,8 +7,13 @@ import {
   KeyPairSerializer,
   NullifierKeyPair,
 } from "domain/keys/models";
-import { generateRandomBytes, invariant } from "lib/utils";
-import { PRFDomainMap, type UserKeyring, type UserPublicKeys } from "types";
+import { fromHex, generateRandomBytes, invariant, toHex } from "lib/utils";
+import {
+  PRFDomainMap,
+  type UserKeyring,
+  type UserKeyringJson,
+  type UserPublicKeys,
+} from "types";
 import { stringToBytes } from "viem";
 
 /**
@@ -77,41 +82,33 @@ export const createUserKeyringFromIkm = (ikm: Uint8Array<ArrayBuffer>) => {
 };
 
 /**
- * Serializes a {@link UserKeyring} to a JSON string for session storage persistence.
- * @param keyring The keyring to serialize
- * @returns JSON string with hex-encoded key pairs
+ * Converts a {@link UserKeyring} to a {@link UserKeyringJson} object for persistence.
+ * @param keyring The keyring to convert
+ * @returns JSON object with hex-encoded key pairs
  */
-export const serializeUserKeyring = (keyring: UserKeyring): string => {
-  return JSON.stringify({
-    authorityKeyPair: KeyPairSerializer.toJson(keyring.authorityKeyPair),
-    discoveryKeyPair: KeyPairSerializer.toJson(keyring.discoveryKeyPair),
-    encryptionKeyPair: KeyPairSerializer.toJson(keyring.encryptionKeyPair),
-    storageKey: Array.from(keyring.storageKey),
-    nullifierKeyPair: KeyPairSerializer.toJson(keyring.nullifierKeyPair),
-  });
-};
+export const toUserKeyringJson = (keyring: UserKeyring): UserKeyringJson => ({
+  authorityKeyPair: KeyPairSerializer.toJson(keyring.authorityKeyPair),
+  discoveryKeyPair: KeyPairSerializer.toJson(keyring.discoveryKeyPair),
+  encryptionKeyPair: KeyPairSerializer.toJson(keyring.encryptionKeyPair),
+  nullifierKeyPair: KeyPairSerializer.toJson(keyring.nullifierKeyPair),
+  storageKey: toHex(keyring.storageKey),
+});
 
 /**
- * Deserializes a {@link UserKeyring} from a JSON string produced by {@link serializeUserKeyring}.
- * @param json JSON string with hex-encoded key pairs
+ * Restores a {@link UserKeyring} from a {@link UserKeyringJson} object produced by {@link toUserKeyringJson}.
+ * @param obj JSON object with hex-encoded key pairs
  * @returns Restored {@link UserKeyring}
  */
-export const deserializeUserKeyring = (json: string): UserKeyring => {
-  const obj = JSON.parse(json);
-  return {
-    authorityKeyPair: KeyPairSerializer.fromJson(KeyPair, obj.authorityKeyPair),
-    discoveryKeyPair: KeyPairSerializer.fromJson(KeyPair, obj.discoveryKeyPair),
-    encryptionKeyPair: KeyPairSerializer.fromJson(
-      KeyPair,
-      obj.encryptionKeyPair
-    ),
-    storageKey: new Uint8Array(obj.storageKey) as Uint8Array<ArrayBuffer>,
-    nullifierKeyPair: KeyPairSerializer.fromJson(
-      NullifierKeyPair,
-      obj.nullifierKeyPair
-    ),
-  };
-};
+export const fromUserKeyringJson = (obj: UserKeyringJson): UserKeyring => ({
+  authorityKeyPair: KeyPairSerializer.fromJson(KeyPair, obj.authorityKeyPair),
+  discoveryKeyPair: KeyPairSerializer.fromJson(KeyPair, obj.discoveryKeyPair),
+  encryptionKeyPair: KeyPairSerializer.fromJson(KeyPair, obj.encryptionKeyPair),
+  nullifierKeyPair: KeyPairSerializer.fromJson(
+    NullifierKeyPair,
+    obj.nullifierKeyPair
+  ),
+  storageKey: fromHex(obj.storageKey),
+});
 
 export const createUserKeyringFromPasskey = (
   credential: PublicKeyCredential

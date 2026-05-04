@@ -1,8 +1,8 @@
 import {
   createUserKeyring,
   createUserKeyringFromIkm,
-  deserializeUserKeyring,
-  serializeUserKeyring,
+  fromUserKeyringJson,
+  toUserKeyringJson,
 } from "domain/keys";
 import { generateRandomBytes } from "lib/utils";
 import { expect, test } from "vitest";
@@ -19,10 +19,10 @@ test("should create user keyring correctly", () => {
   expect(keyring.encryptionKeyPair.publicKey).toBeInstanceOf(Uint8Array);
   expect(keyring.encryptionKeyPair.privateKey).toBeInstanceOf(Uint8Array);
 
-  expect(keyring.storageKey).toBeInstanceOf(Uint8Array);
-
   expect(keyring.nullifierKeyPair.cnk).toBeInstanceOf(Uint8Array);
   expect(keyring.nullifierKeyPair.nk).toBeInstanceOf(Uint8Array);
+
+  expect(keyring.storageKey).toBeInstanceOf(Uint8Array);
 });
 
 test("should derive deterministic keyring from ikm", () => {
@@ -44,8 +44,8 @@ test("should derive deterministic keyring from ikm", () => {
 
 test("should round-trip serialize and deserialize a user keyring", () => {
   const keyring = createUserKeyring();
-  const json = serializeUserKeyring(keyring);
-  const restored = deserializeUserKeyring(json);
+  const json = toUserKeyringJson(keyring);
+  const restored = fromUserKeyringJson(json);
 
   expect(restored.authorityKeyPair.publicKey).toEqual(
     keyring.authorityKeyPair.publicKey
@@ -65,7 +65,7 @@ test("should round-trip serialize and deserialize a user keyring", () => {
   expect(restored.encryptionKeyPair.privateKey).toEqual(
     keyring.encryptionKeyPair.privateKey
   );
-  expect(restored.storageKey).toEqual(keyring.storageKey);
   expect(restored.nullifierKeyPair.cnk).toEqual(keyring.nullifierKeyPair.cnk);
   expect(restored.nullifierKeyPair.nk).toEqual(keyring.nullifierKeyPair.nk);
+  expect(restored.storageKey).toEqual(keyring.storageKey);
 });

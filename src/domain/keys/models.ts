@@ -2,7 +2,7 @@ import { hmac } from "@noble/hashes/hmac";
 import { sha256 } from "@noble/hashes/sha2";
 import * as secp256k1 from "@noble/secp256k1";
 import { fromHex, generateRandomBytes, toHex } from "lib/utils";
-import { PRFDomainMap, type PRFDomain } from "types";
+import { PRFDomainMap, type KeyPairJson, type PRFDomain } from "types";
 import { isHex, stringToBytes } from "viem";
 
 type KeyPairConstructor<T extends KeyPairBase> = {
@@ -22,29 +22,28 @@ export class KeyPairSerializer {
    * @param keyPair Instance to serialize
    * @returns JSON string containing hex-encoded private/public keys
    */
-  static toJson<T extends KeyPairBase>(keyPair: T): string {
+  static toJson<T extends KeyPairBase>(keyPair: T): KeyPairJson {
     const ctor = keyPair.constructor as KeyPairConstructor<T>;
     const { privateKey, publicKey } = ctor.keysName;
 
-    return JSON.stringify({
+    return {
       [privateKey]: toHex(keyPair.keys.privateKey),
       [publicKey]: toHex(keyPair.keys.publicKey),
-    });
+    };
   }
 
   /**
-   * Deserializes JSON produced by {@link toJson} back into a key pair.
+   * Deserializes an object produced by {@link toJson} back into a key pair.
    * @param constructor Key pair subclass to instantiate
-   * @param json JSON string with fields matching {@link KeyPairBase.keysName}
+   * @param obj Object with hex-encoded fields matching {@link KeyPairBase.keysName}
    * @returns Key pair with private/public keys restored from hex
    * @example  KeyPairSerializer.fromJson(NullifierKeyPair, keyringObj.nullifierKeyPair)
    */
   static fromJson<T extends KeyPairBase>(
     constructor: KeyPairConstructor<T>,
-    json: string
+    obj: Record<string, string>
   ): T {
     try {
-      const obj = JSON.parse(json);
       const { privateKey, publicKey } = constructor.keysName;
 
       const privHex = obj[privateKey];
