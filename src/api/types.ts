@@ -119,9 +119,9 @@ export type SendTransactionResponse = {
 };
 
 export type TransactionResultResponse = {
-  requestId: string;
+  requestId: UUID;
   status: ClientTransactionStatus;
-  transactionHash?: string | null;
+  transactionHash?: Hex | null;
   error?: string | null;
 };
 
