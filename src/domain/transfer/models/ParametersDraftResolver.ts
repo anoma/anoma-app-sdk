@@ -1,6 +1,5 @@
 import { selectTransferResources } from "domain/resources";
 import type { TransferResourceWithAmount } from "domain/resources/types";
-import { getUserPublicKeysFromKeyring } from "lib/keyUtils";
 import { getResourcesForToken } from "lib/resources";
 import { tokenId } from "lib/tokenUtils";
 import type {
@@ -12,7 +11,7 @@ import type {
   SupportedChainConfig,
   TokenId,
   TokenRegistry,
-  UserKeyring,
+  UserPublicKeys,
 } from "types";
 import { NullifierKey, Resource } from "wasm";
 import type { TransferBuilder } from "./TransferBuilder";
@@ -34,15 +33,18 @@ type TokenResourceWithAmount = {
 export class ParametersDraftResolver {
   protected chain: SupportedChainConfig;
   protected transferBuilder: TransferBuilder;
-  protected keyring: UserKeyring;
+  protected senderPublicKeys: UserPublicKeys;
+  protected senderNullifierKey: Uint8Array<ArrayBuffer>;
   protected receivers: Receiver[] = [];
 
   constructor(
     transferBuilder: TransferBuilder,
-    keyring: UserKeyring,
+    senderPublicKeys: UserPublicKeys,
+    senderNullifierKey: Uint8Array<ArrayBuffer>,
     chain: SupportedChainConfig
   ) {
-    this.keyring = keyring;
+    this.senderPublicKeys = senderPublicKeys;
+    this.senderNullifierKey = senderNullifierKey;
     this.transferBuilder = transferBuilder;
     this.chain = chain;
   }
@@ -116,7 +118,7 @@ export class ParametersDraftResolver {
       if (remainderAmount > 0n) {
         remainderReceivers.push({
           type: "AnomaAddress",
-          userPublicKeys: getUserPublicKeysFromKeyring(this.keyring),
+          userPublicKeys: this.senderPublicKeys,
           quantity: remainderAmount,
           token,
         });
@@ -137,9 +139,9 @@ export class ParametersDraftResolver {
       const items: ConsumedResourceDraft[] = resourceWithAmount.map(
         ({ resource }) => ({
           type: "AnomaAddress",
-          userPublicKeys: getUserPublicKeysFromKeyring(this.keyring),
+          userPublicKeys: this.senderPublicKeys,
           resource: Resource.decode(resource),
-          nullifierKey: new NullifierKey(this.keyring.nullifierKeyPair.nk),
+          nullifierKey: new NullifierKey(this.senderNullifierKey),
           token,
         })
       );
