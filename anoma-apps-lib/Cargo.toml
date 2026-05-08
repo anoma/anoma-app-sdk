@@ -2,6 +2,14 @@
 resolver = "3"
 members = ["arm_risc0_bindings", "anomapay_lib", "anomapay_lib_v2", "anomapay_shared"]
 
+[workspace.package]
+authors = ["Heliax <hello@heliax.dev>"]
+edition = "2024"
+license = "GPL-3.0"
+readme = "README.md"
+version = "0.1.0"
+repository = "https://github.com/anoma/anoma-app-sdk"
+
 [workspace.dependencies]
 getrandom = { version = "0.3", default-features = false, features = ["std", "wasm_js"] }
 getrandom-v2 = { version = "0.2", package = "getrandom", default-features = false, features = ["std", "js"] }

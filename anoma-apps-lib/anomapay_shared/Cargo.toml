@@ -1,10 +1,12 @@
 [package]
 name = "anomapay_shared"
-version = "0.1.0"
-edition = "2024"
 description = "Shared functionality and types for AnomaPay crates"
-repository = "https://github.com/anoma/anoma-app-sdk"
-license = "MIT"
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+readme.workspace = true
+version.workspace = true
+repository.workspace = true
 
 [lib]
 crate-type = ["cdylib", "rlib"]

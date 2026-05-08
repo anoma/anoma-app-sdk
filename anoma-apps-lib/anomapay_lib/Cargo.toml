@@ -1,10 +1,12 @@
 [package]
 name = "anomapay_lib"
-version = "0.1.0"
-edition = "2024"
 description = "Wasm bindings for the AnomaPay application"
-repository = "https://github.com/anoma/anoma-app-sdk"
-license = "MIT"
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+readme.workspace = true
+version.workspace = true
+repository.workspace = true
 
 [lib]
 crate-type = ["cdylib", "rlib"]
@@ -12,10 +14,10 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 arm-risc0-bindings = { path = "../arm_risc0_bindings" }
 anomapay_shared = { path = "../anomapay_shared" }
+# See justin/prove-feature-gate  in anoma/anomapay-backend-multichain
+# TODO: Format me plz! Probably won't need to break into lines eventually, since it will just be version & no default features specified
 transfer_library = { git = "ssh://git@github.com/anoma/anomapay-backend-multichain.git", branch = "justin/prove-feature-gate", default-features = false }
 transfer_witness = { git = "ssh://git@github.com/anoma/anomapay-backend-multichain.git", branch = "justin/prove-feature-gate", default-features = false }
-# NOTE: Cannot use types from this without many feature gates. Remove:
-# transfer_web = { git = "ssh://git@github.com/anoma/anomapay-backend-multichain.git", branch = "justin/prove-feature-gate", default-features = false }
 
 hex = { workspace = true }
 getrandom = { workspace = true }

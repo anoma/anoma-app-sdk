@@ -1,4 +1,4 @@
-use crate::logic::TransferLogic;
+use crate::logic::TransferLogicV2;
 use anomapay_shared::types::{
     CreateEphemeralResourceProps, CreatePersistentResourceProps, ResourceProps,
 };
@@ -10,6 +10,8 @@ use arm_risc0_bindings::arm::{
     resource::{EncodedResource, Resource},
 };
 use serde::{Deserialize, Serialize};
+// TODO: transfer_witness_v2 has the following scoped as private, so importing from
+// v1 crate here. This may need to be fixed in backend!
 use transfer_witness::{
     calculate_label_ref, calculate_persistent_value_ref,
     calculate_value_ref_from_ethereum_account_addr, ValueInfo,
@@ -66,7 +68,7 @@ impl ResourceBuilder {
         let EncodedResource { nonce, .. } = Resource::empty().encode();
 
         Ok(ResourceBuilder(Resource::create(
-            &Digest::from_hex(&TransferLogic::verifying_key())?,
+            &Digest::from_hex(&TransferLogicV2::verifying_key())?,
             &Digest::new(label_ref.as_bytes())?,
             quantity,
             &Digest::new(value_ref.as_bytes())?,
@@ -107,7 +109,7 @@ impl ResourceBuilder {
         ResourceBuilder::new(ResourceProps {
             is_ephemeral,
             quantity,
-            logic_ref: TransferLogic::verifying_key(),
+            logic_ref: TransferLogicV2::verifying_key(),
             label_ref: Digest::new(label_ref.as_bytes())?.to_hex(),
             value_ref: Digest::new(value_ref.as_bytes())?.to_hex(),
             rand_seed,
