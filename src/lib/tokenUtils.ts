@@ -164,7 +164,7 @@ export const buildBalanceIndex = (
 export const findBalanceByToken = (
   balances: TokenBalance[],
   token?: TokenRegistry
-) => {
+): TokenBalance | undefined => {
   if (!token) return undefined;
   const id = tokenId(token);
   return balances.find(t => tokenId(t.token) === id);

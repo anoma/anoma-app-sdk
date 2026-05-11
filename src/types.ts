@@ -71,6 +71,7 @@ export type SupportedChainConfig = Omit<
   | "tokens"
 > & {
   network: Network;
+  networkName?: string;
   tokens: TokenRegistry[];
   feePublicKeys: UserPublicKeys;
   explorerUrl?: string;
