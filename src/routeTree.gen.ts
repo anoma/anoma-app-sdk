@@ -28,6 +28,7 @@ import { Route as AuthSignUpPasskeysRouteImport } from "./routes/_auth/sign-up/p
 import { Route as AuthLoginWalletRouteImport } from "./routes/_auth/login/wallet";
 import { Route as AuthLoginInAppRouteImport } from "./routes/_auth/login/in-app";
 import { Route as AuthenticatedOverlayReceiptIdRouteImport } from "./routes/_authenticated/_overlay/receipt.$id";
+import { Route as AuthenticatedModalRedEnvelopeSeedRouteImport } from "./routes/_authenticated/_modal/red-envelope.$seed";
 import { Route as AuthenticatedModalPayRequestRouteImport } from "./routes/_authenticated/_modal/pay.request";
 import { Route as AuthenticatedModalPayDataRouteImport } from "./routes/_authenticated/_modal/pay.$data";
 import { Route as AuthenticatedModalClaimSeedRouteImport } from "./routes/_authenticated/_modal/claim.$seed";
@@ -128,6 +129,12 @@ const AuthenticatedOverlayReceiptIdRoute =
     path: "/receipt/$id",
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any);
+const AuthenticatedModalRedEnvelopeSeedRoute =
+  AuthenticatedModalRedEnvelopeSeedRouteImport.update({
+    id: "/red-envelope/$seed",
+    path: "/red-envelope/$seed",
+    getParentRoute: () => AuthenticatedModalRouteRoute,
+  } as any);
 const AuthenticatedModalPayRequestRoute =
   AuthenticatedModalPayRequestRouteImport.update({
     id: "/pay/request",
@@ -165,6 +172,7 @@ export interface FileRoutesByFullPath {
   "/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
   "/pay/$data": typeof AuthenticatedModalPayDataRoute;
   "/pay/request": typeof AuthenticatedModalPayRequestRoute;
+  "/red-envelope/$seed": typeof AuthenticatedModalRedEnvelopeSeedRoute;
   "/receipt/$id": typeof AuthenticatedOverlayReceiptIdRoute;
 }
 export interface FileRoutesByTo {
@@ -185,6 +193,7 @@ export interface FileRoutesByTo {
   "/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
   "/pay/$data": typeof AuthenticatedModalPayDataRoute;
   "/pay/request": typeof AuthenticatedModalPayRequestRoute;
+  "/red-envelope/$seed": typeof AuthenticatedModalRedEnvelopeSeedRoute;
   "/receipt/$id": typeof AuthenticatedOverlayReceiptIdRoute;
 }
 export interface FileRoutesById {
@@ -210,6 +219,7 @@ export interface FileRoutesById {
   "/_authenticated/_modal/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
   "/_authenticated/_modal/pay/$data": typeof AuthenticatedModalPayDataRoute;
   "/_authenticated/_modal/pay/request": typeof AuthenticatedModalPayRequestRoute;
+  "/_authenticated/_modal/red-envelope/$seed": typeof AuthenticatedModalRedEnvelopeSeedRoute;
   "/_authenticated/_overlay/receipt/$id": typeof AuthenticatedOverlayReceiptIdRoute;
 }
 export interface FileRouteTypes {
@@ -232,6 +242,7 @@ export interface FileRouteTypes {
     | "/claim/$seed"
     | "/pay/$data"
     | "/pay/request"
+    | "/red-envelope/$seed"
     | "/receipt/$id";
   fileRoutesByTo: FileRoutesByTo;
   to:
@@ -252,6 +263,7 @@ export interface FileRouteTypes {
     | "/claim/$seed"
     | "/pay/$data"
     | "/pay/request"
+    | "/red-envelope/$seed"
     | "/receipt/$id";
   id:
     | "__root__"
@@ -276,6 +288,7 @@ export interface FileRouteTypes {
     | "/_authenticated/_modal/claim/$seed"
     | "/_authenticated/_modal/pay/$data"
     | "/_authenticated/_modal/pay/request"
+    | "/_authenticated/_modal/red-envelope/$seed"
     | "/_authenticated/_overlay/receipt/$id";
   fileRoutesById: FileRoutesById;
 }
@@ -422,6 +435,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthenticatedOverlayReceiptIdRouteImport;
       parentRoute: typeof AuthenticatedRouteRoute;
     };
+    "/_authenticated/_modal/red-envelope/$seed": {
+      id: "/_authenticated/_modal/red-envelope/$seed";
+      path: "/red-envelope/$seed";
+      fullPath: "/red-envelope/$seed";
+      preLoaderRoute: typeof AuthenticatedModalRedEnvelopeSeedRouteImport;
+      parentRoute: typeof AuthenticatedModalRouteRoute;
+    };
     "/_authenticated/_modal/pay/request": {
       id: "/_authenticated/_modal/pay/request";
       path: "/pay/request";
@@ -490,6 +510,7 @@ interface AuthenticatedModalRouteRouteChildren {
   AuthenticatedModalClaimSeedRoute: typeof AuthenticatedModalClaimSeedRoute;
   AuthenticatedModalPayDataRoute: typeof AuthenticatedModalPayDataRoute;
   AuthenticatedModalPayRequestRoute: typeof AuthenticatedModalPayRequestRoute;
+  AuthenticatedModalRedEnvelopeSeedRoute: typeof AuthenticatedModalRedEnvelopeSeedRoute;
 }
 
 const AuthenticatedModalRouteRouteChildren: AuthenticatedModalRouteRouteChildren =
@@ -500,6 +521,8 @@ const AuthenticatedModalRouteRouteChildren: AuthenticatedModalRouteRouteChildren
     AuthenticatedModalClaimSeedRoute: AuthenticatedModalClaimSeedRoute,
     AuthenticatedModalPayDataRoute: AuthenticatedModalPayDataRoute,
     AuthenticatedModalPayRequestRoute: AuthenticatedModalPayRequestRoute,
+    AuthenticatedModalRedEnvelopeSeedRoute:
+      AuthenticatedModalRedEnvelopeSeedRoute,
   };
 
 const AuthenticatedModalRouteRouteWithChildren =

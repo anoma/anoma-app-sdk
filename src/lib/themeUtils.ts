@@ -1,0 +1,9 @@
+type Theme = "light" | "dark" | "red";
+
+export const setTheme = (theme: Theme, value: boolean) => {
+  document.documentElement.classList.toggle(theme, value);
+};
+
+export const isTheme = (theme: Theme) => {
+  return document.documentElement.classList.contains(theme);
+};
