@@ -34,11 +34,6 @@ export const statsQueueRefetchIntervalInMs = 20_000;
 // How many times some mutations query should retry before throwing an error:
 export const retryMutationsCount = 3;
 
-// Blocks deposit if total amount is bigger than maxBalanceInUsd
-export const maxBalanceInUsd = Number(
-  import.meta.env?.VITE_APP_MAX_DEPOSIT_AMOUNT_IN_USD ?? 1.0
-);
-
 // Token price can fluctuate between fee estimates, so accept convergence within 5%.
 export const FeeFluctuationPercentage = 5n;
 
