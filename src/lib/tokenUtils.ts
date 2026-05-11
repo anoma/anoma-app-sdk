@@ -1,3 +1,4 @@
+import { defaultTokenId } from "app-constants";
 import type { AggregatedTokenBalance } from "domain/resources/types";
 import type { WalletBalance } from "hooks/resources/useWalletBalances";
 import type {
@@ -22,8 +23,12 @@ const getNotFoundToken = (values?: Partial<TokenRegistry>): TokenRegistry => ({
   ...values,
 });
 
-export const splitTokenId = (id: TokenId): [string, Address] => {
-  return id.split(":") as [string, Address];
+export const splitTokenId = (id: TokenId): [string, string] => {
+  const parts = id.split(":");
+  if (parts.length !== 2) {
+    throw new Error(`Invalid TokenId format: ${id}`);
+  }
+  return [parts[0], parts[1]];
 };
 
 /** Extracts `NetworkAddress` keys from a list of resources. */
@@ -43,6 +48,50 @@ export const tokenId = (
   tokenRegistry: Pick<TokenRegistry, "network" | "symbol">
 ): TokenId => {
   return `${tokenRegistry.network}:${tokenRegistry.symbol.toLowerCase()}`;
+};
+
+/** Resolves the fallback token from the registry, used when user has no balances. */
+export const getFallbackBalance = (
+  allTokens: TokenRegistry[],
+  tokenId = defaultTokenId
+): TokenBalance | undefined => {
+  const fallback = getTokenById(allTokens, tokenId);
+  if (!fallback) return undefined;
+  return { token: fallback, amount: 0n };
+};
+
+export const getPriorityTokenBalance = (
+  allTokens: TokenRegistry[],
+  tokenBalances: TokenBalance[],
+  defaultToken: TokenId,
+  searchToken: string = ""
+): TokenBalance | undefined => {
+  const hasBalances = tokenBalances.length > 0;
+  const [, defaultTokenSymbol] = splitTokenId(defaultToken);
+
+  // No balances available => returns fallback token.
+  if (!hasBalances) {
+    return getFallbackBalance(allTokens, defaultToken);
+  }
+
+  // If a search token is provided (e.g. via URL param), try to find it among balances first.
+  if (searchToken) {
+    const match = tokenBalances.find(t => tokenId(t.token) === searchToken);
+    if (match) return match;
+  }
+
+  // Sort held tokens to prioritize the default token, then pick the first one.
+  const held = tokenBalances
+    .filter(b => (b.amount ?? 0n) > 0n)
+    .sort(t =>
+      t.token.symbol.toLowerCase() === defaultTokenSymbol.toLowerCase() ? -1 : 1
+    );
+
+  // Try to find the default token among held tokens, otherwise fallback to the first held token or the zero-balance fallback.
+  const defaultMatch = held.find(t => tokenId(t.token) === defaultTokenId);
+
+  // Default token (if balance > 0) > first held token (prioritizing the default token symbol) > fallback (0 balance)
+  return defaultMatch ?? held[0] ?? getFallbackBalance(allTokens, defaultToken);
 };
 
 /**
