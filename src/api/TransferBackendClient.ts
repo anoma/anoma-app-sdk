@@ -101,7 +101,15 @@ export class TransferBackendClient extends ApiClient {
         const data = JSON.parse(event.data) as TransactionResultResponse;
         onStatus?.(data.status);
         if (data.status === "completed" || data.status === "failed")
-          finish(() => this.transactionResult(requestId).then(resolve, reject));
+          finish(async () => {
+            return this.transactionResult(requestId)
+              .then(result =>
+                data.status === "completed" ?
+                  resolve(result)
+                : reject(result.error)
+              )
+              .catch(e => reject(e));
+          });
       });
 
       source.onerror = e =>
