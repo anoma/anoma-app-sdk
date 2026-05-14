@@ -1,8 +1,10 @@
+import type { UUID } from "crypto";
+
 export const ApiPaths = {
   Configuration: () => `/api/v1/configuration/all`,
   SendTransaction: (network: string) => `/api/v1/transactions/${network}`,
-  TransactionResult: (id: string) => `/api/v1/transactions/${id}`,
-  TransactionStatus: (id: string) => `/api/v1/transactions/${id}/status`,
+  TransactionResult: (id: UUID) => `/api/v1/transactions/${id}`,
+  TransactionStatus: (id: UUID) => `/api/v1/transactions/${id}/status`,
   EstimateFee: (network: string) =>
     `/api/v1/transactions/${network}/estimate-fee`,
 

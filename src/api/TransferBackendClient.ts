@@ -1,3 +1,4 @@
+import type { UUID } from "crypto";
 import type {
   FeeRequest,
   FeeResponse,
@@ -57,7 +58,7 @@ export class TransferBackendClient extends ApiClient {
     return this.get(ApiPaths.Permit2Allowance(network, owner, token));
   }
 
-  async transactionResult(id: string): Promise<TransactionResultResponse> {
+  async transactionResult(id: UUID): Promise<TransactionResultResponse> {
     return this.get(ApiPaths.TransactionResult(id));
   }
 
@@ -74,7 +75,7 @@ export class TransferBackendClient extends ApiClient {
    * Pass an AbortSignal to close the connection early (e.g. on unmount).
    */
   observeTransactionStatus(
-    requestId: string,
+    requestId: UUID,
     options?: {
       onStatus?: (status: ClientTransactionStatus) => void;
       signal?: AbortSignal;
@@ -85,41 +86,65 @@ export class TransferBackendClient extends ApiClient {
     return new Promise((resolve, reject) => {
       const url = this.endpoint(ApiPaths.TransactionStatus(requestId));
       const source = new EventSource(url);
+      let settled = false;
 
-      const finish = (fn: () => void) => {
+      const settle = (fn: () => void) => {
+        // Only allow to settle the promise once
+        if (settled) return;
+        settled = true;
         source.close();
         fn();
       };
 
       signal?.addEventListener(
         "abort",
-        () => finish(() => reject(new DOMException("Aborted", "AbortError"))),
+        () =>
+          settle(() => {
+            reject(new DOMException("Aborted", "AbortError"));
+          }),
         { once: true }
       );
 
       source.addEventListener("status", (event: MessageEvent<string>) => {
         const data = JSON.parse(event.data) as TransactionResultResponse;
         onStatus?.(data.status);
-        if (data.status === "completed" || data.status === "failed")
-          finish(async () => {
-            return this.transactionResult(requestId)
-              .then(result =>
-                data.status === "completed" ?
-                  resolve(result)
-                : reject(result.error)
-              )
-              .catch(e => reject(e));
+
+        if (data.status === "completed") {
+          settle(async () => {
+            // Transaction result fetch may fail transiently after completion.
+            // Retry indefinitely rather than rejecting and misleading the UI
+            const getResult = (): Promise<TransactionResultResponse> =>
+              this.transactionResult(requestId).catch(() =>
+                new Promise(r => setTimeout(r, 500)).then(getResult)
+              );
+            getResult().then(resolve);
+          });
+        }
+
+        if (data.status === "failed")
+          settle(async () => {
+            // Fetch failure reason from API, fall back to "Unknown reason" if unavailable
+            let message: string = "Unknown reason";
+            await this.transactionResult(requestId).then(result => {
+              if (result.error) {
+                message = result.error;
+              }
+            });
+            const error = new Error(message);
+            error.name = "TransactionFailed";
+            reject(error);
           });
       });
 
-      source.onerror = e =>
-        finish(() => {
+      source.onerror = e => {
+        settle(() => {
           if ("data" in e) {
             const json = JSON.parse(e.data + "") as { error: string };
-            return reject(new Error(json.error));
+            reject(new Error(json.error));
           }
-          return reject(new Error("SSE connection error"));
+          reject(new Error("SSE connection error"));
         });
+      };
     });
   }
 }
