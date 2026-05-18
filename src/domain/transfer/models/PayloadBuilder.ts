@@ -1,11 +1,11 @@
 import { toBase64 } from "lib/utils";
 import type {
   ConsumedResource,
-  ConsumedResourceDraft,
   ConsumedWitnessDataSchema,
+  ConsumeIntent,
   CreatedResource,
-  CreatedResourceDraft,
   CreatedWitnessDataSchema,
+  CreateIntent,
   Parameters,
   ResolvedParameters,
 } from "types";
@@ -21,24 +21,24 @@ const formatPayloadKey = (key: Uint8Array<ArrayBufferLike>) =>
  * and authorization signing.
  */
 export class PayloadBuilder {
-  consumingResources: ConsumedResourceDraft[];
-  creatingResources: CreatedResourceDraft[];
+  consumeIntents: ConsumeIntent[];
+  createIntents: CreateIntent[];
   authorizationSignature: AuthoritySignature | undefined;
 
   constructor(resolvedParameters: ResolvedParameters) {
-    this.consumingResources = resolvedParameters.consumedResourceDrafts;
-    this.creatingResources = resolvedParameters.createdResourceDrafts;
+    this.consumeIntents = resolvedParameters.consumeIntents;
+    this.createIntents = resolvedParameters.createIntents;
   }
 
   /** Signs all consumed/created resource pairs and stores the authorization signature. */
   withAuthorization(authorityPrivateKey: Uint8Array<ArrayBuffer>) {
     const actions: Digest[] = [];
-    for (let i = 0; i < this.consumingResources.length; i++) {
+    for (let i = 0; i < this.consumeIntents.length; i++) {
       actions.push(
-        this.consumingResources[i].resource.nullifier(
-          this.consumingResources[i].nullifierKey
+        this.consumeIntents[i].resource.nullifier(
+          this.consumeIntents[i].nullifierKey
         ),
-        this.creatingResources[i].resource.commitment()
+        this.createIntents[i].resource.commitment()
       );
     }
     this.authorizationSignature = authorizeActions(
@@ -50,7 +50,7 @@ export class PayloadBuilder {
 
   /** Returns the witness data for a consumed resource based on its sender type. */
   getWitnessForConsumedResource(
-    item: ConsumedResourceDraft
+    item: ConsumeIntent
   ): Partial<ConsumedWitnessDataSchema> {
     // Consumed resources from AnomaPay (ex: Send / Claim)
     if (item.type === "AnomaAddress") {
@@ -93,12 +93,12 @@ export class PayloadBuilder {
       return this.getWitnessForPaddingResource();
     }
 
-    throw new Error("Unknown ConsumedResourceDraft type");
+    throw new Error("Unknown ConsumeIntent type");
   }
 
   /** Returns the witness data for a created resource based on its receiver type. */
   getWitnessForCreatedResource(
-    item: CreatedResourceDraft
+    item: CreateIntent
   ): Partial<CreatedWitnessDataSchema> {
     // Padding resources don't have a receiver or token address
     if (!item.receiver) {
@@ -138,7 +138,7 @@ export class PayloadBuilder {
       };
     }
 
-    throw new Error("Unknown CreatedResourceDraft type");
+    throw new Error("Unknown CreateIntent type");
   }
 
   /** Returns trivial ephemeral witness data used for padding resources. */
@@ -148,8 +148,8 @@ export class PayloadBuilder {
     };
   }
 
-  /** Encodes a consuming item into the serialized consumed resource payload. */
-  getConsumedResourcePayload(item: ConsumedResourceDraft): ConsumedResource {
+  /** Encodes a consume intent into the serialized consumed resource payload. */
+  getConsumedResourcePayload(item: ConsumeIntent): ConsumedResource {
     return {
       resource: item.resource.encode(),
       nullifierKey: item.nullifierKey.toBase64(),
@@ -157,8 +157,8 @@ export class PayloadBuilder {
     };
   }
 
-  /** Encodes a creating item into the serialized created resource payload. */
-  getCreatedResourcesPayload(item: CreatedResourceDraft): CreatedResource {
+  /** Encodes a create intent into the serialized created resource payload. */
+  getCreatedResourcesPayload(item: CreateIntent): CreatedResource {
     return {
       resource: item.resource.encode(),
       witnessData: this.getWitnessForCreatedResource(item),
@@ -168,10 +168,10 @@ export class PayloadBuilder {
   /** Builds the final Parameters object by encoding all consumed and created resources. */
   build(): Parameters {
     return {
-      consumedResources: this.consumingResources.map(
+      consumedResources: this.consumeIntents.map(
         this.getConsumedResourcePayload.bind(this)
       ),
-      createdResources: this.creatingResources.map(
+      createdResources: this.createIntents.map(
         this.getCreatedResourcesPayload.bind(this)
       ),
     };

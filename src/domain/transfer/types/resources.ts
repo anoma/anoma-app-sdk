@@ -73,7 +73,7 @@ export type Receiver = { token: TokenRegistry; quantity: bigint } & (
     }
 );
 
-export type ConsumedResourceDraft = {
+export type ConsumeIntent = {
   resource: Resource;
   nullifierKey: NullifierKey;
   token?: TokenRegistry;
@@ -92,14 +92,14 @@ export type ConsumedResourceDraft = {
     }
 );
 
-export type CreatedResourceDraft = {
+export type CreateIntent = {
   resource: Resource;
   receiver?: Receiver;
 };
 
 export type ResolvedParameters = {
-  createdResourceDrafts: CreatedResourceDraft[];
-  consumedResourceDrafts: ConsumedResourceDraft[];
+  createIntents: CreateIntent[];
+  consumeIntents: ConsumeIntent[];
 };
 
 /**

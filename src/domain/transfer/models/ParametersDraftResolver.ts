@@ -4,8 +4,8 @@ import { getResourcesForToken } from "lib/resources";
 import { tokenId } from "lib/tokenUtils";
 import type {
   AppResource,
-  ConsumedResourceDraft,
-  CreatedResourceDraft,
+  ConsumeIntent,
+  CreateIntent,
   Receiver,
   ResolvedParameters,
   SupportedChainConfig,
@@ -128,39 +128,37 @@ export class ParametersDraftResolver {
     return remainderReceivers;
   }
 
-  /** Converts selected resources into ConsumedResourceDraft entries for the sender. */
-  getConsumedResourceDraftList(
+  /** Converts selected resources into ConsumeIntent entries for the sender. */
+  getConsumeIntents(
     selectedResourcesMap: Map<TokenId, TokenResourceWithAmount>
-  ): ConsumedResourceDraft[] {
-    const consumedResources: ConsumedResourceDraft[] = [];
+  ): ConsumeIntent[] {
+    const consumeIntents: ConsumeIntent[] = [];
 
     for (const [, value] of selectedResourcesMap) {
       const { token, resourceWithAmount } = value;
-      const items: ConsumedResourceDraft[] = resourceWithAmount.map(
-        ({ resource }) => ({
-          type: "AnomaAddress",
-          userPublicKeys: this.senderPublicKeys,
-          resource: Resource.decode(resource),
-          nullifierKey: new NullifierKey(this.senderNullifierKey),
-          token,
-        })
-      );
-      consumedResources.push(...items);
+      const items: ConsumeIntent[] = resourceWithAmount.map(({ resource }) => ({
+        type: "AnomaAddress",
+        userPublicKeys: this.senderPublicKeys,
+        resource: Resource.decode(resource),
+        nullifierKey: new NullifierKey(this.senderNullifierKey),
+        token,
+      }));
+      consumeIntents.push(...items);
     }
 
-    return consumedResources;
+    return consumeIntents;
   }
 
   /**
    * Creates transfer resources for each receiver, using the
    * corresponding consumed resource as the input.
    */
-  getCreatedResourceDraftList(
-    consumedResources: ConsumedResourceDraft[],
+  getCreateIntents(
+    consumeIntents: ConsumeIntent[],
     receivers: Receiver[]
-  ): CreatedResourceDraft[] {
+  ): CreateIntent[] {
     return receivers.map((receiver, i) => {
-      const { resource: consumedResource, nullifierKey } = consumedResources[i];
+      const { resource: consumedResource, nullifierKey } = consumeIntents[i];
 
       if (!receiver.token)
         throw new Error("Consumed resource is missing token information");
@@ -190,7 +188,7 @@ export class ParametersDraftResolver {
         return {
           resource: this.transferBuilder.client.createTransferResource({
             ...commonParams,
-            receiverKeyring: receiver.userPublicKeys,
+            receiverPublicKeys: receiver.userPublicKeys,
           }),
           receiver,
         };
@@ -200,10 +198,8 @@ export class ParametersDraftResolver {
     });
   }
 
-  /** Creates a padding CreatedResourceDraft with a trivial resource. */
-  getCreatedResourceDraftPadding(
-    consumedResource: ConsumedResourceDraft
-  ): CreatedResourceDraft {
+  /** Creates a padding CreateIntent with a trivial resource. */
+  getCreateIntentPadding(consumedResource: ConsumeIntent): CreateIntent {
     return {
       resource: this.transferBuilder.client.createPaddingResource({
         nullifierKey: consumedResource.nullifierKey,
@@ -213,8 +209,8 @@ export class ParametersDraftResolver {
     };
   }
 
-  /** Creates a padding ConsumedResourceDraft with a trivial resource. */
-  getConsumedResourceDraftPadding(): ConsumedResourceDraft {
+  /** Creates a padding ConsumeIntent with a trivial resource. */
+  getConsumeIntentPadding(): ConsumeIntent {
     return {
       type: "Padding",
       resource: this.transferBuilder.client.createPaddingResource(),
@@ -233,41 +229,41 @@ export class ParametersDraftResolver {
     const remainderReceivers = this.checkForRemainders(selectedResources);
     const receivers = [...this.receivers, ...remainderReceivers];
 
-    // Create consumed resources from selected user resources
-    const consumedResourceDrafts: ConsumedResourceDraft[] = [
-      ...this.getConsumedResourceDraftList(selectedResources),
+    // Create consume intents from selected user resources
+    const consumeIntents: ConsumeIntent[] = [
+      ...this.getConsumeIntents(selectedResources),
     ];
 
-    // Pad consumed resources so there is one per receiver before creating outputs
+    // Pad consume intents so there is one per receiver before creating outputs
     const consumedPaddingCount = Math.max(
       0,
-      receivers.length - consumedResourceDrafts.length
+      receivers.length - consumeIntents.length
     );
 
     for (let i = 0; i < consumedPaddingCount; i++) {
-      consumedResourceDrafts.push(this.getConsumedResourceDraftPadding());
+      consumeIntents.push(this.getConsumeIntentPadding());
     }
 
-    // Create resources using the (now padded) consumed resources
-    const createdResourceDrafts: CreatedResourceDraft[] = [
-      ...this.getCreatedResourceDraftList(consumedResourceDrafts, receivers),
+    // Create intents using the (now padded) consume intents
+    const createIntents: CreateIntent[] = [
+      ...this.getCreateIntents(consumeIntents, receivers),
     ];
 
-    // Pad created resources if consumed still outnumbers them
+    // Pad create intents if consume intents still outnumber them
     const createdPaddingCount = Math.max(
       0,
-      consumedResourceDrafts.length - createdResourceDrafts.length
+      consumeIntents.length - createIntents.length
     );
 
     for (let i = 0; i < createdPaddingCount; i++) {
-      const consumedIndex = createdResourceDrafts.length;
-      const consumed = consumedResourceDrafts[consumedIndex];
-      createdResourceDrafts.push(this.getCreatedResourceDraftPadding(consumed));
+      const consumedIndex = createIntents.length;
+      const consumed = consumeIntents[consumedIndex];
+      createIntents.push(this.getCreateIntentPadding(consumed));
     }
 
     return {
-      consumedResourceDrafts,
-      createdResourceDrafts,
+      consumeIntents,
+      createIntents,
     };
   }
 }

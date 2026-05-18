@@ -61,14 +61,14 @@ export class TransferLogic extends Client {
     forwarderAddress,
     nullifierKey,
     quantity,
-    receiverKeyring,
+    receiverPublicKeys,
     resource,
     token,
   }: {
     forwarderAddress: Address;
     nullifierKey: NullifierKey;
     quantity: bigint;
-    receiverKeyring: UserPublicKeys;
+    receiverPublicKeys: UserPublicKeys;
     resource: Resource;
     token: Address;
   }): Resource {
@@ -76,11 +76,11 @@ export class TransferLogic extends Client {
     const labelRef = calculateLabelRef(forwarderAddress, token);
     const nonce = resource.nullifier(nullifierKey);
     const receiverAuthVerifyingKey = new AuthorityVerifyingKey(
-      receiverKeyring.authorityPublicKey
+      receiverPublicKeys.authorityPublicKey
     );
     const valueRef = calculateValueRefFromAuth(
       receiverAuthVerifyingKey,
-      toHex(receiverKeyring.encryptionPublicKey)
+      toHex(receiverPublicKeys.encryptionPublicKey)
     );
     return Resource.create(
       logicRef,
@@ -89,7 +89,7 @@ export class TransferLogic extends Client {
       valueRef,
       false,
       nonce,
-      new NullifierKeyCommitment(receiverKeyring.nullifierKeyCommitment)
+      new NullifierKeyCommitment(receiverPublicKeys.nullifierKeyCommitment)
     );
   }
 
