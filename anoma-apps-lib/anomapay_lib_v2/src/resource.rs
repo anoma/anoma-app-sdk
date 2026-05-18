@@ -123,6 +123,10 @@ impl ResourceBuilder {
         self.0.encode()
     }
 
+    pub fn witness(&self) -> String {
+        "".to_string()
+    }
+
     #[wasm_bindgen(js_name = "toJson")]
     pub fn to_json(&self) -> Result<String, JsError> {
         serde_json::to_string_pretty(&self.0).map_err(|e| JsError::new(&e.to_string()))

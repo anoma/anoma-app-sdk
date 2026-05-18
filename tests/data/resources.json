@@ -1,0 +1,23 @@
+{
+  "consumed_persistent_resource": "TODO!",
+  "created_persistent_resource": {
+    "is_ephemeral": false,
+    "quantity": 12300,
+    "logic_ref": "51HLj7QD21v3g470NOlSZSxeGX/mG9nXqQfmfE+dlyU=",
+    "label_ref": "qdaYtq02z642aRJBxFgTesBdHvfm/sf1tL2gFtGgQZU=",
+    "value_ref": "OdbCukoqenyigtPAGag6a+cm695eFYvcp/wsd8aRT3U=",
+    "nonce": "a7XO1aHBBorQ9h78/v8b9e14DNCvjRvQpYeIGBStDSw=",
+    "rand_seed": "i1vOf35ZaBzoktrPPGpx9yIFVdsQOrbhzUWxTXD1Ypc=",
+    "nk_commitment": "nXNbmQhMVoqgpD2/rz+eMSebB9fpIcZr2x+fmnuEZEQ="
+  },
+  "ephemeral_resource": {
+    "is_ephemeral": true,
+    "quantity": 12300,
+    "logic_ref": "51HLj7QD21v3g470NOlSZSxeGX/mG9nXqQfmfE+dlyU=",
+    "label_ref": "qdaYtq02z642aRJBxFgTesBdHvfm/sf1tL2gFtGgQZU=",
+    "value_ref": "dnzOetj4sx8wrf/eMUlBid2AXwoAAAAAAAAAAAAAAAA=",
+    "nonce": "Jg3R/3zGX929yhf3apUWtLkliJOg0vTUT5pN/IvUwqs=",
+    "rand_seed": "BchQuLjV6BiAFSftVChZ707Z12rAHkQpeTNI0ixlkAA=",
+    "nk_commitment": "nXNbmQhMVoqgpD2/rz+eMSebB9fpIcZr2x+fmnuEZEQ="
+  }
+}

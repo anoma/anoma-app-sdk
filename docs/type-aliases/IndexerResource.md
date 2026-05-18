@@ -1,6 +1,6 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / IndexerResource
 
@@ -8,20 +8,20 @@
 
 > **IndexerResource** = `object`
 
-Defined in: [src/api/types.ts:70](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L70)
+Defined in: [src/api/types.ts:70](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/types.ts#L70)
 
 ## Properties
 
-### resource\_payload
+### resource_payload
 
-> **resource\_payload**: [`IndexerBlob`](IndexerBlob.md)
+> **resource_payload**: [`IndexerBlob`](IndexerBlob.md)
 
-Defined in: [src/api/types.ts:71](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L71)
+Defined in: [src/api/types.ts:71](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/types.ts#L71)
 
-***
+---
 
-### transaction\_hash
+### transaction_hash
 
-> **transaction\_hash**: `Address`
+> **transaction_hash**: `Address`
 
-Defined in: [src/api/types.ts:72](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L72)
+Defined in: [src/api/types.ts:72](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/types.ts#L72)

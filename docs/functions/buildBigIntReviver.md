@@ -1,6 +1,6 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / buildBigIntReviver
 
@@ -8,9 +8,10 @@
 
 > **buildBigIntReviver**(`keys`): (`key`, `value`) => `unknown`
 
-Defined in: [src/lib/utils.ts:119](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/lib/utils.ts#L119)
+Defined in: [src/lib/utils.ts:143](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/lib/utils.ts#L143)
 
-JSON replacer for storage — lossless bigint encoding. Pair with bigintReviver.
+Builds a JSON reviver that converts string values back to bigints for the specified keys.
+Pair with [bigIntReplacer](bigIntReplacer.md) when serializing.
 
 ## Parameters
 
@@ -18,20 +19,8 @@ JSON replacer for storage — lossless bigint encoding. Pair with bigintReviver.
 
 `string`[]
 
+The JSON property names whose values should be revived as bigints.
+
 ## Returns
 
-> (`key`, `value`): `unknown`
-
-### Parameters
-
-#### key
-
-`string`
-
-#### value
-
-`unknown`
-
-### Returns
-
-`unknown`
+(`key`, `value`) => `unknown`

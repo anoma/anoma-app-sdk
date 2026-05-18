@@ -1,11 +1,11 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
-[@anomaorg/anoma-app-sdk](../globals.md) / ANOMA\_APP\_SDK\_VERSION
+[@anomaorg/anoma-app-sdk](../globals.md) / ANOMA_APP_SDK_VERSION
 
-# Variable: ANOMA\_APP\_SDK\_VERSION
+# Variable: ANOMA_APP_SDK_VERSION
 
-> `const` **ANOMA\_APP\_SDK\_VERSION**: `"0.7.0"` = `"0.7.0"`
+> `const` **ANOMA_APP_SDK_VERSION**: `"0.9.1"` = `"0.9.1"`
 
-Defined in: [src/version.ts:1](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/version.ts#L1)
+Defined in: [src/version.ts:1](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/version.ts#L1)

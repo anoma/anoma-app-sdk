@@ -7,7 +7,7 @@ import { TRIVIAL_LOGIC_VERIFYING_KEY } from "lib-constants";
 import { toHex } from "lib/utils";
 import type { CreateMintProps, MintResources, UserPublicKeys } from "types";
 import type { Address } from "viem";
-import { ResourceBuilder } from "wasm/anomaPayLib";
+import { TransferLogic as WasmTransferLogic } from "wasm/anomaPayLib/anomapay_lib";
 import {
   AuthorityVerifyingKey,
   Digest,
@@ -67,7 +67,7 @@ export class TransferLogic {
     resource: Resource;
     token: Address;
   }): Resource {
-    const logicRef = Digest.fromHex(ResourceBuilder.id);
+    const logicRef = Digest.fromHex(WasmTransferLogic.verifyingKey);
     const labelRef = calculateLabelRef(forwarderAddress, token);
     const nonce = resource.nullifier(nullifierKey);
     const receiverAuthVerifyingKey = new AuthorityVerifyingKey(
@@ -104,12 +104,7 @@ export class TransferLogic {
     resource: Resource;
     token: Address;
   }): Resource {
-    // TODO: The following "ResourceBuilder.id" is here only to support build UNTIL
-    // this entire thing is completely replaced by the ResourceBuilder (wasm) itself!
-    // It may look silly here, but it will be obsolete by the end of this PR.
-    // We could even export  "Digest" instance from the respective TransferLogic* version,
-    // but our app won't even need to use it.
-    const logicRef = Digest.fromHex(ResourceBuilder.id);
+    const logicRef = Digest.fromHex(WasmTransferLogic.verifyingKey);
     const labelRef = calculateLabelRef(forwarderAddress, token);
     const nonce = resource.nullifier(nullifierKey);
     const valueRef = calculateValueRefFromUserAddress(receiverAddress);
@@ -131,7 +126,7 @@ export class TransferLogic {
     const nk = new NullifierKey(keyring.nullifierKeyPair.nk);
     const nkCommitment = nk.commit();
 
-    const logicRef = Digest.fromHex(ResourceBuilder.id);
+    const logicRef = Digest.fromHex(WasmTransferLogic.verifyingKey);
     const labelRef = calculateLabelRef(forwarderAddress, token);
 
     const consumedResource = Resource.create(

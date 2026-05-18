@@ -1,6 +1,6 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / TransactionHashResponse
 
@@ -8,12 +8,12 @@
 
 > **TransactionHashResponse** = `object`
 
-Defined in: [src/api/types.ts:108](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L108)
+Defined in: [src/api/types.ts:108](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/types.ts#L108)
 
 ## Properties
 
-### transaction\_hash
+### transaction_hash
 
-> **transaction\_hash**: `UUID`
+> **transaction_hash**: `UUID`
 
-Defined in: [src/api/types.ts:110](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L110)
+Defined in: [src/api/types.ts:110](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/types.ts#L110)

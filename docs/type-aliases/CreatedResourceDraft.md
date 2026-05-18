@@ -1,6 +1,6 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / CreatedResourceDraft
 
@@ -8,20 +8,20 @@
 
 > **CreatedResourceDraft** = `object`
 
-Defined in: [src/domain/transfer/types/resources.ts:95](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L95)
+Defined in: [src/domain/transfer/types/resources.ts:100](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/resources.ts#L100)
 
 ## Properties
 
 ### receiver?
 
-> `optional` **receiver**: [`Receiver`](Receiver.md)
+> `optional` **receiver?**: [`Receiver`](Receiver.md)
 
-Defined in: [src/domain/transfer/types/resources.ts:97](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L97)
+Defined in: [src/domain/transfer/types/resources.ts:102](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/resources.ts#L102)
 
-***
+---
 
 ### resource
 
-> **resource**: [`Resource`](../classes/Resource.md)
+> **resource**: `Resource`
 
-Defined in: [src/domain/transfer/types/resources.ts:96](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L96)
+Defined in: [src/domain/transfer/types/resources.ts:101](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/resources.ts#L101)

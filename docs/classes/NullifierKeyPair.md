@@ -1,131 +1,219 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / NullifierKeyPair
 
 # Class: NullifierKeyPair
 
-Defined in: [src/wasm/arm\_bindings.d.ts:165](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L165)
+Defined in: [src/domain/keys/models.ts:175](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/keys/models.ts#L175)
+
+Keys used to reflect the right to nullify
+
+## Extends
+
+- `KeyPairBase`
 
 ## Constructors
 
 ### Constructor
 
-> **new NullifierKeyPair**(`nk`, `cnk`): `NullifierKeyPair`
+> **new NullifierKeyPair**(`privateKey`, `publicKey`): `NullifierKeyPair`
 
-Defined in: [src/wasm/arm\_bindings.d.ts:168](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L168)
+Defined in: [src/domain/keys/models.ts:124](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/keys/models.ts#L124)
+
+Instantiates the KeyPair object
+
+#### Parameters
+
+##### privateKey
+
+`Uint8Array`\<`ArrayBuffer`\>
+
+Private key bytes
+
+##### publicKey
+
+`Uint8Array`\<`ArrayBuffer`\>
+
+Public key bytes
+
+#### Returns
+
+`NullifierKeyPair`
+
+#### Inherited from
+
+`KeyPairBase.constructor`
+
+## Properties
+
+### keys
+
+> `readonly` **keys**: `object`
+
+Defined in: [src/domain/keys/models.ts:75](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/keys/models.ts#L75)
+
+#### privateKey
+
+> **privateKey**: `Uint8Array`\<`ArrayBuffer`\>
+
+#### publicKey
+
+> **publicKey**: `Uint8Array`\<`ArrayBuffer`\>
+
+#### Inherited from
+
+`KeyPairBase.keys`
+
+---
+
+### keysName
+
+> `readonly` `static` **keysName**: `object`
+
+Defined in: [src/domain/keys/models.ts:184](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/keys/models.ts#L184)
+
+#### privateKey
+
+> **privateKey**: `string` = `"nk"`
+
+#### publicKey
+
+> **publicKey**: `string` = `"cnk"`
+
+#### Overrides
+
+`KeyPairBase.keysName`
+
+## Accessors
+
+### cnk
+
+#### Get Signature
+
+> **get** **cnk**(): `Uint8Array`\<`ArrayBuffer`\>
+
+Defined in: [src/domain/keys/models.ts:180](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/keys/models.ts#L180)
+
+##### Returns
+
+`Uint8Array`\<`ArrayBuffer`\>
+
+---
+
+### keysName
+
+#### Get Signature
+
+> **get** `protected` **keysName**(): `KeyNames`
+
+Defined in: [src/domain/keys/models.ts:85](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/keys/models.ts#L85)
+
+##### Returns
+
+`KeyNames`
+
+#### Inherited from
+
+`KeyPairBase.keysName`
+
+---
+
+### nk
+
+#### Get Signature
+
+> **get** **nk**(): `Uint8Array`\<`ArrayBuffer`\>
+
+Defined in: [src/domain/keys/models.ts:176](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/keys/models.ts#L176)
+
+##### Returns
+
+`Uint8Array`\<`ArrayBuffer`\>
+
+## Methods
+
+### create()
+
+> `static` **create**(`seed?`): `NullifierKeyPair`
+
+Defined in: [src/domain/keys/models.ts:201](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/keys/models.ts#L201)
+
+Creates a nullifier key pair
+
+#### Parameters
+
+##### seed?
+
+`Uint8Array`\<`ArrayBuffer`\>
+
+Optional seed to deterministically derive the key pair
+
+#### Returns
+
+`NullifierKeyPair`
+
+#### Overrides
+
+`KeyPairBase.create`
+
+---
+
+### derivePublicKey()
+
+> `static` **derivePublicKey**(`nk`): `Uint8Array`\<`ArrayBuffer`\>
+
+Defined in: [src/domain/keys/models.ts:193](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/keys/models.ts#L193)
+
+Deterministically derives the nullifier commitment from the private key.
 
 #### Parameters
 
 ##### nk
 
-[`NullifierKey`](NullifierKey.md)
+`Uint8Array`\<`ArrayBuffer`\>
 
-##### cnk
-
-[`NullifierKeyCommitment`](NullifierKeyCommitment.md)
+Nullifier private key bytes
 
 #### Returns
 
-`NullifierKeyPair`
+`Uint8Array`\<`ArrayBuffer`\>
 
-## Properties
+#### Overrides
 
-### cnk
+`KeyPairBase.derivePublicKey`
 
-> **cnk**: [`NullifierKeyCommitment`](NullifierKeyCommitment.md)
+---
 
-Defined in: [src/wasm/arm\_bindings.d.ts:174](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L174)
+### generatePrivateKey()
 
-***
+> `static` **generatePrivateKey**(`seed?`, `domain?`): `Uint8Array`\<`ArrayBuffer`\>
 
-### nk
+Defined in: [src/domain/keys/models.ts:108](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/keys/models.ts#L108)
 
-> **nk**: [`NullifierKey`](NullifierKey.md)
-
-Defined in: [src/wasm/arm\_bindings.d.ts:173](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L173)
-
-## Methods
-
-### \[dispose\]()
-
-> **\[dispose\]**(): `void`
-
-Defined in: [src/wasm/arm\_bindings.d.ts:167](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L167)
-
-#### Returns
-
-`void`
-
-***
-
-### encode()
-
-> **encode**(): [`EncodedNullifierKeyPair`](../interfaces/EncodedNullifierKeyPair.md)
-
-Defined in: [src/wasm/arm\_bindings.d.ts:171](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L171)
-
-#### Returns
-
-[`EncodedNullifierKeyPair`](../interfaces/EncodedNullifierKeyPair.md)
-
-***
-
-### free()
-
-> **free**(): `void`
-
-Defined in: [src/wasm/arm\_bindings.d.ts:166](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L166)
-
-#### Returns
-
-`void`
-
-***
-
-### toJson()
-
-> **toJson**(): `any`
-
-Defined in: [src/wasm/arm\_bindings.d.ts:169](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L169)
-
-#### Returns
-
-`any`
-
-***
-
-### decode()
-
-> `static` **decode**(`encoded`): `NullifierKeyPair`
-
-Defined in: [src/wasm/arm\_bindings.d.ts:172](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L172)
+Generates a private key using PRF with the provided seed and domain.
 
 #### Parameters
 
-##### encoded
+##### seed?
 
-[`EncodedNullifierKeyPair`](../interfaces/EncodedNullifierKeyPair.md)
+`Uint8Array`\<`ArrayBuffer`\>
 
-#### Returns
+Optional seed; random bytes are used when absent
 
-`NullifierKeyPair`
+##### domain?
 
-***
+`"Authority"` \| `"Nullifier"` \| `"Encryption"` \| `"Discovery"`
 
-### fromJson()
-
-> `static` **fromJson**(`json`): `NullifierKeyPair`
-
-Defined in: [src/wasm/arm\_bindings.d.ts:170](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/wasm/arm_bindings.d.ts#L170)
-
-#### Parameters
-
-##### json
-
-`any`
+PRF domain to separate derivations
 
 #### Returns
 
-`NullifierKeyPair`
+`Uint8Array`\<`ArrayBuffer`\>
+
+Derived 32-byte private key
+
+#### Inherited from
+
+`KeyPairBase.generatePrivateKey`

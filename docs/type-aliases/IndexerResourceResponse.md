@@ -1,6 +1,6 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / IndexerResourceResponse
 
@@ -8,7 +8,7 @@
 
 > **IndexerResourceResponse** = `object`
 
-Defined in: [src/api/types.ts:75](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L75)
+Defined in: [src/api/types.ts:75](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/types.ts#L75)
 
 ## Properties
 
@@ -16,4 +16,4 @@ Defined in: [src/api/types.ts:75](https://github.com/anoma/anoma-app-sdk/blob/9a
 
 > **resources**: [`IndexerResource`](IndexerResource.md)[]
 
-Defined in: [src/api/types.ts:76](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L76)
+Defined in: [src/api/types.ts:76](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/types.ts#L76)

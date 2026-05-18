@@ -1,6 +1,6 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / FeeCompatibleERC20Tokens
 
@@ -8,6 +8,6 @@
 
 > `const` **FeeCompatibleERC20Tokens**: readonly \[`"USDC"`, `"USDT"`, `"WETH"`, `"XAN"`\]
 
-Defined in: [src/domain/transfer/types/resources.ts:108](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L108)
+Defined in: [src/domain/transfer/types/resources.ts:113](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/resources.ts#L113)
 
 Fees

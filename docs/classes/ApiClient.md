@@ -1,12 +1,12 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / ApiClient
 
 # Class: ApiClient\<P\>
 
-Defined in: [src/api/ApiClient.ts:7](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/ApiClient.ts#L7)
+Defined in: [src/api/ApiClient.ts:7](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/ApiClient.ts#L7)
 
 Generic ApiClient base class
 
@@ -21,7 +21,7 @@ Generic ApiClient base class
 
 ### P
 
-`P` *extends* `string` = `string`
+`P` _extends_ `string` = `string`
 
 ## Constructors
 
@@ -29,7 +29,7 @@ Generic ApiClient base class
 
 > **new ApiClient**\<`P`\>(`url`): `ApiClient`\<`P`\>
 
-Defined in: [src/api/ApiClient.ts:10](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/ApiClient.ts#L10)
+Defined in: [src/api/ApiClient.ts:10](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/ApiClient.ts#L10)
 
 #### Parameters
 
@@ -47,7 +47,7 @@ Defined in: [src/api/ApiClient.ts:10](https://github.com/anoma/anoma-app-sdk/blo
 
 > `protected` **url**: `string`
 
-Defined in: [src/api/ApiClient.ts:8](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/ApiClient.ts#L8)
+Defined in: [src/api/ApiClient.ts:8](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/ApiClient.ts#L8)
 
 ## Methods
 
@@ -55,7 +55,7 @@ Defined in: [src/api/ApiClient.ts:8](https://github.com/anoma/anoma-app-sdk/blob
 
 > `protected` **get**\<`T`\>(`path`, `headers?`): `Promise`\<`T`\>
 
-Defined in: [src/api/ApiClient.ts:25](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/ApiClient.ts#L25)
+Defined in: [src/api/ApiClient.ts:25](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/ApiClient.ts#L25)
 
 Generic GET request
 
@@ -69,7 +69,7 @@ Generic GET request
 
 ##### path
 
-`P` | `` `${P}/${string}` ``
+`P` \| `` `${P}/${string}` ``
 
 ##### headers?
 
@@ -79,13 +79,13 @@ Generic GET request
 
 `Promise`\<`T`\>
 
-***
+---
 
 ### post()
 
 > `protected` **post**\<`T`, `U`\>(`path`, `props`, `headers?`): `Promise`\<`U`\>
 
-Defined in: [src/api/ApiClient.ts:47](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/ApiClient.ts#L47)
+Defined in: [src/api/ApiClient.ts:47](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/ApiClient.ts#L47)
 
 Generic POST request
 

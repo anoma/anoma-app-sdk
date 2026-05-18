@@ -1,6 +1,6 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / TransactionReceipt
 
@@ -8,7 +8,7 @@
 
 > **TransactionReceipt** = `object`
 
-Defined in: [src/types.ts:31](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L31)
+Defined in: [src/types.ts:39](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/types.ts#L39)
 
 ## Properties
 
@@ -16,44 +16,44 @@ Defined in: [src/types.ts:31](https://github.com/anoma/anoma-app-sdk/blob/9ad1dc
 
 > **hash**: `Address`
 
-Defined in: [src/types.ts:33](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L33)
+Defined in: [src/types.ts:41](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/types.ts#L41)
 
-***
+---
 
 ### id
 
 > **id**: [`IndexerId`](IndexerId.md)
 
-Defined in: [src/types.ts:32](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L32)
+Defined in: [src/types.ts:40](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/types.ts#L40)
 
-***
+---
 
 ### quantity
 
 > **quantity**: `bigint`
 
-Defined in: [src/types.ts:36](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L36)
+Defined in: [src/types.ts:44](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/types.ts#L44)
 
-***
+---
 
 ### status
 
 > **status**: [`TransactionStatus`](TransactionStatus.md)
 
-Defined in: [src/types.ts:34](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L34)
+Defined in: [src/types.ts:42](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/types.ts#L42)
 
-***
+---
 
 ### timestamp
 
 > **timestamp**: `number`
 
-Defined in: [src/types.ts:37](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L37)
+Defined in: [src/types.ts:45](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/types.ts#L45)
 
-***
+---
 
 ### token
 
 > **token**: [`TokenRegistry`](TokenRegistry.md)
 
-Defined in: [src/types.ts:35](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L35)
+Defined in: [src/types.ts:43](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/types.ts#L43)

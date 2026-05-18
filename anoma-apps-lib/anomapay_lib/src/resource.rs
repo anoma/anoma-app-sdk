@@ -126,3 +126,66 @@ impl ResourceBuilder {
         serde_json::to_string_pretty(&self.0).map_err(|e| JsError::new(&e.to_string()))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::logic::TransferLogic;
+    use arm_risc0_bindings::arm::{digest::Digest, resource::Resource};
+    use rstest::{fixture, rstest};
+    use serde::{Deserialize, Serialize};
+    use wasm_bindgen_test::*;
+
+    #[derive(Serialize, Deserialize)]
+    struct ResourceTestData {
+        ephemeral_resource: Resource,
+        consumed_persistent_resource: Resource,
+        created_resource: Resource,
+    }
+
+    #[fixture]
+    fn resource_data() -> ResourceTestData {
+        // // NOTE: fs only works on `cargo test`, fs does not exist in wasm
+        let consumed_persistent_resource = Resource::empty();
+        let created_resource = Resource::empty();
+        let ephemeral_resource = Resource::empty();
+
+        consumed_persistent_resource.instance().to_owned().logic_ref =
+            Digest::from_hex(&TransferLogic::verifying_key())
+                .unwrap()
+                .instance()
+                .to_owned();
+        created_resource.instance().to_owned().logic_ref =
+            Digest::from_hex(&TransferLogic::verifying_key())
+                .unwrap()
+                .instance()
+                .to_owned();
+        ephemeral_resource.instance().to_owned().logic_ref =
+            Digest::from_hex(&TransferLogic::verifying_key())
+                .unwrap()
+                .instance()
+                .to_owned();
+        ephemeral_resource.instance().to_owned().is_ephemeral = true;
+
+        ResourceTestData {
+            consumed_persistent_resource,
+            created_resource,
+            ephemeral_resource,
+        }
+    }
+
+    #[rstest]
+    #[wasm_bindgen_test(unsupported = test)]
+    fn test_with_fixture(resource_data: ResourceTestData) {
+        let ResourceTestData {
+            ephemeral_resource: _,
+            consumed_persistent_resource: _,
+            created_resource,
+        } = resource_data;
+        // assert_eq!(
+        //     created_resource.instance().logic_ref,
+        //     *Digest::from_hex(&TransferLogic::verifying_key())
+        //         .unwrap()
+        //         .instance()
+        // );
+    }
+}

@@ -1,6 +1,6 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / TokenBalance
 
@@ -8,7 +8,7 @@
 
 > **TokenBalance** = `object`
 
-Defined in: [src/types.ts:47](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L47)
+Defined in: [src/types.ts:55](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/types.ts#L55)
 
 ## Properties
 
@@ -16,12 +16,12 @@ Defined in: [src/types.ts:47](https://github.com/anoma/anoma-app-sdk/blob/9ad1dc
 
 > **amount**: `bigint`
 
-Defined in: [src/types.ts:49](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L49)
+Defined in: [src/types.ts:57](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/types.ts#L57)
 
-***
+---
 
 ### token
 
 > **token**: [`TokenRegistry`](TokenRegistry.md)
 
-Defined in: [src/types.ts:48](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L48)
+Defined in: [src/types.ts:56](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/types.ts#L56)

@@ -11,12 +11,11 @@ repository.workspace = true
 [lib]
 crate-type = ["cdylib", "rlib"]
 
-
 [dependencies]
-hex = { workspace = true }
-getrandom = { workspace = true }
-getrandom-v2 = { workspace = true }
-tsify = { workspace = true}
-wasm-bindgen = { workspace = true }
-serde = { workspace = true }
-serde_json = { workspace = true }
+hex.workspace = true
+getrandom.workspace = true
+getrandom-v2.workspace = true
+tsify.workspace = true
+wasm-bindgen.workspace = true
+serde.workspace = true
+serde_json.workspace = true

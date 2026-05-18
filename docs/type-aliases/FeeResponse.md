@@ -1,6 +1,6 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / FeeResponse
 
@@ -8,44 +8,44 @@
 
 > **FeeResponse** = `object`
 
-Defined in: [src/domain/transfer/types/resources.ts:124](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L124)
+Defined in: [src/domain/transfer/types/resources.ts:129](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/resources.ts#L129)
 
 ## Properties
 
-### base\_fee
+### base_fee
 
-> **base\_fee**: `number`
+> **base_fee**: `number`
 
-Defined in: [src/domain/transfer/types/resources.ts:125](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L125)
+Defined in: [src/domain/transfer/types/resources.ts:130](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/resources.ts#L130)
 
-***
+---
 
-### base\_fee\_per\_resource
+### base_fee_per_resource
 
-> **base\_fee\_per\_resource**: `number`
+> **base_fee_per_resource**: `number`
 
-Defined in: [src/domain/transfer/types/resources.ts:126](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L126)
+Defined in: [src/domain/transfer/types/resources.ts:131](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/resources.ts#L131)
 
-***
+---
 
 ### percentage
 
 > **percentage**: `number`
 
-Defined in: [src/domain/transfer/types/resources.ts:127](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L127)
+Defined in: [src/domain/transfer/types/resources.ts:132](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/resources.ts#L132)
 
-***
+---
 
-### percentage\_fee
+### percentage_fee
 
-> **percentage\_fee**: `number`
+> **percentage_fee**: `number`
 
-Defined in: [src/domain/transfer/types/resources.ts:128](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L128)
+Defined in: [src/domain/transfer/types/resources.ts:133](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/resources.ts#L133)
 
-***
+---
 
-### token\_type
+### token_type
 
-> **token\_type**: `string`
+> **token_type**: `string`
 
-Defined in: [src/domain/transfer/types/resources.ts:129](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L129)
+Defined in: [src/domain/transfer/types/resources.ts:134](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/resources.ts#L134)

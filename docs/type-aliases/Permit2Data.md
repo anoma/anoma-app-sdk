@@ -1,6 +1,6 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / Permit2Data
 
@@ -8,7 +8,7 @@
 
 > **Permit2Data** = `object`
 
-Defined in: [src/domain/transfer/types/witness.ts:4](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/witness.ts#L4)
+Defined in: [src/domain/transfer/types/witness.ts:4](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/witness.ts#L4)
 
 ## Properties
 
@@ -16,20 +16,20 @@ Defined in: [src/domain/transfer/types/witness.ts:4](https://github.com/anoma/an
 
 > **deadline**: `bigint`
 
-Defined in: [src/domain/transfer/types/witness.ts:5](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/witness.ts#L5)
+Defined in: [src/domain/transfer/types/witness.ts:5](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/witness.ts#L5)
 
-***
+---
 
 ### nonce
 
 > **nonce**: `string`
 
-Defined in: [src/domain/transfer/types/witness.ts:6](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/witness.ts#L6)
+Defined in: [src/domain/transfer/types/witness.ts:6](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/witness.ts#L6)
 
-***
+---
 
 ### signature
 
 > **signature**: `string`
 
-Defined in: [src/domain/transfer/types/witness.ts:7](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/witness.ts#L7)
+Defined in: [src/domain/transfer/types/witness.ts:7](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/witness.ts#L7)

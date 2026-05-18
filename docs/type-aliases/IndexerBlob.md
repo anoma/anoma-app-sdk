@@ -1,6 +1,6 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / IndexerBlob
 
@@ -8,7 +8,7 @@
 
 > **IndexerBlob** = `object`
 
-Defined in: [src/api/types.ts:65](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L65)
+Defined in: [src/api/types.ts:65](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/types.ts#L65)
 
 ## Properties
 
@@ -16,12 +16,12 @@ Defined in: [src/api/types.ts:65](https://github.com/anoma/anoma-app-sdk/blob/9a
 
 > **blob**: `Hex`
 
-Defined in: [src/api/types.ts:66](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L66)
+Defined in: [src/api/types.ts:66](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/types.ts#L66)
 
-***
+---
 
 ### id
 
 > **id**: `string`
 
-Defined in: [src/api/types.ts:67](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L67)
+Defined in: [src/api/types.ts:67](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/types.ts#L67)

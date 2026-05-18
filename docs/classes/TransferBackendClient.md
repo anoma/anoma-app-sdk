@@ -1,12 +1,12 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / TransferBackendClient
 
 # Class: TransferBackendClient
 
-Defined in: [src/api/TransferBackendClient.ts:18](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/TransferBackendClient.ts#L18)
+Defined in: [src/api/TransferBackendClient.ts:18](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/TransferBackendClient.ts#L18)
 
 Generic ApiClient base class
 
@@ -20,7 +20,7 @@ Generic ApiClient base class
 
 > **new TransferBackendClient**(`url`): `TransferBackendClient`
 
-Defined in: [src/api/ApiClient.ts:10](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/ApiClient.ts#L10)
+Defined in: [src/api/ApiClient.ts:10](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/ApiClient.ts#L10)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [src/api/ApiClient.ts:10](https://github.com/anoma/anoma-app-sdk/blo
 
 > `protected` **url**: `string`
 
-Defined in: [src/api/ApiClient.ts:8](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/ApiClient.ts#L8)
+Defined in: [src/api/ApiClient.ts:8](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/ApiClient.ts#L8)
 
 #### Inherited from
 
@@ -54,7 +54,7 @@ Defined in: [src/api/ApiClient.ts:8](https://github.com/anoma/anoma-app-sdk/blob
 
 > **estimateFee**(`props`): `Promise`\<[`FeeResponse`](../type-aliases/FeeResponse.md)\>
 
-Defined in: [src/api/TransferBackendClient.ts:32](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/TransferBackendClient.ts#L32)
+Defined in: [src/api/TransferBackendClient.ts:32](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/TransferBackendClient.ts#L32)
 
 #### Parameters
 
@@ -66,13 +66,13 @@ Defined in: [src/api/TransferBackendClient.ts:32](https://github.com/anoma/anoma
 
 `Promise`\<[`FeeResponse`](../type-aliases/FeeResponse.md)\>
 
-***
+---
 
 ### get()
 
 > `protected` **get**\<`T`\>(`path`, `headers?`): `Promise`\<`T`\>
 
-Defined in: [src/api/ApiClient.ts:25](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/ApiClient.ts#L25)
+Defined in: [src/api/ApiClient.ts:25](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/ApiClient.ts#L25)
 
 Generic GET request
 
@@ -100,13 +100,13 @@ Generic GET request
 
 [`ApiClient`](ApiClient.md).[`get`](ApiClient.md#get)
 
-***
+---
 
 ### post()
 
 > `protected` **post**\<`T`, `U`\>(`path`, `props`, `headers?`): `Promise`\<`U`\>
 
-Defined in: [src/api/ApiClient.ts:47](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/ApiClient.ts#L47)
+Defined in: [src/api/ApiClient.ts:47](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/ApiClient.ts#L47)
 
 Generic POST request
 
@@ -142,25 +142,25 @@ Generic POST request
 
 [`ApiClient`](ApiClient.md).[`post`](ApiClient.md#post)
 
-***
+---
 
 ### statsQueue()
 
 > **statsQueue**(): `Promise`\<[`StatusQueueResponse`](../type-aliases/StatusQueueResponse.md)\>
 
-Defined in: [src/api/TransferBackendClient.ts:48](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/TransferBackendClient.ts#L48)
+Defined in: [src/api/TransferBackendClient.ts:48](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/TransferBackendClient.ts#L48)
 
 #### Returns
 
 `Promise`\<[`StatusQueueResponse`](../type-aliases/StatusQueueResponse.md)\>
 
-***
+---
 
 ### tokenBalances()
 
 > **tokenBalances**(`walletAddress`): `Promise`\<[`TokenBalancesResponse`](../type-aliases/TokenBalancesResponse.md)\>
 
-Defined in: [src/api/TransferBackendClient.ts:42](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/TransferBackendClient.ts#L42)
+Defined in: [src/api/TransferBackendClient.ts:42](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/TransferBackendClient.ts#L42)
 
 #### Parameters
 
@@ -172,13 +172,13 @@ Defined in: [src/api/TransferBackendClient.ts:42](https://github.com/anoma/anoma
 
 `Promise`\<[`TokenBalancesResponse`](../type-aliases/TokenBalancesResponse.md)\>
 
-***
+---
 
 ### tokenPrice()
 
 > **tokenPrice**(`tokenAddress`): `Promise`\<[`TokenPriceResponse`](../type-aliases/TokenPriceResponse.md)\>
 
-Defined in: [src/api/TransferBackendClient.ts:36](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/TransferBackendClient.ts#L36)
+Defined in: [src/api/TransferBackendClient.ts:36](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/TransferBackendClient.ts#L36)
 
 #### Parameters
 
@@ -190,13 +190,13 @@ Defined in: [src/api/TransferBackendClient.ts:36](https://github.com/anoma/anoma
 
 `Promise`\<[`TokenPriceResponse`](../type-aliases/TokenPriceResponse.md)\>
 
-***
+---
 
 ### transactionStatus()
 
 > **transactionStatus**(`uuid`): `Promise`\<[`TransactionStatusResponse`](../type-aliases/TransactionStatusResponse.md)\>
 
-Defined in: [src/api/TransferBackendClient.ts:26](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/TransferBackendClient.ts#L26)
+Defined in: [src/api/TransferBackendClient.ts:26](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/TransferBackendClient.ts#L26)
 
 #### Parameters
 
@@ -208,13 +208,13 @@ Defined in: [src/api/TransferBackendClient.ts:26](https://github.com/anoma/anoma
 
 `Promise`\<[`TransactionStatusResponse`](../type-aliases/TransactionStatusResponse.md)\>
 
-***
+---
 
 ### transfer()
 
 > **transfer**(`props`): `Promise`\<[`TransactionHashResponse`](../type-aliases/TransactionHashResponse.md)\>
 
-Defined in: [src/api/TransferBackendClient.ts:19](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/TransferBackendClient.ts#L19)
+Defined in: [src/api/TransferBackendClient.ts:19](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/TransferBackendClient.ts#L19)
 
 #### Parameters
 

@@ -1,6 +1,6 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / Parameters
 
@@ -8,22 +8,22 @@
 
 > **Parameters** = `object`
 
-Defined in: [src/domain/transfer/types/resources.ts:60](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L60)
+Defined in: [src/domain/transfer/types/resources.ts:65](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/resources.ts#L65)
 
 Parameters request
 
 ## Properties
 
-### consumed\_resources
+### consumed_resources
 
-> **consumed\_resources**: [`Resources`](Resources.md)\[`"Consumed"`\][]
+> **consumed_resources**: [`Resources`](Resources.md)\[`"Consumed"`\][]
 
-Defined in: [src/domain/transfer/types/resources.ts:62](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L62)
+Defined in: [src/domain/transfer/types/resources.ts:67](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/resources.ts#L67)
 
-***
+---
 
-### created\_resources
+### created_resources
 
-> **created\_resources**: [`Resources`](Resources.md)\[`"Created"`\][]
+> **created_resources**: [`Resources`](Resources.md)\[`"Created"`\][]
 
-Defined in: [src/domain/transfer/types/resources.ts:61](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L61)
+Defined in: [src/domain/transfer/types/resources.ts:66](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/resources.ts#L66)

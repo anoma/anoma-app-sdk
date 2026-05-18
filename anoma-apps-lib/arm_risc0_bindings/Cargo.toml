@@ -21,12 +21,12 @@ console_error_panic_hook = { version = "0.1.7" }
 serde-wasm-bindgen = { version = "0.6.5" }
 anomapay_shared = { path = "../anomapay_shared" }
 
-hex = { workspace = true }
-getrandom = { workspace = true }
-getrandom-v2 = { workspace = true }
-tsify = { workspace = true}
-wasm-bindgen = { workspace = true }
-arm = { workspace = true }
-arm-gadgets = { workspace = true }
-serde = { workspace = true }
-serde_json = { workspace = true }
+hex.workspace = true
+getrandom.workspace = true
+getrandom-v2.workspace = true
+tsify.workspace = true
+wasm-bindgen.workspace = true
+arm.workspace = true
+arm-gadgets.workspace = true
+serde.workspace = true
+serde_json.workspace = true

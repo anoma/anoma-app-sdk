@@ -1,6 +1,6 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / FeeRequest
 
@@ -8,22 +8,22 @@
 
 > **FeeRequest** = `object`
 
-Defined in: [src/domain/transfer/types/resources.ts:119](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L119)
+Defined in: [src/domain/transfer/types/resources.ts:124](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/resources.ts#L124)
 
 Fees request & response
 
 ## Properties
 
-### fee\_token
+### fee_token
 
-> **fee\_token**: [`SupportedFeeToken`](SupportedFeeToken.md)
+> **fee_token**: [`SupportedFeeToken`](SupportedFeeToken.md)
 
-Defined in: [src/domain/transfer/types/resources.ts:120](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L120)
+Defined in: [src/domain/transfer/types/resources.ts:125](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/resources.ts#L125)
 
-***
+---
 
 ### transaction
 
 > **transaction**: [`Parameters`](Parameters.md)
 
-Defined in: [src/domain/transfer/types/resources.ts:121](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L121)
+Defined in: [src/domain/transfer/types/resources.ts:126](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/resources.ts#L126)

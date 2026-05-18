@@ -1,6 +1,6 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / TokenPriceResponse
 
@@ -8,7 +8,7 @@
 
 > **TokenPriceResponse** = `object`
 
-Defined in: [src/domain/transfer/types/resources.ts:135](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L135)
+Defined in: [src/domain/transfer/types/resources.ts:140](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/resources.ts#L140)
 
 Token price response
 
@@ -18,12 +18,12 @@ Token price response
 
 > **address**: `Address`
 
-Defined in: [src/domain/transfer/types/resources.ts:136](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L136)
+Defined in: [src/domain/transfer/types/resources.ts:141](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/resources.ts#L141)
 
-***
+---
 
-### usd\_price
+### usd_price
 
-> **usd\_price**: `number`
+> **usd_price**: `number`
 
-Defined in: [src/domain/transfer/types/resources.ts:137](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L137)
+Defined in: [src/domain/transfer/types/resources.ts:142](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/resources.ts#L142)

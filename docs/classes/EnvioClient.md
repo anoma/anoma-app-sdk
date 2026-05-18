@@ -1,12 +1,12 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / EnvioClient
 
 # Class: EnvioClient
 
-Defined in: [src/api/EnvioClient.ts:17](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/EnvioClient.ts#L17)
+Defined in: [src/api/EnvioClient.ts:17](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/EnvioClient.ts#L17)
 
 Generic ApiClient base class
 
@@ -20,7 +20,7 @@ Generic ApiClient base class
 
 > **new EnvioClient**(`url`): `EnvioClient`
 
-Defined in: [src/api/ApiClient.ts:10](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/ApiClient.ts#L10)
+Defined in: [src/api/ApiClient.ts:10](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/ApiClient.ts#L10)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [src/api/ApiClient.ts:10](https://github.com/anoma/anoma-app-sdk/blo
 
 > `protected` **url**: `string`
 
-Defined in: [src/api/ApiClient.ts:8](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/ApiClient.ts#L8)
+Defined in: [src/api/ApiClient.ts:8](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/ApiClient.ts#L8)
 
 #### Inherited from
 
@@ -54,7 +54,7 @@ Defined in: [src/api/ApiClient.ts:8](https://github.com/anoma/anoma-app-sdk/blob
 
 > `protected` **get**\<`T`\>(`path`, `headers?`): `Promise`\<`T`\>
 
-Defined in: [src/api/ApiClient.ts:25](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/ApiClient.ts#L25)
+Defined in: [src/api/ApiClient.ts:25](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/ApiClient.ts#L25)
 
 Generic GET request
 
@@ -82,13 +82,13 @@ Generic GET request
 
 [`ApiClient`](ApiClient.md).[`get`](ApiClient.md#get)
 
-***
+---
 
 ### post()
 
 > `protected` **post**\<`T`, `U`\>(`path`, `props`, `headers?`): `Promise`\<`U`\>
 
-Defined in: [src/api/ApiClient.ts:47](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/ApiClient.ts#L47)
+Defined in: [src/api/ApiClient.ts:47](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/ApiClient.ts#L47)
 
 Generic POST request
 
@@ -124,13 +124,13 @@ Generic POST request
 
 [`ApiClient`](ApiClient.md).[`post`](ApiClient.md#post)
 
-***
+---
 
 ### publicNullifiers()
 
 > **publicNullifiers**(`logicRef`, `timestamp?`): `Promise`\<[`NullifierRecordResponse`](../type-aliases/NullifierRecordResponse.md)\>
 
-Defined in: [src/api/EnvioClient.ts:19](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/EnvioClient.ts#L19)
+Defined in: [src/api/EnvioClient.ts:19](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/EnvioClient.ts#L19)
 
 #### Parameters
 

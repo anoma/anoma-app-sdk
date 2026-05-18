@@ -1,6 +1,6 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / TokenRegistry
 
@@ -8,7 +8,7 @@
 
 > **TokenRegistry** = `object`
 
-Defined in: [src/types.ts:40](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L40)
+Defined in: [src/types.ts:48](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/types.ts#L48)
 
 ## Properties
 
@@ -16,28 +16,28 @@ Defined in: [src/types.ts:40](https://github.com/anoma/anoma-app-sdk/blob/9ad1dc
 
 > **address**: `Address`
 
-Defined in: [src/types.ts:42](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L42)
+Defined in: [src/types.ts:50](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/types.ts#L50)
 
-***
+---
 
 ### decimals
 
 > **decimals**: `number`
 
-Defined in: [src/types.ts:43](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L43)
+Defined in: [src/types.ts:51](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/types.ts#L51)
 
-***
+---
 
 ### network
 
-> **network**: `Network`
+> **network**: `string`
 
-Defined in: [src/types.ts:44](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L44)
+Defined in: [src/types.ts:52](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/types.ts#L52)
 
-***
+---
 
 ### symbol
 
 > **symbol**: `string`
 
-Defined in: [src/types.ts:41](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L41)
+Defined in: [src/types.ts:49](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/types.ts#L49)

@@ -14,5 +14,5 @@ export const initWasm = async (): Promise<WebAssembly.Module> => {
 /**
  * Re-export initSync
  */
-export const initSync = (wasmBytes: Uint8Array) => initLibSync(wasmBytes);
+export const initSync = initLibSync;
 export * from "./anomapay_lib";

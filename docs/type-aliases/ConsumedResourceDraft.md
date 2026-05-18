@@ -1,6 +1,6 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / ConsumedResourceDraft
 
@@ -8,18 +8,18 @@
 
 > **ConsumedResourceDraft** = `object` & \{ `type`: `"AnomaAddress"`; `userPublicKeys`: [`UserPublicKeys`](UserPublicKeys.md); \} \| \{ `address`: `Address`; `permit2Data`: [`Permit2Data`](Permit2Data.md); `type`: `"EvmAddress"`; \} \| \{ `type`: `"Padding"`; \}
 
-Defined in: [src/domain/transfer/types/resources.ts:76](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/domain/transfer/types/resources.ts#L76)
+Defined in: [src/domain/transfer/types/resources.ts:81](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/domain/transfer/types/resources.ts#L81)
 
 ## Type Declaration
 
 ### nullifierKey
 
-> **nullifierKey**: [`NullifierKey`](../classes/NullifierKey.md)
+> **nullifierKey**: `NullifierKey`
 
 ### resource
 
-> **resource**: [`Resource`](../classes/Resource.md)
+> **resource**: `Resource`
 
 ### token?
 
-> `optional` **token**: [`TokenRegistry`](TokenRegistry.md)
+> `optional` **token?**: [`TokenRegistry`](TokenRegistry.md)

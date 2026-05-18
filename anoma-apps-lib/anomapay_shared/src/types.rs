@@ -43,8 +43,6 @@ pub struct CreatePersistentProps {
     pub erc20_token_addr: String,
 }
 
-/// JavaScript-facing prop definitions
-
 #[derive(Tsify, Debug, Serialize, Deserialize)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
 #[serde(rename_all = "camelCase")]

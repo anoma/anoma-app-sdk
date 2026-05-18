@@ -26,7 +26,13 @@ const wasmPackBuilder = crate => {
   // wasm-pack packages
   const { status } = spawnSync(
     "wasm-pack",
-    ["build", release ? "--release" : "--debug", ["--target", "web"]].flat(),
+    [
+      "build",
+      release ? "--release" : "--debug",
+      "--no-pack",
+      "--weak-refs",
+      ["--target", "web"],
+    ].flat(),
     {
       stdio: "inherit",
       cwd: resolve(`./${CARGO_WORKSPACE}/${crate}`),

@@ -1,6 +1,6 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / TransactionResponse
 
@@ -8,7 +8,7 @@
 
 > **TransactionResponse**\<`T`\> = `object`
 
-Defined in: [src/api/types.ts:104](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L104)
+Defined in: [src/api/types.ts:104](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/types.ts#L104)
 
 ## Type Parameters
 
@@ -20,6 +20,6 @@ Defined in: [src/api/types.ts:104](https://github.com/anoma/anoma-app-sdk/blob/9
 
 ### receipt
 
-> **receipt**: [`TransactionReceiptResonse`](TransactionReceiptResonse.md)\<`T`\>
+> **receipt**: [`TransactionReceiptResponse`](TransactionReceiptResponse.md)\<`T`\>
 
-Defined in: [src/api/types.ts:105](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L105)
+Defined in: [src/api/types.ts:105](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/types.ts#L105)

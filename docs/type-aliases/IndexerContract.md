@@ -1,6 +1,6 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / IndexerContract
 
@@ -8,28 +8,28 @@
 
 > **IndexerContract** = `object`
 
-Defined in: [src/api/types.ts:132](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L132)
+Defined in: [src/api/types.ts:132](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/types.ts#L132)
 
 ## Properties
 
-### chain\_id
+### chain_id
 
-> **chain\_id**: `number`
+> **chain_id**: `number`
 
-Defined in: [src/api/types.ts:133](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L133)
+Defined in: [src/api/types.ts:133](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/types.ts#L133)
 
-***
+---
 
-### contract\_address
+### contract_address
 
-> **contract\_address**: `Address`
+> **contract_address**: `Address`
 
-Defined in: [src/api/types.ts:134](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L134)
+Defined in: [src/api/types.ts:134](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/types.ts#L134)
 
-***
+---
 
-### last\_block
+### last_block
 
-> **last\_block**: `number`
+> **last_block**: `number`
 
-Defined in: [src/api/types.ts:135](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/api/types.ts#L135)
+Defined in: [src/api/types.ts:135](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/api/types.ts#L135)

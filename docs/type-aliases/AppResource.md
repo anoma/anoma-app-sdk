@@ -1,24 +1,24 @@
 [**@anomaorg/anoma-app-sdk**](../README.md)
 
-***
+---
 
 [@anomaorg/anoma-app-sdk](../globals.md) / AppResource
 
 # Type Alias: AppResource
 
-> **AppResource** = [`EncodedResource`](../interfaces/EncodedResource.md) & `object`
+> **AppResource** = `EncodedResource` & `object`
 
-Defined in: [src/types.ts:10](https://github.com/anoma/anoma-app-sdk/blob/9ad1dcbfa64ce276a936d2c7679a1c0ec2072734/src/types.ts#L10)
+Defined in: [src/types.ts:18](https://github.com/anoma/anoma-app-sdk/blob/7493b5063eb09a66e10004d752f7592cd373f80c/src/types.ts#L18)
 
 ## Type Declaration
 
 ### consumedIn?
 
-> `optional` **consumedIn**: [`IndexerEVMTransaction`](IndexerEVMTransaction.md)
+> `optional` **consumedIn?**: [`IndexerEVMTransaction`](IndexerEVMTransaction.md)
 
 ### createdIn?
 
-> `optional` **createdIn**: [`IndexerEVMTransaction`](IndexerEVMTransaction.md)
+> `optional` **createdIn?**: [`IndexerEVMTransaction`](IndexerEVMTransaction.md)
 
 ### erc20TokenAddress
 
