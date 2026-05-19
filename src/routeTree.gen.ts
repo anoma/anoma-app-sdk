@@ -15,12 +15,15 @@ import { Route as AuthenticatedRouteRouteImport } from "./routes/_authenticated/
 import { Route as AuthRouteRouteImport } from "./routes/_auth/route";
 import { Route as IndexRouteImport } from "./routes/index";
 import { Route as AuthenticatedModalRouteRouteImport } from "./routes/_authenticated/_modal/route";
+import { Route as AuthenticatedBusinessRouteRouteImport } from "./routes/_authenticated/_business/route";
 import { Route as AuthenticatedAppRouteRouteImport } from "./routes/_authenticated/_app/route";
 import { Route as AuthSignUpIndexRouteImport } from "./routes/_auth/sign-up/index";
 import { Route as AuthLoginIndexRouteImport } from "./routes/_auth/login/index";
 import { Route as AuthenticatedModalWithdrawRouteImport } from "./routes/_authenticated/_modal/withdraw";
 import { Route as AuthenticatedModalSendRouteImport } from "./routes/_authenticated/_modal/send";
 import { Route as AuthenticatedModalDepositRouteImport } from "./routes/_authenticated/_modal/deposit";
+import { Route as AuthenticatedBusinessPayrollRouteImport } from "./routes/_authenticated/_business/payroll";
+import { Route as AuthenticatedBusinessOverviewRouteImport } from "./routes/_authenticated/_business/overview";
 import { Route as AuthenticatedAppTransactionsRouteImport } from "./routes/_authenticated/_app/transactions";
 import { Route as AuthenticatedAppDashboardRouteImport } from "./routes/_authenticated/_app/dashboard";
 import { Route as AuthSignUpWalletRouteImport } from "./routes/_auth/sign-up/wallet";
@@ -60,6 +63,11 @@ const AuthenticatedModalRouteRoute = AuthenticatedModalRouteRouteImport.update({
   id: "/_modal",
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any);
+const AuthenticatedBusinessRouteRoute =
+  AuthenticatedBusinessRouteRouteImport.update({
+    id: "/_business",
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any);
 const AuthenticatedAppRouteRoute = AuthenticatedAppRouteRouteImport.update({
   id: "/_app",
   getParentRoute: () => AuthenticatedRouteRoute,
@@ -90,6 +98,18 @@ const AuthenticatedModalDepositRoute =
     id: "/deposit",
     path: "/deposit",
     getParentRoute: () => AuthenticatedModalRouteRoute,
+  } as any);
+const AuthenticatedBusinessPayrollRoute =
+  AuthenticatedBusinessPayrollRouteImport.update({
+    id: "/payroll",
+    path: "/payroll",
+    getParentRoute: () => AuthenticatedBusinessRouteRoute,
+  } as any);
+const AuthenticatedBusinessOverviewRoute =
+  AuthenticatedBusinessOverviewRouteImport.update({
+    id: "/overview",
+    path: "/overview",
+    getParentRoute: () => AuthenticatedBusinessRouteRoute,
   } as any);
 const AuthenticatedAppTransactionsRoute =
   AuthenticatedAppTransactionsRouteImport.update({
@@ -164,6 +184,8 @@ export interface FileRoutesByFullPath {
   "/sign-up/wallet": typeof AuthSignUpWalletRoute;
   "/dashboard": typeof AuthenticatedAppDashboardRoute;
   "/transactions": typeof AuthenticatedAppTransactionsRoute;
+  "/overview": typeof AuthenticatedBusinessOverviewRoute;
+  "/payroll": typeof AuthenticatedBusinessPayrollRoute;
   "/deposit": typeof AuthenticatedModalDepositRoute;
   "/send": typeof AuthenticatedModalSendRoute;
   "/withdraw": typeof AuthenticatedModalWithdrawRoute;
@@ -185,6 +207,8 @@ export interface FileRoutesByTo {
   "/sign-up/wallet": typeof AuthSignUpWalletRoute;
   "/dashboard": typeof AuthenticatedAppDashboardRoute;
   "/transactions": typeof AuthenticatedAppTransactionsRoute;
+  "/overview": typeof AuthenticatedBusinessOverviewRoute;
+  "/payroll": typeof AuthenticatedBusinessPayrollRoute;
   "/deposit": typeof AuthenticatedModalDepositRoute;
   "/send": typeof AuthenticatedModalSendRoute;
   "/withdraw": typeof AuthenticatedModalWithdrawRoute;
@@ -204,6 +228,7 @@ export interface FileRoutesById {
   "/beta": typeof BetaRoute;
   "/enter": typeof EnterRoute;
   "/_authenticated/_app": typeof AuthenticatedAppRouteRouteWithChildren;
+  "/_authenticated/_business": typeof AuthenticatedBusinessRouteRouteWithChildren;
   "/_authenticated/_modal": typeof AuthenticatedModalRouteRouteWithChildren;
   "/_auth/login/in-app": typeof AuthLoginInAppRoute;
   "/_auth/login/wallet": typeof AuthLoginWalletRoute;
@@ -211,6 +236,8 @@ export interface FileRoutesById {
   "/_auth/sign-up/wallet": typeof AuthSignUpWalletRoute;
   "/_authenticated/_app/dashboard": typeof AuthenticatedAppDashboardRoute;
   "/_authenticated/_app/transactions": typeof AuthenticatedAppTransactionsRoute;
+  "/_authenticated/_business/overview": typeof AuthenticatedBusinessOverviewRoute;
+  "/_authenticated/_business/payroll": typeof AuthenticatedBusinessPayrollRoute;
   "/_authenticated/_modal/deposit": typeof AuthenticatedModalDepositRoute;
   "/_authenticated/_modal/send": typeof AuthenticatedModalSendRoute;
   "/_authenticated/_modal/withdraw": typeof AuthenticatedModalWithdrawRoute;
@@ -234,6 +261,8 @@ export interface FileRouteTypes {
     | "/sign-up/wallet"
     | "/dashboard"
     | "/transactions"
+    | "/overview"
+    | "/payroll"
     | "/deposit"
     | "/send"
     | "/withdraw"
@@ -255,6 +284,8 @@ export interface FileRouteTypes {
     | "/sign-up/wallet"
     | "/dashboard"
     | "/transactions"
+    | "/overview"
+    | "/payroll"
     | "/deposit"
     | "/send"
     | "/withdraw"
@@ -273,6 +304,7 @@ export interface FileRouteTypes {
     | "/beta"
     | "/enter"
     | "/_authenticated/_app"
+    | "/_authenticated/_business"
     | "/_authenticated/_modal"
     | "/_auth/login/in-app"
     | "/_auth/login/wallet"
@@ -280,6 +312,8 @@ export interface FileRouteTypes {
     | "/_auth/sign-up/wallet"
     | "/_authenticated/_app/dashboard"
     | "/_authenticated/_app/transactions"
+    | "/_authenticated/_business/overview"
+    | "/_authenticated/_business/payroll"
     | "/_authenticated/_modal/deposit"
     | "/_authenticated/_modal/send"
     | "/_authenticated/_modal/withdraw"
@@ -344,6 +378,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthenticatedModalRouteRouteImport;
       parentRoute: typeof AuthenticatedRouteRoute;
     };
+    "/_authenticated/_business": {
+      id: "/_authenticated/_business";
+      path: "";
+      fullPath: "";
+      preLoaderRoute: typeof AuthenticatedBusinessRouteRouteImport;
+      parentRoute: typeof AuthenticatedRouteRoute;
+    };
     "/_authenticated/_app": {
       id: "/_authenticated/_app";
       path: "";
@@ -385,6 +426,20 @@ declare module "@tanstack/react-router" {
       fullPath: "/deposit";
       preLoaderRoute: typeof AuthenticatedModalDepositRouteImport;
       parentRoute: typeof AuthenticatedModalRouteRoute;
+    };
+    "/_authenticated/_business/payroll": {
+      id: "/_authenticated/_business/payroll";
+      path: "/payroll";
+      fullPath: "/payroll";
+      preLoaderRoute: typeof AuthenticatedBusinessPayrollRouteImport;
+      parentRoute: typeof AuthenticatedBusinessRouteRoute;
+    };
+    "/_authenticated/_business/overview": {
+      id: "/_authenticated/_business/overview";
+      path: "/overview";
+      fullPath: "/overview";
+      preLoaderRoute: typeof AuthenticatedBusinessOverviewRouteImport;
+      parentRoute: typeof AuthenticatedBusinessRouteRoute;
     };
     "/_authenticated/_app/transactions": {
       id: "/_authenticated/_app/transactions";
@@ -503,6 +558,22 @@ const AuthenticatedAppRouteRouteWithChildren =
     AuthenticatedAppRouteRouteChildren,
   );
 
+interface AuthenticatedBusinessRouteRouteChildren {
+  AuthenticatedBusinessOverviewRoute: typeof AuthenticatedBusinessOverviewRoute;
+  AuthenticatedBusinessPayrollRoute: typeof AuthenticatedBusinessPayrollRoute;
+}
+
+const AuthenticatedBusinessRouteRouteChildren: AuthenticatedBusinessRouteRouteChildren =
+  {
+    AuthenticatedBusinessOverviewRoute: AuthenticatedBusinessOverviewRoute,
+    AuthenticatedBusinessPayrollRoute: AuthenticatedBusinessPayrollRoute,
+  };
+
+const AuthenticatedBusinessRouteRouteWithChildren =
+  AuthenticatedBusinessRouteRoute._addFileChildren(
+    AuthenticatedBusinessRouteRouteChildren,
+  );
+
 interface AuthenticatedModalRouteRouteChildren {
   AuthenticatedModalDepositRoute: typeof AuthenticatedModalDepositRoute;
   AuthenticatedModalSendRoute: typeof AuthenticatedModalSendRoute;
@@ -532,12 +603,14 @@ const AuthenticatedModalRouteRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAppRouteRoute: typeof AuthenticatedAppRouteRouteWithChildren;
+  AuthenticatedBusinessRouteRoute: typeof AuthenticatedBusinessRouteRouteWithChildren;
   AuthenticatedModalRouteRoute: typeof AuthenticatedModalRouteRouteWithChildren;
   AuthenticatedOverlayReceiptIdRoute: typeof AuthenticatedOverlayReceiptIdRoute;
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAppRouteRoute: AuthenticatedAppRouteRouteWithChildren,
+  AuthenticatedBusinessRouteRoute: AuthenticatedBusinessRouteRouteWithChildren,
   AuthenticatedModalRouteRoute: AuthenticatedModalRouteRouteWithChildren,
   AuthenticatedOverlayReceiptIdRoute: AuthenticatedOverlayReceiptIdRoute,
 };
