@@ -143,6 +143,15 @@ export const formatFiatAmount = (balance: number) => {
 };
 
 /**
+ * Format a bigint fiat amount (in cents) for display
+ * @param balance - The number to format
+ * @returns Formatted string (e.g., "1,234.56", "<0.01", "0.00")
+ */
+export const formatBigIntFiatAmount = (balance: bigint) => {
+  return formatFiatAmount(Number(balance) / 100);
+};
+
+/**
  * Return base64-encoded bytes
  * @param bytes - Uint8Array of bytes
  * @returns string
