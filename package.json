@@ -60,6 +60,7 @@
     "build": "tsdown && cp ./src/wasm/arm_bindings_bg.wasm ./dist",
     "build:wasm": "node ./scripts/build.mjs --release",
     "build:wasm:dev": "node ./scripts/build.mjs",
+    "dev": "tsdown --watch",
     "prepare": "husky"
   },
   "lint-staged": {

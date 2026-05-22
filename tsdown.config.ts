@@ -13,7 +13,10 @@ export default defineConfig({
   format: ["esm", "cjs"],
   platform: "browser",
   dts: true,
-  deps: {
-    alwaysBundle: ["@uniswap/permit2-sdk"],
-  },
+  /* TODO: Re-enable the following if runtime errors are still thrown, otherwise, delete! */
+  // deps: {
+  //   onlyBundle: false,
+  //   alwaysBundle: ["@uniswap/permit2-sdk"],
+  //   neverBundle: ["tslib", /^@anomaorg\//],
+  // },
 });
