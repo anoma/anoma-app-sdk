@@ -1,4 +1,4 @@
-type Theme = "light" | "dark" | "red";
+export type Theme = "light" | "dark" | "red" | "business";
 
 export const setTheme = (theme: Theme, value: boolean) => {
   document.documentElement.classList.toggle(theme, value);
