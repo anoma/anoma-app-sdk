@@ -5,6 +5,8 @@ export const ApiPaths = {
   SendTransaction: (network: string) => `/api/v1/transactions/${network}`,
   TransactionResult: (id: UUID) => `/api/v1/transactions/${id}`,
   TransactionStatus: (id: UUID) => `/api/v1/transactions/${id}/status`,
+  TransactionReceipt: (network: string, hash: string) =>
+    `/api/v1/transactions/receipt/${network}/${hash}`,
   EstimateFee: (network: string) =>
     `/api/v1/transactions/${network}/estimate-fee`,
 

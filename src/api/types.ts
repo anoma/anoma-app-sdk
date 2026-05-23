@@ -125,6 +125,13 @@ export type TransactionResultResponse = {
   error?: string | null;
 };
 
+export type TransactionReceiptResponse = {
+  transactionHash: string;
+  blockNumber: number;
+  status: boolean;
+  gasUsed: number;
+};
+
 export type EstimateDurationResponse = {
   estimatedProcessingSeconds: number;
   estimatedQueueWaitSeconds: number;

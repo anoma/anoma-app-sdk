@@ -15,6 +15,7 @@ import type {
   NetworkConfigurationWrappedResponse,
   Permit2AllowanceResponse,
   SendTransactionResponse,
+  TransactionReceiptResponse,
   TransactionResultResponse,
 } from "./types";
 
@@ -60,6 +61,13 @@ export class TransferBackendClient extends ApiClient {
 
   async transactionResult(id: UUID): Promise<TransactionResultResponse> {
     return this.get(ApiPaths.TransactionResult(id));
+  }
+
+  async transactionReceipt(
+    network: string,
+    hash: string
+  ): Promise<TransactionReceiptResponse> {
+    return this.get(ApiPaths.TransactionReceipt(network, hash));
   }
 
   async estimateDuration(

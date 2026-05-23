@@ -39,3 +39,6 @@ export const FeeFluctuationPercentage = 5n;
 
 // Maximum number of decimal places to display for token amounts
 export const MAX_DECIMALS = 6;
+
+// How long (ms) to wait for a Permit2 allowance transaction to be mined before timing out.
+export const permit2AllowanceTimeout = 60_000;
