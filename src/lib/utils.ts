@@ -280,6 +280,24 @@ export const getTxUrl = (
 export const maxBigInt = (a: bigint, b: bigint): bigint => (a > b ? a : b);
 
 /**
+ * Format a number with a 'k' suffix when >= 1000.
+ * Examples: 999 -> "999", 1000 -> "1k", 1500 -> "1.5k", 200000 -> "200k".
+ */
+export const formatCompactAmount = (n: number): string => {
+  if (n < 1000) return String(n);
+  const inK = n / 1000;
+  return `${Number.isInteger(inK) ? inK : Number(inK.toFixed(1))}k`;
+};
+
+/**
+ * Format a USD amount in compact form. Examples: 0 -> "$0", 999 -> "$999",
+ * 1500 -> "$1.5k", 200000 -> "$200k".
+ */
+export const formatCompactFiat = (n: number): string => {
+  return `$${formatCompactAmount(Math.round(n))}`;
+};
+
+/**
  * Extracts a numeric decimal value from a string that may include a currency suffix.
  * Accepts plain decimals ("350.50"), values with currency codes ("350USD", "350 USD",
  * "350.1234 CURRENCY"), and comma-separated decimals ("350,50 EUR").
@@ -309,4 +327,19 @@ export const extractNumericValue = (
   }
 
   return match[1].replace(",", ".");
+};
+
+export const indexedColor = (index: number): string => {
+  const goldenAngle = 137.508; // degrees
+
+  // Spread hues in a way that avoids clustering
+  const hue = (index * goldenAngle) % 360;
+
+  // Small deterministic variation (optional but useful)
+  const variation = Math.sin(index * Math.random()) * 0.5 + 0.5;
+
+  const saturation = 60 + variation * 20; // 60–80%
+  const lightness = 50 + variation * 15; // 50–75%
+
+  return `hsl(${Math.round(hue)}, ${Math.round(saturation)}%, ${Math.round(lightness)}%)`;
 };

@@ -232,3 +232,20 @@ export const getFiatAmount = (
   const price = prices[address] ?? 0;
   return amount * price;
 };
+
+export const groupTokensByAmount = (
+  tokensQty: Array<[TokenRegistry, bigint]>,
+  pricesInUsd: Record<NetworkAddress, number>
+) => {
+  const totals = new Map<TokenId, { token: TokenRegistry; total: number }>();
+  for (const [token, quantity] of tokensQty) {
+    const id = tokenId(token);
+    const amountInUsd = getFiatAmount(token, quantity, pricesInUsd);
+    const prev = totals.get(id);
+    totals.set(id, {
+      token,
+      total: (prev?.total ?? 0) + amountInUsd,
+    });
+  }
+  return totals;
+};
