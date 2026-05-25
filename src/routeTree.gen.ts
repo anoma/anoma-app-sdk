@@ -15,26 +15,26 @@ import { Route as AuthenticatedRouteRouteImport } from "./routes/_authenticated/
 import { Route as AuthRouteRouteImport } from "./routes/_auth/route";
 import { Route as IndexRouteImport } from "./routes/index";
 import { Route as AuthenticatedModalRouteRouteImport } from "./routes/_authenticated/_modal/route";
-import { Route as AuthenticatedBusinessRouteRouteImport } from "./routes/_authenticated/_business/route";
 import { Route as AuthenticatedAppRouteRouteImport } from "./routes/_authenticated/_app/route";
 import { Route as AuthSignUpIndexRouteImport } from "./routes/_auth/sign-up/index";
 import { Route as AuthLoginIndexRouteImport } from "./routes/_auth/login/index";
 import { Route as AuthenticatedModalWithdrawRouteImport } from "./routes/_authenticated/_modal/withdraw";
 import { Route as AuthenticatedModalSendRouteImport } from "./routes/_authenticated/_modal/send";
 import { Route as AuthenticatedModalDepositRouteImport } from "./routes/_authenticated/_modal/deposit";
-import { Route as AuthenticatedBusinessPayrollRouteImport } from "./routes/_authenticated/_business/payroll";
-import { Route as AuthenticatedBusinessOverviewRouteImport } from "./routes/_authenticated/_business/overview";
 import { Route as AuthenticatedAppTransactionsRouteImport } from "./routes/_authenticated/_app/transactions";
 import { Route as AuthenticatedAppDashboardRouteImport } from "./routes/_authenticated/_app/dashboard";
 import { Route as AuthSignUpWalletRouteImport } from "./routes/_auth/sign-up/wallet";
 import { Route as AuthSignUpPasskeysRouteImport } from "./routes/_auth/sign-up/passkeys";
 import { Route as AuthLoginWalletRouteImport } from "./routes/_auth/login/wallet";
 import { Route as AuthLoginInAppRouteImport } from "./routes/_auth/login/in-app";
+import { Route as AuthenticatedAppBusinessRouteRouteImport } from "./routes/_authenticated/_app/_business/route";
 import { Route as AuthenticatedOverlayReceiptIdRouteImport } from "./routes/_authenticated/_overlay/receipt.$id";
 import { Route as AuthenticatedModalRedEnvelopeSeedRouteImport } from "./routes/_authenticated/_modal/red-envelope.$seed";
 import { Route as AuthenticatedModalPayRequestRouteImport } from "./routes/_authenticated/_modal/pay.request";
 import { Route as AuthenticatedModalPayDataRouteImport } from "./routes/_authenticated/_modal/pay.$data";
 import { Route as AuthenticatedModalClaimSeedRouteImport } from "./routes/_authenticated/_modal/claim.$seed";
+import { Route as AuthenticatedAppBusinessTransferRouteImport } from "./routes/_authenticated/_app/_business/transfer";
+import { Route as AuthenticatedAppBusinessPayrollRouteImport } from "./routes/_authenticated/_app/_business/payroll";
 
 const EnterRoute = EnterRouteImport.update({
   id: "/enter",
@@ -63,11 +63,6 @@ const AuthenticatedModalRouteRoute = AuthenticatedModalRouteRouteImport.update({
   id: "/_modal",
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any);
-const AuthenticatedBusinessRouteRoute =
-  AuthenticatedBusinessRouteRouteImport.update({
-    id: "/_business",
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any);
 const AuthenticatedAppRouteRoute = AuthenticatedAppRouteRouteImport.update({
   id: "/_app",
   getParentRoute: () => AuthenticatedRouteRoute,
@@ -98,18 +93,6 @@ const AuthenticatedModalDepositRoute =
     id: "/deposit",
     path: "/deposit",
     getParentRoute: () => AuthenticatedModalRouteRoute,
-  } as any);
-const AuthenticatedBusinessPayrollRoute =
-  AuthenticatedBusinessPayrollRouteImport.update({
-    id: "/payroll",
-    path: "/payroll",
-    getParentRoute: () => AuthenticatedBusinessRouteRoute,
-  } as any);
-const AuthenticatedBusinessOverviewRoute =
-  AuthenticatedBusinessOverviewRouteImport.update({
-    id: "/overview",
-    path: "/overview",
-    getParentRoute: () => AuthenticatedBusinessRouteRoute,
   } as any);
 const AuthenticatedAppTransactionsRoute =
   AuthenticatedAppTransactionsRouteImport.update({
@@ -143,6 +126,11 @@ const AuthLoginInAppRoute = AuthLoginInAppRouteImport.update({
   path: "/login/in-app",
   getParentRoute: () => AuthRouteRoute,
 } as any);
+const AuthenticatedAppBusinessRouteRoute =
+  AuthenticatedAppBusinessRouteRouteImport.update({
+    id: "/_business",
+    getParentRoute: () => AuthenticatedAppRouteRoute,
+  } as any);
 const AuthenticatedOverlayReceiptIdRoute =
   AuthenticatedOverlayReceiptIdRouteImport.update({
     id: "/_overlay/receipt/$id",
@@ -173,6 +161,18 @@ const AuthenticatedModalClaimSeedRoute =
     path: "/claim/$seed",
     getParentRoute: () => AuthenticatedModalRouteRoute,
   } as any);
+const AuthenticatedAppBusinessTransferRoute =
+  AuthenticatedAppBusinessTransferRouteImport.update({
+    id: "/transfer",
+    path: "/transfer",
+    getParentRoute: () => AuthenticatedAppBusinessRouteRoute,
+  } as any);
+const AuthenticatedAppBusinessPayrollRoute =
+  AuthenticatedAppBusinessPayrollRouteImport.update({
+    id: "/payroll",
+    path: "/payroll",
+    getParentRoute: () => AuthenticatedAppBusinessRouteRoute,
+  } as any);
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
@@ -184,13 +184,13 @@ export interface FileRoutesByFullPath {
   "/sign-up/wallet": typeof AuthSignUpWalletRoute;
   "/dashboard": typeof AuthenticatedAppDashboardRoute;
   "/transactions": typeof AuthenticatedAppTransactionsRoute;
-  "/overview": typeof AuthenticatedBusinessOverviewRoute;
-  "/payroll": typeof AuthenticatedBusinessPayrollRoute;
   "/deposit": typeof AuthenticatedModalDepositRoute;
   "/send": typeof AuthenticatedModalSendRoute;
   "/withdraw": typeof AuthenticatedModalWithdrawRoute;
   "/login": typeof AuthLoginIndexRoute;
   "/sign-up": typeof AuthSignUpIndexRoute;
+  "/payroll": typeof AuthenticatedAppBusinessPayrollRoute;
+  "/transfer": typeof AuthenticatedAppBusinessTransferRoute;
   "/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
   "/pay/$data": typeof AuthenticatedModalPayDataRoute;
   "/pay/request": typeof AuthenticatedModalPayRequestRoute;
@@ -207,13 +207,13 @@ export interface FileRoutesByTo {
   "/sign-up/wallet": typeof AuthSignUpWalletRoute;
   "/dashboard": typeof AuthenticatedAppDashboardRoute;
   "/transactions": typeof AuthenticatedAppTransactionsRoute;
-  "/overview": typeof AuthenticatedBusinessOverviewRoute;
-  "/payroll": typeof AuthenticatedBusinessPayrollRoute;
   "/deposit": typeof AuthenticatedModalDepositRoute;
   "/send": typeof AuthenticatedModalSendRoute;
   "/withdraw": typeof AuthenticatedModalWithdrawRoute;
   "/login": typeof AuthLoginIndexRoute;
   "/sign-up": typeof AuthSignUpIndexRoute;
+  "/payroll": typeof AuthenticatedAppBusinessPayrollRoute;
+  "/transfer": typeof AuthenticatedAppBusinessTransferRoute;
   "/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
   "/pay/$data": typeof AuthenticatedModalPayDataRoute;
   "/pay/request": typeof AuthenticatedModalPayRequestRoute;
@@ -228,21 +228,21 @@ export interface FileRoutesById {
   "/beta": typeof BetaRoute;
   "/enter": typeof EnterRoute;
   "/_authenticated/_app": typeof AuthenticatedAppRouteRouteWithChildren;
-  "/_authenticated/_business": typeof AuthenticatedBusinessRouteRouteWithChildren;
   "/_authenticated/_modal": typeof AuthenticatedModalRouteRouteWithChildren;
+  "/_authenticated/_app/_business": typeof AuthenticatedAppBusinessRouteRouteWithChildren;
   "/_auth/login/in-app": typeof AuthLoginInAppRoute;
   "/_auth/login/wallet": typeof AuthLoginWalletRoute;
   "/_auth/sign-up/passkeys": typeof AuthSignUpPasskeysRoute;
   "/_auth/sign-up/wallet": typeof AuthSignUpWalletRoute;
   "/_authenticated/_app/dashboard": typeof AuthenticatedAppDashboardRoute;
   "/_authenticated/_app/transactions": typeof AuthenticatedAppTransactionsRoute;
-  "/_authenticated/_business/overview": typeof AuthenticatedBusinessOverviewRoute;
-  "/_authenticated/_business/payroll": typeof AuthenticatedBusinessPayrollRoute;
   "/_authenticated/_modal/deposit": typeof AuthenticatedModalDepositRoute;
   "/_authenticated/_modal/send": typeof AuthenticatedModalSendRoute;
   "/_authenticated/_modal/withdraw": typeof AuthenticatedModalWithdrawRoute;
   "/_auth/login/": typeof AuthLoginIndexRoute;
   "/_auth/sign-up/": typeof AuthSignUpIndexRoute;
+  "/_authenticated/_app/_business/payroll": typeof AuthenticatedAppBusinessPayrollRoute;
+  "/_authenticated/_app/_business/transfer": typeof AuthenticatedAppBusinessTransferRoute;
   "/_authenticated/_modal/claim/$seed": typeof AuthenticatedModalClaimSeedRoute;
   "/_authenticated/_modal/pay/$data": typeof AuthenticatedModalPayDataRoute;
   "/_authenticated/_modal/pay/request": typeof AuthenticatedModalPayRequestRoute;
@@ -261,13 +261,13 @@ export interface FileRouteTypes {
     | "/sign-up/wallet"
     | "/dashboard"
     | "/transactions"
-    | "/overview"
-    | "/payroll"
     | "/deposit"
     | "/send"
     | "/withdraw"
     | "/login"
     | "/sign-up"
+    | "/payroll"
+    | "/transfer"
     | "/claim/$seed"
     | "/pay/$data"
     | "/pay/request"
@@ -284,13 +284,13 @@ export interface FileRouteTypes {
     | "/sign-up/wallet"
     | "/dashboard"
     | "/transactions"
-    | "/overview"
-    | "/payroll"
     | "/deposit"
     | "/send"
     | "/withdraw"
     | "/login"
     | "/sign-up"
+    | "/payroll"
+    | "/transfer"
     | "/claim/$seed"
     | "/pay/$data"
     | "/pay/request"
@@ -304,21 +304,21 @@ export interface FileRouteTypes {
     | "/beta"
     | "/enter"
     | "/_authenticated/_app"
-    | "/_authenticated/_business"
     | "/_authenticated/_modal"
+    | "/_authenticated/_app/_business"
     | "/_auth/login/in-app"
     | "/_auth/login/wallet"
     | "/_auth/sign-up/passkeys"
     | "/_auth/sign-up/wallet"
     | "/_authenticated/_app/dashboard"
     | "/_authenticated/_app/transactions"
-    | "/_authenticated/_business/overview"
-    | "/_authenticated/_business/payroll"
     | "/_authenticated/_modal/deposit"
     | "/_authenticated/_modal/send"
     | "/_authenticated/_modal/withdraw"
     | "/_auth/login/"
     | "/_auth/sign-up/"
+    | "/_authenticated/_app/_business/payroll"
+    | "/_authenticated/_app/_business/transfer"
     | "/_authenticated/_modal/claim/$seed"
     | "/_authenticated/_modal/pay/$data"
     | "/_authenticated/_modal/pay/request"
@@ -378,13 +378,6 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthenticatedModalRouteRouteImport;
       parentRoute: typeof AuthenticatedRouteRoute;
     };
-    "/_authenticated/_business": {
-      id: "/_authenticated/_business";
-      path: "";
-      fullPath: "";
-      preLoaderRoute: typeof AuthenticatedBusinessRouteRouteImport;
-      parentRoute: typeof AuthenticatedRouteRoute;
-    };
     "/_authenticated/_app": {
       id: "/_authenticated/_app";
       path: "";
@@ -426,20 +419,6 @@ declare module "@tanstack/react-router" {
       fullPath: "/deposit";
       preLoaderRoute: typeof AuthenticatedModalDepositRouteImport;
       parentRoute: typeof AuthenticatedModalRouteRoute;
-    };
-    "/_authenticated/_business/payroll": {
-      id: "/_authenticated/_business/payroll";
-      path: "/payroll";
-      fullPath: "/payroll";
-      preLoaderRoute: typeof AuthenticatedBusinessPayrollRouteImport;
-      parentRoute: typeof AuthenticatedBusinessRouteRoute;
-    };
-    "/_authenticated/_business/overview": {
-      id: "/_authenticated/_business/overview";
-      path: "/overview";
-      fullPath: "/overview";
-      preLoaderRoute: typeof AuthenticatedBusinessOverviewRouteImport;
-      parentRoute: typeof AuthenticatedBusinessRouteRoute;
     };
     "/_authenticated/_app/transactions": {
       id: "/_authenticated/_app/transactions";
@@ -483,6 +462,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthLoginInAppRouteImport;
       parentRoute: typeof AuthRouteRoute;
     };
+    "/_authenticated/_app/_business": {
+      id: "/_authenticated/_app/_business";
+      path: "";
+      fullPath: "";
+      preLoaderRoute: typeof AuthenticatedAppBusinessRouteRouteImport;
+      parentRoute: typeof AuthenticatedAppRouteRoute;
+    };
     "/_authenticated/_overlay/receipt/$id": {
       id: "/_authenticated/_overlay/receipt/$id";
       path: "/receipt/$id";
@@ -518,6 +504,20 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthenticatedModalClaimSeedRouteImport;
       parentRoute: typeof AuthenticatedModalRouteRoute;
     };
+    "/_authenticated/_app/_business/transfer": {
+      id: "/_authenticated/_app/_business/transfer";
+      path: "/transfer";
+      fullPath: "/transfer";
+      preLoaderRoute: typeof AuthenticatedAppBusinessTransferRouteImport;
+      parentRoute: typeof AuthenticatedAppBusinessRouteRoute;
+    };
+    "/_authenticated/_app/_business/payroll": {
+      id: "/_authenticated/_app/_business/payroll";
+      path: "/payroll";
+      fullPath: "/payroll";
+      preLoaderRoute: typeof AuthenticatedAppBusinessPayrollRouteImport;
+      parentRoute: typeof AuthenticatedAppBusinessRouteRoute;
+    };
   }
 }
 
@@ -543,12 +543,32 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
   AuthRouteRouteChildren,
 );
 
+interface AuthenticatedAppBusinessRouteRouteChildren {
+  AuthenticatedAppBusinessPayrollRoute: typeof AuthenticatedAppBusinessPayrollRoute;
+  AuthenticatedAppBusinessTransferRoute: typeof AuthenticatedAppBusinessTransferRoute;
+}
+
+const AuthenticatedAppBusinessRouteRouteChildren: AuthenticatedAppBusinessRouteRouteChildren =
+  {
+    AuthenticatedAppBusinessPayrollRoute: AuthenticatedAppBusinessPayrollRoute,
+    AuthenticatedAppBusinessTransferRoute:
+      AuthenticatedAppBusinessTransferRoute,
+  };
+
+const AuthenticatedAppBusinessRouteRouteWithChildren =
+  AuthenticatedAppBusinessRouteRoute._addFileChildren(
+    AuthenticatedAppBusinessRouteRouteChildren,
+  );
+
 interface AuthenticatedAppRouteRouteChildren {
+  AuthenticatedAppBusinessRouteRoute: typeof AuthenticatedAppBusinessRouteRouteWithChildren;
   AuthenticatedAppDashboardRoute: typeof AuthenticatedAppDashboardRoute;
   AuthenticatedAppTransactionsRoute: typeof AuthenticatedAppTransactionsRoute;
 }
 
 const AuthenticatedAppRouteRouteChildren: AuthenticatedAppRouteRouteChildren = {
+  AuthenticatedAppBusinessRouteRoute:
+    AuthenticatedAppBusinessRouteRouteWithChildren,
   AuthenticatedAppDashboardRoute: AuthenticatedAppDashboardRoute,
   AuthenticatedAppTransactionsRoute: AuthenticatedAppTransactionsRoute,
 };
@@ -556,22 +576,6 @@ const AuthenticatedAppRouteRouteChildren: AuthenticatedAppRouteRouteChildren = {
 const AuthenticatedAppRouteRouteWithChildren =
   AuthenticatedAppRouteRoute._addFileChildren(
     AuthenticatedAppRouteRouteChildren,
-  );
-
-interface AuthenticatedBusinessRouteRouteChildren {
-  AuthenticatedBusinessOverviewRoute: typeof AuthenticatedBusinessOverviewRoute;
-  AuthenticatedBusinessPayrollRoute: typeof AuthenticatedBusinessPayrollRoute;
-}
-
-const AuthenticatedBusinessRouteRouteChildren: AuthenticatedBusinessRouteRouteChildren =
-  {
-    AuthenticatedBusinessOverviewRoute: AuthenticatedBusinessOverviewRoute,
-    AuthenticatedBusinessPayrollRoute: AuthenticatedBusinessPayrollRoute,
-  };
-
-const AuthenticatedBusinessRouteRouteWithChildren =
-  AuthenticatedBusinessRouteRoute._addFileChildren(
-    AuthenticatedBusinessRouteRouteChildren,
   );
 
 interface AuthenticatedModalRouteRouteChildren {
@@ -603,14 +607,12 @@ const AuthenticatedModalRouteRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAppRouteRoute: typeof AuthenticatedAppRouteRouteWithChildren;
-  AuthenticatedBusinessRouteRoute: typeof AuthenticatedBusinessRouteRouteWithChildren;
   AuthenticatedModalRouteRoute: typeof AuthenticatedModalRouteRouteWithChildren;
   AuthenticatedOverlayReceiptIdRoute: typeof AuthenticatedOverlayReceiptIdRoute;
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAppRouteRoute: AuthenticatedAppRouteRouteWithChildren,
-  AuthenticatedBusinessRouteRoute: AuthenticatedBusinessRouteRouteWithChildren,
   AuthenticatedModalRouteRoute: AuthenticatedModalRouteRouteWithChildren,
   AuthenticatedOverlayReceiptIdRoute: AuthenticatedOverlayReceiptIdRoute,
 };
