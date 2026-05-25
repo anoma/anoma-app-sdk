@@ -10,11 +10,6 @@ export type TransferResourceWithAmount = {
   targetAmount: bigint;
 };
 
-export type TransferResources = {
-  selected: TransferResourceWithAmount[];
-  remaining: AppResource[];
-};
-
 export type AggregatedTokenBalance = {
   raw: bigint;
   formattedRounded: string;

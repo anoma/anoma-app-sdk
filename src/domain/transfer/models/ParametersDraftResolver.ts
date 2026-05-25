@@ -85,7 +85,7 @@ export class ParametersDraftResolver {
     // Pick available user resources to fulfill the required amounts for each token
     for (const [id, { quantity: amount, token }] of amountsByToken) {
       const tokenResources = getResourcesForToken(token.address, resources);
-      const { selected } = selectTransferResources(tokenResources, amount);
+      const selected = selectTransferResources(tokenResources, amount);
       result.set(id, { token, resourceWithAmount: selected });
     }
 

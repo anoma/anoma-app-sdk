@@ -21,9 +21,9 @@ import type {
 import type { Address, Hex } from "viem";
 import { NullifierKey, Resource, ResourceWithLabel } from "wasm";
 import { InsufficientResourcesError } from "./errors";
+import { selectUTXOs } from "./selectUTXOs";
 import type {
   AggregatedTokenBalance,
-  TransferResources,
   TransferResourceWithAmount,
 } from "./types";
 
@@ -163,126 +163,14 @@ export const buildAppResources = async (
   return updatedResources;
 };
 
-function omitSelectedFromRemaining(
-  selected: TransferResourceWithAmount[],
-  remaining: AppResource[]
-): TransferResources {
-  return {
-    selected,
-    remaining: remaining.filter(
-      r => !selected.some(s => s.resource.rand_seed === r.rand_seed)
-    ),
-  };
-}
-
 /**
- * Given a collection of Resources, return an array of the fewest resources
- * whose quantities sum to the exact target quantity
- */
-function findMinResourceQuantitySum(
-  resources: AppResource[],
-  targetQuantity: bigint
-): AppResource[] | undefined {
-  if (resources.length === 0) return undefined;
-
-  let min: AppResource[] | undefined;
-  for (let i = 0; i < resources.length; i++) {
-    // If a quantity equals the targetQuantity, it is the shortest set of length 1
-    if (resources[i].quantity === targetQuantity) return [resources[i]];
-
-    // Recursively call on subset with sum adjusted for removed element
-    const next = findMinResourceQuantitySum(
-      resources.slice(i + 1),
-      targetQuantity - resources[i].quantity
-    );
-
-    if (next) {
-      if (min === undefined || next.length < min.length) {
-        min = [resources[i], ...next];
-      }
-    }
-  }
-  return min;
-}
-
-/**
- * Return first resource which can fulfill a transfer either with exact
- * quantity or by splitting
- */
-function findMinTransferResource(
-  resources: AppResource[],
-  targetAmount: bigint
-): [TransferResourceWithAmount, AppResource[]] | undefined {
-  // Sort by ascending quantity to find first resource which might fulfill targetQuantity
-  const sortedResources = [...resources].sort((a, b) =>
-    Number(a.quantity - b.quantity)
-  );
-  // return first matching resource which can provide target amount
-  const matchIndex = sortedResources.findIndex(
-    ({ quantity }) => quantity >= targetAmount
-  );
-
-  if (matchIndex > -1) {
-    const resource = sortedResources.splice(matchIndex, 1)[0];
-    return [
-      {
-        resource,
-        targetAmount,
-      },
-      sortedResources,
-    ];
-  }
-}
-
-/**
- * If we know that there is not an exact quantity match, or subset of resources
- * whose quantities sum to an exact target quantity, iterate through resources
- * until we have enough summed quantities plus a split to fulfill transfer
- */
-
-function findTransferResourcesWithSplit(
-  resources: AppResource[],
-  targetQuantity: bigint
-): [TransferResourceWithAmount[], AppResource[]] {
-  const selected: TransferResourceWithAmount[] = [];
-  const remaining: AppResource[] = [];
-
-  // Sort by descending quantity to find *fewest* number of resources for transfer
-  const sortedResources = resources.sort((a, b) =>
-    Number(b.quantity - a.quantity)
-  );
-  let missingQuantity = targetQuantity;
-  for (let i = 0; i < sortedResources.length; i++) {
-    const resource = sortedResources[i];
-    const quantity =
-      missingQuantity < resource.quantity ? missingQuantity : resource.quantity;
-    selected.push({ resource, targetAmount: quantity });
-    missingQuantity -= quantity;
-    if (missingQuantity === 0n) {
-      // This is the last item we want, and is a split, so break
-      remaining.push(...sortedResources.slice(i + 1));
-      break;
-    }
-  }
-
-  if (missingQuantity > 0) {
-    throw new InsufficientResourcesError(
-      targetQuantity,
-      targetQuantity - missingQuantity
-    );
-  }
-
-  return [selected, remaining];
-}
-
-/**
- * Determine what resources are needed to fulfill a transfer, either by resources
- * to sum, a resource to split, or both
+ * Determine what resources are needed to fulfill a transfer, either by exact
+ * sum or by selecting resources and splitting the last one to cover the remainder.
  */
 export const selectTransferResources = (
   resources: AppResource[],
   targetAmount: bigint
-): TransferResources => {
+): TransferResourceWithAmount[] => {
   if (resources.length === 0) {
     throw new Error("No resources provided!");
   }
@@ -290,39 +178,21 @@ export const selectTransferResources = (
     throw new Error("Must specify a quantity greater than 0");
   }
 
-  // Check if a single resource can provide target amount
-  const [match, unmatchedResources = resources] =
-    findMinTransferResource(resources, targetAmount) ?? [];
+  const selected = selectUTXOs(resources, targetAmount);
 
-  if (match) {
-    // Either a resource with matched quantity or a split resource
-    return {
-      selected: [match],
-      remaining: unmatchedResources,
-    };
+  if (!selected) {
+    const available = resources.reduce((sum, r) => sum + r.quantity, 0n);
+    throw new InsufficientResourcesError(targetAmount, available);
   }
 
-  // Check if summing can provide target quantity
-  const summedResources = findMinResourceQuantitySum(resources, targetAmount);
+  const selectedSum = selected.reduce((sum, r) => sum + r.quantity, 0n);
+  const overage = selectedSum - targetAmount;
 
-  if (summedResources) {
-    return omitSelectedFromRemaining(
-      summedResources.map(sr => ({
-        resource: sr,
-        targetAmount: sr.quantity,
-      })),
-      resources
-    );
-  }
-
-  const [selected, remaining] = findTransferResourcesWithSplit(
-    resources,
-    targetAmount
-  );
-  return {
-    selected,
-    remaining,
-  };
+  // selected is sorted descending; the last (smallest) resource absorbs the split
+  return selected.map((r, i) => ({
+    resource: r,
+    targetAmount: i === selected.length - 1 ? r.quantity - overage : r.quantity,
+  }));
 };
 
 export type AggregatedTokenBalancesOutput = {
