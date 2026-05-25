@@ -2,11 +2,16 @@ import { redirect } from "@tanstack/react-router";
 import { RETURNING_USER_STORAGE_KEY } from "app-constants";
 import { getDefaultStore } from "jotai";
 import { authSessionAtom } from "store/keyring";
+import { businessModeAtom } from "store/settings";
 
 export const handleInitialAppRedirect = () => {
   const store = getDefaultStore();
   const session = store.get(authSessionAtom);
   if (session) {
+    const isBusiness = store.get(businessModeAtom);
+    if (isBusiness) {
+      throw redirect({ to: "/overview", replace: true });
+    }
     throw redirect({ to: "/dashboard", replace: true });
   }
   const isReturningUser = localStorage.getItem(RETURNING_USER_STORAGE_KEY);
