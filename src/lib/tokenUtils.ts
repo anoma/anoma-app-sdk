@@ -9,7 +9,7 @@ import type {
   TokenId,
   TokenRegistry,
 } from "types";
-import { formatUnits, type Address } from "viem";
+import { formatUnits, parseUnits, type Address } from "viem";
 import { normalizeEvmAddress, normalizeEvmNetworkAddress } from "./utils";
 
 /** Creates a placeholder token registry entry for unknown or unresolved tokens. */
@@ -178,7 +178,7 @@ export const findTokenBySymbol = (
 ) =>
   registry.find(
     t =>
-      t.network === network &&
+      t.network.toLocaleLowerCase() === network.toLocaleLowerCase() &&
       t.symbol.toLocaleLowerCase() === symbol.toLocaleLowerCase()
   );
 
@@ -219,6 +219,12 @@ export const findBalanceByToken = (
   return balances.find(t => tokenId(t.token) === id);
 };
 
+/** Normalized `network:address` key used to look a token up in a price map. */
+const tokenPriceKey = (
+  token: Pick<TokenRegistry, "network" | "address">
+): NetworkAddress =>
+  normalizeEvmNetworkAddress(networkAddress(token.network, token.address));
+
 /** Computes the USD value of `quantity` of `token` using a price map (address → USD). */
 export const getFiatAmount = (
   token: TokenRegistry,
@@ -226,11 +232,24 @@ export const getFiatAmount = (
   prices: Record<NetworkAddress, number>
 ): number => {
   const amount = Number(formatUnits(quantity, token.decimals));
-  const address = normalizeEvmNetworkAddress(
-    networkAddress(token.network, token.address)
-  );
-  const price = prices[address] ?? 0;
+  const price = prices[tokenPriceKey(token)] ?? 0;
   return amount * price;
+};
+
+/**
+ * Inverse of {@link getFiatAmount}: derives a token amount (minimal denomination)
+ * from a USD amount in integer cents and the same price map. Returns `0n` when no
+ * price is available. Note that prices are floats, so this conversion is not exact.
+ */
+export const usdCentsToTokenQuantity = (
+  token: TokenRegistry,
+  usdCents: bigint,
+  prices: Record<NetworkAddress, number>
+): bigint => {
+  const price = prices[tokenPriceKey(token)];
+  if (!price) return 0n;
+  const tokenFloat = Number(usdCents) / 100 / price;
+  return parseUnits(String(tokenFloat), token.decimals);
 };
 
 export const groupTokensByAmount = (
