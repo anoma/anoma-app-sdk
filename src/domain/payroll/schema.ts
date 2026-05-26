@@ -3,6 +3,7 @@ import { isUnsafeText } from "lib/sanitize";
 import { findTokenBySymbol } from "lib/tokenUtils";
 import type { TokenRegistry } from "types";
 import z from "zod";
+import type { PayrollRecipient } from "./types";
 
 /** Positive number with up to two decimal places. */
 const twoDecimalCasesRegex = /^\d+(\.\d{1,2})?$/;
@@ -91,4 +92,56 @@ export const buildRowSchema = (supportedTokens: TokenRegistry[]) => {
         usdQuantity: row.usd,
       };
     });
+};
+
+/**
+ * Validates an in-memory {@link PayrollRecipient} (after its price-derived
+ * `tokenQuantity` is known). Unlike {@link buildRowSchema}, which parses raw CSV
+ * strings, this checks the recipient as edited in the payroll grid: a valid pay
+ * address and a positive USD amount that resolved to a token quantity.
+ */
+export const payrollRecipientSchema = z
+  .object({
+    address: z.string().refine(isValidPayAddress, {
+      message: "Invalid AnomaPay address",
+    }),
+    usdQuantity: z.bigint().positive("Amount must be greater than zero"),
+    tokenQuantity: z.bigint(),
+  })
+  // `tokenQuantity` is price-derived, so only flag it once a USD amount exists;
+  // a zero amount already surfaces its own error above.
+  .refine(r => r.usdQuantity <= 0n || r.tokenQuantity > 0n, {
+    path: ["tokenQuantity"],
+    message: "Token price unavailable",
+  });
+
+/**
+ * Returns human-readable validation messages for a recipient, or an empty array
+ * when the recipient is valid. Intended for surfacing inline errors in the UI.
+ */
+export const getRecipientErrors = (recipient: PayrollRecipient): string[] => {
+  const result = payrollRecipientSchema.safeParse(recipient);
+  return result.success ? [] : result.error.issues.map(issue => issue.message);
+};
+
+/** Message shown when a recipient's token amount exceeds the held balance. */
+export const INSUFFICIENT_FUNDS_ERROR = "Insufficient funds";
+
+/**
+ * Returns an insufficient-funds error when the recipient's token amount exceeds
+ * `heldAmount` (the balance held for its token). Returns `undefined` while
+ * balances are still loading — to avoid a false negative — or when funds suffice.
+ * Kept separate from {@link getRecipientErrors} because it depends on live
+ * balances rather than the recipient's own fields.
+ */
+export const getInsufficientFundsError = (
+  recipient: PayrollRecipient,
+  heldAmount: bigint,
+  balancesLoaded: boolean
+): string | undefined => {
+  if (!balancesLoaded) return undefined;
+  if (recipient.tokenQuantity > 0n && recipient.tokenQuantity > heldAmount) {
+    return INSUFFICIENT_FUNDS_ERROR;
+  }
+  return undefined;
 };
