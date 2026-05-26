@@ -59,6 +59,7 @@ export type TokenRegistry = {
   symbol: string;
   network: string;
   feeEnabled: boolean;
+  apy?: number | null;
 };
 
 export type SupportedChainConfig = Omit<

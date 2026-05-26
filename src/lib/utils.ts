@@ -142,6 +142,11 @@ export const formatFiatAmount = (balance: number) => {
   }).format(roundedBalance);
 };
 
+/** Format a decimal as a percentage string with 2 decimal places (e.g., 0.1234 -> "12.34%") */
+export const formatPercentage = (percentage: number) => {
+  return `${(percentage * 100).toFixed(2)}%`;
+};
+
 /**
  * Format a bigint fiat amount (in cents) for display
  * @param balance - The number to format
