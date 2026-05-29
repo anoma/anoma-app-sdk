@@ -171,6 +171,18 @@ export const findToken = (
       normalizeEvmAddress(t.address) === normalizeEvmAddress(address)
   );
 
+/**
+ * Returns true when `(network, address)` matches a token in the backend allow-list.
+ * Used to drop user-derived data (resources, wallet balances) referencing tokens
+ * no longer (or never) configured by the backend, so they don't leak into queries
+ * like `useTokenPrices` that reject unknown tokens.
+ */
+export const isAllowedToken = (
+  allowedTokens: TokenRegistry[],
+  network: Network,
+  address: Address
+): boolean => !!findToken(allowedTokens, network, address);
+
 export const findTokenBySymbol = (
   registry: TokenRegistry[],
   network: Network,
