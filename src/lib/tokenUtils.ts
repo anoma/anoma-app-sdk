@@ -1,6 +1,6 @@
-import { defaultTokenId } from "app-constants";
+import { defaultTokenId } from "lib-constants";
 import type { AggregatedTokenBalance } from "domain/resources/types";
-import type { WalletBalance } from "hooks/resources/useWalletBalances";
+import type { WalletBalance } from "types";
 import type {
   AppResource,
   Network,

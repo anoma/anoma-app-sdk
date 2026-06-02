@@ -1,14 +1,4 @@
-import type { IconComponent } from "@web3icons/react";
-import {
-  ExchangeIcon,
-  NetworkIcon,
-  TokenIcon,
-  WalletIcon,
-} from "@web3icons/react/dynamic";
-import { MAX_DECIMALS } from "app-constants";
-import clsx, { type ClassValue } from "clsx";
-import type { ReactElement } from "react";
-import { twMerge } from "tailwind-merge";
+import { MAX_DECIMALS } from "lib-constants";
 import type { NetworkAddress, TokenRegistry } from "types";
 import {
   bytesToHex,
@@ -20,10 +10,6 @@ import {
   type Hex,
 } from "viem";
 import z from "zod";
-
-export const cn = (...inputs: ClassValue[]) => {
-  return twMerge(clsx(inputs));
-};
 
 export const shortenAddress = (address: string, head = 6, tail = 4) => {
   return `${address.slice(0, 2 + head)}…${address.slice(-tail)}`;
@@ -39,18 +25,6 @@ export const normalizeEvmNetworkAddress = (
 ): NetworkAddress => {
   const [chain, addr] = address.split(":");
   return `${chain}:${normalizeEvmAddress(addr)}`;
-};
-
-export const checkForWeb3Icons = (
-  el: ReactElement
-): el is ReactElement<IconComponent> => {
-  if (!el || typeof el !== "object") return false;
-  return (
-    el.type === TokenIcon ||
-    el.type === NetworkIcon ||
-    el.type === WalletIcon ||
-    el.type === ExchangeIcon
-  );
 };
 
 export const formatBalance = (

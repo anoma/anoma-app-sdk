@@ -5,8 +5,8 @@ import {
   SignatureTransfer,
   type Witness,
 } from "@uniswap/permit2-sdk";
+import type { SignTypedDataMutateAsync } from "@wagmi/core/query";
 import { type Hex, hexToNumber, slice, type TypedDataDomain } from "viem";
-import type { SignTypedDataMutateAsync } from "wagmi/query";
 
 /**
  * Components of an EIP-712 signature returned by Permit2.
@@ -88,18 +88,18 @@ export const getPermit2Data = ({
 /**
  * Signs the Permit2 typed data for a given owner and props.
  *
- * @param walletClient - Client capable of signing EIP-712 typed data.
+ * @param signTypedDataFn - Typed-Data signing mutator callback from wagmi
  * @param props - Permit parameters describing the token, witness, and deadlines.
  * @param ownerAddress - Address whose private key authorizes the permit.
  * @returns Split signature along with the original signature hex string.
  */
 export const signPermit = async (
-  signTypedData: SignTypedDataMutateAsync,
+  signTypedDataFn: SignTypedDataMutateAsync,
   props: Permit2Props,
   ownerAddress: Hex
 ): Promise<PermitSignature> => {
   const { domain, types, values } = getPermit2Data(props);
-  const signature = await signTypedData({
+  const signature = await signTypedDataFn({
     account: ownerAddress,
     domain: domain as TypedDataDomain,
     message: { ...values },

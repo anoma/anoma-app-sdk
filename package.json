@@ -1,125 +1,123 @@
 {
-  "name": "anoma-pay-interface",
-  "private": true,
-  "version": "0.2.0",
+  "name": "@anomaorg/anoma-app-sdk",
+  "version": "0.10.0",
   "type": "module",
+  "main": "dist/index.js",
+  "private": false,
   "engines": {
     "node": ">=22"
   },
+  "files": [
+    "./dist/*",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./api": {
+      "import": "./dist/api.js",
+      "require": "./dist/api.cjs"
+    },
+    "./constants": {
+      "import": "./dist/lib-constants.js",
+      "require": "./dist/lib-constants.cjs"
+    },
+    "./domain": {
+      "import": "./dist/domain.js",
+      "require": "./dist/domain.cjs"
+    },
+    "./lib": {
+      "import": "./dist/lib.js",
+      "require": "./dist/lib.cjs"
+    },
+    "./types": {
+      "import": "./dist/types.js",
+      "require": "./dist/types.cjs"
+    },
+    "./anomaPay": {
+      "import": "./dist/anomaPayLib.js",
+      "require": "./dist/anomaPay.cjs"
+    },
+    "./anomaPayV2": {
+      "import": "./dist/anomaPayV2Lib.js",
+      "require": "./dist/anomaPayV2.cjs"
+    },
+    "./armBindings": {
+      "import": "./dist/armBindings.js",
+      "require": "./dist/armBindings.cjs"
+    },
+    "./anomaArmRisc0.wasm": {
+      "default": "./dist/arm_risc0_bindings_bg.wasm"
+    },
+    "./anomaPayLogic.wasm": {
+      "default": "./dist/anomapay_lib_bg.wasm"
+    },
+    "./anomaPayLogicV2.wasm": {
+      "default": "./dist/anomapay_lib_v2_bg.wasm"
+    },
+    "./package.json": "./package.json"
+  },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean && node -p \"'export const ANOMA_APP_SDK_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
     "lint": "eslint .",
-    "tsc": "tsc -b",
-    "tsc-check": "tsc --noEmit",
-    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
-    "test": "vitest",
-    "test:ui": "vitest --ui",
+    "format": "prettier --write \"src/**/*.{ts,js,json,css,md}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,js,json,css,md}\"",
+    "build:docs": "typedoc --plugin typedoc-plugin-markdown --out ./docs src/index.ts",
+    "test": "npm run test:cargo && npm run test:wasm && npm run test:lib",
+    "test:lib": "vitest",
     "test:run": "vitest run",
-    "test:e2e": "npx playwright test",
-    "test:e2e:ui": "npx playwright test --ui",
-    "preview": "vite preview",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
-    "prepare": "husky",
-    "build:analyze": "ANALYZE_DEBUG=true vite build",
+    "test:cargo": "(cd ./anoma-apps-lib/anomapay_lib && exec cargo test)",
+    "test:wasm": "npm run test:wasm:lib && npm run test:wasm:lib-v2",
+    "test:wasm:lib": "(cd ./anoma-apps-lib/anomapay_lib && exec wasm-pack test --node)",
+    "test:wasm:lib-v2": "(cd ./anoma-apps-lib/anomapay_lib_v2 && exec wasm-pack test --node)",
+    "build": "npm run build:wasm && tsdown && npm run copy:wasm",
+    "build:ts": "tsdown",
     "build:wasm": "node ./scripts/build.mjs --release",
-    "build:wasm:dev": "node ./scripts/build.mjs"
-  },
-  "dependencies": {
-    "@fontsource-variable/nata-sans": "5.2.2",
-    "@fontsource/roboto": "5.2.9",
-    "@gsap/react": "2.1.2",
-    "@heroicons/react": "2.2.0",
-    "@noble/hashes": "1.8.0",
-    "@noble/secp256k1": "3.0.0",
-    "@tanstack/react-query": "5.90.5",
-    "@tanstack/react-router": "1.139.1",
-    "@tanstack/react-router-devtools": "1.139.1",
-    "@types/three": "^0.184.1",
-    "@uniswap/permit2-sdk": "1.4.0",
-    "@visx/axis": "^3.12.0",
-    "@visx/group": "^3.12.0",
-    "@visx/responsive": "^3.12.0",
-    "@visx/scale": "^3.12.0",
-    "@visx/shape": "^3.12.0",
-    "@web3icons/core": "4.0.38",
-    "@web3icons/react": "4.1.12",
-    "bs58": "^6.0.0",
-    "clsx": "2.1.1",
-    "crc-32": "1.2.2",
-    "date-fns": "4.1.0",
-    "gsap": "3.13.0",
-    "idb": "^8.0.3",
-    "jotai": "2.15.0",
-    "jotai-minidb": "^0.0.8",
-    "papaparse": "^5.5.3",
-    "qrcode": "^1.5.4",
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
-    "tailwind-merge": "3.3.1",
-    "tailwind-variants": "3.1.1",
-    "three": "^0.184.0",
-    "uuid": "14.0.0",
-    "viem": "2.38.5",
-    "vite-bundle-analyzer": "^1.3.7",
-    "wagmi": "3.1.1",
-    "zod": "4.1.13"
-  },
-  "devDependencies": {
-    "@commitlint/cli": "^20.1.0",
-    "@commitlint/config-conventional": "^20.0.0",
-    "@eslint/js": "^9.36.0",
-    "@playwright/test": "^1.58.1",
-    "@storybook/addon-docs": "^10.0.2",
-    "@storybook/addon-onboarding": "^10.0.2",
-    "@storybook/react-vite": "^10.0.2",
-    "@tailwindcss/postcss": "^4.1.16",
-    "@tailwindcss/vite": "^4.1.16",
-    "@tanstack/router-plugin": "^1.139.1",
-    "@testing-library/dom": "^10.4.1",
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.0",
-    "@testing-library/user-event": "^14.6.1",
-    "@types/node": "^24.6.0",
-    "@types/papaparse": "^5.5.2",
-    "@types/qrcode": "^1.5.6",
-    "@types/react": "^19.1.16",
-    "@types/react-dom": "^19.1.9",
-    "@vitejs/plugin-react": "^5.1.0",
-    "@vitest/ui": "^4.0.6",
-    "autoprefixer": "^10.4.21",
-    "eslint": "^9.36.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.22",
-    "globals": "^16.4.0",
-    "husky": "^9.1.7",
-    "jsdom": "^27.1.0",
-    "lint-staged": "^16.2.6",
-    "postcss": "^8.5.12",
-    "prettier": "^3.6.2",
-    "prettier-plugin-organize-imports": "^4.3.0",
-    "storybook": "^10.1.10",
-    "tailwindcss": "^4.1.16",
-    "typescript": "~6.0.2",
-    "typescript-eslint": "^8.58.0",
-    "vite": "^7.3.2",
-    "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^4.0.6"
-  },
-  "overrides": {
-    "@web3icons/core": {
-      "typescript": "$typescript"
-    }
+    "build:wasm:dev": "node ./scripts/build.mjs",
+    "copy:wasm": "node ./scripts/copy.mjs",
+    "prepare": "husky"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
+    "*.{ts,js}": [
       "eslint --fix",
       "prettier --write"
     ],
     "*.{json,css,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "@noble/hashes": "1.8.0",
+    "@noble/secp256k1": "3.0.0",
+    "@uniswap/permit2-sdk": "1.4.0",
+    "@wagmi/core": "^3.5.0",
+    "bs58": "^6.0.0",
+    "buffer": "^6.0.3",
+    "crc-32": "1.2.2",
+    "viem": "2.38.5",
+    "zod": "4.1.13"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
+    "@eslint/js": "^9.36.0",
+    "@types/node": "^24.12.0",
+    "eslint": "^9.36.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.6.2",
+    "prettier-plugin-organize-imports": "^4.3.0",
+    "rimraf": "^6.1.3",
+    "tsdown": "^0.21.5",
+    "typedoc": "^0.28.19",
+    "typedoc-plugin-markdown": "^4.11.0",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.58.0",
+    "vite": "^7.1.7",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^4.0.6"
   }
 }
