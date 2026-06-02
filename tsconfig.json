@@ -27,12 +27,6 @@
       "lib/*": ["./src/lib/*"],
       "wasm": ["./src/wasm/index.ts"],
       "wasm/*": ["./src/wasm/*"],
-      "anomaPayLib": ["./src/wasm/anomaPayLib/index.ts"],
-      "anomaPayLib/*": ["./src/wasm/anomaPayLib/*"],
-      "anomaPayLibV2": ["./src/wasm/anomaPayLibV2/index.ts"],
-      "anomaPayLibV2/*": ["./src/wasm/anomaPayLibV2/*"],
-      "armRisc0Bindings": ["./src/wasm/armRisc0Bindings/index.ts"],
-      "armRisc0Bindings/*": ["./src/wasm/armRisc0Bindings/*"],
       "lib-constants": ["./src/lib-constants.ts"],
       "types": ["./src/types.ts"]
     }

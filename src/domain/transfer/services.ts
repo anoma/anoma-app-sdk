@@ -1,4 +1,4 @@
-import { AUTH_SIGNATURE_DOMAIN } from "app-constants";
+import { AUTH_SIGNATURE_DOMAIN } from "lib-constants";
 import { fromHex, normalizeHex } from "lib/utils";
 import type { Address, Hex } from "viem";
 import {

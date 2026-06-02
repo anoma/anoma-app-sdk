@@ -7,9 +7,7 @@ export default defineConfig({
     domain: "src/domain/index.ts",
     lib: "src/lib/index.ts",
     types: "src/types.ts",
-    anomaPay: "src/wasm/anomaPayLib",
-    anomaPayV2: "src/wasm/anomaPayV2Lib",
-    armBindings: "src/wasm/armRisc0Bindings",
+    wasm: "src/wasm/index.ts",
     "lib-constants": "src/lib-constants.ts",
   },
   format: ["esm", "cjs"],
@@ -18,6 +16,6 @@ export default defineConfig({
   sourcemap: true,
   deps: {
     alwaysBundle: ["@uniswap/permit2-sdk"],
-    neverBundle: ["tslib"],
+    neverBundle: ["tslib", "papaparse"],
   },
 });

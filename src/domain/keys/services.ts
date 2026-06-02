@@ -1,12 +1,12 @@
 import { hkdf } from "@noble/hashes/hkdf";
 import { hmac } from "@noble/hashes/hmac";
 import { sha256 } from "@noble/hashes/sha2";
-import { KEYRING_SALT } from "app-constants";
 import {
   KeyPair,
   KeyPairSerializer,
   NullifierKeyPair,
 } from "domain/keys/models";
+import { KEYRING_SALT } from "lib-constants";
 import { fromHex, generateRandomBytes, invariant, toHex } from "lib/utils";
 import {
   PRFDomainMap,
