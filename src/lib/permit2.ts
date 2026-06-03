@@ -94,7 +94,7 @@ export const getPermit2Data = ({
  * @returns Split signature along with the original signature hex string.
  */
 export const signPermit = async (
-  signTypedDataFn: SignTypedDataMutateAsync,
+  signTypedDataFn: SignTypedDataMutateAsync<unknown>,
   props: Permit2Props,
   ownerAddress: Hex
 ): Promise<PermitSignature> => {

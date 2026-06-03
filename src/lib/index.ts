@@ -8,3 +8,4 @@ export * from "./permit2";
 export * from "./requestPayment";
 export * from "./sanitize";
 export * from "./tokenUtils";
+export * from "./utils";
