@@ -1,196 +1,54 @@
-# Anoma Pay Interface
+# Anoma Pay SDK
 
-This repository contains most of the code related to the Anoma Pay interface.
+TypeScript SDK for the Anoma Pay protocol. Contains domain logic, API clients, WASM bindings, and utilities shared across Anoma Pay applications.
 
 ## Tech Stack
 
-- [Vite 7.x](https://vite.dev/guide/)
-- [React 19.2](https://react.dev/)
-- [Typescript ^5.9](https://www.typescriptlang.org/)
-- [TailwindCSS 4.x](https://tailwindcss.com/)
-- [GSAP](https://gsap.com/)
-- [Jotai](https://jotai.org/)
-- [TanStack React Query](https://tanstack.com/query/latest)
-- [Tanstack Router](https://tanstack.com/router/latest)
-- [Wagmi](https://wagmi.sh/)
+- [TypeScript ~6.0](https://www.typescriptlang.org/)
 - [Viem](http://viem.sh/)
+- [Zod](https://zod.dev/)
 - [Rust](https://doc.rust-lang.org/)
-- [wasm-bindgen](https://github.com/wasm-bindgen/wasm-bindgen/)
-- [wasm-pack](https://github.com/drager/wasm-pack/)
-- [Storybook](https://storybook.js.org/)
-- [Playwright](https://playwright.dev/)
+- [wasm-bindgen](https://github.com/nicolo-ribaudo/wasm-bindgen/)
+- [wasm-pack](https://github.com/nicolo-ribaudo/wasm-pack/)
 
-## Running Local Build
+## Setup
 
-Requirements (local build only, excludes external services):
+Requirements:
 
 - Node.js (>= 22)
 - npm (bundled with Node.js)
-- Git
-- Docker (optional, only if you want containerized dev/prod runs)
+- Rust toolchain (for WASM builds only)
 
-Install the dependencies:
+Install dependencies from the repository root:
 
 ```bash
 npm install
 ```
 
-Then build the project:
+## Usage
+
+Import from the SDK using subpath exports:
+
+```typescript
+import { TransferBuilder } from "@anomaorg/anoma-pay-sdk/domain/transfer/models/TransferBuilder";
+import { formatBalance } from "@anomaorg/anoma-pay-sdk/lib/utils";
+import type { AppResource } from "@anomaorg/anoma-pay-sdk/types";
+```
+
+## Building WASM
+
+The SDK includes a Rust-based WASM module for cryptographic operations. Build it with:
 
 ```bash
-npm run build
+npm run build:wasm          # release build
+npm run build:wasm:dev      # development build
 ```
 
-- Production built files are on `/dist` directory
-
-To serve the build locally, you can use the Vite preview feature
-
-```bash
-npm run preview
-```
-
-- Vite preview server at http://localhost:4173
-
-### Alternatively, running local build with Docker
-
-Production builds bake `VITE_*` values at build time. Rebuild the image after changes.
-
-- `docker compose --profile prod up --build`
-- App served by Nginx at http://localhost:4173
-
-## Running Locally
-
-```bash
-npm run dev
-```
-
-- Vite dev server at http://localhost:5173/
-
-### Alternatively, running locally with Docker
-
-- `docker compose --profile dev up --build`
-- Vite dev server at http://localhost:5173/
-
-You can pass CLI env vars and use `--force-recreate`
-
-- `VITE_APP_BACKEND_BASE_URL=https://pay.next.heliax.fyi docker compose --profile dev up -d --force-recreate`
-
-## Configuration
-
-Configuration is via environment variables only.
-
-Environment variables:
-
-| Variable                        | Required | Default                                    | Description                                                   |
-| ------------------------------- | -------- | ------------------------------------------ | ------------------------------------------------------------- |
-| `VITE_APP_BACKEND_BASE_URL`     | Yes      | `https://pay.dev.heliax.fyi`               | Transfer backend base URL.                                    |
-| `VITE_APP_INDEXER_BASE_URL`     | Yes      | `https://galileo.dev.heliax.fyi`           | Galileo indexer base URL.                                     |
-| `VITE_APP_ENVIO_BASE_URL`       | Yes      | `https://hasura.dev.heliax.fyi/v1/graphql` | Envio GraphQL endpoint base URL.                              |
-| `PLAYWRIGHT_BASE_URL`           | No       | `http://localhost:5173`                    | E2E test base URL for Playwright.                             |
-| `PLAYWRIGHT_WALLET_PRIVATE_KEY` | No       |                                            | Private key used by the E2E test wallet to sign transactions. |
-
-## External Dependencies for AnomaPay
-
-The UI can render without services, but core flows require external systems. Required dependencies for AnomaPay functionality:
-
-| Dependency                                         | Required For                                                         | Assumptions / Requirements                                                              |
-| -------------------------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| Transfer backend API (`VITE_APP_BACKEND_BASE_URL`) | Transfers, fee estimation, queue stats, token prices, token balances | Must implement the REST paths in `src/api/paths.ts` under `TransferBackendPaths`.       |
-| Galileo indexer (`VITE_APP_INDEXER_BASE_URL`)      | Resource discovery, proof generation, key storage                    | Must implement the REST paths in `src/api/paths.ts` under `IndexerPaths`.               |
-| Envio GraphQL indexer (`VITE_APP_ENVIO_BASE_URL`)  | Nullifier checks                                                     | Must expose `ProtocolAdapter_Transaction` with fields used in `src/api/EnvioClient.ts`. |
-
-## Common Mistakes / Things to Check
-
-- Supported chains are fetched dynamically from the backend configuration endpoint.
-- Base URLs must be reachable from the browser (CORS configured on backend/indexers).
-- If the UI appears to load but balances/transactions are empty, verify `VITE_APP_INDEXER_BASE_URL` and `VITE_APP_ENVIO_BASE_URL`.
-- Docker prod builds bake `VITE_*` values at build time. Rebuild when changing config.
-- Docker dev changes require container recreation when setting new CLI env vars.
-
-## How to Create a Release
-
-Releases are configured via GitHub and a Netlify webhook. Merge the commits on the `production` branch to trigger the Netlify build.
-
-Currently, the production version is available on https://anomapay.app
-
-## Running Storybook
-
-Use [Storybook](https://storybook.js.org/) to develop and review UI components in isolation.
-
-```bash
-npm run storybook
-```
-
-- Storybook server at http://localhost:6006
-
-## Linting
-
-Run ESLint:
-
-```bash
-npm run lint
-```
-
-## Unit Tests
-
-Run [Vitest](https://vitest.dev/) for unit tests:
-
-```bash
-npm run test
-```
-
-Run Vitest UI mode:
-
-```bash
-npm run test:ui
-```
-
-## End-to-End Tests
-
-[Playwright](https://playwright.dev/) e2e tests live under `tests/e2e` and use `PLAYWRIGHT_BASE_URL` from `.env`.
-If `PLAYWRIGHT_BASE_URL` is not set, it defaults to `http://localhost:5173`.
-
-Run the E2E tests:
-
-```bash
-npm run test:e2e
-```
-
-Run Playwright UI mode:
-
-```bash
-npm run test:e2e:ui
-```
-
-## Project Structure
-
-```
-.
-├── api       # Files to consume Envio, Indexer and the Backend APIs
-├── assets    # Images, icons, and other assets
-├── config    # General project configuration files. (e.g. token registry, chains)
-├── domain    # Models the AnomaPay domain
-│   ├── crypto      # Cryptography services (encrypt, decrypt, etc)
-│   ├── keys        # Key hierarchy structure and services
-│   ├── resources   # Resource machine handling
-│   └── transfer    # Different types of Transfer objects
-├── hooks     # General React hooks
-├── lib       # Utility and other functions not scoped to a domain
-├── providers # React providers components
-├── routes    # Tanstack Router page structure (entrypoint of a URL, i.e. /dashboard)
-├── store     # Jotai storage atoms / global store
-├── ui        # All user interface components
-│   ├── components  # Basic components like Buttons, List Items, Containers, etc
-│   ├── features    # Composed components containing specific logic
-│   ├── layouts     # Pages layouts (e.g. Auth pages, Internal pages, etc)
-│   └── stories     # Storybook stories
-└── wasm      # Methods to load and consume WASM files from @anoma/lib
-
-```
+Pre-built WASM binaries are included in `src/wasm/`.
 
 ## Pay Address Format
 
-Anoma Pay uses a custom address format that encodes multiple public keys into a single Base58 string. The address structure consists of:
+Anoma Pay uses a custom address format that encodes multiple public keys into a single Base64URL string:
 
 | Field                    | Size (bytes) |
 | ------------------------ | ------------ |
@@ -201,14 +59,7 @@ Anoma Pay uses a custom address format that encodes multiple public keys into a 
 | CRC32 Checksum           | 4            |
 | **Total**                | **135**      |
 
-The raw bytes are concatenated in the order shown above and then encoded using Base58 encoding. The CRC32 checksum at the end provides integrity verification when decoding addresses.
-
-For implementation details, see [`src/lib/payAddress.ts`](./src/lib/payAddress.ts).
-
-## Repository Conventions
-
-- All commits must follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) standard
-- Commits that are mostly generated by AI must include the #ai tag in the commit message
+The raw bytes are concatenated in the order shown above and then encoded using Base64URL encoding. The CRC32 checksum provides integrity verification when decoding addresses.
 
 ## Audits
 
@@ -221,8 +72,44 @@ Our software undergoes regular audits:
    - Finished: 2025-12-16
    - Last revised: 2025-12-19
 
-   [📄 Audit Report (pdf)](./audits/2025-12-19_Informal_Systems_AnomaPay_Phase_I.pdf)
+   [Audit Report (pdf)](./audits/2025-12-19_Informal_Systems_AnomaPay_Phase_I.pdf)
 
-## Useful Resources
+## Project Structure
 
-- [Semi-deterministic key hierarchy proposal](https://forum.anoma.net/t/semi-deterministic-key-hierarchy-proposal/2444)
+```
+src/
+├── api           # API clients (Backend, Indexer, Envio)
+├── domain        # Core domain logic
+│   ├── history       # Transaction history types
+│   ├── keys          # Key hierarchy structure and services
+│   ├── queue         # Transfer queue management
+│   ├── resources     # Resource machine handling
+│   └── transfer      # Transfer models and services
+├── lib           # Shared utility functions
+├── wasm          # WASM bindings and pre-built binaries
+├── lib-constants.ts  # SDK-level constants
+└── types.ts      # Shared type definitions
+```
+
+## Linting
+
+```bash
+npm run lint
+```
+
+## Type Checking
+
+```bash
+npm run tsc-check
+```
+
+## Unit Tests
+
+```bash
+npm run test        # watch mode
+npm run test:run    # single run
+```
+
+## Repository Conventions
+
+- All commits must follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) standard

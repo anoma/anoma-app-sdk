@@ -27,3 +27,14 @@ export type CsvRowError = {
 export type CsvImportResult =
   | { ok: true; recipients: ParsedPayrollRecipient[] }
   | { ok: false; errors: CsvRowError[] };
+
+export const REQUIRED_COLUMNS = [
+  "name",
+  "category",
+  "address",
+  "network",
+  "token",
+  "usd",
+] as const;
+
+export const ALLOWED_COLUMNS = new Set<string>([...REQUIRED_COLUMNS, "uuid"]);

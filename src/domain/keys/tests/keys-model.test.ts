@@ -8,6 +8,8 @@ import {
   NullifierKeyPair,
 } from "domain/keys";
 import { fromBase64, fromHex, toHex } from "lib/utils";
+import type { Address } from "viem";
+import { beforeAll, describe, expect, it } from "vitest";
 import {
   authorityKeyPair,
   nullifierKeyPair,
@@ -16,9 +18,7 @@ import {
   serializedNullifierKeyPair,
   staticDiscoverKeyPair,
   staticEncryptionKeyPair,
-} from "tests/data.json";
-import type { Address } from "viem";
-import { beforeAll, describe, expect, it } from "vitest";
+} from "./data.json";
 
 describe("Key functions", () => {
   beforeAll(() => {
@@ -71,19 +71,19 @@ describe("Key functions", () => {
   it("Can serialize KeyPair", () => {
     const keyring = createUserKeyring(fromBase64(seed));
     const json = KeyPairSerializer.toJson(keyring.authorityKeyPair);
-    expect(json).toEqual(serializedKeyPair);
+    expect(json).toEqual(JSON.parse(serializedKeyPair));
   });
 
   it("Can serialize NullifierKeyPair", () => {
     const keyring = createUserKeyring(fromBase64(seed));
     const json = KeyPairSerializer.toJson(keyring.nullifierKeyPair);
-    expect(json).toEqual(serializedNullifierKeyPair);
+    expect(json).toEqual(JSON.parse(serializedNullifierKeyPair));
   });
 
   it("Can deserialize JSON to KeyPair", () => {
     const restoredKeypair = KeyPairSerializer.fromJson(
       KeyPair,
-      serializedKeyPair
+      JSON.parse(serializedKeyPair)
     );
     expect(KeyPairSerializer.toJson(restoredKeypair)).toEqual(authorityKeyPair);
     expect(restoredKeypair.privateKey).toEqual(
@@ -94,7 +94,7 @@ describe("Key functions", () => {
   it("Can deserialize JSON to NullifierKeyPair", () => {
     const restoredNullifierKeyPair = KeyPairSerializer.fromJson(
       NullifierKeyPair,
-      serializedNullifierKeyPair
+      JSON.parse(serializedNullifierKeyPair)
     );
     expect(restoredNullifierKeyPair.nk).toEqual(
       fromHex(nullifierKeyPair.nk as Address)

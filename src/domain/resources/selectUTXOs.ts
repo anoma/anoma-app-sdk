@@ -1,4 +1,4 @@
-export type Resource = { quantity: bigint };
+export type ResourceQuantity = { quantity: bigint };
 
 /**
  * Select resources to cover `target` with the fewest UTXOs, preferring
@@ -33,7 +33,7 @@ export type Resource = { quantity: bigint };
  *     minCoverCount + 1, which is typically small in UTXO contexts (1–5).
  *     Pruning keeps the real cost far below the worst case.
  */
-export function selectUTXOs<R extends Resource>(
+export function selectUTXOs<R extends ResourceQuantity>(
   resources: R[],
   target: bigint
 ): R[] | undefined {
@@ -88,7 +88,7 @@ export function selectUTXOs<R extends Resource>(
  * For small sizes (1, 2, 3) this is very fast in practice. The caller bounds
  * size by minCoverCount + 1, which is typically small in UTXO contexts.
  */
-function findExactSubset<R extends Resource>(
+function findExactSubset<R extends ResourceQuantity>(
   sortedResources: R[],
   target: bigint,
   size: number

@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { selectUTXOs, type Resource } from "../selectUTXOs";
+import { selectUTXOs, type ResourceQuantity } from "../selectUTXOs";
 
-const make = (quantities: (string | bigint)[]): Resource[] =>
+const make = (quantities: (string | bigint)[]): ResourceQuantity[] =>
   quantities.map(q => ({ quantity: typeof q === "bigint" ? q : BigInt(q) }));
 
-const sumOf = (rs: Resource[]): bigint =>
+const sumOf = (rs: ResourceQuantity[]): bigint =>
   rs.reduce((acc, r) => acc + r.quantity, 0n);
 
 /** Cost of a selection given a target: count if exact, count+1 if remainder. */
-const costOf = (rs: Resource[], target: bigint): number => {
+const costOf = (rs: ResourceQuantity[], target: bigint): number => {
   const sum = sumOf(rs);
   if (sum < target) return Infinity;
   return rs.length + (sum === target ? 0 : 1);
@@ -19,7 +19,7 @@ const costOf = (rs: Resource[], target: bigint): number => {
  * selection achieves it. Used to verify the algorithm's tie-break behavior.
  */
 const optimalCost = (
-  rs: Resource[],
+  rs: ResourceQuantity[],
   target: bigint
 ): { cost: number; exactIsOptimal: boolean } => {
   if (target <= 0n) return { cost: 0, exactIsOptimal: true };
@@ -162,7 +162,7 @@ describe("selectUTXOs — return value invariants", () => {
   });
 
   it("preserves resource shape (extra fields pass through)", () => {
-    type Tagged = Resource & { id: string };
+    type Tagged = ResourceQuantity & { id: string };
     const rs: Tagged[] = [
       { quantity: 10n, id: "a" },
       { quantity: 20n, id: "b" },
@@ -183,7 +183,7 @@ describe("selectUTXOs — return value invariants", () => {
     const rand = () => (seed = (seed * 1664525 + 1013904223) >>> 0);
     for (let trial = 0; trial < 30; trial++) {
       const n = (rand() % 15) + 1;
-      const rs: Resource[] = [];
+      const rs: ResourceQuantity[] = [];
       for (let i = 0; i < n; i++)
         rs.push({ quantity: BigInt(rand() % 100) + 1n });
       const total = sumOf(rs);
@@ -199,7 +199,7 @@ describe("selectUTXOs — minimum-cost optimality (vs brute force)", () => {
     let seed = 42;
     const rand = () => (seed = (seed * 1664525 + 1013904223) >>> 0);
 
-    const cases: Array<{ rs: Resource[]; target: bigint }> = [
+    const cases: Array<{ rs: ResourceQuantity[]; target: bigint }> = [
       // user-provided cases
       ...[3n, 6n, 9n, 12n, 19n].map(target => ({
         rs: make([10n, 3n, 3n, 3n]),
@@ -208,7 +208,7 @@ describe("selectUTXOs — minimum-cost optimality (vs brute force)", () => {
       // random cases
       ...Array.from({ length: 50 }, () => {
         const n = (rand() % 10) + 2; // 2 to 11 elements
-        const rs: Resource[] = Array.from({ length: n }, () => ({
+        const rs: ResourceQuantity[] = Array.from({ length: n }, () => ({
           quantity: BigInt((rand() % 30) + 1),
         }));
         const total = sumOf(rs);

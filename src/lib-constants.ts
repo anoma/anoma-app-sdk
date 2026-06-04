@@ -42,3 +42,9 @@ export const MAX_DECIMALS = 6;
 
 // How long (ms) to wait for a Permit2 allowance transaction to be mined before timing out.
 export const permit2AllowanceTimeout = 60_000;
+
+// Changing this message will invalidate all existing keyrings, so be careful when modifying it.
+export const getSignMessage = (address: string) =>
+  `I authorize AnomaPay to derive my account from address ${address}.\nDo NOT sign this message if the request url is not https://anomapay.app`;
+
+export const DOCS_URL = "https://docs.anoma.net/anoma-pay-introduction";

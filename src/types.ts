@@ -78,3 +78,11 @@ export type SupportedChainConfig = Omit<
   explorerUrl?: string;
   explorerName?: string;
 };
+
+export interface WalletBalance {
+  address: Address;
+  network: Network;
+  value: bigint;
+  decimals: number;
+  symbol: string;
+}
