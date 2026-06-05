@@ -1,6 +1,6 @@
 # Anoma Pay SDK
 
-TypeScript SDK for the Anoma Pay protocol. Contains domain logic, API clients, WASM bindings, and utilities shared across Anoma Pay applications.
+TypeScript SDK for the Anoma Pay protocol, supported by Rust WebAssembly library. Contains domain logic, API clients, WASM bindings, and utilities shared across Anoma Pay applications.
 
 ## Tech Stack
 
@@ -16,13 +16,13 @@ TypeScript SDK for the Anoma Pay protocol. Contains domain logic, API clients, W
 Requirements:
 
 - Node.js (>= 22)
-- npm (bundled with Node.js)
-- Rust toolchain (for WASM builds only)
+- pnpm (installable via `npm i --global pnpm` with `npm`, which is bundled with Node.js)
+- Rust toolchain & `wasm-pack` CLI (for WASM builds only)
 
 Install dependencies from the repository root:
 
 ```bash
-npm install
+pnpm install
 ```
 
 ## Usage
@@ -31,7 +31,7 @@ Import from the SDK using subpath exports:
 
 ```typescript
 import { TransferBuilder } from "@anomaorg/anoma-pay-sdk/domain/transfer/models/TransferBuilder";
-import { formatBalance } from "@anomaorg/anoma-pay-sdk/lib/utils";
+import { formatBalance } from "@anomaorg/anoma-pay-sdk/lib";
 import type { AppResource } from "@anomaorg/anoma-pay-sdk/types";
 ```
 
@@ -40,8 +40,8 @@ import type { AppResource } from "@anomaorg/anoma-pay-sdk/types";
 The SDK includes a Rust-based WASM module for cryptographic operations. Build it with:
 
 ```bash
-npm run build:wasm          # release build
-npm run build:wasm:dev      # development build
+pnpm run build:wasm          # release build
+pnpm run build:wasm:dev      # development build
 ```
 
 Pre-built WASM binaries are included in `src/wasm/`.
@@ -82,32 +82,34 @@ src/
 ├── domain        # Core domain logic
 │   ├── history       # Transaction history types
 │   ├── keys          # Key hierarchy structure and services
+│   ├── payroll       # Payroll schema and utilities
 │   ├── queue         # Transfer queue management
 │   ├── resources     # Resource machine handling
 │   └── transfer      # Transfer models and services
 ├── lib           # Shared utility functions
 ├── wasm          # WASM bindings and pre-built binaries
-├── lib-constants.ts  # SDK-level constants
-└── types.ts      # Shared type definitions
+├── lib-constants.ts  # SDK library constants
+├── types.ts      # Shared type definitions
+└── version.ts      # Current SDK version, generated when running `pnpm build`
 ```
 
 ## Linting
 
 ```bash
-npm run lint
+pnpm lint
 ```
 
 ## Type Checking
 
 ```bash
-npm run tsc-check
+pnpm tsc-check
 ```
 
 ## Unit Tests
 
 ```bash
-npm run test        # watch mode
-npm run test:run    # single run
+pnpm test        # watch mode
+pnpm test:run    # single run
 ```
 
 ## Repository Conventions

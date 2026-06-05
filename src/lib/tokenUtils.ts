@@ -1,6 +1,5 @@
-import { defaultTokenId } from "lib-constants";
 import type { AggregatedTokenBalance } from "domain/resources/types";
-import type { WalletBalance } from "types";
+import { defaultTokenId } from "lib-constants";
 import type {
   AppResource,
   Network,
@@ -8,6 +7,7 @@ import type {
   TokenBalance,
   TokenId,
   TokenRegistry,
+  WalletBalance,
 } from "types";
 import { formatUnits, parseUnits, type Address } from "viem";
 import { normalizeEvmAddress, normalizeEvmNetworkAddress } from "./utils";

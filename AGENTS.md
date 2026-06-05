@@ -1,4 +1,4 @@
-# Anoma Pay Interface — Agent Instructions
+# Anoma App SDK — Agent Instructions
 
 ## Onboarding
 
@@ -23,18 +23,18 @@ Skills are loaded via the `Skill` tool. Invoke the relevant skill **before** any
 
 ### Skill Map
 
-| Stage | Skill |
-|-------|-------|
-| New feature / component / behavior | `superpowers:brainstorming` — explore intent and design before writing code |
-| Multi-step implementation | `superpowers:writing-plans` → `superpowers:executing-plans` |
-| Any feature or bugfix | `superpowers:test-driven-development` — write tests before implementation |
-| Bug / test failure / unexpected behavior | `superpowers:systematic-debugging` — before proposing any fix |
-| Before claiming work is done | `superpowers:verification-before-completion` — run commands, confirm output |
-| Completing a development branch | `superpowers:finishing-a-development-branch` |
-| After major work / before merging | `superpowers:requesting-code-review` |
-| Feature work needing isolation | `superpowers:using-git-worktrees` |
-| 2+ independent tasks | `superpowers:dispatching-parallel-agents` |
-| PR review requested | `pr-review-toolkit:review-pr` |
+| Stage                                    | Skill                                                                       |
+| ---------------------------------------- | --------------------------------------------------------------------------- |
+| New feature / component / behavior       | `superpowers:brainstorming` — explore intent and design before writing code |
+| Multi-step implementation                | `superpowers:writing-plans` → `superpowers:executing-plans`                 |
+| Any feature or bugfix                    | `superpowers:test-driven-development` — write tests before implementation   |
+| Bug / test failure / unexpected behavior | `superpowers:systematic-debugging` — before proposing any fix               |
+| Before claiming work is done             | `superpowers:verification-before-completion` — run commands, confirm output |
+| Completing a development branch          | `superpowers:finishing-a-development-branch`                                |
+| After major work / before merging        | `superpowers:requesting-code-review`                                        |
+| Feature work needing isolation           | `superpowers:using-git-worktrees`                                           |
+| 2+ independent tasks                     | `superpowers:dispatching-parallel-agents`                                   |
+| PR review requested                      | `pr-review-toolkit:review-pr`                                               |
 
 ---
 
@@ -259,19 +259,17 @@ lib (pure utilities, no side effects)
 ## Validation & Tooling
 
 - [REQUIRED] After **any** code change, run in order:
-  1. `npm run lint` — fix **all** ESLint errors
-  2. `npm run tsc-check` — resolve TypeScript errors
-  3. `npm run build` — verify production build
-  4. `npm run test:run` — run unit/integration tests
+  1. `pnpm lint` — fix **all** ESLint errors
+  2. `pnpm tsc-check` — resolve TypeScript errors
+  3. `pnpm build` — verify production build
+  4. `pnpm test:run` — run unit tests
 
 - [FORBIDDEN] Do not claim work is complete, tests are passing, or code is correct without
   **actually running the above commands and confirming the output**. Use the
   `superpowers:verification-before-completion` skill before making any success claim.
 
 - [INFO] Additional commands:
-  - `npm run test:e2e` — Playwright E2E tests (requires running dev server or `PLAYWRIGHT_BASE_URL`)
-  - `npm run storybook` — component development on port 6006
-  - `npm run format` — Prettier formatting
+  - `pnpm format` — Prettier formatting
 
 ---
 
@@ -279,14 +277,11 @@ lib (pure utilities, no side effects)
 
 - [REQUIRED] Any behavior change **must** include a test.
 - [REQUIRED] Testing stack:
-  - **Vitest** (`*.test.ts`) → unit & integration tests (config: `vitest.config.ts`)
-  - **React Testing Library** → component integration tests
-  - **Playwright** (`tests/e2e/*.spec.ts`) → end-to-end tests
-
+  - **Vitest** (`*.test.ts`) → unit tests (config: `vitest.config.ts`)
+  - **wasm-bindgen-test** - _Coming soon_
 - [REQUIRED] Unit tests go next to their source or in a `tests/` subdirectory within the module.
   - Example: `src/domain/keys/tests/keys-service.test.ts`
-- [REQUIRED] E2E tests go in `tests/e2e/` and use custom fixtures from `tests/e2e/fixtures.ts`.
-- [REQUIRED] Vitest config uses `jsdom` environment and `globals: true` — no need to import `describe`/`it`.
+- [REQUIRED] Vitest config uses `globals: true` — no need to import `describe`/`it`.
 
 ---
 
