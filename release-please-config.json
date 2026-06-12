@@ -3,7 +3,7 @@
   "packages": {
     ".": {
       "release-type": "node",
-      "package-name": "anoma-pay-interface",
+      "package-name": "anoma/anoma-app-sdk",
       "changelog-path": "CHANGELOG.md",
       "draft": false,
       "prerelease": false
