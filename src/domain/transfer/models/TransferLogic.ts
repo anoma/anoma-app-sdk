@@ -27,9 +27,14 @@ export class TransferLogic extends Client {
 
   static async init(
     transferLogicVerifyingKey: string,
-    trivialLogicVerifyingKey: string
+    trivialLogicVerifyingKey: string,
+    wasmBytes?: Uint8Array
   ): Promise<TransferLogic> {
-    const client = await initClient(TransferLogic, transferLogicVerifyingKey);
+    const client = await initClient(
+      TransferLogic,
+      transferLogicVerifyingKey,
+      wasmBytes
+    );
     client.trivialLogicVerifyingKey = trivialLogicVerifyingKey;
     return client;
   }
