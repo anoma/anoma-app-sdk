@@ -14,8 +14,4 @@ export default defineConfig({
   platform: "browser",
   dts: true,
   sourcemap: true,
-  deps: {
-    alwaysBundle: ["@uniswap/permit2-sdk"],
-    neverBundle: ["tslib", "papaparse"],
-  },
 });
