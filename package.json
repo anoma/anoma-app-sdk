@@ -50,7 +50,7 @@
     "prebuild": "npm run clean && node -p \"'export const ANOMA_APP_SDK_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
     "build": "npm run build:wasm && tsdown && npm run copy:wasm && npm run pack",
     "build:docs": "typedoc --plugin typedoc-plugin-markdown --out ./docs src/index.ts",
-    "dev": "tsdown --watch",
+    "dev": "tsdown --watch --on-success 'pnpm copy:wasm'",
     "lint": "eslint .",
     "format": "prettier --write \"src/**/*.{ts,js,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,js,json,css,md}\"",

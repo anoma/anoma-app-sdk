@@ -40,7 +40,8 @@ export abstract class Client {
  */
 export async function initClient<T extends Client>(
   client: new (digest?: string) => T,
-  id: string
+  id: string,
+  wasmBytes?: Uint8Array
 ): Promise<T> {
-  return initWasm().then(() => new client(id));
+  return initWasm(wasmBytes).then(() => new client(id));
 }
