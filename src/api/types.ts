@@ -61,7 +61,21 @@ export type IndexerEVMTransaction = {
   timestamp: number;
 };
 
-export type NullifierRecordResponse = NullifierRecord[];
+/** Single consumed nullifier returned by `POST /nullifying-transactions`. */
+export type NullifyingTransactionTag = {
+  timestamp: number;
+  tag: Hex;
+  transaction_hash: Address;
+};
+
+/** Consumed nullifiers grouped by chain/contract by the nullifying-transactions endpoint. */
+export type NullifyingTransactionsContract = {
+  chain_id: number;
+  contract_address: Address;
+  nullifiers: NullifyingTransactionTag[];
+};
+
+export type NullifyingTransactionsResponse = NullifyingTransactionsContract[];
 
 export type IndexerBlob = {
   blob: Hex;

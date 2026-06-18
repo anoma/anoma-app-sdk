@@ -78,7 +78,7 @@ Our software undergoes regular audits:
 
 ```
 src/
-├── api           # API clients (Backend, Indexer, Envio)
+├── api           # API clients (Backend, Indexer)
 ├── domain        # Core domain logic
 │   ├── history       # Transaction history types
 │   ├── keys          # Key hierarchy structure and services

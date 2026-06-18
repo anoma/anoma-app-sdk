@@ -2,8 +2,8 @@ import type {
   IndexerEVMTransaction,
   IndexerResource,
   NullifierRecord,
+  NullifyingTransactionsResponse,
 } from "api";
-import { buildForwarderNetworkMap } from "lib/chainUtils";
 import { getFiatAmount, getTokenByResource, tokenId } from "lib/tokenUtils";
 import {
   formatBalance,
@@ -19,7 +19,12 @@ import type {
   TokenRegistry,
 } from "types";
 import type { Address, Hex } from "viem";
-import { NullifierKey, Resource, ResourceWithLabel } from "wasm";
+import {
+  type EncodedResource,
+  NullifierKey,
+  Resource,
+  ResourceWithLabel,
+} from "wasm";
 import { InsufficientResourcesError } from "./errors";
 import { selectUTXOs } from "./selectUTXOs";
 import type {
@@ -28,36 +33,108 @@ import type {
 } from "./types";
 
 type TransactionLookup = {
+  /** Nullifier hash → the transaction that consumed it (a resource's `consumedIn`). */
   byNullifier: Map<string, IndexerEVMTransaction>;
+  /** Transaction hash → transaction, used to enrich a resource's `createdIn`. */
   byTxHash: Map<Address, IndexerEVMTransaction>;
 };
 
 type ResourceWithDetails = {
   resource: Resource;
+  /** Cached `resource.encode()` — encoding crosses the wasm boundary, so do it once. */
+  encoded: EncodedResource;
   forwarder: Address;
   erc20TokenAddress: Address;
   transactionHash: string;
 };
 
-/** Creates lookup maps for transactions indexed by nullifier hash and transaction hash. */
+export type ResourceWithNullifier = ResourceWithDetails & {
+  /** Hex nullifier (tag) for this resource. */
+  nullifierHex: string;
+};
+
+const toEvmTransaction = (
+  chainId: number,
+  txHash: Address,
+  timestamp: number
+): IndexerEVMTransaction => ({
+  id: `${chainId}_${txHash}`,
+  chainId,
+  txHash,
+  timestamp,
+});
+
+/**
+ * Indexes the user's nullifying transactions by nullifier hash (`consumedIn`)
+ * and by transaction hash (`createdIn` enrichment). Optimistic consumed tags
+ * (just-spent, not yet indexed) are merged last so they take precedence.
+ */
 export function buildTransactionLookup(
-  nullifierRecordList: NullifierRecord[]
+  response: NullifyingTransactionsResponse
 ): TransactionLookup {
-  const lookup: TransactionLookup = {
-    byNullifier: new Map(),
-    byTxHash: new Map(),
-  };
-  for (const data of nullifierRecordList) {
-    lookup.byNullifier.set(
-      normalizeHex(data.nullifier),
-      data.transaction.evmTransaction
-    );
-    lookup.byTxHash.set(
-      data.transaction.evmTransaction.txHash,
-      data.transaction.evmTransaction
-    );
+  const byNullifier = new Map<string, IndexerEVMTransaction>();
+  const byTxHash = new Map<Address, IndexerEVMTransaction>();
+
+  for (const { chain_id, nullifiers } of response) {
+    for (const { tag, transaction_hash, timestamp } of nullifiers) {
+      const txHash: Address = `0x${normalizeHex(transaction_hash)}`;
+      const evmTransaction = toEvmTransaction(chain_id, txHash, timestamp);
+      byNullifier.set(normalizeHex(tag), evmTransaction);
+      byTxHash.set(txHash, evmTransaction);
+    }
   }
-  return lookup;
+
+  return { byNullifier, byTxHash };
+}
+
+/**
+ * Merges the just-spent (optimistic) tags into the indexer lookup so the spent
+ * resources are masked immediately, and reports which optimistic tags are now
+ * stale and can be dropped from storage.
+ *
+ * A tag is stale once its optimistic mask is no longer needed, which happens
+ * when any of these hold:
+ *  - the indexer now reports the nullifier as consumed (it caught up); or
+ *  - the resource has dropped out of `knownTags` entirely, so it can't surface
+ *    as available regardless (the indexer removed it from the resource set);
+ *
+ * @param knownTags Nullifiers of the user's currently-known resources. Pass the
+ *   live decoded tags so a tag whose resource is gone gets cleaned up; when
+ *   empty the "resource gone" check is skipped (nothing to compare against).
+ */
+export function buildOptimisticTransactionLookup(
+  transactionLookup: TransactionLookup,
+  optimisticConsumedTags: NullifierRecord[],
+  knownTags: Iterable<string> = []
+): TransactionLookup & { staleOptimisticTags: NullifierRecord[] } {
+  const output = {
+    byNullifier: new Map(transactionLookup.byNullifier),
+    byTxHash: new Map(transactionLookup.byTxHash),
+  };
+
+  const staleOptimisticTags: NullifierRecord[] = [];
+  const known = new Set<string>();
+  for (const tag of knownTags) known.add(normalizeHex(tag));
+  const hasKnownTags = known.size > 0;
+
+  for (const record of optimisticConsumedTags) {
+    const { evmTransaction } = record.transaction;
+    const hex = normalizeHex(record.nullifier);
+
+    const isConfirmed = output.byNullifier.has(hex);
+    const isResourceGone = hasKnownTags && !known.has(hex);
+
+    if (isConfirmed || isResourceGone) {
+      staleOptimisticTags.push(record);
+      continue;
+    }
+
+    const txHash: Address = `0x${normalizeHex(evmTransaction.txHash)}`;
+    output.byNullifier.set(hex, evmTransaction);
+    output.byTxHash.set(txHash, evmTransaction);
+  }
+
+  return { ...output, staleOptimisticTags };
 }
 
 function deserializeResourcePayload(
@@ -83,7 +160,7 @@ const tryToDeserializeResourcePayload = (
 };
 
 /** Decrypts and deserializes indexer resource payloads using the user's encryption key. */
-export const parseIndexerResourceResponse = async (
+export const deserializeResourcesPayload = async (
   encryptionPrivateKey: Uint8Array<ArrayBuffer>,
   resourceResponseCollection: IndexerResource[]
 ): Promise<ResourceWithDetails[]> => {
@@ -94,6 +171,7 @@ export const parseIndexerResourceResponse = async (
     }
     return {
       resource: payload.resource,
+      encoded: payload.resource.encode(),
       forwarder: payload.forwarder as Address,
       erc20TokenAddress: payload.erc20TokenAddress as Address,
       transactionHash: item.transaction_hash,
@@ -105,59 +183,74 @@ export const parseIndexerResourceResponse = async (
 export const pickNonEphemeralResources = (
   resources: ResourceWithDetails[]
 ): ResourceWithDetails[] => {
-  return resources.filter(item => !item.resource.encode().is_ephemeral);
+  return resources.filter(item => !item.encoded.is_ephemeral);
 };
 
-/** Computes nullifiers and consumption status for each resource, returning enriched AppResource entries. */
-export const buildAppResources = async (
-  chainConfig: SupportedChainConfig[],
+/**
+ * Computes the nullifier (tag) for each resource. Resources whose nullifier
+ * can't be derived are unusable downstream, so they are dropped (with a warning).
+ */
+export const attachNullifiers = (
   resources: ResourceWithDetails[],
+  nullifierKey: NullifierKey
+): ResourceWithNullifier[] => {
+  return resources.flatMap(resourceWithDetails => {
+    const { resource, encoded } = resourceWithDetails;
+    try {
+      const nullifierHex = normalizeHex(
+        resource.nullifier(nullifierKey).toHex()
+      );
+      return { ...resourceWithDetails, nullifierHex };
+    } catch {
+      console.warn("Couldn't compute nullifier for resource " + encoded.nonce);
+      return [];
+    }
+  });
+};
+
+/** Resolves consumption status for each resource, returning enriched AppResource entries. */
+export const buildAppResources = (
+  chainConfig: SupportedChainConfig[],
+  resources: ResourceWithNullifier[],
   transactionLookup: TransactionLookup,
-  nullifierKey: NullifierKey,
   onlyAvailableResources = true
-): Promise<AppResource[]> => {
-  const forwarderNetworkMap = buildForwarderNetworkMap(chainConfig);
+): AppResource[] => {
+  const forwarderChainMap = new Map(
+    chainConfig.map(chain => [chain.forwarderAddress, chain])
+  );
   const updatedResources: AppResource[] = [];
 
   for (const deserializedResource of resources) {
-    const { resource, erc20TokenAddress, forwarder, transactionHash } =
-      deserializedResource;
+    const {
+      encoded,
+      erc20TokenAddress,
+      forwarder,
+      transactionHash,
+      nullifierHex,
+    } = deserializedResource;
 
-    const resourceProps = resource.encode();
+    const chain = forwarderChainMap.get(forwarder);
+    if (!chain) continue;
 
-    // Compute the nullifier for the resource
-    let nullifierHex: string | undefined;
-    try {
-      nullifierHex = normalizeHex(resource.nullifier(nullifierKey).toHex());
-    } catch {
-      console.warn(
-        "Couldn't compute nullifier for resource " + resourceProps.nonce
-      );
-    }
+    const consumedIn = transactionLookup.byNullifier.get(nullifierHex);
+    if (onlyAvailableResources && consumedIn) continue;
 
-    const network = forwarderNetworkMap.get(forwarder);
+    // Resources created by the user's own nullifying transactions get the
+    // indexed transaction; others (received/deposited) get a minimal record
+    // with no real timestamp.
+    const txHash: Address = `0x${normalizeHex(transactionHash)}`;
+    const createdIn =
+      transactionLookup.byTxHash.get(txHash) ??
+      toEvmTransaction(chain.chainId, txHash, 0);
 
-    if (nullifierHex && network) {
-      // Resolve creation and consumption transactions
-      const createdInTxHash: Address = `0x${transactionHash.toLowerCase()}`;
-      const createdIn = transactionLookup.byTxHash.get(createdInTxHash);
-      const consumedIn = transactionLookup.byNullifier.get(nullifierHex);
-
-      if (!createdIn) {
-        console.warn("Resource missing createdIn", createdInTxHash);
-      }
-
-      if (!onlyAvailableResources || !consumedIn) {
-        updatedResources.push({
-          ...resourceProps,
-          network,
-          erc20TokenAddress,
-          forwarder,
-          createdIn,
-          consumedIn,
-        });
-      }
-    }
+    updatedResources.push({
+      ...encoded,
+      network: chain.network,
+      erc20TokenAddress,
+      forwarder,
+      createdIn,
+      consumedIn,
+    });
   }
 
   return updatedResources;
