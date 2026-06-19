@@ -10,6 +10,7 @@ import type { EncodedResource, NullifierKey, Resource } from "wasm";
 import {
   attachNullifiers,
   buildAppResources,
+  buildOptimisticTransactionLookup,
   buildTransactionLookup,
   type ResourceWithNullifier,
 } from "../services";
@@ -60,7 +61,10 @@ const makeResource = (
   overrides: Partial<ResourceWithNullifier> = {}
 ): ResourceWithNullifier => ({
   resource: {} as Resource,
-  encoded: { nonce: "nonce-1", is_ephemeral: false } as unknown as EncodedResource,
+  encoded: {
+    nonce: "nonce-1",
+    is_ephemeral: false,
+  } as unknown as EncodedResource,
   forwarder: FORWARDER,
   erc20TokenAddress: "0x0000000000000000000000000000000000000001",
   transactionHash: "AABBCCDD",
@@ -99,20 +103,65 @@ describe("buildTransactionLookup", () => {
     expect(lookup.byNullifier.get("bb")?.chainId).toBe(1);
   });
 
-  it("lets optimistic consumed tags take precedence over the indexer", () => {
-    const lookup = buildTransactionLookup(
-      nullifyingResponse([{ tag: "aa", txHash: "0x01", timestamp: 1 }]),
-      [optimisticRecord("0xAA", "0x02", 99)]
-    );
-
-    expect(lookup.byNullifier.get("aa")?.txHash).toBe("0x02");
-    expect(lookup.byNullifier.get("aa")?.timestamp).toBe(99);
-  });
-
   it("returns empty maps for an empty response", () => {
     const lookup = buildTransactionLookup([]);
     expect(lookup.byNullifier.size).toBe(0);
     expect(lookup.byTxHash.size).toBe(0);
+  });
+});
+
+describe("buildOptimisticTransactionLookup", () => {
+  it("masks a just-spent tag the indexer hasn't caught up to yet", () => {
+    const { byNullifier, byTxHash, staleOptimisticTags } =
+      buildOptimisticTransactionLookup(
+        buildTransactionLookup([]),
+        [optimisticRecord("0xAA", "0x02", 99)],
+        ["aa"]
+      );
+
+    expect(byNullifier.get("aa")?.txHash).toBe("0x02");
+    expect(byNullifier.get("aa")?.timestamp).toBe(99);
+    expect(byTxHash.get("0x02")?.timestamp).toBe(99);
+    expect(staleOptimisticTags).toHaveLength(0);
+  });
+
+  it("keeps the indexer entry and drops the optimistic tag once it's confirmed", () => {
+    const record = optimisticRecord("0xAA", "0x02", 99);
+    const { byNullifier, staleOptimisticTags } =
+      buildOptimisticTransactionLookup(
+        buildTransactionLookup(
+          nullifyingResponse([{ tag: "aa", txHash: "0x01", timestamp: 1 }])
+        ),
+        [record],
+        ["aa"]
+      );
+
+    // The indexer caught up, so its value wins and the optimistic tag is stale.
+    expect(byNullifier.get("aa")?.txHash).toBe("0x01");
+    expect(staleOptimisticTags).toEqual([record]);
+  });
+
+  it("drops an optimistic tag whose resource is no longer known", () => {
+    const record = optimisticRecord("0xAA", "0x02", 99);
+    const { byNullifier, staleOptimisticTags } =
+      buildOptimisticTransactionLookup(
+        buildTransactionLookup([]),
+        [record],
+        ["bb"]
+      );
+
+    expect(byNullifier.has("aa")).toBe(false);
+    expect(staleOptimisticTags).toEqual([record]);
+  });
+
+  it("skips the resource-gone check when no known tags are provided", () => {
+    const { byNullifier, staleOptimisticTags } =
+      buildOptimisticTransactionLookup(buildTransactionLookup([]), [
+        optimisticRecord("0xAA", "0x02", 99),
+      ]);
+
+    expect(byNullifier.get("aa")?.txHash).toBe("0x02");
+    expect(staleOptimisticTags).toHaveLength(0);
   });
 });
 
@@ -182,7 +231,11 @@ describe("buildAppResources", () => {
   it("drops resources whose forwarder has no configured chain", () => {
     const result = buildAppResources(
       [chain],
-      [makeResource({ forwarder: "0x000000000000000000000000000000000000dead" })],
+      [
+        makeResource({
+          forwarder: "0x000000000000000000000000000000000000dead",
+        }),
+      ],
       buildTransactionLookup([])
     );
 

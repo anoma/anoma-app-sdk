@@ -1,8 +1,9 @@
-import type {
-  IndexerEVMTransaction,
-  IndexerResource,
-  NullifierRecord,
-  NullifyingTransactionsResponse,
+import {
+  buildEvmTransaction,
+  type IndexerEVMTransaction,
+  type IndexerResource,
+  type NullifierRecord,
+  type NullifyingTransactionsResponse,
 } from "api";
 import { getFiatAmount, getTokenByResource, tokenId } from "lib/tokenUtils";
 import {
@@ -53,17 +54,6 @@ export type ResourceWithNullifier = ResourceWithDetails & {
   nullifierHex: string;
 };
 
-const toEvmTransaction = (
-  chainId: number,
-  txHash: Address,
-  timestamp: number
-): IndexerEVMTransaction => ({
-  id: `${chainId}_${txHash}`,
-  chainId,
-  txHash,
-  timestamp,
-});
-
 /**
  * Indexes the user's nullifying transactions by nullifier hash (`consumedIn`)
  * and by transaction hash (`createdIn` enrichment). Optimistic consumed tags
@@ -78,7 +68,7 @@ export function buildTransactionLookup(
   for (const { chain_id, nullifiers } of response) {
     for (const { tag, transaction_hash, timestamp } of nullifiers) {
       const txHash: Address = `0x${normalizeHex(transaction_hash)}`;
-      const evmTransaction = toEvmTransaction(chain_id, txHash, timestamp);
+      const evmTransaction = buildEvmTransaction(chain_id, txHash, timestamp);
       byNullifier.set(normalizeHex(tag), evmTransaction);
       byTxHash.set(txHash, evmTransaction);
     }
@@ -241,7 +231,7 @@ export const buildAppResources = (
     const txHash: Address = `0x${normalizeHex(transactionHash)}`;
     const createdIn =
       transactionLookup.byTxHash.get(txHash) ??
-      toEvmTransaction(chain.chainId, txHash, 0);
+      buildEvmTransaction(chain.chainId, txHash, 0);
 
     updatedResources.push({
       ...encoded,
