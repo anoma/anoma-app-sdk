@@ -2,6 +2,7 @@ use crate::arm::{action_tree::MerkleTree, encryption::PublicKey};
 use arm_gadgets::authority::{
     AuthoritySignature as AS, AuthoritySigningKey as ASK, AuthorityVerifyingKey as AVK,
 };
+use base64::{Engine as _, engine::general_purpose::STANDARD as b64};
 use k256::{ecdsa::Signature, elliptic_curve::sec1::ToEncodedPoint};
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::{JsError, prelude::wasm_bindgen};
@@ -77,6 +78,13 @@ impl AuthoritySignature {
     pub fn from_bytes(bytes: &[u8]) -> Result<Self, JsError> {
         Ok(AuthoritySignature(AS::from_bytes(bytes)?))
     }
+
+    #[wasm_bindgen(js_name = "fromBase64")]
+    pub fn from_base64(authtority_signature: &str) -> Result<Self, JsError> {
+        Ok(AuthoritySignature(AS::from_bytes(
+            &b64.decode(authtority_signature)?,
+        )?))
+    }
 }
 
 #[wasm_bindgen]
@@ -116,6 +124,10 @@ impl AuthorityVerifyingKey {
         AuthorityVerifyingKey::new(&hex::decode(pk_hex)?)
     }
 
+    #[wasm_bindgen(js_name = "fromBase64")]
+    pub fn from_base64(authtority_signature: &str) -> Result<Self, JsError> {
+        AuthorityVerifyingKey::new(&b64.decode(authtority_signature)?)
+    }
     #[wasm_bindgen(js_name = "toBytes")]
     pub fn to_bytes(&self) -> Vec<u8> {
         self.instance()
