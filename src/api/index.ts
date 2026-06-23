@@ -1,5 +1,5 @@
 export * from "./ApiClient";
-export * from "./EnvioClient";
+export * from "./builders";
 export * from "./FeedbackClient";
 export * from "./IndexerClient";
 export * from "./paths";
