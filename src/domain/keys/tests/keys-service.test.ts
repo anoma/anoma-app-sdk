@@ -4,6 +4,7 @@ import {
   fromUserKeyringJson,
   toUserKeyringJson,
 } from "domain/keys";
+import { BUSINESS_KEYRING_SALT, PERSONAL_KEYRING_SALT } from "lib-constants";
 import { generateRandomBytes } from "lib/utils";
 import { expect, test } from "vitest";
 
@@ -27,8 +28,8 @@ test("should create user keyring correctly", () => {
 
 test("should derive deterministic keyring from ikm", () => {
   const ikm = generateRandomBytes(32);
-  const keyring1 = createUserKeyringFromIkm(ikm);
-  const keyring2 = createUserKeyringFromIkm(ikm);
+  const keyring1 = createUserKeyringFromIkm(ikm, PERSONAL_KEYRING_SALT);
+  const keyring2 = createUserKeyringFromIkm(ikm, PERSONAL_KEYRING_SALT);
 
   expect(keyring1.authorityKeyPair.publicKey).toEqual(
     keyring2.authorityKeyPair.publicKey
@@ -40,6 +41,19 @@ test("should derive deterministic keyring from ikm", () => {
     keyring2.discoveryKeyPair.publicKey
   );
   expect(keyring1.nullifierKeyPair.nk).toEqual(keyring2.nullifierKeyPair.nk);
+});
+
+test("should derive distinct keyrings for personal and business salts", () => {
+  const ikm = generateRandomBytes(32);
+  const personal = createUserKeyringFromIkm(ikm, PERSONAL_KEYRING_SALT);
+  const business = createUserKeyringFromIkm(ikm, BUSINESS_KEYRING_SALT);
+
+  expect(personal.authorityKeyPair.privateKey).not.toEqual(
+    business.authorityKeyPair.privateKey
+  );
+  expect(personal.nullifierKeyPair.nk).not.toEqual(
+    business.nullifierKeyPair.nk
+  );
 });
 
 test("should round-trip serialize and deserialize a user keyring", () => {

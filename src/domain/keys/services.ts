@@ -6,7 +6,7 @@ import {
   KeyPairSerializer,
   NullifierKeyPair,
 } from "domain/keys/models";
-import { KEYRING_SALT } from "lib-constants";
+import { BUSINESS_KEYRING_SALT, PERSONAL_KEYRING_SALT } from "lib-constants";
 import { fromHex, generateRandomBytes, invariant, toHex } from "lib/utils";
 import {
   PRFDomainMap,
@@ -15,6 +15,17 @@ import {
   type UserPublicKeys,
 } from "types";
 import { stringToBytes } from "viem";
+
+/**
+ * Account type used to derive a keyring into a separate cryptographic domain.
+ * Personal and business accounts derive distinct keyrings from the same IKM.
+ */
+export type AccountType = "personal" | "business";
+
+const KEYRING_SALTS: Record<AccountType, string> = {
+  personal: PERSONAL_KEYRING_SALT,
+  business: BUSINESS_KEYRING_SALT,
+};
 
 /**
  * Derives a 256-bit AES key-encryption-key (KEK) for local storage encryption.
@@ -76,8 +87,11 @@ export const extractUserPublicKeys = (keyring: UserKeyring): UserPublicKeys => {
   };
 };
 
-export const createUserKeyringFromIkm = (ikm: Uint8Array<ArrayBuffer>) => {
-  const seed = hkdf(sha256, ikm, KEYRING_SALT, "", 32);
+export const createUserKeyringFromIkm = (
+  ikm: Uint8Array<ArrayBuffer>,
+  salt: string
+) => {
+  const seed = hkdf(sha256, ikm, salt, "", 32);
   return createUserKeyring(seed as Uint8Array<ArrayBuffer>);
 };
 
@@ -111,7 +125,8 @@ export const fromUserKeyringJson = (obj: UserKeyringJson): UserKeyring => ({
 });
 
 export const createUserKeyringFromPasskey = (
-  credential: PublicKeyCredential
+  credential: PublicKeyCredential,
+  accountType: AccountType
 ) => {
   const prfResults = credential.getClientExtensionResults().prf?.results;
   const prfOutput = prfResults?.first;
@@ -126,5 +141,7 @@ export const createUserKeyringFromPasskey = (
       new Uint8Array(prfOutput.buffer)
     : new Uint8Array(prfOutput);
 
-  return createUserKeyringFromIkm(ikm);
+  const salt = KEYRING_SALTS[accountType];
+  invariant(salt, `Unknown account type: ${accountType}`);
+  return createUserKeyringFromIkm(ikm, salt);
 };
