@@ -1,5 +1,7 @@
+import type { IndexerEVMTransaction, NullifierRecord } from "api";
+import { buildNullifierRecord } from "api";
 import { AUTH_SIGNATURE_DOMAIN } from "lib-constants";
-import { fromHex, normalizeHex } from "lib/utils";
+import { fromBase64, fromHex, normalizeHex } from "lib/utils";
 import type { Address, Hex } from "viem";
 import {
   AuthoritySignature,
@@ -8,7 +10,11 @@ import {
   Digest,
   hashBytes,
   MerkleTree,
+  NullifierKey,
+  PublicKey,
+  Resource,
 } from "wasm";
+import type { ConsumedResource, CreatedResource } from "./types/resources";
 
 /** Computes the label reference digest from a forwarder and token contract address. */
 export function calculateLabelRef(
@@ -50,4 +56,37 @@ export function authorizeActions(
   const authorizationKey = AuthoritySigningKey.fromBytes(authorizationKeyBytes);
   const actionTree = new MerkleTree(actions);
   return authorizationKey.authorize(AUTH_SIGNATURE_DOMAIN, actionTree);
+}
+
+/**
+ * The user's own persistent created notes (a deposit mint or spend change) —
+ * those encrypted back to their encryption key. Excludes receiver outputs and
+ * ephemeral burn/padding notes.
+ */
+export function getOwnedCreatedResources(
+  createdResources: CreatedResource[],
+  encryptionPublicKey: Uint8Array
+): CreatedResource[] {
+  const ownerEncryptionKey = new PublicKey(encryptionPublicKey).toBase64();
+  return createdResources.filter(
+    ({ resource, witnessData }) =>
+      !resource.is_ephemeral &&
+      witnessData.TokenTransferPersistent?.receiverEncryptionPublicKey ===
+        ownerEncryptionKey
+  );
+}
+
+/**
+ * Nullifier records for a transaction's just-consumed resources, tagged with
+ * the consuming transaction — to optimistically mask spent notes.
+ */
+export function buildConsumedNullifierRecords(
+  consumedResources: ConsumedResource[],
+  evmTransaction: IndexerEVMTransaction
+): NullifierRecord[] {
+  return consumedResources.map(({ resource, nullifierKey }) => {
+    const decoded = Resource.decode(resource);
+    const key = new NullifierKey(fromBase64(nullifierKey));
+    return buildNullifierRecord(decoded.nullifier(key).toHex(), evmTransaction);
+  });
 }

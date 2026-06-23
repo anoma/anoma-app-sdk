@@ -4,6 +4,7 @@ import type {
   IndexerEVMTransaction,
   IndexerId,
   NullifierRecord,
+  NullifyingTransactionsResponse,
 } from "./types";
 
 /** Builds the indexer's composite id for a transaction: `{chainId}_{txHash}`. */
@@ -36,3 +37,20 @@ export const buildNullifierRecord = (
   nullifier: `0x${normalizeHex(nullifier)}`,
   transaction: { id: evmTransaction.id, evmTransaction },
 });
+
+export const parseNullifyingTransactions = (
+  response: NullifyingTransactionsResponse
+) => {
+  const output: NullifierRecord[] = [];
+  for (const tx of response) {
+    for (const n of tx.nullifiers) {
+      const transaction = buildEvmTransaction(
+        tx.chain_id,
+        n.transaction_hash,
+        n.timestamp
+      );
+      output.push(buildNullifierRecord(n.tag, transaction));
+    }
+  }
+  return output;
+};

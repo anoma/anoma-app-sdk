@@ -3,7 +3,6 @@ import {
   type IndexerEVMTransaction,
   type IndexerResource,
   type NullifierRecord,
-  type NullifyingTransactionsResponse,
 } from "api";
 import { getFiatAmount, getTokenByResource, tokenId } from "lib/tokenUtils";
 import {
@@ -60,37 +59,30 @@ export type ResourceWithNullifier = ResourceWithDetails & {
  * (just-spent, not yet indexed) are merged last so they take precedence.
  */
 export function buildTransactionLookup(
-  response: NullifyingTransactionsResponse
+  nullifiers: NullifierRecord[]
 ): TransactionLookup {
   const byNullifier = new Map<string, IndexerEVMTransaction>();
   const byTxHash = new Map<Address, IndexerEVMTransaction>();
 
-  for (const { chain_id, nullifiers } of response) {
-    for (const { tag, transaction_hash, timestamp } of nullifiers) {
-      const txHash: Address = `0x${normalizeHex(transaction_hash)}`;
-      const evmTransaction = buildEvmTransaction(chain_id, txHash, timestamp);
-      byNullifier.set(normalizeHex(tag), evmTransaction);
-      byTxHash.set(txHash, evmTransaction);
-    }
+  for (const nullifier of nullifiers) {
+    const txHash: Address = `0x${normalizeHex(nullifier.transaction.evmTransaction.txHash)}`;
+    const evmTransaction = buildEvmTransaction(
+      nullifier.transaction.evmTransaction.chainId,
+      txHash,
+      nullifier.transaction.evmTransaction.timestamp
+    );
+    byNullifier.set(normalizeHex(nullifier.nullifier), evmTransaction);
+    byTxHash.set(txHash, evmTransaction);
   }
 
   return { byNullifier, byTxHash };
 }
 
 /**
- * Merges the just-spent (optimistic) tags into the indexer lookup so the spent
- * resources are masked immediately, and reports which optimistic tags are now
- * stale and can be dropped from storage.
- *
- * A tag is stale once its optimistic mask is no longer needed, which happens
- * when any of these hold:
- *  - the indexer now reports the nullifier as consumed (it caught up); or
- *  - the resource has dropped out of `knownTags` entirely, so it can't surface
- *    as available regardless (the indexer removed it from the resource set);
- *
- * @param knownTags Nullifiers of the user's currently-known resources. Pass the
- *   live decoded tags so a tag whose resource is gone gets cleaned up; when
- *   empty the "resource gone" check is skipped (nothing to compare against).
+ * Merges optimistic consumed tags into the indexer lookup to mask spent
+ * resources, and reports which tags are stale (droppable from storage): the
+ * nullifier is now indexer-confirmed, or its resource left `knownTags`. Pass a
+ * complete `knownTags`; omit it to skip the (absence-based) resource-gone check.
  */
 export function buildOptimisticTransactionLookup(
   transactionLookup: TransactionLookup,
