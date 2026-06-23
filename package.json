@@ -1,6 +1,6 @@
 {
   "name": "@anomaorg/anoma-app-sdk",
-  "version": "0.10.1",
+  "version": "0.11.0",
   "type": "module",
   "main": "dist/index.js",
   "private": false,
@@ -77,11 +77,11 @@
     "@noble/hashes": "1.8.0",
     "@noble/secp256k1": "3.0.0",
     "@uniswap/permit2-sdk": "1.4.0",
-    "@wagmi/core": "^3.5.0",
-    "bs58": "^6.0.0",
-    "buffer": "^6.0.3",
+    "@wagmi/core": "3.5.2",
+    "bs58": "6.0.0",
+    "buffer": "6.0.3",
     "crc-32": "1.2.2",
-    "viem": "2.52.2",
+    "viem": "2.53.1",
     "zod": "4.1.13"
   },
   "devDependencies": {
