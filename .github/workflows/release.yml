@@ -1,0 +1,37 @@
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+name: release-please
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+    outputs:
+      sdk_tag: ${{ steps.release.outputs['packages/sdk--tag_name'] }}
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+
+  build-sdk:
+    needs: [release-please]
+    if: ${{ needs.release-please.outputs.sdk_tag }}
+    name: Release @anomaorg/anoma-app-sdk
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Build and Release Anoma App SDK
+        uses: ./.github/actions/release-project
+        with:
+          tag: ${{ needs.release-please.outputs.sdk_tag }}
+          bundle_filename: ${{ needs.release-please.outputs.sdk_tag }}.zip
+          working_dir: ./

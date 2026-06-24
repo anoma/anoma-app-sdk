@@ -60,7 +60,7 @@
     "build:wasm": "node ./scripts/build.mjs --release",
     "build:wasm:dev": "node ./scripts/build.mjs",
     "copy:wasm": "cp ./src/wasm/arm_bindings_bg.wasm ./dist",
-    "pack": "npm pack --pack-destination package/",
+    "pack:ci": "npm pack --pack-destination package/",
     "pack:dry-run": "npm pack --dry-run",
     "prepare": "husky"
   },
