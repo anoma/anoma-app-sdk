@@ -9,7 +9,11 @@ import type {
   Parameters,
   ResolvedParameters,
 } from "types";
-import { PublicKey, type AuthoritySignature, type Digest } from "wasm";
+import {
+  PublicKey,
+  type AuthoritySignature,
+  type Digest,
+} from "wasm/armRisc0Bindings";
 import { authorizeActions } from "../services";
 
 const formatPayloadKey = (key: Uint8Array<ArrayBufferLike>) =>

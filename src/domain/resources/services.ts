@@ -24,7 +24,7 @@ import {
   NullifierKey,
   Resource,
   ResourceWithLabel,
-} from "wasm";
+} from "wasm/armRisc0Bindings";
 import { InsufficientResourcesError } from "./errors";
 import { selectUTXOs } from "./selectUTXOs";
 import type {

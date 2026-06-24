@@ -13,28 +13,52 @@ import {
   NullifierKey,
   NullifierKeyCommitment,
   Resource,
+  initWasm as initArmWasm,
+  initSync as initArmWasmSync,
   randomBytes,
-} from "wasm";
+} from "wasm/armRisc0Bindings";
 
-import { Client, initClient } from "wasm/client";
+import {
+  initWasm as initTransferWasm,
+  initSync as initTransferWasmSync,
+} from "wasm/anomaPayLib";
+
+import { TransferLogic as WasmTransferLogic } from "wasm/anomaPayLib/anomapay_lib";
 
 /**
  * Transfer client which provies the necessary resource logic for
  * Anoma Simple Transfer Application
  */
-export class TransferLogic extends Client {
+export class TransferLogic {
   trivialLogicVerifyingKey = "";
 
   static async init(
     transferLogicVerifyingKey: string,
     trivialLogicVerifyingKey: string,
-    wasmBytes?: Uint8Array
+    armWasmBytes?: Uint8Array,
+    transferWasmBytes?: Uint8Array
   ): Promise<TransferLogic> {
-    const client = await initClient(
-      TransferLogic,
-      transferLogicVerifyingKey,
-      wasmBytes
+    /** Annoying console messages until this is resolved **/
+    /** As of this PR, these should be pulled from the transfer app lib we depend on **/
+    console.warn(
+      `Why do we require transferLogicVerifyingKey here? Got ${transferLogicVerifyingKey}`
     );
+    console.warn(
+      `Why do we require trivialLogicVerifyingKey here? Got ${trivialLogicVerifyingKey}`
+    );
+    const armInstance =
+      armWasmBytes ? initArmWasmSync(armWasmBytes) : await initArmWasm();
+    const transferInstance =
+      transferWasmBytes ?
+        initTransferWasmSync(transferWasmBytes)
+      : await initTransferWasm();
+
+    if (!armInstance || !transferInstance) {
+      throw new Error("Failed to initialize wasm modules");
+    }
+
+    const client = new TransferLogic();
+    // TODO: Shouldn't have to do this!
     client.trivialLogicVerifyingKey = trivialLogicVerifyingKey;
     return client;
   }
@@ -77,7 +101,7 @@ export class TransferLogic extends Client {
     resource: Resource;
     token: Address;
   }): Resource {
-    const logicRef = Digest.fromHex(this.digest);
+    const logicRef = Digest.fromHex(WasmTransferLogic.verifyingKey);
     const labelRef = calculateLabelRef(forwarderAddress, token);
     const nonce = resource.nullifier(nullifierKey);
     const receiverAuthVerifyingKey = new AuthorityVerifyingKey(
@@ -114,7 +138,7 @@ export class TransferLogic extends Client {
     resource: Resource;
     token: Address;
   }): Resource {
-    const logicRef = Digest.fromHex(this.digest);
+    const logicRef = Digest.fromHex(WasmTransferLogic.verifyingKey);
     const labelRef = calculateLabelRef(forwarderAddress, token);
     const nonce = resource.nullifier(nullifierKey);
     const valueRef = calculateValueRefFromUserAddress(receiverAddress);
@@ -135,7 +159,7 @@ export class TransferLogic extends Client {
 
     const nk = new NullifierKey(keyring.nullifierKeyPair.nk);
     const nkCommitment = nk.commit();
-    const logicRef = Digest.fromHex(this.digest);
+    const logicRef = Digest.fromHex(WasmTransferLogic.verifyingKey);
     const labelRef = calculateLabelRef(forwarderAddress, token);
 
     const consumedResource = Resource.create(
