@@ -1,7 +1,7 @@
 import { toBase64 } from "lib/utils";
 import type { Parameters, Permit2Data, UserKeyring } from "types";
 import type { Address } from "viem";
-import { PublicKey, type Resource } from "wasm";
+import { PublicKey, type Resource } from "wasm/armRisc0Bindings";
 import { TransferLogic } from "./TransferLogic";
 
 /**
@@ -17,12 +17,14 @@ export class TransferBuilder {
   static async init(
     transferLogicVerifyingKey: string,
     trivialLogicVerifyingKey: string,
-    wasmBytes?: Uint8Array
+    armWasmBytes?: Uint8Array,
+    transferWasmBytes?: Uint8Array
   ): Promise<TransferBuilder> {
     const client = await TransferLogic.init(
       transferLogicVerifyingKey,
       trivialLogicVerifyingKey,
-      wasmBytes ? new Uint8Array(wasmBytes) : undefined
+      armWasmBytes,
+      transferWasmBytes
     );
     return new TransferBuilder(client);
   }

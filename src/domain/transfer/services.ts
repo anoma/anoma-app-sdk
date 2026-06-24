@@ -13,7 +13,7 @@ import {
   NullifierKey,
   PublicKey,
   Resource,
-} from "wasm";
+} from "wasm/armRisc0Bindings";
 import type { ConsumedResource, CreatedResource } from "./types/resources";
 
 /** Computes the label reference digest from a forwarder and token contract address. */

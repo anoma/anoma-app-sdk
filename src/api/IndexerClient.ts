@@ -1,5 +1,5 @@
 import type { Hex } from "viem";
-import type { EncodedKeypair } from "wasm";
+import type { EncodedKeypair } from "wasm/armRisc0Bindings";
 import { ApiClient } from "./ApiClient";
 import { IndexerPaths } from "./paths";
 import {
