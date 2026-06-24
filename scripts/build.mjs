@@ -48,7 +48,6 @@ const wasmPackBuilder = crate => {
 
   const pkg = resolve(`./${CARGO_WORKSPACE}/${crate}/pkg/${crate}`);
   const destinationPath = resolve(`./src/wasm/${pkgDestinations[crate]}`);
-  execSync(`mkdir -p ${destinationPath}`);
 
   console.info(
     `[ \x1b[32mINFO\x1b[37m ] Copying \x1b[33m${pkg}* assets \x1b[37m to \x1b[35m${destinationPath}\x1b[37m`
