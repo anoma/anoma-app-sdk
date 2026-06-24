@@ -1,0 +1,15 @@
+name: pnpm cache
+description: Restores pnpm cache and installs pnpm dependencies
+
+runs:
+  using: composite
+  steps:
+    - name: Restore pnpm cache
+      uses: actions/cache@v3
+      with:
+        path: ./node_modules
+        key: ${{ runner.os }}-pnpm-cache-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+    - name: Install dependencies
+      run: pnpm
+      shell: bash

@@ -1,0 +1,21 @@
+name: prepare-build
+description: Prepare the build environment
+runs:
+  using: composite
+  steps:
+    - name: Restore Rust cache
+      uses: ./.github/actions/rust-cache
+      with:
+        cache-name: build
+
+    - name: Setup Rust toolchain
+      run: rustup default stable
+      shell: bash
+
+    - name: Fetch latest Ubuntu apt package list
+      run: sudo apt update
+      shell: bash
+
+    - name: Install protoc
+      run: sudo apt-get install -y protobuf-compiler
+      shell: bash
