@@ -4,7 +4,6 @@ import {
   fromUserKeyringJson,
   toUserKeyringJson,
 } from "domain/keys";
-import { BUSINESS_KEYRING_SALT, PERSONAL_KEYRING_SALT } from "lib-constants";
 import { generateRandomBytes } from "lib/utils";
 import { expect, test } from "vitest";
 
@@ -28,8 +27,8 @@ test("should create user keyring correctly", () => {
 
 test("should derive deterministic keyring from ikm", () => {
   const ikm = generateRandomBytes(32);
-  const keyring1 = createUserKeyringFromIkm(ikm, PERSONAL_KEYRING_SALT);
-  const keyring2 = createUserKeyringFromIkm(ikm, PERSONAL_KEYRING_SALT);
+  const keyring1 = createUserKeyringFromIkm(ikm, "test-salt");
+  const keyring2 = createUserKeyringFromIkm(ikm, "test-salt");
 
   expect(keyring1.authorityKeyPair.publicKey).toEqual(
     keyring2.authorityKeyPair.publicKey
@@ -43,17 +42,15 @@ test("should derive deterministic keyring from ikm", () => {
   expect(keyring1.nullifierKeyPair.nk).toEqual(keyring2.nullifierKeyPair.nk);
 });
 
-test("should derive distinct keyrings for personal and business salts", () => {
+test("should derive distinct keyrings for distinct salts", () => {
   const ikm = generateRandomBytes(32);
-  const personal = createUserKeyringFromIkm(ikm, PERSONAL_KEYRING_SALT);
-  const business = createUserKeyringFromIkm(ikm, BUSINESS_KEYRING_SALT);
+  const keyringA = createUserKeyringFromIkm(ikm, "salt-a");
+  const keyringB = createUserKeyringFromIkm(ikm, "salt-b");
 
-  expect(personal.authorityKeyPair.privateKey).not.toEqual(
-    business.authorityKeyPair.privateKey
+  expect(keyringA.authorityKeyPair.privateKey).not.toEqual(
+    keyringB.authorityKeyPair.privateKey
   );
-  expect(personal.nullifierKeyPair.nk).not.toEqual(
-    business.nullifierKeyPair.nk
-  );
+  expect(keyringA.nullifierKeyPair.nk).not.toEqual(keyringB.nullifierKeyPair.nk);
 });
 
 test("should round-trip serialize and deserialize a user keyring", () => {

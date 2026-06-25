@@ -6,7 +6,6 @@ import {
   KeyPairSerializer,
   NullifierKeyPair,
 } from "domain/keys/models";
-import { BUSINESS_KEYRING_SALT, PERSONAL_KEYRING_SALT } from "lib-constants";
 import { fromHex, generateRandomBytes, invariant, toHex } from "lib/utils";
 import {
   PRFDomainMap,
@@ -15,17 +14,6 @@ import {
   type UserPublicKeys,
 } from "types";
 import { stringToBytes } from "viem";
-
-/**
- * Account type used to derive a keyring into a separate cryptographic domain.
- * Personal and business accounts derive distinct keyrings from the same IKM.
- */
-export type AccountType = "personal" | "business";
-
-const KEYRING_SALTS: Record<AccountType, string> = {
-  personal: PERSONAL_KEYRING_SALT,
-  business: BUSINESS_KEYRING_SALT,
-};
 
 /**
  * Derives a 256-bit AES key-encryption-key (KEK) for local storage encryption.
@@ -87,6 +75,12 @@ export const extractUserPublicKeys = (keyring: UserKeyring): UserPublicKeys => {
   };
 };
 
+/**
+ * Deterministically derives a {@link UserKeyring} from input key material.
+ * @param ikm Input key material to derive the keyring from
+ * @param salt Domain-separation salt; distinct salts derive distinct keyrings from the same IKM
+ * @returns Derived {@link UserKeyring}
+ */
 export const createUserKeyringFromIkm = (
   ikm: Uint8Array<ArrayBuffer>,
   salt: string
@@ -124,9 +118,15 @@ export const fromUserKeyringJson = (obj: UserKeyringJson): UserKeyring => ({
   storageKey: fromHex(obj.storageKey),
 });
 
+/**
+ * Derives a {@link UserKeyring} from a passkey's WebAuthn PRF output.
+ * @param credential Passkey credential carrying the PRF extension results
+ * @param salt Domain-separation salt; distinct salts derive distinct keyrings from the same credential
+ * @returns Derived {@link UserKeyring}
+ */
 export const createUserKeyringFromPasskey = (
   credential: PublicKeyCredential,
-  accountType: AccountType
+  salt: string
 ) => {
   const prfResults = credential.getClientExtensionResults().prf?.results;
   const prfOutput = prfResults?.first;
@@ -141,7 +141,5 @@ export const createUserKeyringFromPasskey = (
       new Uint8Array(prfOutput.buffer)
     : new Uint8Array(prfOutput);
 
-  const salt = KEYRING_SALTS[accountType];
-  invariant(salt, `Unknown account type: ${accountType}`);
   return createUserKeyringFromIkm(ikm, salt);
 };
