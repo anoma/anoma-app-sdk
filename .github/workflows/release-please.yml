@@ -2,7 +2,7 @@ name: release-please
 
 on:
   push:
-    branches: [main]
+    branches: [main, feat/7-ci-workflows]
 
 permissions:
   contents: write
