@@ -1,1 +1,1 @@
-export const ANOMA_APP_SDK_VERSION = "0.11.1";
+export const ANOMA_APP_SDK_VERSION = "0.12.0";

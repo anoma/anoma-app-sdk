@@ -6,7 +6,6 @@ import {
   KeyPairSerializer,
   NullifierKeyPair,
 } from "domain/keys/models";
-import { KEYRING_SALT } from "lib-constants";
 import { fromHex, generateRandomBytes, invariant, toHex } from "lib/utils";
 import {
   PRFDomainMap,
@@ -76,8 +75,17 @@ export const extractUserPublicKeys = (keyring: UserKeyring): UserPublicKeys => {
   };
 };
 
-export const createUserKeyringFromIkm = (ikm: Uint8Array<ArrayBuffer>) => {
-  const seed = hkdf(sha256, ikm, KEYRING_SALT, "", 32);
+/**
+ * Deterministically derives a {@link UserKeyring} from input key material.
+ * @param ikm Input key material to derive the keyring from
+ * @param salt Domain-separation salt; distinct salts derive distinct keyrings from the same IKM
+ * @returns Derived {@link UserKeyring}
+ */
+export const createUserKeyringFromIkm = (
+  ikm: Uint8Array<ArrayBuffer>,
+  salt: string
+) => {
+  const seed = hkdf(sha256, ikm, salt, "", 32);
   return createUserKeyring(seed as Uint8Array<ArrayBuffer>);
 };
 
@@ -110,8 +118,15 @@ export const fromUserKeyringJson = (obj: UserKeyringJson): UserKeyring => ({
   storageKey: fromHex(obj.storageKey),
 });
 
+/**
+ * Derives a {@link UserKeyring} from a passkey's WebAuthn PRF output.
+ * @param credential Passkey credential carrying the PRF extension results
+ * @param salt Domain-separation salt; distinct salts derive distinct keyrings from the same credential
+ * @returns Derived {@link UserKeyring}
+ */
 export const createUserKeyringFromPasskey = (
-  credential: PublicKeyCredential
+  credential: PublicKeyCredential,
+  salt: string
 ) => {
   const prfResults = credential.getClientExtensionResults().prf?.results;
   const prfOutput = prfResults?.first;
@@ -126,5 +141,5 @@ export const createUserKeyringFromPasskey = (
       new Uint8Array(prfOutput.buffer)
     : new Uint8Array(prfOutput);
 
-  return createUserKeyringFromIkm(ikm);
+  return createUserKeyringFromIkm(ikm, salt);
 };

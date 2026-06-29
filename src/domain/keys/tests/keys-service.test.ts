@@ -27,8 +27,8 @@ test("should create user keyring correctly", () => {
 
 test("should derive deterministic keyring from ikm", () => {
   const ikm = generateRandomBytes(32);
-  const keyring1 = createUserKeyringFromIkm(ikm);
-  const keyring2 = createUserKeyringFromIkm(ikm);
+  const keyring1 = createUserKeyringFromIkm(ikm, "test-salt");
+  const keyring2 = createUserKeyringFromIkm(ikm, "test-salt");
 
   expect(keyring1.authorityKeyPair.publicKey).toEqual(
     keyring2.authorityKeyPair.publicKey
@@ -40,6 +40,17 @@ test("should derive deterministic keyring from ikm", () => {
     keyring2.discoveryKeyPair.publicKey
   );
   expect(keyring1.nullifierKeyPair.nk).toEqual(keyring2.nullifierKeyPair.nk);
+});
+
+test("should derive distinct keyrings for distinct salts", () => {
+  const ikm = generateRandomBytes(32);
+  const keyringA = createUserKeyringFromIkm(ikm, "salt-a");
+  const keyringB = createUserKeyringFromIkm(ikm, "salt-b");
+
+  expect(keyringA.authorityKeyPair.privateKey).not.toEqual(
+    keyringB.authorityKeyPair.privateKey
+  );
+  expect(keyringA.nullifierKeyPair.nk).not.toEqual(keyringB.nullifierKeyPair.nk);
 });
 
 test("should round-trip serialize and deserialize a user keyring", () => {
