@@ -1,5 +1,6 @@
 export * from "./chainUtils";
 export * from "./crypto";
+export * from "./encryptedJson";
 export * from "./forms";
 export * from "./keyUtils";
 export * from "./mobile";
