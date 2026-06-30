@@ -6,10 +6,12 @@ import {
   decryptPayroll,
   mergeEncryptedRun,
   upsertTransaction,
-  type DecryptedPayroll,
-  type PayrollTransactionEntry,
 } from "../payrollTransactions";
-import type { PayrollRecipient } from "../types";
+import type {
+  DecryptedPayroll,
+  PayrollRecipient,
+  PayrollTransactionEntry,
+} from "../types";
 
 const recipient: PayrollRecipient = {
   id: "r1",

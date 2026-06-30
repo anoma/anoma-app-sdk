@@ -1,29 +1,17 @@
 import { decryptJson, encryptJson } from "lib/encryptedJson";
 import { buildBigIntReviver } from "lib/utils";
 import type { Hex } from "viem";
-import type { PayrollRecipient } from "./types";
+import type {
+  DecryptedPayroll,
+  PayrollTransactionEntry,
+  PayrollTransactionMetadata,
+} from "./types";
 
-/**
- * One on-chain transaction within a payroll run (a payroll splits into one
- * transaction per token). `fee.usd` is omitted when no price feed was available,
- * so an unknown fee is never recorded as $0.
- */
-export type PayrollTransactionEntry = {
-  txHash: Hex;
-  recipients: PayrollRecipient[];
-  totals: { tokenTotal: bigint; usdTotal: bigint };
-  fee: { amount: bigint; usd?: number };
-};
-
-/** A payroll run: its per-token transactions, keyed in the store by a uuid. */
-export type PayrollTransactionMetadata = {
-  transactions: PayrollTransactionEntry[];
-};
-
-export type DecryptedPayroll = PayrollTransactionMetadata & { id: string };
-
-// `token` excluded: it is an object, so reviving its key as a bigint would
-// corrupt it. The fee bigint is named `amount` to avoid that collision.
+// Bigints are revived by key name across the whole graph: `usdQuantity` and
+// `tokenQuantity` live on each nested PayrollRecipient (see ./types), while
+// `tokenTotal`/`usdTotal` (totals) and `amount` (fee) are transaction-level.
+// `token` is excluded — it is an object, so reviving its key as a bigint would
+// corrupt it; the fee bigint is named `amount` to avoid that collision.
 const reviveMetadata = buildBigIntReviver([
   "usdQuantity",
   "tokenQuantity",
@@ -32,7 +20,10 @@ const reviveMetadata = buildBigIntReviver([
   "amount",
 ]);
 
-/** Adds an entry to a run, replacing any prior one with the same tx hash. */
+/**
+ * Adds an entry to a run, replacing any prior one with the same tx hash. The
+ * replacement is appended at the end, so order is not preserved on replace.
+ */
 export const upsertTransaction = (
   transactions: PayrollTransactionEntry[],
   entry: PayrollTransactionEntry

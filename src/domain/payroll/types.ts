@@ -1,4 +1,5 @@
 import type { TokenRegistry } from "types";
+import type { Hex } from "viem";
 
 /** A payroll payment line for a single recipient. */
 export type PayrollRecipient = {
@@ -27,6 +28,26 @@ export type CsvRowError = {
 export type CsvImportResult =
   | { ok: true; recipients: ParsedPayrollRecipient[] }
   | { ok: false; errors: CsvRowError[] };
+
+/**
+ * One on-chain transaction within a payroll run (a payroll splits into one
+ * transaction per token). `fee.usd` is omitted when no price feed was available,
+ * so an unknown fee is never recorded as $0.
+ */
+export type PayrollTransactionEntry = {
+  txHash: Hex;
+  recipients: PayrollRecipient[];
+  totals: { tokenTotal: bigint; usdTotal: bigint };
+  fee: { amount: bigint; usd?: number };
+};
+
+/** A payroll run: its per-token transactions, keyed in the store by a uuid. */
+export type PayrollTransactionMetadata = {
+  transactions: PayrollTransactionEntry[];
+};
+
+/** A decrypted payroll run tagged with its store key (the run uuid in `id`). */
+export type DecryptedPayroll = PayrollTransactionMetadata & { id: string };
 
 export const REQUIRED_COLUMNS = [
   "name",
