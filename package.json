@@ -47,8 +47,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "prebuild": "npm run clean && pnpm update:version",
-    "update:version": "node -p \"'export const ANOMA_APP_SDK_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > ./src/version.ts",
+    "prebuild": "npm run clean",
     "build": "npm run build:wasm && tsdown && npm run copy:wasm && npm run pack",
     "build:docs": "typedoc --plugin typedoc-plugin-markdown --out ./docs src/index.ts",
     "dev": "tsdown --watch --on-success 'pnpm copy:wasm'",
