@@ -1,1 +1,4 @@
-export const ANOMA_APP_SDK_VERSION = "0.13.1";
+import packageJson from "package";
+
+// Export semver for this version
+export const ANOMA_APP_SDK_VERSION = packageJson.version;
