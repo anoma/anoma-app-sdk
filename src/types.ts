@@ -1,3 +1,4 @@
+import type { EncodedResource } from "@anomaorg/arm-bindings";
 import type {
   IndexerEVMTransaction,
   IndexerId,
@@ -5,7 +6,6 @@ import type {
 } from "api";
 import type { UserPublicKeys } from "types";
 import type { Address } from "viem";
-import type { EncodedResource } from "wasm";
 export * from "domain/keys/types";
 export * from "domain/transfer/types";
 
@@ -15,7 +15,8 @@ export type Network = string;
 export type TokenId = `${string}:${string}`; // {network}:{symbol}
 export type NetworkAddress = `${Network}:${Address}`; // {network}:{address}
 
-export type AppResource = EncodedResource & {
+export type AppResource = Omit<EncodedResource, "quantity"> & {
+  quantity: bigint;
   network: Network;
   erc20TokenAddress: Address;
   forwarder: Address;

@@ -1,13 +1,11 @@
 use arm::nullifier_key::{NullifierKey as NK, NullifierKeyCommitment as NKCommitment};
 use base64::{Engine as _, engine::general_purpose::STANDARD as b64};
 use serde::{self, Deserialize, Serialize};
-use tsify::Tsify;
-use wasm_bindgen::{JsError, JsValue, prelude::wasm_bindgen};
 
 use crate::arm::digest::Digest;
+use crate::error::BindingsError;
 
-#[wasm_bindgen]
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, uniffi::Object)]
 pub struct NullifierKey(pub(crate) NK);
 
 impl NullifierKey {
@@ -16,10 +14,10 @@ impl NullifierKey {
     }
 }
 
-#[wasm_bindgen]
+#[uniffi::export]
 impl NullifierKey {
-    #[wasm_bindgen(constructor)]
-    pub fn new(nk_bytes: &[u8]) -> Result<NullifierKey, JsError> {
+    #[uniffi::constructor]
+    pub fn new(nk_bytes: &[u8]) -> Result<NullifierKey, BindingsError> {
         let bytes: [u8; 32] = nk_bytes.try_into()?;
         Ok(NullifierKey(NK::from_bytes(bytes)))
     }
@@ -32,33 +30,23 @@ impl NullifierKey {
         self.0.inner().to_vec()
     }
 
-    pub fn random() -> NullifierKeyPair {
-        let (nk, cnk) = NK::random_pair();
-
-        NullifierKeyPair {
-            nk: NullifierKey(nk),
-            cnk: NullifierKeyCommitment(cnk),
-        }
-    }
-
-    #[wasm_bindgen(js_name = "toBase64")]
     pub fn to_base64(&self) -> String {
         b64.encode(self.inner())
     }
 
-    #[wasm_bindgen(js_name = "fromBase64")]
-    pub fn from_base64(encoded: &str) -> Result<NullifierKey, JsError> {
+    #[uniffi::constructor]
+    pub fn from_base64(encoded: &str) -> Result<NullifierKey, BindingsError> {
         NullifierKey::new(&b64.decode(encoded)?)
     }
 
     #[allow(clippy::should_implement_trait)]
+    #[uniffi::constructor]
     pub fn default() -> NullifierKey {
         NullifierKey(NK::default())
     }
 }
 
-#[wasm_bindgen]
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, uniffi::Object)]
 pub struct NullifierKeyCommitment(pub(crate) NKCommitment);
 
 impl NullifierKeyCommitment {
@@ -67,10 +55,10 @@ impl NullifierKeyCommitment {
     }
 }
 
-#[wasm_bindgen]
+#[uniffi::export]
 impl NullifierKeyCommitment {
-    #[wasm_bindgen(constructor)]
-    pub fn new(nk_cmt_bytes: &[u8]) -> Result<NullifierKeyCommitment, JsError> {
+    #[uniffi::constructor]
+    pub fn new(nk_cmt_bytes: &[u8]) -> Result<NullifierKeyCommitment, BindingsError> {
         Ok(NullifierKeyCommitment(NKCommitment::from_bytes(
             nk_cmt_bytes,
         )?))
@@ -80,41 +68,57 @@ impl NullifierKeyCommitment {
         Digest(self.0.inner())
     }
 
-    #[wasm_bindgen(js_name = "toBase64")]
     pub fn to_base64(&self) -> String {
         b64.encode(self.inner().to_bytes())
     }
 
-    #[wasm_bindgen(js_name = "fromBase64")]
-    pub fn from_base64(encoded: &str) -> Result<NullifierKeyCommitment, JsError> {
+    #[uniffi::constructor]
+    pub fn from_base64(encoded: &str) -> Result<NullifierKeyCommitment, BindingsError> {
         NullifierKeyCommitment::new(&b64.decode(encoded)?)
     }
 }
 
-#[wasm_bindgen]
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, uniffi::Object)]
 pub struct NullifierKeyPair {
-    #[wasm_bindgen(getter_with_clone)]
     pub nk: NullifierKey,
-    #[wasm_bindgen(getter_with_clone)]
     pub cnk: NullifierKeyCommitment,
 }
 
-#[wasm_bindgen]
+#[uniffi::export]
 impl NullifierKeyPair {
-    #[wasm_bindgen(constructor)]
-    pub fn new(nk: NullifierKey, cnk: NullifierKeyCommitment) -> NullifierKeyPair {
-        NullifierKeyPair { nk, cnk }
+    #[uniffi::constructor]
+    pub fn new(nk: &NullifierKey, cnk: &NullifierKeyCommitment) -> NullifierKeyPair {
+        NullifierKeyPair {
+            nk: nk.clone(),
+            cnk: cnk.clone(),
+        }
     }
 
-    #[wasm_bindgen(js_name = "toJson")]
-    pub fn to_json(&self) -> Result<JsValue, JsError> {
-        Ok(serde_wasm_bindgen::to_value(&self)?)
+    #[uniffi::constructor]
+    pub fn random() -> NullifierKeyPair {
+        let (nk, cnk) = NK::random_pair();
+
+        NullifierKeyPair {
+            nk: NullifierKey(nk),
+            cnk: NullifierKeyCommitment(cnk),
+        }
     }
 
-    #[wasm_bindgen(js_name = "fromJson")]
-    pub fn from_json(json: JsValue) -> Result<NullifierKeyPair, JsError> {
-        Ok(serde_wasm_bindgen::from_value(json)?)
+    pub fn nk(&self) -> NullifierKey {
+        self.nk.clone()
+    }
+
+    pub fn cnk(&self) -> NullifierKeyCommitment {
+        self.cnk.clone()
+    }
+
+    pub fn to_json(&self) -> Result<String, BindingsError> {
+        Ok(serde_json::to_string(&self)?)
+    }
+
+    #[uniffi::constructor]
+    pub fn from_json(json: &str) -> Result<NullifierKeyPair, BindingsError> {
+        Ok(serde_json::from_str(json)?)
     }
 
     pub fn encode(&self) -> EncodedNullifierKeyPair {
@@ -124,7 +128,8 @@ impl NullifierKeyPair {
         }
     }
 
-    pub fn decode(encoded: &EncodedNullifierKeyPair) -> Result<NullifierKeyPair, JsError> {
+    #[uniffi::constructor]
+    pub fn decode(encoded: EncodedNullifierKeyPair) -> Result<NullifierKeyPair, BindingsError> {
         Ok(NullifierKeyPair {
             nk: NullifierKey::from_base64(&encoded.nk)?,
             cnk: NullifierKeyCommitment::from_base64(&encoded.cnk)?,
@@ -132,8 +137,7 @@ impl NullifierKeyPair {
     }
 }
 
-#[derive(Tsify, Debug, Serialize, Deserialize)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
+#[derive(Debug, Serialize, Deserialize, uniffi::Record)]
 pub struct EncodedNullifierKeyPair {
     pub nk: String,
     pub cnk: String,

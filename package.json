@@ -47,21 +47,20 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "prebuild": "npm run clean && node -p \"'export const ANOMA_APP_SDK_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
-    "build": "npm run build:wasm && tsdown && npm run copy:wasm && npm run pack",
+    "prebuild": "pnpm clean && node -p \"'export const ANOMA_APP_SDK_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
+    "build": "pnpm build:arm && pnpm build:ts && pnpm copy:wasm && pnpm run pack",
     "build:docs": "typedoc --plugin typedoc-plugin-markdown --out ./docs src/index.ts",
-    "dev": "tsdown --watch --on-success 'pnpm copy:wasm'",
+    "dev": "tsdown --watch",
     "lint": "eslint .",
     "format": "prettier --write \"src/**/*.{ts,js,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,js,json,css,md}\"",
     "test": "vitest",
     "test:run": "vitest run",
     "build:ts": "tsdown",
-    "build:wasm": "node ./scripts/build.mjs --release",
-    "build:wasm:dev": "node ./scripts/build.mjs",
-    "copy:wasm": "cp ./src/wasm/arm_bindings_bg.wasm ./dist",
-    "pack": "npm pack --pack-destination package/",
-    "pack:dry-run": "npm pack --dry-run",
+    "build:arm": "pnpm --filter arm-bindings build",
+    "build:arm:dev": "pnpm --filter arm-bindings build:dev",
+    "pack": "pnpm pack --pack-destination package/",
+    "pack:dry-run": "pnpm pack --dry-run",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -74,6 +73,7 @@
     ]
   },
   "dependencies": {
+    "@anomaorg/arm-bindings": "workspace:*",
     "@noble/hashes": "1.8.0",
     "@noble/secp256k1": "3.0.0",
     "@uniswap/permit2-sdk": "1.4.0",

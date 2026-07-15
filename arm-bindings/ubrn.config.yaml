@@ -1,0 +1,24 @@
+---
+rust:
+  directory: ./rust
+  manifestPath: Cargo.toml
+
+# All ubrn output lives under generated/; src/ is hand-written.
+bindings:
+  ts: generated/native # native (ios/android) TS bindings
+
+turboModule:
+  entrypoint: generated/index.native.ts
+
+ios:
+  targets:
+    - aarch64-apple-ios
+    - aarch64-apple-ios-sim
+    - x86_64-apple-ios
+
+wasm:
+  # Distinct from the Rust crate name (arm-bindings) so the generated wrapper
+  # and the crate it depends on don't collide in Cargo's lockfile.
+  wasmCrateName: arm-bindings-wasm
+  tsBindings: generated/wasm
+  entrypoint: generated/index.web.ts

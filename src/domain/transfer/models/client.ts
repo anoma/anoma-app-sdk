@@ -1,5 +1,5 @@
+import { initSdk } from "@anomaorg/arm-bindings";
 import { invariant, validHexBytes, validHexString } from "lib/utils";
-import { initWasm } from "wasm";
 
 const DIGEST_BYTES_LENGTH = 32;
 const DIGEST_HEX_LENGTH = DIGEST_BYTES_LENGTH * 2;
@@ -41,7 +41,6 @@ export abstract class Client {
 export async function initClient<T extends Client>(
   client: new (digest?: string) => T,
   id: string,
-  wasmBytes?: Uint8Array
 ): Promise<T> {
-  return initWasm(wasmBytes).then(() => new client(id));
+  return initSdk().then(() => new client(id));
 }

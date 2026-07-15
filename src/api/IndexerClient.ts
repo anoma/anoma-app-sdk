@@ -1,5 +1,5 @@
+import type { EncodedKeypair } from "@anomaorg/arm-bindings";
 import type { Hex } from "viem";
-import type { EncodedKeypair } from "wasm";
 import { ApiClient } from "./ApiClient";
 import { IndexerPaths } from "./paths";
 import {

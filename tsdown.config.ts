@@ -7,7 +7,6 @@ export default defineConfig({
     domain: "src/domain/index.ts",
     lib: "src/lib/index.ts",
     types: "src/types.ts",
-    wasm: "src/wasm/index.ts",
     "lib-constants": "src/lib-constants.ts",
   },
   format: ["esm", "cjs"],

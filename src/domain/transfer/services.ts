@@ -1,8 +1,3 @@
-import type { IndexerEVMTransaction, NullifierRecord } from "api";
-import { buildNullifierRecord } from "api";
-import { AUTH_SIGNATURE_DOMAIN } from "lib-constants";
-import { fromBase64, fromHex, normalizeHex } from "lib/utils";
-import type { Address, Hex } from "viem";
 import {
   AuthoritySignature,
   AuthoritySigningKey,
@@ -13,7 +8,12 @@ import {
   NullifierKey,
   PublicKey,
   Resource,
-} from "wasm";
+} from "@anomaorg/arm-bindings";
+import type { IndexerEVMTransaction, NullifierRecord } from "api";
+import { buildNullifierRecord } from "api";
+import { AUTH_SIGNATURE_DOMAIN } from "lib-constants";
+import { fromBase64, fromHex, normalizeHex } from "lib/utils";
+import type { Address, Hex } from "viem";
 import type { ConsumedResource, CreatedResource } from "./types/resources";
 
 /** Computes the label reference digest from a forwarder and token contract address. */

@@ -1,0 +1,13 @@
+# build files
+target
+cpp/
+ios/
+android/
+generated/
+rust_modules/
+AnomaorgArmBindingsFramework.xcframework/
+ArmBindings.podspec
+
+# others
+node_modules/
+.DS_Store

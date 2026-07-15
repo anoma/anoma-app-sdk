@@ -1,3 +1,4 @@
+import { NullifierKey, Resource } from "@anomaorg/arm-bindings";
 import { selectTransferResources } from "domain/resources";
 import type { TransferResourceWithAmount } from "domain/resources/types";
 import { getResourcesForToken } from "lib/resources";
@@ -13,7 +14,6 @@ import type {
   TokenRegistry,
   UserPublicKeys,
 } from "types";
-import { NullifierKey, Resource } from "wasm";
 import type { TransferBuilder } from "./TransferBuilder";
 
 type TokenAmount = {

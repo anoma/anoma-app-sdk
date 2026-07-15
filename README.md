@@ -35,13 +35,13 @@ import { formatBalance } from "@anomaorg/anoma-pay-sdk/lib";
 import type { AppResource } from "@anomaorg/anoma-pay-sdk/types";
 ```
 
-## Building WASM
+## Building ARM binding
 
 The SDK includes a Rust-based WASM module for cryptographic operations. Build it with:
 
 ```bash
-pnpm run build:wasm          # release build
-pnpm run build:wasm:dev      # development build
+pnpm run build:arm          # release build
+pnpm run build:arm:dev      # development build
 ```
 
 Pre-built WASM binaries are included in `src/wasm/`.

@@ -1,4 +1,4 @@
-import type { EncodedResource, MerkleTree, NullifierKey, Resource } from "wasm";
+import type { EncodedResource, MerkleTree, NullifierKey, Resource } from "@anomaorg/arm-bindings";
 
 import type { TokenRegistry, UserKeyring, UserPublicKeys } from "types";
 import type { Address } from "viem";

@@ -1,2 +1,8 @@
 allowBuilds:
   esbuild: false
+
+packages:
+  - arm-bindings
+
+patchedDependencies:
+  uniffi-bindgen-react-native@0.31.0-3: patches/uniffi-bindgen-react-native@0.31.0-3.patch

@@ -4,6 +4,7 @@ dist/
 docs/
 *.tsbuildinfo
 .claude/
+.DS_Store
 
 # Ignore any local archives from npm pack
 *.tgz

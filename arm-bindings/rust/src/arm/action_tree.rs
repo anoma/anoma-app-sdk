@@ -1,9 +1,9 @@
 use crate::arm::digest::Digest;
+use crate::error::BindingsError;
 use arm::action_tree::MerkleTree as MT;
-use wasm_bindgen::{JsError, prelude::wasm_bindgen};
+use std::sync::Arc;
 
-#[wasm_bindgen]
-#[derive(Debug)]
+#[derive(Debug, uniffi::Object)]
 pub struct MerkleTree(pub(crate) MT);
 
 impl MerkleTree {
@@ -12,21 +12,20 @@ impl MerkleTree {
     }
 }
 
-#[wasm_bindgen]
+#[uniffi::export]
 impl MerkleTree {
-    #[wasm_bindgen(constructor)]
-    pub fn new(leaves: Vec<Digest>) -> Self {
+    #[uniffi::constructor]
+    pub fn new(leaves: Vec<Arc<Digest>>) -> Self {
         MerkleTree(MT::new(leaves.iter().map(|d| d.0).collect()))
     }
 
-    pub fn root(&self) -> Result<Digest, JsError> {
+    pub fn root(&self) -> Result<Digest, BindingsError> {
         Ok(Digest(self.instance().root()?))
     }
 
     /// Returns hex string representing the actionTreeRoot bytes needed for
-    /// Permit2 signing. This is only available in a browser wasm target.
-    #[wasm_bindgen(js_name = "toWitness")]
-    pub fn to_witness(&self) -> Result<String, JsError> {
+    /// Permit2 signing.
+    pub fn to_witness(&self) -> Result<String, BindingsError> {
         let bytes = &self.root()?.to_bytes();
         Ok(format!("0x{}", &hex::encode(bytes)))
     }

@@ -1,3 +1,4 @@
+import type { EncodedResource, NullifierKey, Resource } from "@anomaorg/arm-bindings";
 import type {
   IndexerId,
   NullifierRecord,
@@ -6,7 +7,6 @@ import type {
 import type { SupportedChainConfig } from "types";
 import type { Address } from "viem";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { EncodedResource, NullifierKey, Resource } from "wasm";
 import {
   attachNullifiers,
   buildAppResources,

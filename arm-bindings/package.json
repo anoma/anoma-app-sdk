@@ -1,0 +1,37 @@
+{
+  "name": "@anomaorg/arm-bindings",
+  "version": "0.1.0",
+  "description": "Wasm and React Native bindings for arm-risc0",
+  "license": "MIT",
+  "author": "Anoma",
+  "homepage": "https://anoma.net",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anoma/anoma-app-sdk"
+  },
+  "main": "./src/index",
+  "scripts": {
+    "build": "pnpm clean && pnpm build:ios && pnpm build:web",
+    "build:ios": "ubrn build ios --and-generate",
+    "build:android": "ubrn build android --and-generate",
+    "build:android:release": "ubrn build android --and-generate --release",
+    "build:web": "ubrn build web",
+    "clean": "rm -rf cpp ios android generated *.podspec *.xcframework"
+  },
+  "dependencies": {
+    "@ubjs/core": "0.31.0-3",
+    "uniffi-bindgen-react-native": "0.31.0-3"
+  },
+  "codegenConfig": {
+    "name": "ArmBindingsSpec",
+    "type": "modules",
+    "jsSrcsDir": "generated",
+    "outputDir": {
+      "ios": "ios/generated",
+      "android": "android/generated"
+    },
+    "android": {
+      "javaPackageName": "net.anoma"
+    }
+  }
+}

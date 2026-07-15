@@ -1,3 +1,4 @@
+import { PublicKey, type AuthoritySignature, type Digest } from "@anomaorg/arm-bindings";
 import { toBase64 } from "lib/utils";
 import type {
   ConsumedResource,
@@ -9,7 +10,6 @@ import type {
   Parameters,
   ResolvedParameters,
 } from "types";
-import { PublicKey, type AuthoritySignature, type Digest } from "wasm";
 import { authorizeActions } from "../services";
 
 const formatPayloadKey = (key: Uint8Array<ArrayBufferLike>) =>

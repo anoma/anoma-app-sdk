@@ -2,14 +2,16 @@
 name = "arm-bindings"
 version = "0.1.0"
 edition = "2024"
-description = "Wasm bindings for arm-risc0"
-repository = "https://github.com/anoma/anoma-toolkit"
+description = "Wasm and React Native bindings for arm-risc0"
+repository = "https://github.com/anoma/anoma-app-sdk"
 license = "MIT"
 
 [lib]
-crate-type = ["cdylib", "rlib"]
+crate-type = ["cdylib", "staticlib", "rlib"]
 
 [dependencies]
+# Must match the uniffi version pinned by uniffi-bindgen-react-native.
+uniffi = "0.31"
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.142"
 arm = { version = "1.0.0", default-features = false, features = ["transaction"], package = "anoma-rm-risc0" }
@@ -21,8 +23,5 @@ k256 = { version = "=0.13.3", features = ["arithmetic", "serde", "expose-field",
 hex = "0.4.3"
 getrandom = { version = "0.3", default-features = false, features = ["std", "wasm_js"] }
 getrandom-v2 = { version = "0.2", package = "getrandom", default-features = false, features = ["std", "js"] }
-wasm-bindgen = { version = "0.2.100" }
-console_error_panic_hook = { version = "0.1.7" }
-serde-wasm-bindgen = { version = "0.6.5" }
-tsify = { version = "0.5.5", features = ["js", "json", "wasm-bindgen" ] }
+thiserror = "2"
 alloy-sol-types = "1.4.1"

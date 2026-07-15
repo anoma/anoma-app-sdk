@@ -1,0 +1,12 @@
+
+## 2026-07-16 — arm-bindings uniffi migration (Claude session)
+- Migrated arm-bindings/rust fully from wasm_bindgen to uniffi 0.31 (ubrn 0.31.0-3). `pnpm build` (ios + web) green.
+- Key uniffi 0.31 constraints discovered:
+  - No u128 → all quantities (Resource, ResourceProps, EncodedResource, convertCounterToValueRef) are now DECIMAL STRINGS, parsed to u128 in Rust.
+  - No static methods/getters → HeliaxKeys.* and InitialRoot.bytes() became top-level fns (heliaxFeeLogicRef(), initialRootBytes(), ...); static factories became #[uniffi::constructor] (named constructors on the class).
+  - Objects = #[derive(uniffi::Object)] + #[uniffi::export] impl; plain data = #[derive(uniffi::Record)] (EncodedKeypair, EncodedResource, ResourceProps, EncodedNullifierKeyPair).
+  - Method names clashing with serde traits (Keypair::serialize/deserialize) break macro expansion → renamed Rust fns + #[uniffi::method(name=...)]/#[uniffi::constructor(name=...)] to keep FFI names.
+- New error type: rust/src/error.rs BindingsError (flat_error), From impls for common error types; replaced all JsError.
+- API changes vs wasm_bindgen version: Keypair.sk/pk and NullifierKeyPair.nk/cnk are getter METHODS now; NullifierKey.random() moved to NullifierKeyPair.random(); Keypair.deserialize now returns Keypair (was SecretKey — latent bug); toJson/fromJson use JSON strings (no JsValue); CallType is a uniffi enum + callTypeToVec(); JsResourceWithLabel renamed ResourceWithLabel (inner data struct = ResourceWithLabelData).
+- Removed deps: wasm-bindgen, console_error_panic_hook, serde-wasm-bindgen, tsify; removed src/debug.rs (wasm_bindgen start hook). Added thiserror.
+- Web app consumers (sdk web src, anomapay-native-poc) will need updates for these API changes (string quantities, getter methods, renamed statics).

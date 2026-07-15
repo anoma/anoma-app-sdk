@@ -1,4 +1,10 @@
 import {
+  type EncodedResource,
+  NullifierKey,
+  type ResourceLike,
+  ResourceWithLabel
+} from "@anomaorg/arm-bindings";
+import {
   buildEvmTransaction,
   type IndexerEVMTransaction,
   type IndexerResource,
@@ -19,12 +25,6 @@ import type {
   TokenRegistry,
 } from "types";
 import type { Address, Hex } from "viem";
-import {
-  type EncodedResource,
-  NullifierKey,
-  Resource,
-  ResourceWithLabel,
-} from "wasm";
 import { InsufficientResourcesError } from "./errors";
 import { selectUTXOs } from "./selectUTXOs";
 import type {
@@ -40,7 +40,7 @@ type TransactionLookup = {
 };
 
 type ResourceWithDetails = {
-  resource: Resource;
+  resource: ResourceLike;
   /** Cached `resource.encode()` — encoding crosses the wasm boundary, so do it once. */
   encoded: EncodedResource;
   forwarder: Address;
@@ -121,10 +121,10 @@ export function buildOptimisticTransactionLookup(
 
 function deserializeResourcePayload(
   blobHex: Hex,
-  encryptionPrivateKey: Uint8Array
-): ResourceWithLabel {
+  encryptionPrivateKey: Uint8Array<ArrayBuffer>
+) {
   const payload = fromHex(blobHex);
-  return ResourceWithLabel.fromEncrypted(payload, encryptionPrivateKey);
+  return ResourceWithLabel.fromEncrypted(payload.buffer, encryptionPrivateKey.buffer);
 }
 
 const tryToDeserializeResourcePayload = (
@@ -152,10 +152,10 @@ export const deserializeResourcesPayload = async (
       return [];
     }
     return {
-      resource: payload.resource,
-      encoded: payload.resource.encode(),
-      forwarder: payload.forwarder as Address,
-      erc20TokenAddress: payload.erc20TokenAddress as Address,
+      resource: payload.resource(),
+      encoded: payload.resource().encode(),
+      forwarder: payload.forwarder(),
+      erc20TokenAddress: payload.erc20TokenAddress(),
       transactionHash: item.transaction_hash,
     };
   });
@@ -165,7 +165,7 @@ export const deserializeResourcesPayload = async (
 export const pickNonEphemeralResources = (
   resources: ResourceWithDetails[]
 ): ResourceWithDetails[] => {
-  return resources.filter(item => !item.encoded.is_ephemeral);
+  return resources.filter(item => !item.encoded.isEphemeral);
 };
 
 /**
@@ -227,6 +227,7 @@ export const buildAppResources = (
 
     updatedResources.push({
       ...encoded,
+      quantity: BigInt(encoded.quantity),
       network: chain.network,
       erc20TokenAddress,
       forwarder,
