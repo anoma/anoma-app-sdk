@@ -5,6 +5,7 @@ import {
   formatUnits,
   hexToBytes,
   isAddress,
+  parseUnits,
   stringToBytes as viemStringToBytes,
   type Address,
   type Hex,
@@ -37,6 +38,19 @@ export const formatBalance = (
     minimumFractionDigits: decimals,
     maximumFractionDigits: tokenDenom,
   }).format(balance);
+};
+
+/** Parses a formatted amount, returning undefined for empty/invalid/zero input. */
+export const safeParseUnits = (
+  value: string,
+  decimals: number
+): bigint | undefined => {
+  try {
+    const parsed = parseUnits(value, decimals);
+    return parsed > 0n ? parsed : undefined;
+  } catch {
+    return undefined;
+  }
 };
 
 /**

@@ -10,6 +10,7 @@ import type {
   ResolvedParameters,
 } from "types";
 import { PublicKey, type AuthoritySignature, type Digest } from "wasm";
+import { serializeGenericCalls } from "../genericCalls";
 import { authorizeActions } from "../services";
 
 const formatPayloadKey = (key: Uint8Array<ArrayBufferLike>) =>
@@ -60,7 +61,7 @@ export class PayloadBuilder {
           senderAuthorizationSignature:
             this.authorizationSignature ?
               toBase64(this.authorizationSignature.toBytes())
-            : "",
+              : "",
           senderAuthorizationVerifyingKey: formatPayloadKey(
             item.userPublicKeys.authorityPublicKey
           ),
@@ -84,6 +85,16 @@ export class PayloadBuilder {
           permit2Data: item.permit2Data,
           senderWalletAddress: item.address,
           tokenContractAddress: item.token.address,
+        },
+      };
+    }
+
+    // Generic-call resource carrying the swap's EVM calls (ex: Swap CU2)
+    if (item.type === "GenericCall") {
+      return {
+        GenericCallEphemeral: {
+          forwarderAddress: item.forwarderAddress,
+          calls: serializeGenericCalls(item.calls),
         },
       };
     }
