@@ -42,6 +42,13 @@ export const MAX_DECIMALS = 6;
 // How long (ms) to wait for a Permit2 allowance transaction to be mined before timing out.
 export const permit2AllowanceTimeout = 60_000;
 
+// Validity window granted to the Permit2 payload authorizing a swap's token-B
+// wrap. Must cover the whole build → review → submit → validate path: the
+// backend rejects an expired deadline at the API boundary, and it checks it
+// against wall-clock time, not chain time. Matches
+// PERMIT2_DEADLINE_OFFSET_MILLISECONDS used by every other flow.
+export const SWAP_EXPIRATION_OFFSET_SECONDS = 30 * 60;
+
 // Changing this message will invalidate all existing keyrings, so be careful when modifying it.
 export const getSignMessage = (address: string) =>
   `I authorize AnomaPay to derive my account from address ${address}.\nDo NOT sign this message if the request url is not https://anomapay.app`;
