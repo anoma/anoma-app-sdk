@@ -1,3 +1,4 @@
+import { SWAP_EXPIRATION_OFFSET_SECONDS } from "lib-constants";
 import { getUserPublicKeysFromKeyring } from "lib/keyUtils";
 import { toBase64 } from "lib/utils";
 import type {
@@ -75,7 +76,10 @@ export class SwapResolver {
   }
 
   /** Builds the intents for a given fee. Call repeatedly while converging on the fee. */
-  resolve(input: SwapResolveInput, expirationOffset = 60): ResolvedParameters {
+  resolve(
+    input: SwapResolveInput,
+    expirationOffset = SWAP_EXPIRATION_OFFSET_SECONDS
+  ): ResolvedParameters {
     const senderPublicKeys = getUserPublicKeysFromKeyring(this.senderKeyring);
     const nk = this.senderKeyring.nullifierKeyPair.nk;
 
