@@ -1,4 +1,4 @@
-import type { UUID } from "crypto";
+import type { UUID } from "types";
 
 export const ApiPaths = {
   Configuration: () => `/api/v1/configuration/all`,
