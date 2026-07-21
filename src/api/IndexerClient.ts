@@ -1,12 +1,16 @@
+import type { KeyPair } from "domain/keys";
+import { toHex } from "lib";
 import type { Hex } from "viem";
 import type { EncodedKeypair } from "wasm";
 import { ApiClient } from "./ApiClient";
 import { IndexerPaths } from "./paths";
 import {
+  ResponseError,
   type IndexerAddKeysResponse,
   type IndexerCheckKeysSyncResponse,
   type IndexerContract,
   type IndexerHealthResponse,
+  type IndexerResource,
   type IndexerResourceResponse,
   type NullifyingTransactionsResponse,
 } from "./types";
@@ -46,18 +50,34 @@ export class IndexerClient extends ApiClient {
   }
 
   async resources(
-    discoveryPrivateKey: Hex,
+    discoveryKeyPair: KeyPair,
     contracts: IndexerContract[]
-  ): Promise<IndexerResourceResponse> {
-    const responses = await Promise.all(
-      contracts.map(({ chain_id, contract_address }) =>
-        this.get<IndexerResourceResponse>(
-          `${IndexerPaths.Tags}/${chain_id}/${contract_address}/${discoveryPrivateKey}`
+  ): Promise<IndexerResource[]> {
+    const discoveryPrivateKey = toHex(discoveryKeyPair.privateKey);
+
+    const fetchResources = async () => {
+      const responses = await Promise.all(
+        contracts.map(({ chain_id, contract_address }) =>
+          this.get<IndexerResourceResponse>(
+            `${IndexerPaths.Tags}/${chain_id}/${contract_address}/${discoveryPrivateKey}`
+          )
         )
-      )
-    );
-    return {
-      resources: responses.flatMap(r => r.resources),
+      );
+      return responses.flatMap(r => r.resources);
     };
+
+    try {
+      return fetchResources();
+    } catch (error) {
+      // add the keypair if it was not previously added, then refetch
+      if (error instanceof ResponseError && error.status === 404) {
+        await this.addKeys({
+          public_key: toHex(discoveryKeyPair.publicKey),
+          secret_key: discoveryPrivateKey,
+        });
+        return fetchResources();
+      }
+      throw error;
+    }
   }
 }

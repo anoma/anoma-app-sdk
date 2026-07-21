@@ -13,9 +13,7 @@ import {
   NullifierKey,
   parseNullifyingTransactions,
   pickNonEphemeralResources,
-  ResponseError,
   stringToBytes,
-  toHex,
   TransferBackendClient,
   type AggregatedTokenBalance,
   type NetworkConfigurationResponse,
@@ -59,18 +57,7 @@ const fetchResources = async (keyring: UserKeyring, chainIds: number[]) => {
   const contracts = indexed_contracts.filter(c =>
     chainIds.includes(c.chain_id)
   );
-  const privateKey = toHex(keyring.discoveryKeyPair.privateKey);
-
-  try {
-    return (await indexer.resources(privateKey, contracts)).resources;
-  } catch (error) {
-    if (!(error instanceof ResponseError) || error.status !== 404) throw error;
-    await indexer.addKeys({
-      public_key: toHex(keyring.discoveryKeyPair.publicKey),
-      secret_key: privateKey,
-    });
-    return (await indexer.resources(privateKey, contracts)).resources;
-  }
+  return await indexer.resources(keyring.discoveryKeyPair, contracts);
 };
 
 /** Decrypts the indexer resources and aggregates the unspent ones per token. */
