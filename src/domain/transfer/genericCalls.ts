@@ -21,8 +21,8 @@ const CALL_ABI_PARAMETERS = [
 /**
  * ABI-encodes `calls` as `Call[]`. This matches both the on-chain
  * `abi.decode(input, (Call[]))` in `GenericCallForwarder.forwardCall` and the
- * `Vec<Call>::abi_encode()` used by the witness library's `calculate_label_ref`,
- * so the resulting `label_ref` agrees with the backend's logic proof.
+ * `Vec<Call>::abi_encode()` used by the witness library's `calculate_value_ref`,
+ * so the resulting `value_ref` agrees with the backend's logic proof.
  */
 export function encodeGenericCalls(calls: EvmCall[]): Hex {
   return encodeAbiParameters(CALL_ABI_PARAMETERS, [
@@ -31,16 +31,23 @@ export function encodeGenericCalls(calls: EvmCall[]): Hex {
 }
 
 /**
- * Computes `label_ref = hash(forwarder_addr ‖ abi_encode(calls))`, the kind
- * label for a generic-call resource.
+ * Computes `label_ref = hash(forwarder_addr)`, the kind label for a
+ * generic-call resource. The witness circuit binds the forwarder address alone
+ * here (`hash_bytes(forwarder_addr)`); the calls go into `value_ref`.
  */
 export function calculateGenericCallLabelRef(
-  forwarderAddress: Address,
-  calls: EvmCall[]
+  forwarderAddress: Address
 ): Digest {
-  const forwarderBytes = fromHex(forwarderAddress);
-  const callsBytes = fromHex(encodeGenericCalls(calls));
-  return hashBytes(new Uint8Array([...forwarderBytes, ...callsBytes]));
+  return hashBytes(fromHex(forwarderAddress));
+}
+
+/**
+ * Computes `value_ref = hash(abi_encode(calls))`, binding the exact EVM calls
+ * to the generic-call resource. Matches the witness circuit's
+ * `hash_bytes(Vec<Call>::abi_encode())`.
+ */
+export function calculateGenericCallValueRef(calls: EvmCall[]): Digest {
+  return hashBytes(fromHex(encodeGenericCalls(calls)));
 }
 
 /**
@@ -59,8 +66,9 @@ export function serializeGenericCalls(calls: EvmCall[]): GenericCallInput[] {
 /**
  * Builds the ephemeral, quantity-0 generic-call resource that is consumed to
  * carry the swap's EVM calls. Its `logic_ref` is the generic-call logic
- * verifying key (from backend config) and its `label_ref` binds the forwarder
- * and the exact calls. Defaults to the trivial nullifier key (the resource is
+ * verifying key (from backend config), its `label_ref` binds the forwarder
+ * address, and its `value_ref` binds the exact calls. Defaults to the trivial
+ * nullifier key (the resource is
  * unowned) and a random nonce to keep its nullifier unique within the tx.
  */
 export function createGenericCallResource(params: {
@@ -75,9 +83,9 @@ export function createGenericCallResource(params: {
   const nonce = params.nonce ?? Digest.fromBytes(randomBytes());
   return Resource.create(
     Digest.fromHex(logicVerifyingKey),
-    calculateGenericCallLabelRef(forwarderAddress, calls),
+    calculateGenericCallLabelRef(forwarderAddress),
     0n,
-    Digest.default(),
+    calculateGenericCallValueRef(calls),
     true,
     nonce,
     nullifierKey.commit()
