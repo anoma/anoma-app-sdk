@@ -1,5 +1,4 @@
-import type { UUID } from "crypto";
-import type { TokenRegistry } from "types";
+import type { TokenRegistry, UUID } from "types";
 import type { Address, Hex } from "viem";
 
 // HTTP status codes we may want to check for

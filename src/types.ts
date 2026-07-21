@@ -15,6 +15,8 @@ export type Network = string;
 export type TokenId = `${string}:${string}`; // {network}:{symbol}
 export type NetworkAddress = `${Network}:${Address}`; // {network}:{address}
 
+export type UUID = `${string}-${string}-${string}-${string}-${string}`;
+
 export type AppResource = EncodedResource & {
   network: Network;
   erc20TokenAddress: Address;

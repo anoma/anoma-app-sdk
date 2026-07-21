@@ -1,10 +1,10 @@
-import type { UUID } from "crypto";
 import type {
   FeeRequest,
   FeeResponse,
   Parameters,
   TokenBalancesResponse,
   TokenPriceResponse,
+  UUID,
 } from "types";
 import type { Address } from "viem";
 import { ApiClient } from "./ApiClient";

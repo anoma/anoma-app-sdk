@@ -9,7 +9,6 @@ import {
   type Address,
   type Hex,
 } from "viem";
-import z from "zod";
 
 export const shortenAddress = (address: string, head = 6, tail = 4) => {
   return `${address.slice(0, 2 + head)}…${address.slice(-tail)}`;
@@ -228,10 +227,6 @@ export const convertObjectToSnakeCase = (obj: object) => {
   }
   return output;
 };
-
-export const base64Schema = z
-  .base64()
-  .transform((val: string) => Buffer.from(val, "base64"));
 
 export function invariant(
   // eslint-disable-next-line
