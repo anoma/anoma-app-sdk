@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anoma App SDK — Balance example</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 2rem auto;
+        max-width: 36rem;
+        padding: 0 1rem;
+      }
+      .mono {
+        font-family: ui-monospace, monospace;
+      }
+      #address {
+        font-size: 0.75rem;
+        word-break: break-all;
+      }
+      #balances {
+        list-style: none;
+        padding: 0;
+      }
+      #balances li {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>AnomaPay balance</h1>
+      <p>AnomaPay Address<br /><span class="mono" id="address"></span></p>
+      <p id="status">Loading…</p>
+      <ul id="balances"></ul>
+    </main>
+
+    <template id="balance-row">
+      <li>
+        <span data-token></span>
+        <span data-amount class="mono"></span>
+      </li>
+    </template>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

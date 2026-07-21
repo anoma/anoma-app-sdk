@@ -35,6 +35,12 @@ import { formatBalance } from "@anomaorg/anoma-pay-sdk/lib";
 import type { AppResource } from "@anomaorg/anoma-pay-sdk/types";
 ```
 
+## Examples
+
+Runnable examples live in [`examples/`](./examples). Start with
+[`examples/balance`](./examples/balance): derives a keyring from a seed and
+displays the anomapay address and token balances.
+
 ## Building WASM
 
 The SDK includes a Rust-based WASM module for cryptographic operations. Build it with:
