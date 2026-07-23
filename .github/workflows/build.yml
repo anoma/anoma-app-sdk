@@ -57,6 +57,21 @@ jobs:
         working-directory: ./
         run: pnpm build:wasm
 
+      - name: Install Rust dependencies
+        uses: ./.github/actions/prepare-build
+
+      - name: Lint source check
+        working-directory: ./
+        env:
+          SHA: ${{ github.sha }}
+        run: pnpm lint
+
+      - name: Build the Rust wasm library
+        working-directory: ./
+        env:
+          SHA: ${{ github.sha }}
+        run: pnpm build:wasm
+
       - name: Build the SDK
         working-directory: ./
         run: pnpm build
