@@ -5,7 +5,8 @@ on:
       REF:
         required: true
         type: string
-        default: "main"
+        # default: "main"
+        default: "feat/7-ci-workflows"
 
 env:
   CI: false
@@ -44,11 +45,32 @@ jobs:
       - name: Install pnpm dependencies
         uses: ./.github/actions/pnpm-cache
 
+      - name: Install Rust dependencies
+        uses: ./.github/actions/prepare-build
+
+      - name: Lint source check
+        working-directory: ./
+        env:
+          SHA: ${{ github.sha }}
+        run: pnpm lint
+
+      - name: Build the Rust wasm library
+        working-directory: ./
+        env:
+          SHA: ${{ github.sha }}
+        run: pnpm build:wasm
+
       - name: Build the SDK
         working-directory: ./
         env:
           SHA: ${{ github.sha }}
         run: pnpm build
+
+      - name: Run SDK unit tests
+        working-directory: ./
+        env:
+          SHA: ${{ github.sha }}
+        run: pnpm test
 
       - name: Pack the SDK
         working-directory: ./
