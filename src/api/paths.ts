@@ -19,6 +19,24 @@ export const ApiPaths = {
 
   EstimateDuration: (network: string) =>
     `/api/v1/transactions/${network}/estimate-duration`,
+
+  SwapQuote: (
+    network: string,
+    params: {
+      sellTokenAddress: string;
+      buyTokenAddress: string;
+      sellAmount: bigint;
+      genericForwarderAddress: string;
+    }
+  ) => {
+    const query = new URLSearchParams({
+      sell_token: params.sellTokenAddress,
+      buy_token: params.buyTokenAddress,
+      sell_amount: params.sellAmount.toString(),
+      taker_address: params.genericForwarderAddress,
+    });
+    return `/api/v1/swap/${network}/quote?${query.toString()}`;
+  },
   Health: "/health",
 } as const;
 

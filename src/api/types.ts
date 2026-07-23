@@ -181,6 +181,8 @@ export type NetworkConfigurationResponse = {
   feeEncryptionPk: string;
   feeAuthorityPk: string;
   feeNullifierKeyCommitment: string;
+  genericCallForwarderAddress: string;
+  genericCallLogicVerifyingKey: string;
   tokens: Omit<TokenRegistry, "network">[];
 };
 
@@ -210,3 +212,42 @@ export type IndexerCheckKeysSyncResponse = Array<{
   chain_id: number;
   contract: string;
 }>;
+
+/**
+ * Bebop RFQ quote types. The quote is fetched server-side (so the `source-auth`
+ * token is never exposed to the browser) via `TransferBackendClient.swapQuote`,
+ * which returns Bebop's response verbatim — these types describe that shape.
+ */
+
+/** Per-token amount block in a Bebop quote (`amount`/`minimumAmount` are decimal strings of base units). */
+export type QuoteAmount = {
+  amount: string;
+  minimumAmount?: string;
+  decimals?: number;
+};
+
+/** Executable transaction returned when `gasless=false`. */
+export type QuoteTx = {
+  to: Address;
+  data: Hex;
+  value: string;
+  from?: Address;
+  gas?: number;
+  gasPrice?: number;
+};
+
+export type QuoteResponse = {
+  quoteId: string;
+  network: string;
+  expiry: number;
+  sellToken: Address;
+  buyToken: Address;
+  sellAmount: string;
+  buyAmount: string;
+  minBuyAmount: string;
+  approvalTarget: Address;
+  tx?: QuoteTx;
+  /** Contract that must be granted the sell-token approval. */
+  approvalType?: string;
+  error?: { errorCode?: number; message?: string };
+};
