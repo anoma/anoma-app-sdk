@@ -16,8 +16,8 @@ on:
 runs:
   using: composite
   steps:
-    - name: Install Dependencies
-      uses: ./.github/actions/prepare-build
+    - name: Install npm dependencies
+      uses: ./.github/actions/prepare-pnpm
 
     - name: Build Artifact
       working-directory: ${{ inputs.working_dir }}
