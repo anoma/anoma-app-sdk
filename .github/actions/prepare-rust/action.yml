@@ -1,12 +1,12 @@
-name: prepare-build
-description: Prepare the build environment
+name: prepare-rust
+description: Prepare the Rust build environment
 runs:
   using: composite
   steps:
-    - name: Restore Rust cache
-      uses: ./.github/actions/rust-cache
-      with:
-        cache-name: build
+    # - name: Restore Rust cache
+    #   uses: ./.github/actions/rust-cache
+    #   with:
+    #     cache-name: build
 
     - name: Setup Rust toolchain
       run: rustup default stable
