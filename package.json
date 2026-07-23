@@ -4,6 +4,7 @@
   "type": "module",
   "main": "dist/index.js",
   "private": false,
+  "packageManager": "pnpm@10.30.3",
   "engines": {
     "node": ">=22"
   },
@@ -47,8 +48,8 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "prebuild": "npm run clean && node -p \"'export const ANOMA_APP_SDK_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
-    "build": "npm run build:wasm && tsdown && npm run copy:wasm && npm run pack",
+    "prebuild": "pnpm clean",
+    "build": "pnpm build:wasm && tsdown && pnpm copy:wasm && pnpm pack",
     "build:docs": "typedoc --plugin typedoc-plugin-markdown --out ./docs src/index.ts",
     "dev": "tsdown --watch --on-success 'pnpm copy:wasm'",
     "lint": "eslint .",
@@ -60,7 +61,7 @@
     "build:wasm": "node ./scripts/build.mjs --release",
     "build:wasm:dev": "node ./scripts/build.mjs",
     "copy:wasm": "cp ./src/wasm/arm_bindings_bg.wasm ./dist",
-    "pack": "npm pack --pack-destination package/",
+    "pack:ci": "npm pack --pack-destination package/",
     "pack:dry-run": "npm pack --dry-run",
     "prepare": "husky"
   },
