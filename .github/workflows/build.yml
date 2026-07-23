@@ -1,11 +1,9 @@
 name: Build Anoma App SDK
 on:
-  workflow_dispatch:
-    inputs:
-      REF:
-        required: true
-        type: string
-        default: "main"
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 env:
   CI: false
@@ -16,9 +14,7 @@ jobs:
       VERSION: ${{ steps.set-environment-variables.outputs.VERSION }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.REF }}
+        uses: actions/checkout@v4
 
       - name: Set environment variables
         id: set-environment-variables
@@ -29,73 +25,84 @@ jobs:
         env:
           SHA: ${{ github.sha }}
 
-      - name: Print workflow inputs
-        uses: ./.github/actions/print-workflow-inputs
+      # TODO: FIXME
+      # - name: Print workflow inputs
+      #   uses: ./.github/actions/print-workflow-inputs
 
   build-sdk:
     needs: setup
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.REF }}
+        uses: actions/checkout@v4
 
-      - name: Install pnpm dependencies
-        uses: ./.github/actions/pnpm-cache
+      - name: Install npm dependencies
+        uses: ./.github/actions/prepare-pnpm
+
+      - name: Install Rust dependencies
+        uses: ./.github/actions/prepare-rust
+
+      - name: Lint source check
+        working-directory: ./
+        run: pnpm lint
+
+      - name: Build the Rust wasm library
+        working-directory: ./
+        run: pnpm build:wasm
 
       - name: Build the SDK
         working-directory: ./
-        env:
-          SHA: ${{ github.sha }}
         run: pnpm build
+
+      - name: Run SDK unit tests
+        working-directory: ./
+        run: pnpm test
 
       - name: Pack the SDK
         working-directory: ./
         run: pnpm pack:ci
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: anoma-app-sdk package archive
           path: ./package/anomaorg-anoma-app-sdk-*.tgz
 
-  release:
-    needs: [setup, build-sdk]
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Download SDK build
-        uses: actions/download-artifact@v3
-        with:
-          name: anomaorg-anoma-app-sdk
-          path: ./
-
-      - name: Get SDK Filename
-        id: get-filenames
-        run: |
-          echo "SDK_FILENAME=$(ls -1 ./package)" >> "$GITHUB_OUTPUT"
-
-      - name: Make release body text
-        run: |
-          echo "ANOMA_APP_SDK_REVISION: $SHA" >> RELEASE
-        env:
-          SHA: ${{ github.sha }}
-
-      - name: Create release
-        id: create-release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          release_name: ${{ needs.setup.outputs.VERSION }}
-          tag_name: ${{ needs.setup.outputs.VERSION }}
-          body_path: ./RELEASE
-
-      - name: Add SDK archive to release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: ./package/${{ steps.get-filenames.outputs.SDK_FILENAME }}
-          asset_name: anomaorg-anoma-app-sdk_${{ needs.setup.outputs.version }}.zip
-          asset_content_type: application/zip
+  # TODO: This should ONLY happen when release-please PR is merged
+  # release:
+  #   needs: [setup, build-sdk]
+  #   runs-on: ubuntu-24.04
+  #   steps:
+  #     - name: Download SDK build
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: anomaorg-anoma-app-sdk
+  #         path: ./
+  #
+  #     - name: Get SDK Filename
+  #       id: get-filenames
+  #       run: |
+  #         echo "SDK_FILENAME=$(ls -1 ./package)" >> "$GITHUB_OUTPUT"
+  #
+  #     - name: Make release body text
+  #       run: |
+  #         echo "ANOMA_APP_SDK_REVISION: $SHA" >> RELEASE
+  #
+  #     - name: Create release
+  #       id: create-release
+  #       uses: actions/create-release@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ github.token }}
+  #       with:
+  #         release_name: ${{ needs.setup.outputs.VERSION }}
+  #         tag_name: ${{ needs.setup.outputs.VERSION }}
+  #         body_path: ./RELEASE
+  #
+  #     - name: Add SDK archive to release
+  #       uses: actions/upload-release-asset@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ github.token }}
+  #       with:
+  #         upload_url: ${{ steps.create-release.outputs.upload_url }}
+  #         asset_path: ./package/${{ steps.get-filenames.outputs.SDK_FILENAME }}
+  #         asset_name: anomaorg-anoma-app-sdk_${{ needs.setup.outputs.version }}.zip
+  #         asset_content_type: application/zip

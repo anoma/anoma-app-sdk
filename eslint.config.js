@@ -6,6 +6,7 @@ export default defineConfig([
   globalIgnores([
     "dist",
     ".claude",
+    "arm-bindings",
     "./src/wasm/arm_bindings.js",
     "./src/wasm/arm_bindings.d.ts",
   ]),
