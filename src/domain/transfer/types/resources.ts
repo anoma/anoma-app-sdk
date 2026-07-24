@@ -75,13 +75,13 @@ export type Parameters = {
 
 export type Receiver = { token: TokenRegistry; quantity: bigint } & (
   | {
-    type: "AnomaAddress";
-    userPublicKeys: UserPublicKeys;
-  }
+      type: "AnomaAddress";
+      userPublicKeys: UserPublicKeys;
+    }
   | {
-    type: "EvmAddress";
-    address: Address;
-  }
+      type: "EvmAddress";
+      address: Address;
+    }
 );
 
 export type ConsumeIntent = {
@@ -89,24 +89,24 @@ export type ConsumeIntent = {
   nullifierKey: NullifierKey;
   token?: TokenRegistry;
 } & (
-    | {
+  | {
       type: "AnomaAddress";
       userPublicKeys: UserPublicKeys;
     }
-    | {
+  | {
       type: "EvmAddress";
       address: Address;
       permit2Data: Permit2Data;
     }
-    | {
+  | {
       type: "Padding";
     }
-    | {
+  | {
       type: "GenericCall";
       forwarderAddress: Address;
       calls: EvmCall[];
     }
-  );
+);
 
 export type CreateIntent = {
   resource: Resource;

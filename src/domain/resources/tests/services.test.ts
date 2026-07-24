@@ -1,8 +1,5 @@
-import type {
-  IndexerId,
-  NullifierRecord,
-  NullifyingTransactionsResponse,
-} from "api";
+import { parseNullifyingTransactions } from "api";
+import type { IndexerId, NullifierRecord } from "api";
 import type { SupportedChainConfig } from "types";
 import type { Address } from "viem";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -28,17 +25,18 @@ const chain = {
 const nullifyingResponse = (
   nullifiers: { tag: string; txHash: string; timestamp: number }[],
   chainId = CHAIN_ID
-): NullifyingTransactionsResponse => [
-  {
-    chain_id: chainId,
-    contract_address: FORWARDER,
-    nullifiers: nullifiers.map(({ tag, txHash, timestamp }) => ({
-      tag: tag as Address,
-      transaction_hash: txHash as Address,
-      timestamp,
-    })),
-  },
-];
+): NullifierRecord[] =>
+  parseNullifyingTransactions([
+    {
+      chain_id: chainId,
+      contract_address: FORWARDER,
+      nullifiers: nullifiers.map(({ tag, txHash, timestamp }) => ({
+        tag: tag as Address,
+        transaction_hash: txHash as Address,
+        timestamp,
+      })),
+    },
+  ]);
 
 const optimisticRecord = (
   nullifier: string,

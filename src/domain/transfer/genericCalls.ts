@@ -57,11 +57,18 @@ export function calculateGenericCallValueRef(calls: EvmCall[]): Digest {
  * so no precision is lost.
  */
 export function serializeGenericCalls(calls: EvmCall[]): GenericCallInput[] {
-  return calls.map(({ to, value, data }) => ({
-    to,
-    value: Number(value),
-    data: toBase64(fromHex(data)),
-  }));
+  return calls.map(({ to, value, data }) => {
+    if (value > BigInt(Number.MAX_SAFE_INTEGER)) {
+      throw new Error(
+        `Generic call value ${value} exceeds Number.MAX_SAFE_INTEGER; would lose precision.`
+      );
+    }
+    return {
+      to,
+      value: Number(value),
+      data: toBase64(fromHex(data)),
+    };
+  });
 }
 
 /**

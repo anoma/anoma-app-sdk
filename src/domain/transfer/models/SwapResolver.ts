@@ -27,7 +27,7 @@ export type SwapResolveInput = {
   swapAmount: bigint;
   /** Guaranteed minimum amount of token B from the Bebop quote. */
   minBuyAmount: bigint;
-  /** The four EVM calls executed by the GenericCallForwarder (CU2). */
+  /** The three EVM calls executed by the GenericCallForwarder (CU2). */
   calls: EvmCall[];
   /** Heliax fee in token A, in its smallest unit. */
   fee: bigint;
@@ -129,6 +129,12 @@ export class SwapResolver {
     // CU3: wrap token B out of the forwarder into a persistent resource owned by
     // the user. Reuses the mint resource pair, with the forwarder as the
     // "sender" (wallet) of the ephemeral wrap resource.
+    //
+    // We wrap exactly `minBuyAmount` because the swap is executed as an
+    // exact-fill against the Bebop quote: the CU2 calls approve and pull only
+    // `minBuyAmount` of token B, so no positive slippage is left stranded in the
+    // (non-sweepable) forwarder. If the fill ever becomes variable, wrap the
+    // actually-received amount instead.
     const { consumedResource, createdResource } =
       this.transferBuilder.client.createMintResources({
         userAddress: this.chain.genericCallForwarderAddress,

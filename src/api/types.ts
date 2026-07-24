@@ -182,7 +182,7 @@ export type NetworkConfigurationResponse = {
   feeEncryptionPk: string;
   feeAuthorityPk: string;
   feeNullifierKeyCommitment: string;
-  genericCallForwarderAddress: string;
+  genericCallForwarderAddress: Address;
   genericCallLogicVerifyingKey: string;
   tokens: Omit<TokenRegistry, "network">[];
 };

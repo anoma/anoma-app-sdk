@@ -61,7 +61,7 @@ export class PayloadBuilder {
           senderAuthorizationSignature:
             this.authorizationSignature ?
               toBase64(this.authorizationSignature.toBytes())
-              : "",
+            : "",
           senderAuthorizationVerifyingKey: formatPayloadKey(
             item.userPublicKeys.authorityPublicKey
           ),
