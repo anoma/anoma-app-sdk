@@ -46,6 +46,25 @@ type TokenTransferConsumedPersistent = {
   senderEncryptionPublicKey: string;
 };
 
+/**
+ * GENERIC CALL WITNESS DATA
+ */
+// `generic_call::CallInput` — a single EVM call forwarded through the
+// `GenericCallForwarder`. `data` is base64-encoded calldata (the backend
+// decodes it as `Vec<u8>`); `value` is wei sent with the call (0 for ERC-20 swaps).
+export type GenericCallInput = {
+  to: Address;
+  value: number;
+  data: string;
+};
+
+// `generic_call::ConsumedEphemeral` and `generic_call::CreatedEphemeral` share
+// this shape: the forwarder address (forms `label_ref`) plus the calls to run.
+type GenericCallEphemeral = {
+  forwarderAddress: Address;
+  calls: GenericCallInput[];
+};
+
 //************************************************************************
 // RESOURCES
 //************************************************************************
@@ -62,16 +81,23 @@ type TokenTransfer = {
   ConsumedPersistent: TokenTransferConsumedPersistent;
 };
 
+type GenericCall = {
+  CreatedEphemeral: GenericCallEphemeral;
+  ConsumedEphemeral: GenericCallEphemeral;
+};
+
 type CreatedWitnessDataEnum = {
   TokenTransferPersistent: TokenTransfer["CreatedPersistent"];
   TokenTransferEphemeralUnwrap: TokenTransfer["CreatedEphemeralUnwrap"];
   TrivialEphemeral: Trivial["CreatedEphemeral"];
+  GenericCallEphemeral: GenericCall["CreatedEphemeral"];
 };
 
 type ConsumedWitnessDataEnum = {
   TokenTransferPersistent: TokenTransfer["ConsumedPersistent"];
   TokenTransferEphemeralWrap: TokenTransfer["ConsumedEphemeralWrap"];
   TrivialEphemeral: Trivial["ConsumedEphemeral"];
+  GenericCallEphemeral: GenericCall["ConsumedEphemeral"];
 };
 
 //************************************************************************
@@ -83,6 +109,7 @@ export type CreatedWitnessDataSchema = {
   TokenTransferEphemeralUnwrap: CreatedWitnessDataEnum["TokenTransferEphemeralUnwrap"];
   TokenTransferPersistent: CreatedWitnessDataEnum["TokenTransferPersistent"];
   TrivialEphemeral: CreatedWitnessDataEnum["TrivialEphemeral"];
+  GenericCallEphemeral: CreatedWitnessDataEnum["GenericCallEphemeral"];
 };
 
 // Consumed Witness Data Schema
@@ -90,6 +117,7 @@ export type ConsumedWitnessDataSchema = {
   TokenTransferPersistent: ConsumedWitnessDataEnum["TokenTransferPersistent"];
   TokenTransferEphemeralWrap: ConsumedWitnessDataEnum["TokenTransferEphemeralWrap"];
   TrivialEphemeral: ConsumedWitnessDataEnum["TrivialEphemeral"];
+  GenericCallEphemeral: ConsumedWitnessDataEnum["GenericCallEphemeral"];
 };
 
 export type CreatedWitnessData = Partial<CreatedWitnessDataSchema>;

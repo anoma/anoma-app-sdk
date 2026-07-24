@@ -54,6 +54,9 @@ export type TokenBalance = {
   amountInUsd?: number;
 };
 
+/** Swap providers a token can be sold through. Only bebop today. */
+export type SwapProvider = "bebop";
+
 export type TokenRegistry = {
   address: Address;
   decimals: number;
@@ -62,6 +65,7 @@ export type TokenRegistry = {
   network: string;
   feeEnabled: boolean;
   apy?: number | null;
+  swapProviders?: SwapProvider[];
 };
 
 export type SupportedChainConfig = Omit<

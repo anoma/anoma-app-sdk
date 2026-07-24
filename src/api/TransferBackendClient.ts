@@ -14,6 +14,7 @@ import type {
   EstimateDurationResponse,
   NetworkConfigurationWrappedResponse,
   Permit2AllowanceResponse,
+  QuoteResponse,
   SendTransactionResponse,
   TransactionReceiptResponse,
   TransactionResultResponse,
@@ -75,6 +76,22 @@ export class TransferBackendClient extends ApiClient {
     parameters: Parameters
   ): Promise<EstimateDurationResponse> {
     return this.post(ApiPaths.EstimateDuration(network), parameters);
+  }
+
+  /**
+   * Fetches a Bebop swap quote via the backend proxy, which injects the
+   * `source-auth` token server-side. Returns Bebop's response verbatim.
+   */
+  async swapQuote(
+    network: string,
+    params: {
+      sellTokenAddress: Address;
+      buyTokenAddress: Address;
+      sellAmount: bigint;
+      genericForwarderAddress: Address;
+    }
+  ): Promise<QuoteResponse> {
+    return this.get<QuoteResponse>(ApiPaths.SwapQuote(network, params));
   }
 
   /**

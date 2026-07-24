@@ -1,12 +1,23 @@
 import type { EncodedResource, MerkleTree, NullifierKey, Resource } from "wasm";
 
 import type { TokenRegistry, UserKeyring, UserPublicKeys } from "types";
-import type { Address } from "viem";
+import type { Address, Hex } from "viem";
 import type {
   ConsumedWitnessData,
   CreatedWitnessData,
   Permit2Data,
 } from "./witness";
+
+/**
+ * A raw EVM call forwarded through the GenericCallForwarder. Calldata is hex
+ * here (used to compute the resource `label_ref`); it is base64-encoded only
+ * when serialized into the backend witness (`GenericCallInput`).
+ */
+export type EvmCall = {
+  to: Address;
+  value: bigint;
+  data: Hex;
+};
 
 /**
  * Prop types for creating resources
@@ -89,6 +100,11 @@ export type ConsumeIntent = {
     }
   | {
       type: "Padding";
+    }
+  | {
+      type: "GenericCall";
+      forwarderAddress: Address;
+      calls: EvmCall[];
     }
 );
 
