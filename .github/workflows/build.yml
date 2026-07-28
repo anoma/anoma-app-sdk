@@ -42,13 +42,13 @@ jobs:
       - name: Install Rust dependencies
         uses: ./.github/actions/prepare-rust
 
-      - name: Lint source check
-        working-directory: ./
-        run: pnpm lint
-
       - name: Build the Rust wasm library
         working-directory: ./
         run: pnpm build:wasm
+
+      - name: Lint source check
+        working-directory: ./
+        run: pnpm lint
 
       - name: Build the SDK
         working-directory: ./
