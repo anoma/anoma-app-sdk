@@ -6,3 +6,7 @@ runs:
     - name: Setup Rust toolchain
       run: rustup default stable
       shell: bash
+
+    - name: Setup Rust toolchain
+      run: cargo install wasm-pack
+      shell: bash

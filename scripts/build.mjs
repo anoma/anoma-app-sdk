@@ -1,4 +1,4 @@
-import { execSync, spawnSync } from "child_process";
+import { execSync } from "child_process";
 import { parseArgs } from "util";
 
 /**
@@ -17,25 +17,19 @@ const { release = false } = parseArgs({
   options: argsOptions,
 }).values;
 
-const crates = ["arm-bindings"];
+const crate = "arm-bindings";
 
-const wasmPackBuilder = crate => {
-  // wasm-pack packages
-  const { status } = spawnSync(
-    "wasm-pack",
-    ["build", release ? "--release" : "--debug", ["--target", "web"]].flat(),
-    {
-      stdio: "inherit",
-      cwd: `./${crate}`,
-      env: {
-        ...process.env,
-        RUSTFLAGS: '--cfg getrandom_backend="wasm_js"',
-      },
-    }
+// wasm-pack packages
+const run = () => {
+  execSync(
+    [
+      `cd ${crate} &&`,
+      "RUSTFLAGS='--cfg getrandom_backend=\"wasm_js\"'",
+      "wasm-pack",
+      `build ${release ? "--release" : "--debug"}`,
+      "--target web",
+    ].join(" ")
   );
-  if (status !== 0) {
-    process.exit(status);
-  }
 
   const pkg = `./${crate}/pkg/${crate.replace("-", "_")}`;
   const destinationPath = "./src/wasm/";
@@ -45,6 +39,4 @@ const wasmPackBuilder = crate => {
   execSync(`cp ${pkg}.d.ts ${destinationPath}`);
 };
 
-crates.forEach(crate => {
-  wasmPackBuilder(crate);
-});
+run();

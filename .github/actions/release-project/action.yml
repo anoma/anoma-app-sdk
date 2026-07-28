@@ -16,10 +16,13 @@ on:
 runs:
   using: composite
   steps:
-    - name: Install npm dependencies
+    - name: Install npm dependencies and set up pnpm
       uses: ./.github/actions/prepare-pnpm
 
-    - name: Build Artifact
+    - name: Setup Rust environment
+      uses: ./.github/actions/prepare-rust
+
+    - name: Build SDK
       working-directory: ${{ inputs.working_dir }}
       run: pnpm build
       shell: bash

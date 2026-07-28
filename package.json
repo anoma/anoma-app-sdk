@@ -47,9 +47,8 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "clean": "rimraf dist",
-    "prebuild": "pnpm clean",
-    "build": "pnpm build:wasm && tsdown && pnpm copy:wasm && pnpm pack",
+    "prebuild": "rimraf dist",
+    "build": "pnpm prebuild && pnpm build:wasm && pnpm build:ts && pnpm copy:wasm && pnpm pack",
     "build:docs": "typedoc --plugin typedoc-plugin-markdown --out ./docs src/index.ts",
     "dev": "tsdown --watch --on-success 'pnpm copy:wasm'",
     "lint": "eslint .",

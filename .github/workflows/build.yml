@@ -8,29 +8,7 @@ on:
 env:
   CI: false
 jobs:
-  setup:
-    runs-on: ubuntu-24.04
-    outputs:
-      VERSION: ${{ steps.set-environment-variables.outputs.VERSION }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set environment variables
-        id: set-environment-variables
-        run: |
-          COMMIT_HASH=$(git rev-parse --short $SHA)
-          BASE_VERSION=$(node -e 'console.log(require("./package.json").version)')
-          echo "VERSION=v$BASE_VERSION-$COMMIT_HASH" >> "$GITHUB_OUTPUT"
-        env:
-          SHA: ${{ github.sha }}
-
-      # TODO: FIXME
-      # - name: Print workflow inputs
-      #   uses: ./.github/actions/print-workflow-inputs
-
   build-sdk:
-    needs: setup
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
@@ -43,23 +21,15 @@ jobs:
         uses: ./.github/actions/prepare-rust
 
       - name: Lint source check
-        working-directory: ./
         run: pnpm lint
 
-      - name: Build the Rust wasm library
-        working-directory: ./
-        run: pnpm build:wasm
-
       - name: Build the SDK
-        working-directory: ./
         run: pnpm build
 
       - name: Run SDK unit tests
-        working-directory: ./
         run: pnpm test
 
       - name: Pack the SDK
-        working-directory: ./
         run: pnpm pack:ci
 
       - uses: actions/upload-artifact@v4
