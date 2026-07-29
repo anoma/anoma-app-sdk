@@ -7,6 +7,5 @@ runs:
       run: rustup default stable
       shell: bash
 
-    - name: Setup Rust toolchain
-      run: cargo install wasm-pack
-      shell: bash
+    - name: Install wasm-pack
+      uses: taiki-e/install-action@wasm-pack

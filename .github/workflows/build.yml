@@ -20,11 +20,14 @@ jobs:
       - name: Install Rust dependencies
         uses: ./.github/actions/prepare-rust
 
+      - name: Build the SDK wasm library
+        run: pnpm build:wasm
+
       - name: Lint source check
         run: pnpm lint
 
       - name: Build the SDK
-        run: pnpm build
+        run: pnpm build:ts
 
       - name: Run SDK unit tests
         run: pnpm test
