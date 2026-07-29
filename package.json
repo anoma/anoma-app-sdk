@@ -54,7 +54,7 @@
     "lint": "eslint .",
     "format": "prettier --write \"src/**/*.{ts,js,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,js,json,css,md}\"",
-    "test": "vitest",
+    "test": "pnpm build:wasm && vitest",
     "test:run": "vitest run",
     "build:ts": "tsdown",
     "build:wasm": "node ./scripts/build.mjs --release",

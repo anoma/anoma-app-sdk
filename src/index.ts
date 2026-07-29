@@ -7,3 +7,5 @@ export * from "./wasm";
 // Resolve NullifierKeyPair ambiguity between domain and wasm
 export { NullifierKeyPair } from "./domain";
 export { NullifierKeyPair as WasmNullifierKeyPair } from "./wasm";
+
+export { ANOMA_APP_SDK_VERSION } from "./version";
