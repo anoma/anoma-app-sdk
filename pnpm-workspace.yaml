@@ -3,3 +3,9 @@ packages:
 
 allowBuilds:
   esbuild: false
+
+# permit2-sdk imports tslib without declaring it
+packageExtensions:
+  "@uniswap/permit2-sdk":
+    dependencies:
+      tslib: "^2.8.1"
