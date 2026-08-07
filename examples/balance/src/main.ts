@@ -29,8 +29,8 @@ import { isHex } from "viem";
 // mnemonic — never put a real one here. Change it to get a different account.
 const seed = "anoma-pay-example-seed-do-not-use-with-real-funds";
 
-const backendUrl = "https://pay.prod.heliax.fyi";
-const indexerUrl = "https://galileo.prod.heliax.fyi";
+const backendUrl = "https://pay.prod.heliax.app";
+const indexerUrl = "https://galileo.prod.heliax.app";
 
 const backend = new TransferBackendClient(backendUrl);
 const indexer = new IndexerClient(indexerUrl);
