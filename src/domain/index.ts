@@ -7,3 +7,4 @@ export * from "./transfer/models";
 export * from "./transfer/services";
 export * from "./transfer/swapCalls";
 export * from "./transfer/types";
+export * from "./transfer/withdrawWrappedToken";
