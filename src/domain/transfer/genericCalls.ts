@@ -1,7 +1,15 @@
-import { fromHex, toBase64 } from "lib/utils";
-import type { EvmCall, GenericCallInput } from "types";
+import { fromHex, invariant, toBase64 } from "lib/utils";
+import type {
+  ConsumeIntent,
+  CreateIntent,
+  EvmCall,
+  GenericCallInput,
+  ResolvedParameters,
+  SupportedChainConfig,
+} from "types";
 import { encodeAbiParameters, type Address, type Hex } from "viem";
 import { Digest, hashBytes, NullifierKey, randomBytes, Resource } from "wasm";
+import type { TransferBuilder } from "./models/TransferBuilder";
 
 /**
  * ABI tuple for the `Call { address to; uint256 value; bytes data }` struct
@@ -97,4 +105,56 @@ export function createGenericCallResource(params: {
     nonce,
     nullifierKey.commit()
   );
+}
+
+/**
+ * Appends the generic-call compliance unit to already-resolved parameters: an
+ * ephemeral, quantity-0 resource carrying `calls`, balanced by a padding
+ * resource so the unit nets to zero.
+ *
+ * Pair it with a transfer leg that sends the tokens to
+ * `chain.genericCallForwarderAddress`, so the forwarder holds the funds the
+ * calls operate on. Used by the native-withdraw flow (unwrap WETH and forward
+ * the native tokens); the same shape is inlined in {@link SwapResolver}.
+ */
+export function appendGenericCallLeg(
+  resolved: ResolvedParameters,
+  params: {
+    transferBuilder: TransferBuilder;
+    chain: SupportedChainConfig;
+    calls: EvmCall[];
+  }
+): ResolvedParameters {
+  const { transferBuilder, chain, calls } = params;
+  const { genericCallLogicVerifyingKey, genericCallForwarderAddress } = chain;
+  invariant(
+    genericCallLogicVerifyingKey,
+    "Backend is missing the generic-call logic verifying key"
+  );
+
+  const resource = createGenericCallResource({
+    logicVerifyingKey: genericCallLogicVerifyingKey,
+    forwarderAddress: genericCallForwarderAddress,
+    calls,
+  });
+
+  const consume: ConsumeIntent = {
+    type: "GenericCall",
+    forwarderAddress: genericCallForwarderAddress,
+    calls,
+    resource,
+    nullifierKey: NullifierKey.default(),
+  };
+  const padding: CreateIntent = {
+    resource: transferBuilder.client.createPaddingResource({
+      nullifierKey: NullifierKey.default(),
+      resource,
+    }),
+    receiver: undefined,
+  };
+
+  return {
+    consumeIntents: [...resolved.consumeIntents, consume],
+    createIntents: [...resolved.createIntents, padding],
+  };
 }

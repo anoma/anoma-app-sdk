@@ -1,14 +1,21 @@
 /// <reference types="node" />
 import { readFileSync } from "node:fs";
-import type { EvmCall } from "types";
+import type {
+  EvmCall,
+  ResolvedParameters,
+  SupportedChainConfig,
+} from "types";
 import { beforeAll, describe, expect, it } from "vitest";
 import { initWasm } from "wasm";
 import {
+  appendGenericCallLeg,
   calculateGenericCallLabelRef,
   calculateGenericCallValueRef,
   encodeGenericCalls,
   serializeGenericCalls,
 } from "../genericCalls";
+import type { TransferBuilder } from "../models/TransferBuilder";
+import { TransferLogic } from "../models/TransferLogic";
 
 beforeAll(async () => {
   const wasmBytes = readFileSync(
@@ -99,5 +106,73 @@ describe("serializeGenericCalls", () => {
       },
     ];
     expect(() => serializeGenericCalls(big)).toThrow(/exceeds/);
+  });
+});
+
+describe("appendGenericCallLeg", () => {
+  const chain = {
+    genericCallForwarderAddress: "0x3333333333333333333333333333333333333333",
+    genericCallLogicVerifyingKey:
+      "de1d88738d93b2c67bcd7d2515e22a093bbf7f08ecd88ab24030c301a416621a",
+  } as SupportedChainConfig;
+
+  // Only `client.createPaddingResource` is reached, and that needs nothing but
+  // the trivial logic key — `TransferLogic.init` would require wasm bootstrap.
+  const client = new TransferLogic(
+    "0000000000000000000000000000000000000000000000000000000000000001"
+  );
+  client.trivialLogicVerifyingKey =
+    "0000000000000000000000000000000000000000000000000000000000000002";
+  const transferBuilder = { client } as TransferBuilder;
+
+  const existing: ResolvedParameters = {
+    consumeIntents: [],
+    createIntents: [],
+  };
+
+  it("appends exactly one consume and one create intent", () => {
+    const result = appendGenericCallLeg(existing, {
+      transferBuilder,
+      chain,
+      calls: CALLS,
+    });
+
+    expect(result.consumeIntents).toHaveLength(1);
+    expect(result.createIntents).toHaveLength(1);
+    expect(result.consumeIntents[0]).toMatchObject({
+      type: "GenericCall",
+      forwarderAddress: chain.genericCallForwarderAddress,
+      calls: CALLS,
+    });
+    expect(result.createIntents[0].receiver).toBeUndefined();
+  });
+
+  it("preserves the input intents, in order, ahead of the new ones", () => {
+    const first = appendGenericCallLeg(existing, {
+      transferBuilder,
+      chain,
+      calls: CALLS,
+    });
+    const second = appendGenericCallLeg(first, {
+      transferBuilder,
+      chain,
+      calls: CALLS,
+    });
+
+    expect(second.consumeIntents).toHaveLength(2);
+    expect(second.consumeIntents[0]).toBe(first.consumeIntents[0]);
+    // The input is not mutated.
+    expect(first.consumeIntents).toHaveLength(1);
+    expect(existing.consumeIntents).toHaveLength(0);
+  });
+
+  it("throws when the backend did not supply the generic-call logic key", () => {
+    expect(() =>
+      appendGenericCallLeg(existing, {
+        transferBuilder,
+        chain: { ...chain, genericCallLogicVerifyingKey: "" },
+        calls: CALLS,
+      })
+    ).toThrow(/generic-call logic verifying key/);
   });
 });
