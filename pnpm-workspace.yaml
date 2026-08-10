@@ -4,6 +4,9 @@ packages:
 allowBuilds:
   esbuild: false
 
+minimumReleaseAgeExclude:
+  - viem@2.55.13
+
 # permit2-sdk imports tslib without declaring it
 packageExtensions:
   "@uniswap/permit2-sdk":
