@@ -3,18 +3,25 @@ use crate::arm::{
     encryption::{Ciphertext, SecretKey},
     nullifier_key::{NullifierKey, NullifierKeyCommitment},
 };
+use crate::error::BindingsError;
 use arm::{nullifier_key::NullifierKeyCommitment as NKC, resource::Resource as R};
 use base64::{Engine as _, engine::general_purpose::STANDARD as b64};
 use serde::{self, Deserialize, Serialize};
-use tsify::Tsify;
-use wasm_bindgen::{JsError, prelude::wasm_bindgen};
 
-#[derive(Tsify, Debug, Serialize, Deserialize)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
-#[serde(rename_all = "camelCase")]
+/// u128 cannot cross the FFI boundary, so quantities travel as decimal strings.
+/// The bindings lift them back to `bigint` on the TypeScript side.
+#[derive(Debug)]
+pub struct Quantity(pub u128);
+
+uniffi::custom_type!(Quantity, String, {
+    lower: |q| q.0.to_string(),
+    try_lift: |s| Ok(Quantity(s.parse()?)),
+});
+
+#[derive(Debug, uniffi::Record)]
 pub struct ResourceProps {
     is_ephemeral: bool,
-    quantity: u128,
+    quantity: Quantity,
     logic_ref: String,
     label_ref: String,
     value_ref: String,
@@ -23,8 +30,7 @@ pub struct ResourceProps {
     nk_commitment: String,
 }
 
-#[wasm_bindgen]
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, uniffi::Object)]
 pub struct Resource(pub(crate) R);
 
 impl Resource {
@@ -33,10 +39,10 @@ impl Resource {
     }
 }
 
-#[wasm_bindgen]
+#[uniffi::export]
 impl Resource {
-    #[wasm_bindgen(constructor)]
-    pub fn new(props: ResourceProps) -> Result<Resource, JsError> {
+    #[uniffi::constructor]
+    pub fn new(props: ResourceProps) -> Result<Resource, BindingsError> {
         let ResourceProps {
             is_ephemeral,
             quantity,
@@ -48,7 +54,7 @@ impl Resource {
             nk_commitment,
         } = props;
 
-        Resource::decode(&EncodedResource {
+        Resource::decode(EncodedResource {
             is_ephemeral,
             quantity,
             logic_ref,
@@ -60,25 +66,25 @@ impl Resource {
         })
     }
 
+    #[uniffi::constructor]
     pub fn create(
         logic_ref: &Digest,
         label_ref: &Digest,
-        quantity: u128,
+        quantity: Quantity,
         value_ref: &Digest,
         is_ephemeral: bool,
         nonce: &Digest,
         nk_cmt: &NullifierKeyCommitment,
     ) -> Resource {
-        let r = R::create(
+        Resource(R::create(
             logic_ref.0,
             label_ref.0,
-            quantity,
+            quantity.0,
             value_ref.0,
             is_ephemeral,
             nonce.0,
             nk_cmt.0,
-        );
-        Resource(r)
+        ))
     }
 
     // Support Resource encoding required by Anoma SDK
@@ -101,13 +107,14 @@ impl Resource {
             nonce: b64.encode(nonce),
             rand_seed: b64.encode(rand_seed),
             nk_commitment: b64.encode(nk_commitment.inner()),
-            quantity: *quantity,
+            quantity: Quantity(*quantity),
             is_ephemeral: *is_ephemeral,
         }
     }
 
     // Support decoding from Anoma SDK Resource
-    pub fn decode(encoded: &EncodedResource) -> Result<Resource, JsError> {
+    #[uniffi::constructor]
+    pub fn decode(encoded: EncodedResource) -> Result<Resource, BindingsError> {
         let EncodedResource {
             logic_ref,
             label_ref,
@@ -117,17 +124,17 @@ impl Resource {
             nk_commitment,
             quantity,
             is_ephemeral,
-        } = encoded;
+        } = &encoded;
 
         let nonce_bytes = b64.decode(nonce)?;
         let nonce: [u8; 32] = nonce_bytes
             .try_into()
-            .map_err(|_| JsError::new("Invalid nonce"))?;
+            .map_err(|_| BindingsError::new("Invalid nonce"))?;
 
         let rand_seed_bytes = b64.decode(rand_seed)?;
         let rand_seed: [u8; 32] = rand_seed_bytes
             .try_into()
-            .map_err(|_| JsError::new("Invalid nonce"))?;
+            .map_err(|_| BindingsError::new("Invalid nonce"))?;
 
         Ok(Resource(R {
             logic_ref: Digest::from_bytes(&b64.decode(logic_ref)?)?.0,
@@ -136,7 +143,7 @@ impl Resource {
             nonce,
             rand_seed,
             nk_commitment: NKC::from_bytes(&b64.decode(nk_commitment)?)?,
-            quantity: *quantity,
+            quantity: quantity.0,
             is_ephemeral: *is_ephemeral,
         }))
     }
@@ -145,21 +152,20 @@ impl Resource {
         Digest(self.0.commitment())
     }
 
-    pub fn nullifier(&self, nf_key: &NullifierKey) -> Result<Digest, JsError> {
+    pub fn nullifier(&self, nf_key: &NullifierKey) -> Result<Digest, BindingsError> {
         Ok(Digest(self.0.nullifier(&nf_key.0)?))
     }
 
-    #[wasm_bindgen(js_name = "fromBytes")]
-    pub fn from_bytes(bytes: &[u8]) -> Result<Resource, JsError> {
+    #[uniffi::constructor]
+    pub fn from_bytes(bytes: &[u8]) -> Result<Resource, BindingsError> {
         Ok(Resource(R::from_bytes(bytes)?))
     }
 }
 
-#[derive(Tsify, Debug, Serialize, Deserialize)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
+#[derive(Debug, uniffi::Record)]
 pub struct EncodedResource {
     pub is_ephemeral: bool,
-    pub quantity: u128,
+    pub quantity: Quantity,
     pub logic_ref: String,
     pub label_ref: String,
     pub value_ref: String,
@@ -169,46 +175,42 @@ pub struct EncodedResource {
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct ResourceWithLabel {
+pub struct ResourceWithLabelData {
     pub resource: R,
     pub forwarder: Vec<u8>,
     pub erc20_token_addr: Vec<u8>,
 }
 
-#[wasm_bindgen(js_name = "ResourceWithLabel")]
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct JsResourceWithLabel(ResourceWithLabel);
+#[derive(Clone, Debug, Serialize, Deserialize, uniffi::Object)]
+pub struct ResourceWithLabel(ResourceWithLabelData);
 
-#[wasm_bindgen(js_class = "ResourceWithLabel")]
-impl JsResourceWithLabel {
-    #[wasm_bindgen(js_name = "fromEncrypted")]
+#[uniffi::export]
+impl ResourceWithLabel {
+    #[uniffi::constructor]
     pub fn from_encrypted(
         payload: Vec<u8>,
         sk_bytes: Vec<u8>,
-    ) -> Result<JsResourceWithLabel, JsError> {
+    ) -> Result<ResourceWithLabel, BindingsError> {
         let ciphertext = Ciphertext::from_bytes(payload);
         let sk = SecretKey::from_bytes(sk_bytes)?;
         let plaintext_bytes = ciphertext.decrypt(&sk)?;
-        let payload_plaintext: ResourceWithLabel = bincode::deserialize(&plaintext_bytes)?;
+        let payload_plaintext: ResourceWithLabelData = bincode::deserialize(&plaintext_bytes)?;
 
-        Ok(JsResourceWithLabel(payload_plaintext))
+        Ok(ResourceWithLabel(payload_plaintext))
     }
 
     /// Get resource instance
-    #[wasm_bindgen(getter)]
     pub fn resource(&self) -> Resource {
         Resource(self.0.resource)
     }
 
     /// Get forwarder as hex
-    #[wasm_bindgen(getter)]
     pub fn forwarder(&self) -> String {
         format!("0x{}", hex::encode(&self.0.forwarder))
     }
 
     /// Get erc20_token_addr as hex
-    #[wasm_bindgen(getter, js_name = "erc20TokenAddress")]
-    pub fn erc20_token_addr(&self) -> String {
+    pub fn erc20_token_address(&self) -> String {
         format!("0x{}", hex::encode(&self.0.erc20_token_addr))
     }
 }

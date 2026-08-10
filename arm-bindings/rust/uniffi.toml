@@ -1,0 +1,14 @@
+# Must sit beside Cargo.toml: ubrn's TS pipeline reads per-crate configs via cargo
+# metadata and ignores the `uniffiToml` key in ubrn.config.yaml.
+
+[bindings.typescript]
+# `Vec<u8>` as Uint8Array rather than ArrayBuffer.
+strictByteArrays = true
+# Emit `FooLike` as an alias of the class instead of a parallel interface.
+strictObjectTypes = true
+
+# u128 crosses the FFI as a decimal string; hand it to TS as a bigint.
+[bindings.typescript.customTypes.Quantity]
+typeName = "bigint"
+lift = "BigInt({})"
+lower = "{}.toString()"
