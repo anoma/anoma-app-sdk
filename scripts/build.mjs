@@ -20,13 +20,15 @@ const { release = false } = parseArgs({
 const crates = ["arm-bindings"];
 
 const wasmPackBuilder = crate => {
+  const crateDir = `./${crate}/rust`;
+
   // wasm-pack packages
   const { status } = spawnSync(
     "wasm-pack",
     ["build", release ? "--release" : "--debug", ["--target", "web"]].flat(),
     {
       stdio: "inherit",
-      cwd: `./${crate}`,
+      cwd: crateDir,
       env: {
         ...process.env,
         RUSTFLAGS: '--cfg getrandom_backend="wasm_js"',
@@ -37,7 +39,7 @@ const wasmPackBuilder = crate => {
     process.exit(status);
   }
 
-  const pkg = `./${crate}/pkg/${crate.replace("-", "_")}`;
+  const pkg = `${crateDir}/pkg/${crate.replace("-", "_")}`;
   const destinationPath = "./src/wasm/";
 
   execSync(`cp ${pkg}_bg.wasm ${destinationPath}`);
