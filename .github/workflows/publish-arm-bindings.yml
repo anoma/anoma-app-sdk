@@ -33,17 +33,9 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
-
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - uses: ./.github/actions/setup-js
         with:
-          node-version: 24.x
-          cache: pnpm
           registry-url: "https://registry.npmjs.org"
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
 
       # Cheaper to fail here than after a 90-minute build.
       - name: Check version is unpublished
@@ -57,36 +49,7 @@ jobs:
           fi
           echo "publishing $name@$version"
 
-      # rust_modules holds ubrn's generated wrapper crate, where the expensive
-      # wasm build actually happens.
-      - name: Restore cargo cache
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: |
-            ~/.cargo/bin
-            ~/.cargo/registry/index
-            ~/.cargo/registry/cache
-            ~/.cargo/git/db
-            arm-bindings/rust/target
-            arm-bindings/rust_modules/wasm/target
-          key: cargo-web-${{ hashFiles('arm-bindings/rust/Cargo.lock') }}
-          restore-keys: cargo-web-
-
-      - name: Install Rust toolchain
-        working-directory: arm-bindings/rust
-        run: rustup show active-toolchain
-
-      # ubrn calls `wasm-bindgen` directly and never wasm-pack, so nothing else
-      # puts this on PATH. Must match the crate pinned in wasm-cargo-patch.toml.
-      - name: Install wasm-bindgen CLI
-        run: |
-          if ! wasm-bindgen --version 2>/dev/null | grep -q '0\.2\.127'; then
-            cargo install wasm-bindgen-cli --locked --version 0.2.127
-          fi
-
-      # Supplies wasm-opt.
-      - name: Install binaryen
-        run: sudo apt-get update && sudo apt-get install -y binaryen
+      - uses: ./.github/actions/setup-wasm-toolchain
 
       - name: Build
         working-directory: arm-bindings
