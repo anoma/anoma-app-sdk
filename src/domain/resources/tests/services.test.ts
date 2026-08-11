@@ -1,5 +1,5 @@
-import { parseNullifyingTransactions } from "api";
 import type { IndexerId, NullifierRecord } from "api";
+import { parseNullifyingTransactions } from "api";
 import type { SupportedChainConfig } from "types";
 import type { Address } from "viem";
 import { afterEach, describe, expect, it, vi } from "vitest";

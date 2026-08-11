@@ -104,6 +104,9 @@ importers:
         specifier: 0.31.0-3
         version: 0.31.0-3
     devDependencies:
+      tsdown:
+        specifier: ^0.21.5
+        version: 0.21.10(typescript@6.0.3)
       uniffi-bindgen-react-native:
         specifier: 0.31.0-3
         version: 0.31.0-3(patch_hash=fd4547987fa2ba25eb5712a96b0840fe25ff330b82685b9df4479247c6f4aae1)

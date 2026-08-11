@@ -8,8 +8,8 @@ TypeScript SDK for the Anoma Pay protocol, supported by Rust WebAssembly library
 - [Viem](http://viem.sh/)
 - [Zod](https://zod.dev/)
 - [Rust](https://doc.rust-lang.org/)
-- [wasm-bindgen](https://github.com/nicolo-ribaudo/wasm-bindgen/)
-- [wasm-pack](https://github.com/nicolo-ribaudo/wasm-pack/)
+- [wasm-bindgen](https://github.com/wasm-bindgen/wasm-bindgen/)
+- [binaryen](https://github.com/WebAssembly/binaryen/)
 - [uniffi-bindgen-react-native](https://github.com/jhugman/uniffi-bindgen-react-native/)
 
 ## Setup
@@ -18,7 +18,8 @@ Requirements:
 
 - Node.js (>= 22)
 - pnpm (installable via `npm i --global pnpm` with `npm`, which is bundled with Node.js)
-- Rust toolchain & `wasm-pack` CLI (for WASM builds only)
+- Rust toolchain, the `wasm-bindgen` CLI and `wasm-opt` (binaryen) — for ARM
+  bindings builds only
 
 Install dependencies from the repository root:
 
@@ -53,7 +54,32 @@ pnpm run build:arm          # release build
 pnpm run build:arm:dev      # debug build
 ```
 
+Output lands in `arm-bindings/generated/` and `arm-bindings/dist/`, neither of
+which is committed. CI builds it whenever a PR touches `arm-bindings/` or
+`patches/` (see
+[`.github/workflows/arm-bindings.yml`](./.github/workflows/arm-bindings.yml)).
+
 The SDK itself consumes the pre-built WASM committed in `src/wasm/`.
+
+## Releases
+
+[release-please](https://github.com/googleapis/release-please) tracks both
+packages from [`release-please-config.json`](./release-please-config.json) and
+opens a separate release PR for each. The SDK tags as `vX.Y.Z`; the bindings tag
+as `arm-bindings-vX.Y.Z`.
+
+Merging a release PR triggers the matching publish workflow —
+[`publish-sdk`](./.github/workflows/publish-sdk.yml) or
+[`publish-arm-bindings`](./.github/workflows/publish-arm-bindings.yml) — each of
+which builds, tests and publishes to npm with provenance. Both can also be run
+by hand with `dry-run` for a rehearsal.
+
+Because provenance is enabled, publishing only works from CI; `npm publish` from
+a laptop will fail.
+
+## License
+
+[Apache-2.0](./LICENSE), matching the upstream `anoma-rm-risc0` crates.
 
 ## Pay Address Format
 

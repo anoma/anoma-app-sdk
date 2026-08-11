@@ -1,6 +1,9 @@
 import type { TokenRegistry } from "types";
 import { describe, expect, it } from "vitest";
-import { buildUnwrapNativeCalls, nativeSymbolFor } from "../withdrawWrappedToken";
+import {
+  buildUnwrapNativeCalls,
+  nativeSymbolFor,
+} from "../withdrawWrappedToken";
 
 const WETH = "0x1111111111111111111111111111111111111111";
 const ALICE = "0x2222222222222222222222222222222222222222";
