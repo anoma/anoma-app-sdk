@@ -51,7 +51,7 @@ then cuts the binary by roughly a third, and `tsdown` bundles
 The wasm-bindgen crate version is pinned in
 [`wasm-cargo-patch.toml`](./wasm-cargo-patch.toml) and must be bumped together
 with the CLI version installed in
-[`.github/workflows/arm-bindings.yml`](../.github/workflows/arm-bindings.yml).
+[`.github/workflows/ci-arm-bindings.yml`](../.github/workflows/ci-arm-bindings.yml).
 
 ## License
 

@@ -1,39 +1,27 @@
-name: arm-bindings
+name: ci-arm-bindings
 
 on:
   pull_request:
     paths:
       - "arm-bindings/**"
       - "patches/**"
-      - ".github/workflows/arm-bindings.yml"
+      - ".github/workflows/ci-arm-bindings.yml"
   push:
     branches:
       - main
     paths:
       - "arm-bindings/**"
       - "patches/**"
-      - ".github/workflows/arm-bindings.yml"
+      - ".github/workflows/ci-arm-bindings.yml"
 
 permissions:
   contents: read
 
 concurrency:
-  group: arm-bindings-${{ github.ref }}
+  group: ci-arm-bindings-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  # Separate job so a formatting slip fails in seconds, not behind the build.
-  rustfmt:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Rustfmt
-        working-directory: arm-bindings/rust
-        run: cargo fmt --check
-
   web:
     runs-on: ubuntu-latest
     # Cold risc0 builds are slow; the cache turns this into a few minutes.
@@ -41,6 +29,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # First, so a formatting slip fails in seconds and skips the build below.
+      - name: Rustfmt
+        working-directory: arm-bindings/rust
+        run: cargo fmt --check
 
       - uses: ./.github/actions/setup-js
 

@@ -57,7 +57,7 @@ pnpm run build:arm:dev      # debug build
 Output lands in `arm-bindings/generated/` and `arm-bindings/dist/`, neither of
 which is committed. CI builds it whenever a PR touches `arm-bindings/` or
 `patches/` (see
-[`.github/workflows/arm-bindings.yml`](./.github/workflows/arm-bindings.yml)).
+[`.github/workflows/ci-arm-bindings.yml`](./.github/workflows/ci-arm-bindings.yml)).
 
 The SDK itself consumes the pre-built WASM committed in `src/wasm/`.
 
