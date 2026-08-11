@@ -6,6 +6,11 @@ settings:
 
 packageExtensionsChecksum: sha256-KBcmJXm2j/RsAMW1s20cYn2TiKmO59xmDBuLeuLYstg=
 
+patchedDependencies:
+  uniffi-bindgen-react-native@0.31.0-3:
+    hash: fd4547987fa2ba25eb5712a96b0840fe25ff330b82685b9df4479247c6f4aae1
+    path: patches/uniffi-bindgen-react-native@0.31.0-3.patch
+
 importers:
 
   .:
@@ -92,6 +97,16 @@ importers:
       vitest:
         specifier: ^4.0.6
         version: 4.1.10(@types/node@24.13.3)(vite@7.3.6(@types/node@24.13.3)(jiti@2.6.1)(yaml@2.9.0))
+
+  arm-bindings:
+    dependencies:
+      '@ubjs/core':
+        specifier: 0.31.0-3
+        version: 0.31.0-3
+    devDependencies:
+      uniffi-bindgen-react-native:
+        specifier: 0.31.0-3
+        version: 0.31.0-3(patch_hash=fd4547987fa2ba25eb5712a96b0840fe25ff330b82685b9df4479247c6f4aae1)
 
   examples/balance:
     dependencies:
@@ -954,6 +969,9 @@ packages:
   '@typescript-eslint/visitor-keys@8.66.0':
     resolution: {integrity: sha512-dkKR8q+lKciskj1Y3vthHktl+3cMLWGyVUP23bRiPZ5O9BRT++4EqDDV+TVeIKBL1VXVEqrJlz8MYbcnvJcAlg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@ubjs/core@0.31.0-3':
+    resolution: {integrity: sha512-39XrJgUZ2VVb561sSnkXPhczNoeBsNiSRArecsV0JE7CJq69ajFkcn9/tBAUS2NpgHkLIDU+z6Ks2+1wXnboxg==}
 
   '@uniswap/permit2-sdk@1.4.0':
     resolution: {integrity: sha512-l/aGhfhB93M76vXs4eB8QNwhELE6bs66kh7F1cyobaPtINaVpMmlJv+j3KmHeHwAZIsh7QXyYzhDxs07u0Pe4Q==}
@@ -1967,6 +1985,10 @@ packages:
 
   undici-types@7.18.2:
     resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
+
+  uniffi-bindgen-react-native@0.31.0-3:
+    resolution: {integrity: sha512-br7giBJRr/j00rdMXhOZGMGuDWMAVUcxC9O3lco0KRqzEAxUz00+gegPW5tKamvKbrnj7NB682XUCYrcagtxFA==}
+    hasBin: true
 
   unrun@0.2.39:
     resolution: {integrity: sha512-h9FxYVpztY/wwq+bauLOh6Y3CWu2IVeRLq5lxzneBiIU9Tn86OGp9xiQrGhnYspAmg5dzdY0Cc8+Y70kuTARCg==}
@@ -3074,6 +3096,8 @@ snapshots:
       '@typescript-eslint/types': 8.66.0
       eslint-visitor-keys: 5.0.1
 
+  '@ubjs/core@0.31.0-3': {}
+
   '@uniswap/permit2-sdk@1.4.0':
     dependencies:
       ethers: 5.8.0
@@ -4082,6 +4106,8 @@ snapshots:
       quansync: 1.0.0
 
   undici-types@7.18.2: {}
+
+  uniffi-bindgen-react-native@0.31.0-3(patch_hash=fd4547987fa2ba25eb5712a96b0840fe25ff330b82685b9df4479247c6f4aae1): {}
 
   unrun@0.2.39:
     dependencies:

@@ -10,6 +10,7 @@ TypeScript SDK for the Anoma Pay protocol, supported by Rust WebAssembly library
 - [Rust](https://doc.rust-lang.org/)
 - [wasm-bindgen](https://github.com/nicolo-ribaudo/wasm-bindgen/)
 - [wasm-pack](https://github.com/nicolo-ribaudo/wasm-pack/)
+- [uniffi-bindgen-react-native](https://github.com/jhugman/uniffi-bindgen-react-native/)
 
 ## Setup
 
@@ -41,16 +42,18 @@ Runnable examples live in [`examples/`](./examples). Start with
 [`examples/balance`](./examples/balance): derives a keyring from a seed and
 displays the anomapay address and token balances.
 
-## Building WASM
+## Building ARM bindings
 
-The SDK includes a Rust-based WASM module for cryptographic operations. Build it with:
+Cryptographic operations are implemented in Rust in
+[`arm-bindings/`](./arm-bindings) and exposed to TypeScript through
+uniffi-bindgen-react-native.
 
 ```bash
-pnpm run build:wasm          # release build
-pnpm run build:wasm:dev      # development build
+pnpm run build:arm          # release build
+pnpm run build:arm:dev      # debug build
 ```
 
-Pre-built WASM binaries are included in `src/wasm/`.
+The SDK itself consumes the pre-built WASM committed in `src/wasm/`.
 
 ## Pay Address Format
 

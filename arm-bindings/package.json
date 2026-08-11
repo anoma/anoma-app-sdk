@@ -1,0 +1,27 @@
+{
+  "name": "@anomaorg/arm-bindings",
+  "version": "0.1.0",
+  "description": "Wasm bindings for arm-risc0",
+  "author": "Anoma",
+  "homepage": "https://anoma.net",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anoma/anoma-app-sdk"
+  },
+  "scripts": {
+    "build": "pnpm clean && pnpm build:web",
+    "build:dev": "pnpm clean && pnpm build:web:dev",
+    "build:web": "ubrn build web --release",
+    "build:web:dev": "ubrn build web",
+    "clean": "rm -rf generated",
+    "typecheck": "tsc --noEmit",
+    "lint:rust": "cargo clippy --manifest-path rust/Cargo.toml --all-targets -- -D warnings",
+    "format:check:rust": "cargo fmt --manifest-path rust/Cargo.toml --check"
+  },
+  "dependencies": {
+    "@ubjs/core": "0.31.0-3"
+  },
+  "devDependencies": {
+    "uniffi-bindgen-react-native": "0.31.0-3"
+  }
+}
