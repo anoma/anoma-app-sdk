@@ -1,0 +1,9 @@
+# TOML-merged over ubrn's generated wrapper manifest in rust_modules/wasm/,
+# patch wins. See `wasm.manifestPatchFile` in ubrn.config.yaml.
+
+[dependencies]
+# ubrn's template leaves this as "*". rust_modules/ is gitignored and
+# regenerated on every CI run, so an unpinned crate can outrun the
+# wasm-bindgen CLI installed in the workflow and fail on a schema mismatch.
+# Bump this and the CLI version in .github/workflows/arm-bindings.yml together.
+wasm-bindgen = "=0.2.127"

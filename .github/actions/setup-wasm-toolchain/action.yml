@@ -1,0 +1,53 @@
+name: setup-wasm-toolchain
+description: Rust plus the wasm-bindgen CLI and wasm-opt the arm-bindings build needs.
+
+runs:
+  using: composite
+  steps:
+    # rust_modules holds ubrn's generated wrapper crate, where the expensive
+    # wasm build actually happens.
+    - name: Restore cargo cache
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: |
+          ~/.cargo/bin
+          ~/.cargo/registry/index
+          ~/.cargo/registry/cache
+          ~/.cargo/git/db
+          arm-bindings/rust/target
+          arm-bindings/rust_modules/wasm/target
+        key: cargo-web-${{ hashFiles('arm-bindings/rust/Cargo.lock') }}
+        restore-keys: cargo-web-
+
+    # rust-toolchain.toml pins the channel and targets; fail here, not mid-build.
+    - name: Install Rust toolchain
+      working-directory: arm-bindings/rust
+      shell: bash
+      run: rustup show active-toolchain
+
+    # ubrn calls `wasm-bindgen` directly and never wasm-pack, so nothing else
+    # puts this on PATH. The version is read from the crate pin rather than
+    # repeated here, so the CLI and the crate cannot drift apart.
+    - name: Install wasm-bindgen CLI
+      shell: bash
+      run: |
+        version=$(sed -n 's/^wasm-bindgen = "=\(.*\)"$/\1/p' arm-bindings/wasm-cargo-patch.toml)
+        if [ -z "$version" ]; then
+          echo "no pinned wasm-bindgen version in arm-bindings/wasm-cargo-patch.toml"
+          exit 1
+        fi
+        if ! wasm-bindgen --version 2>/dev/null | grep -qF "$version"; then
+          cargo install wasm-bindgen-cli --locked --version "$version"
+        fi
+
+    # Supplies wasm-opt. Not from apt: Ubuntu ships binaryen 108, which mangles
+    # the externref table wasm-bindgen grows at init.
+    - name: Install binaryen
+      shell: bash
+      env:
+        BINARYEN_VERSION: "129"
+      run: |
+        curl -fsSL -o binaryen.tar.gz \
+          "https://github.com/WebAssembly/binaryen/releases/download/version_${BINARYEN_VERSION}/binaryen-version_${BINARYEN_VERSION}-x86_64-linux.tar.gz"
+        tar -xzf binaryen.tar.gz -C "$RUNNER_TEMP"
+        echo "$RUNNER_TEMP/binaryen-version_${BINARYEN_VERSION}/bin" >> "$GITHUB_PATH"

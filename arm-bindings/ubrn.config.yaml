@@ -11,5 +11,6 @@ wasm:
   # Distinct from the Rust crate name (arm-bindings) so the generated wrapper
   # and the crate it depends on don't collide in Cargo's lockfile.
   wasmCrateName: arm-bindings-wasm
+  manifestPatchFile: ./wasm-cargo-patch.toml
   tsBindings: generated/wasm
   entrypoint: generated/index.web.ts

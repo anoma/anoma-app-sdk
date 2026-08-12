@@ -2,19 +2,43 @@
   "name": "@anomaorg/arm-bindings",
   "version": "0.1.0",
   "description": "Wasm bindings for arm-risc0",
+  "license": "Apache-2.0",
   "author": "Anoma",
   "homepage": "https://anoma.net",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/anoma/anoma-app-sdk"
   },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "generated/wasm/wasm-bindgen/index_bg.wasm",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "scripts": {
-    "build": "pnpm clean && pnpm build:web",
-    "build:dev": "pnpm clean && pnpm build:web:dev",
-    "build:web": "ubrn build web --release",
+    "build": "pnpm clean && pnpm build:web && pnpm build:ts",
+    "build:dev": "pnpm clean && pnpm build:web:dev && pnpm build:ts",
+    "build:web": "ubrn build web --release && pnpm optimize:wasm",
     "build:web:dev": "ubrn build web",
-    "clean": "rm -rf generated",
+    "build:ts": "tsdown",
+    "optimize:wasm": "wasm-opt -Oz generated/wasm/wasm-bindgen/index_bg.wasm -o generated/wasm/wasm-bindgen/index_bg.opt.wasm && mv generated/wasm/wasm-bindgen/index_bg.opt.wasm generated/wasm/wasm-bindgen/index_bg.wasm",
+    "clean": "rm -rf generated dist",
     "typecheck": "tsc --noEmit",
+    "smoke": "node scripts/smoke.mjs",
     "lint:rust": "cargo clippy --manifest-path rust/Cargo.toml --all-targets -- -D warnings",
     "format:check:rust": "cargo fmt --manifest-path rust/Cargo.toml --check"
   },
@@ -22,6 +46,7 @@
     "@ubjs/core": "0.31.0-3"
   },
   "devDependencies": {
+    "tsdown": "^0.21.5",
     "uniffi-bindgen-react-native": "0.31.0-3"
   }
 }

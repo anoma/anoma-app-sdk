@@ -50,7 +50,9 @@ test("should derive distinct keyrings for distinct salts", () => {
   expect(keyringA.authorityKeyPair.privateKey).not.toEqual(
     keyringB.authorityKeyPair.privateKey
   );
-  expect(keyringA.nullifierKeyPair.nk).not.toEqual(keyringB.nullifierKeyPair.nk);
+  expect(keyringA.nullifierKeyPair.nk).not.toEqual(
+    keyringB.nullifierKeyPair.nk
+  );
 });
 
 test("should round-trip serialize and deserialize a user keyring", () => {

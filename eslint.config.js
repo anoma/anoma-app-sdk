@@ -4,7 +4,7 @@ import tseslint from "typescript-eslint";
 
 export default defineConfig([
   globalIgnores([
-    "dist",
+    "**/dist",
     ".claude",
     "arm-bindings/generated",
     "./src/wasm/arm_bindings.js",

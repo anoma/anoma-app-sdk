@@ -1,0 +1,45 @@
+name: release-please
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: release-please
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      # Manifest mode namespaces every output by package path.
+      arm-bindings-released: ${{ steps.release.outputs['arm-bindings--release_created'] }}
+      sdk-released: ${{ steps.release.outputs['.--release_created'] }}
+
+    steps:
+      - uses: googleapis/release-please-action@a02a34c4d625f9be7cb89156071d8567266a2445 # v4.2.0
+        id: release
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  publish-arm-bindings:
+    needs: release-please
+    if: needs.release-please.outputs.arm-bindings-released == 'true'
+    uses: ./.github/workflows/publish-arm-bindings.yml
+    with:
+      dry-run: false
+    secrets: inherit
+
+  publish-sdk:
+    needs: release-please
+    if: needs.release-please.outputs.sdk-released == 'true'
+    uses: ./.github/workflows/publish-sdk.yml
+    with:
+      dry-run: false
+    secrets: inherit

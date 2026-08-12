@@ -1,15 +1,22 @@
 {
   "name": "@anomaorg/anoma-app-sdk",
   "version": "0.15.0",
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@10.30.3",
   "type": "module",
   "main": "dist/index.js",
   "private": false,
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "engines": {
     "node": ">=22"
   },
   "files": [
     "./dist/*",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "exports": {
     ".": {

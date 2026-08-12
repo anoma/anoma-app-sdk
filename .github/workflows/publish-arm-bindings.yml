@@ -1,0 +1,71 @@
+name: publish-arm-bindings
+
+# Driven by release-please once it has cut an arm-bindings release; also
+# runnable by hand for a rehearsal. The wasm is built from source here because
+# generated/ is not committed.
+on:
+  workflow_call:
+    inputs:
+      dry-run:
+        type: boolean
+        default: false
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: "Pack and verify without publishing"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  # npm provenance attestation.
+  id-token: write
+
+concurrency:
+  group: publish-arm-bindings
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: ./.github/actions/setup-js
+        with:
+          registry-url: "https://registry.npmjs.org"
+
+      # Cheaper to fail here than after a 90-minute build.
+      - name: Check version is unpublished
+        working-directory: arm-bindings
+        run: |
+          name=$(node -p "require('./package.json').name")
+          version=$(node -p "require('./package.json').version")
+          if npm view "$name@$version" version >/dev/null 2>&1; then
+            echo "$name@$version is already published. Bump the version first."
+            exit 1
+          fi
+          echo "publishing $name@$version"
+
+      - uses: ./.github/actions/setup-wasm-toolchain
+
+      - name: Build
+        working-directory: arm-bindings
+        run: pnpm build
+
+      - name: Smoke test
+        working-directory: arm-bindings
+        run: pnpm smoke
+
+      - name: Publish
+        working-directory: arm-bindings
+        run: |
+          if [ "${{ inputs.dry-run }}" = "true" ]; then
+            npm publish --dry-run
+          else
+            npm publish
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_ACCESS_TOKEN }}

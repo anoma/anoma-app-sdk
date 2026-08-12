@@ -1,10 +1,6 @@
 /// <reference types="node" />
 import { readFileSync } from "node:fs";
-import type { 
-  EvmCall, 
-  ResolvedParameters, 
-  SupportedChainConfig,
-} from "types";
+import type { EvmCall, ResolvedParameters, SupportedChainConfig } from "types";
 import { beforeAll, describe, expect, it } from "vitest";
 import { initWasm } from "wasm";
 import {
