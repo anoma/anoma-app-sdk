@@ -15,6 +15,9 @@ importers:
 
   .:
     dependencies:
+      '@anomaorg/arm-bindings':
+        specifier: 0.2.0
+        version: 0.2.0
       '@noble/hashes':
         specifier: 1.8.0
         version: 1.8.0
@@ -128,6 +131,9 @@ packages:
 
   '@adraffy/ens-normalize@1.11.1':
     resolution: {integrity: sha512-nhCBV3quEgesuf7c7KYfperqSS14T8bYuvJ8PcLJp6znkZpFc0AuW4qBtr8eKVyPPe/8RSr7sglCWPU5eaxwKQ==}
+
+  '@anomaorg/arm-bindings@0.2.0':
+    resolution: {integrity: sha512-6w5SlJdMADNv9r0WncK45PIkBEUKofmABBVtOQ1RnCVNEUwA4XQIUYnoj92YoTMC2A3Gbdy1Of2Izh8bYi+0TQ==}
 
   '@babel/code-frame@7.29.7':
     resolution: {integrity: sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw==}
@@ -2194,6 +2200,10 @@ packages:
 snapshots:
 
   '@adraffy/ens-normalize@1.11.1': {}
+
+  '@anomaorg/arm-bindings@0.2.0':
+    dependencies:
+      '@ubjs/core': 0.31.0-3
 
   '@babel/code-frame@7.29.7':
     dependencies:

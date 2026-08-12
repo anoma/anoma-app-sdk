@@ -1,9 +1,13 @@
+import type {
+  EncodedResource,
+  NullifierKey,
+  Resource,
+} from "@anomaorg/arm-bindings";
 import type { IndexerId, NullifierRecord } from "api";
 import { parseNullifyingTransactions } from "api";
 import type { SupportedChainConfig } from "types";
 import type { Address } from "viem";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { EncodedResource, NullifierKey, Resource } from "wasm";
 import {
   attachNullifiers,
   buildAppResources,
@@ -61,7 +65,7 @@ const makeResource = (
   resource: {} as Resource,
   encoded: {
     nonce: "nonce-1",
-    is_ephemeral: false,
+    isEphemeral: false,
   } as unknown as EncodedResource,
   forwarder: FORWARDER,
   erc20TokenAddress: "0x0000000000000000000000000000000000000001",

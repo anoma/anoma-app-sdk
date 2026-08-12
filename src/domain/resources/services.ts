@@ -1,4 +1,10 @@
 import {
+  type EncodedResource,
+  NullifierKey,
+  type Resource,
+  ResourceWithLabel,
+} from "@anomaorg/arm-bindings";
+import {
   buildEvmTransaction,
   type IndexerEVMTransaction,
   type IndexerResource,
@@ -19,12 +25,6 @@ import type {
   TokenRegistry,
 } from "types";
 import type { Address, Hex } from "viem";
-import {
-  type EncodedResource,
-  NullifierKey,
-  Resource,
-  ResourceWithLabel,
-} from "wasm";
 import { InsufficientResourcesError } from "./errors";
 import { selectUTXOs } from "./selectUTXOs";
 import type {
@@ -152,10 +152,10 @@ export const deserializeResourcesPayload = async (
       return [];
     }
     return {
-      resource: payload.resource,
-      encoded: payload.resource.encode(),
-      forwarder: payload.forwarder as Address,
-      erc20TokenAddress: payload.erc20TokenAddress as Address,
+      resource: payload.resource(),
+      encoded: payload.resource().encode(),
+      forwarder: payload.forwarder() as Address,
+      erc20TokenAddress: payload.erc20TokenAddress() as Address,
       transactionHash: item.transaction_hash,
     };
   });
@@ -165,7 +165,7 @@ export const deserializeResourcesPayload = async (
 export const pickNonEphemeralResources = (
   resources: ResourceWithDetails[]
 ): ResourceWithDetails[] => {
-  return resources.filter(item => !item.encoded.is_ephemeral);
+  return resources.filter(item => !item.encoded.isEphemeral);
 };
 
 /**

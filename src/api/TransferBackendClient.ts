@@ -1,3 +1,4 @@
+import type { EncodedResource } from "@anomaorg/arm-bindings";
 import type {
   FeeRequest,
   FeeResponse,
@@ -20,6 +21,29 @@ import type {
   TransactionResultResponse,
 } from "./types";
 
+// Resources come from `Resource.encode()` (camelCase), backend needs as snake_case.
+function formatParameters(parameters: Parameters) {
+  const camelToSnake = (key: string): string =>
+    key.replace(/[A-Z]/g, c => `_${c.toLowerCase()}`).replace(/^_/, "");
+
+  const formatResource = (resource: EncodedResource) =>
+    Object.fromEntries(
+      Object.entries(resource).map(([key, value]) => [camelToSnake(key), value])
+    );
+
+  const formatArray = <T extends { resource: EncodedResource }>(array: T[]) =>
+    array.map(({ resource, ...item }) => ({
+      ...item,
+      resource: formatResource(resource),
+    }));
+
+  return {
+    ...parameters,
+    consumedResources: formatArray(parameters.consumedResources),
+    createdResources: formatArray(parameters.createdResources),
+  };
+}
+
 export class TransferBackendClient extends ApiClient {
   async configuration(): Promise<NetworkConfigurationWrappedResponse> {
     return this.get<NetworkConfigurationWrappedResponse>(
@@ -31,9 +55,9 @@ export class TransferBackendClient extends ApiClient {
     network: string,
     params: Parameters
   ): Promise<SendTransactionResponse> {
-    return this.post<Parameters, SendTransactionResponse>(
+    return this.post(
       ApiPaths.SendTransaction(network),
-      params
+      formatParameters(params)
     );
   }
 
@@ -75,7 +99,10 @@ export class TransferBackendClient extends ApiClient {
     network: string,
     parameters: Parameters
   ): Promise<EstimateDurationResponse> {
-    return this.post(ApiPaths.EstimateDuration(network), parameters);
+    return this.post(
+      ApiPaths.EstimateDuration(network),
+      formatParameters(parameters)
+    );
   }
 
   /**

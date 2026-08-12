@@ -1,3 +1,4 @@
+import type { EncodedResource } from "@anomaorg/arm-bindings";
 import type {
   IndexerEVMTransaction,
   IndexerId,
@@ -5,7 +6,6 @@ import type {
 } from "api";
 import type { UserPublicKeys } from "types";
 import type { Address } from "viem";
-import type { EncodedResource } from "wasm";
 export * from "domain/keys/types";
 export * from "domain/transfer/types";
 

@@ -1,12 +1,4 @@
 import {
-  calculateLabelRef,
-  calculateValueRefFromAuth,
-  calculateValueRefFromUserAddress,
-} from "domain/transfer/services";
-import { toHex } from "lib/utils";
-import type { CreateMintProps, MintResources, UserPublicKeys } from "types";
-import type { Address } from "viem";
-import {
   AuthorityVerifyingKey,
   Digest,
   MerkleTree,
@@ -14,9 +6,16 @@ import {
   NullifierKeyCommitment,
   Resource,
   randomBytes,
-} from "wasm";
-
-import { Client, initClient } from "wasm/client";
+} from "@anomaorg/arm-bindings";
+import {
+  calculateLabelRef,
+  calculateValueRefFromAuth,
+  calculateValueRefFromUserAddress,
+} from "domain/transfer/services";
+import { toHex } from "lib/utils";
+import type { CreateMintProps, MintResources, UserPublicKeys } from "types";
+import type { Address } from "viem";
+import { Client, initClient } from "./client";
 
 /**
  * Transfer client which provies the necessary resource logic for
@@ -52,12 +51,12 @@ export class TransferLogic extends Client {
     }
     return Resource.create(
       Digest.fromHex(this.trivialLogicVerifyingKey),
-      Digest.default(),
+      Digest.zero(),
       0n,
-      Digest.default(),
+      Digest.zero(),
       true,
       nonce,
-      NullifierKey.default().commit()
+      NullifierKey.zero().commit()
     );
   }
 

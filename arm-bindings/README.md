@@ -30,6 +30,16 @@ console.log(nonce.toHex());
 bundlers that understand `new URL(..., import.meta.url)` (Vite, webpack 5,
 Rollup, Metro) resolve it without extra configuration.
 
+One exception: `vite dev` pre-bundles dependencies into
+`node_modules/.vite/deps/`, which moves that URL out from under the binary.
+Exclude the package to keep the path intact — `vite build` is unaffected.
+
+```typescript
+export default defineConfig({
+  optimizeDeps: { exclude: ["@anomaorg/arm-bindings"] },
+});
+```
+
 ## Building from source
 
 Requires a Rust toolchain, the `wasm-bindgen` CLI, and `wasm-opt` (binaryen).

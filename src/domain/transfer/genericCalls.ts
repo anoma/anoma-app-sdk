@@ -1,3 +1,10 @@
+import {
+  Digest,
+  hashBytes,
+  NullifierKey,
+  randomBytes,
+  Resource,
+} from "@anomaorg/arm-bindings";
 import { fromHex, invariant, toBase64 } from "lib/utils";
 import type {
   ConsumeIntent,
@@ -8,7 +15,6 @@ import type {
   SupportedChainConfig,
 } from "types";
 import { encodeAbiParameters, type Address, type Hex } from "viem";
-import { Digest, hashBytes, NullifierKey, randomBytes, Resource } from "wasm";
 import type { TransferBuilder } from "./models/TransferBuilder";
 
 /**
@@ -94,7 +100,7 @@ export function createGenericCallResource(params: {
   nonce?: Digest;
 }): Resource {
   const { logicVerifyingKey, forwarderAddress, calls } = params;
-  const nullifierKey = params.nullifierKey ?? NullifierKey.default();
+  const nullifierKey = params.nullifierKey ?? NullifierKey.zero();
   const nonce = params.nonce ?? Digest.fromBytes(randomBytes());
   return Resource.create(
     Digest.fromHex(logicVerifyingKey),
@@ -143,11 +149,11 @@ export function appendGenericCallLeg(
     forwarderAddress: genericCallForwarderAddress,
     calls,
     resource,
-    nullifierKey: NullifierKey.default(),
+    nullifierKey: NullifierKey.zero(),
   };
   const padding: CreateIntent = {
     resource: transferBuilder.client.createPaddingResource({
-      nullifierKey: NullifierKey.default(),
+      nullifierKey: NullifierKey.zero(),
       resource,
     }),
     receiver: undefined,

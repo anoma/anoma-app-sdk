@@ -37,6 +37,31 @@ import { formatBalance } from "@anomaorg/anoma-pay-sdk/lib";
 import type { AppResource } from "@anomaorg/anoma-pay-sdk/types";
 ```
 
+### Vite
+
+Vite apps need one line of config:
+
+```typescript
+export default defineConfig({
+  optimizeDeps: { exclude: ["@anomaorg/arm-bindings"] },
+});
+```
+
+`@anomaorg/arm-bindings` locates its WebAssembly binary relative to
+`import.meta.url`. Vite's dev-mode dependency pre-bundling copies the module
+into `node_modules/.vite/deps/`, which moves that URL while leaving the
+relative path intact, so the lookup misses and the dev server answers with
+`index.html` — surfacing as:
+
+```
+CompileError: WebAssembly.instantiate(): expected magic word 00 61 73 6d, found 3c 21 64 6f
+```
+
+Excluding the package keeps it unbundled and the path correct. This affects
+`vite dev` only: `vite build` resolves `new URL(..., import.meta.url)` natively
+and emits the binary as an asset, so production builds need no configuration.
+Bundlers other than Vite are unaffected.
+
 ## Examples
 
 Runnable examples live in [`examples/`](./examples). Start with
@@ -59,7 +84,8 @@ which is committed. CI builds it whenever a PR touches `arm-bindings/` or
 `patches/` (see
 [`.github/workflows/ci-arm-bindings.yml`](./.github/workflows/ci-arm-bindings.yml)).
 
-The SDK itself consumes the pre-built WASM committed in `src/wasm/`.
+The SDK consumes the published `@anomaorg/arm-bindings` package, so building
+the bindings is only needed when changing the Rust code itself.
 
 ## Releases
 
@@ -122,7 +148,6 @@ src/
 │   ├── resources     # Resource machine handling
 │   └── transfer      # Transfer models and services
 ├── lib           # Shared utility functions
-├── wasm          # WASM bindings and pre-built binaries
 ├── lib-constants.ts  # SDK library constants
 ├── types.ts      # Shared type definitions
 └── version.ts      # Current SDK version, generated when running `pnpm build`

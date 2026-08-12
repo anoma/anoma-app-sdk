@@ -1,8 +1,7 @@
 /// <reference types="node" />
-import { readFileSync } from "node:fs";
+import { initSdk } from "@anomaorg/arm-bindings";
 import type { EvmCall, ResolvedParameters, SupportedChainConfig } from "types";
 import { beforeAll, describe, expect, it } from "vitest";
-import { initWasm } from "wasm";
 import {
   appendGenericCallLeg,
   calculateGenericCallLabelRef,
@@ -14,10 +13,7 @@ import type { TransferBuilder } from "../models/TransferBuilder";
 import { TransferLogic } from "../models/TransferLogic";
 
 beforeAll(async () => {
-  const wasmBytes = readFileSync(
-    new URL("../../../wasm/arm_bindings_bg.wasm", import.meta.url)
-  );
-  await initWasm(new Uint8Array(wasmBytes));
+  await initSdk();
 });
 
 const CALLS: EvmCall[] = [
@@ -110,7 +106,7 @@ describe("appendGenericCallLeg", () => {
     genericCallForwarderAddress: "0x3333333333333333333333333333333333333333",
     genericCallLogicVerifyingKey:
       "de1d88738d93b2c67bcd7d2515e22a093bbf7f08ecd88ab24030c301a416621a",
-  } as SupportedChainConfig;
+  } as unknown as SupportedChainConfig;
 
   // Only `client.createPaddingResource` is reached, and that needs nothing but
   // the trivial logic key — `TransferLogic.init` would require wasm bootstrap.

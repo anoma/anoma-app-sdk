@@ -9,7 +9,7 @@ import {
   extractUserPublicKeys,
   fromHex,
   IndexerClient,
-  initSync,
+  initSdk,
   NullifierKey,
   parseNullifyingTransactions,
   pickNonEphemeralResources,
@@ -22,7 +22,6 @@ import {
   type SupportedChainConfig,
   type UserKeyring,
 } from "@anomaorg/anoma-app-sdk";
-import wasmUrl from "@anomaorg/anoma-app-sdk/anomaPayArm.wasm?url";
 import { isHex } from "viem";
 
 // Any string. The keyring is derived from it, so it is NOT a private key or a
@@ -126,7 +125,7 @@ const addBalanceRow = ({ token, formatted }: AggregatedTokenBalance) => {
 };
 
 const main = async () => {
-  initSync(await fetch(wasmUrl).then(res => res.bytes()));
+  await initSdk();
 
   const keyring = createUserKeyringFromIkm(
     isHex(seed) ? fromHex(seed) : stringToBytes(seed),
