@@ -8,6 +8,8 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  # The publish-* called workflows need this, and it can only be granted by the caller.
+  id-token: write
 
 concurrency:
   group: release-please
