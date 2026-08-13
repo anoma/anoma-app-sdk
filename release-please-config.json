@@ -21,5 +21,6 @@
   "include-component-in-tag": false,
   "include-v-in-tag": true,
   "separate-pull-requests": true,
+  "always-update": true,
   "pull-request-title-pattern": "chore${scope}: release ${version}"
 }
