@@ -1,6 +1,6 @@
 {
   "name": "@anomaorg/anoma-app-sdk",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "license": "Apache-2.0",
   "packageManager": "pnpm@10.30.3",
   "type": "module",
