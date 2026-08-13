@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "name": "Anoma App SDK Example Expo",
+    "slug": "anoma-app-sdk-example-expo",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "ios": {
+      "bundleIdentifier": "com.anomaappsdkexampleexpo"
+    },
+    "android": {
+      "package": "com.anomaappsdkexampleexpo"
+    },
+    "web": {}
+  }
+}

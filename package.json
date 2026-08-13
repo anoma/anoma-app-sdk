@@ -77,7 +77,7 @@
     ]
   },
   "dependencies": {
-    "@anomaorg/arm-bindings": "0.2.0",
+    "@anomaorg/arm-bindings": "0.3.0",
     "@noble/hashes": "1.8.0",
     "@noble/secp256k1": "3.0.0",
     "@uniswap/permit2-sdk": "1.4.0",

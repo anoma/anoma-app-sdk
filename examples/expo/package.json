@@ -1,0 +1,25 @@
+{
+  "name": "@anomaorg/anoma-app-sdk-example-expo",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "dependencies": {
+    "@anomaorg/anoma-app-sdk": "workspace:*",
+    "expo": "57.0.11",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-native": "0.86.2",
+    "react-native-web": "0.21.2"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.18",
+    "typescript": "7.0.2"
+  },
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web",
+    "prebuild": "expo prebuild"
+  },
+  "private": true
+}

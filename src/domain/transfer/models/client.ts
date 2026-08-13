@@ -1,5 +1,5 @@
-import { initSdk } from "@anomaorg/arm-bindings";
 import { invariant, validHexBytes, validHexString } from "lib/utils";
+import { initSdk } from "../../..";
 
 const DIGEST_BYTES_LENGTH = 32;
 const DIGEST_HEX_LENGTH = DIGEST_BYTES_LENGTH * 2;
