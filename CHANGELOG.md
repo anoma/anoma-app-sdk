@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.1](https://github.com/anoma/anoma-app-sdk/compare/v0.16.0...v0.16.1) (2026-08-13)
+
+
+### Bug Fixes
+
+* update sdk-released flag for release-please ([#51](https://github.com/anoma/anoma-app-sdk/issues/51)) ([77a38e9](https://github.com/anoma/anoma-app-sdk/commit/77a38e96cd1ccf0199a48f20b06e24057efdefe5))
+
 ## [0.16.0](https://github.com/anoma/anoma-app-sdk/compare/v0.15.0...v0.16.0) (2026-08-13)
 
 
