@@ -1,3 +1,4 @@
+import { NullifierKey, randomBytes } from "@anomaorg/arm-bindings";
 import { getUserPublicKeysFromKeyring } from "lib/keyUtils";
 import { toBase64 } from "lib/utils";
 import type {
@@ -11,7 +12,6 @@ import type {
   TokenRegistry,
   UserKeyring,
 } from "types";
-import { NullifierKey, randomBytes } from "wasm";
 import { createGenericCallResource } from "../genericCalls";
 import { ParametersDraftResolver } from "./ParametersDraftResolver";
 import type { TransferBuilder } from "./TransferBuilder";
@@ -116,11 +116,11 @@ export class SwapResolver {
       forwarderAddress: this.chain.genericCallForwarderAddress,
       calls: input.calls,
       resource: genericCallResource,
-      nullifierKey: NullifierKey.default(),
+      nullifierKey: NullifierKey.zero(),
     };
     const genericCallPadding: CreateIntent = {
       resource: this.transferBuilder.client.createPaddingResource({
-        nullifierKey: NullifierKey.default(),
+        nullifierKey: NullifierKey.zero(),
         resource: genericCallResource,
       }),
       receiver: undefined,

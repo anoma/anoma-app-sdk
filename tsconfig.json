@@ -12,7 +12,6 @@
     "resolveJsonModule": true,
     "noEmit": true,
     "strict": true,
-    "preserveSymlinks": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
@@ -24,8 +23,6 @@
       "domain/*": ["./src/domain/*"],
       "lib": ["./src/lib/index.ts"],
       "lib/*": ["./src/lib/*"],
-      "wasm": ["./src/wasm/index.ts"],
-      "wasm/*": ["./src/wasm/*"],
       "lib-constants": ["./src/lib-constants.ts"],
       "types": ["./src/types.ts"]
     }

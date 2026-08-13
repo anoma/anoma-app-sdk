@@ -1,19 +1,19 @@
-import type { IndexerEVMTransaction, NullifierRecord } from "api";
-import { buildNullifierRecord } from "api";
-import { AUTH_SIGNATURE_DOMAIN } from "lib-constants";
-import { fromBase64, fromHex, normalizeHex } from "lib/utils";
-import type { Address, Hex } from "viem";
 import {
-  AuthoritySignature,
   AuthoritySigningKey,
-  AuthorityVerifyingKey,
   Digest,
   hashBytes,
   MerkleTree,
   NullifierKey,
   PublicKey,
   Resource,
-} from "wasm";
+  type AuthoritySignature,
+  type AuthorityVerifyingKey,
+} from "@anomaorg/arm-bindings";
+import type { IndexerEVMTransaction, NullifierRecord } from "api";
+import { buildNullifierRecord } from "api";
+import { AUTH_SIGNATURE_DOMAIN } from "lib-constants";
+import { fromBase64, fromHex, normalizeHex } from "lib/utils";
+import type { Address, Hex } from "viem";
 import type { ConsumedResource, CreatedResource } from "./types/resources";
 
 /** Computes the label reference digest from a forwarder and token contract address. */
@@ -70,7 +70,7 @@ export function getOwnedCreatedResources(
   const ownerEncryptionKey = new PublicKey(encryptionPublicKey).toBase64();
   return createdResources.filter(
     ({ resource, witnessData }) =>
-      !resource.is_ephemeral &&
+      !resource.isEphemeral &&
       witnessData.TokenTransferPersistent?.receiverEncryptionPublicKey ===
         ownerEncryptionKey
   );

@@ -73,14 +73,13 @@ This is a domain-driven React application for privacy-preserving payments on the
 | ├ `icons/`          | Icon components                                                                               |
 | ├ `layouts/`        | Page layout shells (Auth layout, App layout)                                                  |
 | └ `stories/`        | Storybook stories                                                                             |
-| `wasm/`             | WASM client initialization from `arm-bindings`                                                |
 
 ### Dependency Direction
 
 ```
 routes → ui/features → ui/components
   ↓         ↓
-hooks → domain → wasm
+hooks → domain → @anomaorg/arm-bindings
   ↓         ↓
 store     api
   ↓
@@ -204,14 +203,16 @@ lib (pure utilities, no side effects)
 
 ## WASM Integration
 
-- [REQUIRED] Always initialize WASM before use via `initWasm()` or the `initClient()` helper.
+- [REQUIRED] Always initialize the bindings before use via `initSdk()` from
+  `@anomaorg/arm-bindings`, or the `initClient()` helper in
+  `domain/transfer/models/client.ts`.
 - [REQUIRED] WASM-dependent classes use the async `ClassName.init()` factory pattern.
 
   ```typescript
   // Correct
   const transfer = await Transfer.init();
 
-  // Wrong — constructor requires digest from WASM
+  // Wrong — constructor requires digest from the bindings
   const transfer = new Transfer();
   ```
 

@@ -1,5 +1,4 @@
 import type { Hex } from "viem";
-import type { EncodedKeypair } from "wasm";
 import { ApiClient } from "./ApiClient";
 import { IndexerPaths } from "./paths";
 import {
@@ -20,10 +19,7 @@ export class IndexerClient extends ApiClient {
     public_key: Hex;
     secret_key: Hex;
   }): Promise<IndexerAddKeysResponse> {
-    return this.post<EncodedKeypair, IndexerAddKeysResponse>(
-      IndexerPaths.AddKeys,
-      keypair
-    );
+    return this.post(IndexerPaths.AddKeys, keypair);
   }
 
   async checkKeysSync(privateKey: Hex): Promise<IndexerCheckKeysSyncResponse> {

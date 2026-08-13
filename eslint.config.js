@@ -3,13 +3,7 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import tseslint from "typescript-eslint";
 
 export default defineConfig([
-  globalIgnores([
-    "**/dist",
-    ".claude",
-    "arm-bindings/generated",
-    "./src/wasm/arm_bindings.js",
-    "./src/wasm/arm_bindings.d.ts",
-  ]),
+  globalIgnores(["**/dist", "arm-bindings/generated"]),
   {
     files: ["**/*.{ts,js}"],
     extends: [js.configs.recommended, tseslint.configs.recommended],

@@ -6,8 +6,7 @@ storybook-static
 coverage
 build
 *.local
-package-lock.json
-routeTree.gen.ts
-src/wasm/arm_bindings.js
-src/wasm/arm_bindings.d.ts
+pnpm-lock.yaml
+arm-bindings/generated
+arm-bindings/target
 **/CHANGELOG.md
