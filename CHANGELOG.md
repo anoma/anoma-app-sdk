@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.0](https://github.com/anoma/anoma-app-sdk/compare/v0.16.2...v0.17.0) (2026-08-13)
+
+
+### Features
+
+* install arm-bindings from npm ([#55](https://github.com/anoma/anoma-app-sdk/issues/55)) ([961c9f1](https://github.com/anoma/anoma-app-sdk/commit/961c9f1ada53357376d7b4e852f6a9c6150f6573))
+
 ## [0.16.2](https://github.com/anoma/anoma-app-sdk/compare/v0.16.1...v0.16.2) (2026-08-13)
 
 
