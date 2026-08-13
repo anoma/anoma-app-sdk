@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.2](https://github.com/anoma/anoma-app-sdk/compare/v0.16.1...v0.16.2) (2026-08-13)
+
+
+### Bug Fixes
+
+* add repository field so npm can verify provenance ([#53](https://github.com/anoma/anoma-app-sdk/issues/53)) ([1f97e9e](https://github.com/anoma/anoma-app-sdk/commit/1f97e9e6c9ebf1542c7ece93e978c7e1b4c7e4d7))
+
 ## [0.16.1](https://github.com/anoma/anoma-app-sdk/compare/v0.16.0...v0.16.1) (2026-08-13)
 
 
