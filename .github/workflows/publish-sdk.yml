@@ -60,5 +60,3 @@ jobs:
           else
             npm publish
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_ACCESS_TOKEN }}
