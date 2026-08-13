@@ -1,5 +1,5 @@
 // Loads the built package the way a consumer would and exercises one
-// round-trip. Guards the wasm lookup in dist/index.js: src/index.ts resolves
+// round-trip. Guards the wasm lookup in bundled/dist: the entry resolves
 // index_bg.wasm relative to import.meta.url, so any change to the bundle layout
 // or the published `files` list breaks here rather than in someone's app.
 import assert from "node:assert/strict";
@@ -15,9 +15,11 @@ globalThis.fetch = async input => {
   });
 };
 
-const { initSdk, Digest, randomBytes } = await import("../dist/index.js");
+const { initArmBindings, Digest, randomBytes } = await import(
+  "../bundled/dist/index.js"
+);
 
-await initSdk();
+await initArmBindings();
 
 const bytes = randomBytes();
 assert.equal(bytes.length, 32, "randomBytes should return 32 bytes");

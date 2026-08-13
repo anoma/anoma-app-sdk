@@ -1,8 +1,8 @@
 name: publish-arm-bindings
 
 # Driven by release-please once it has cut an arm-bindings release; also
-# runnable by hand for a rehearsal. The wasm is built from source here because
-# generated/ is not committed.
+# runnable by hand for a rehearsal. Everything is built from source here, since
+# neither generated/ nor the native halves are committed.
 on:
   workflow_call:
     inputs:
@@ -18,26 +18,20 @@ on:
 
 permissions:
   contents: read
-  # npm provenance attestation.
-  id-token: write
 
 concurrency:
   group: publish-arm-bindings
   cancel-in-progress: false
 
 jobs:
-  publish:
+  # Cheaper to fail here than after three platform builds.
+  guard:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
-
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - uses: ./.github/actions/setup-js
-        with:
-          registry-url: "https://registry.npmjs.org"
 
-      # Cheaper to fail here than after a 90-minute build.
       - name: Check version is unpublished
         working-directory: arm-bindings
         run: |
@@ -49,21 +43,40 @@ jobs:
           fi
           echo "publishing $name@$version"
 
-      - uses: ./.github/actions/setup-wasm-toolchain
+  build:
+    needs: guard
+    uses: ./.github/workflows/build-arm-bindings.yml
 
-      - name: Build
-        working-directory: arm-bindings
-        run: pnpm build
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      # npm provenance attestation. Scoped to this job so the builds cannot
+      # mint one.
+      id-token: write
 
-      - name: Smoke test
-        working-directory: arm-bindings
-        run: pnpm smoke
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: ./.github/actions/setup-js
+        with:
+          registry-url: "https://registry.npmjs.org"
+
+      # The tarball the build job packed and verified, published verbatim, so
+      # what ships is the artefact that passed the checks.
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: arm-bindings-package
+          path: ${{ runner.temp }}/package
 
       - name: Publish
-        working-directory: arm-bindings
         run: |
+          tarball=$(ls "$RUNNER_TEMP"/package/*.tgz)
+          echo "publishing $(basename "$tarball")"
           if [ "${{ inputs.dry-run }}" = "true" ]; then
-            npm publish --dry-run
+            npm publish --dry-run "$tarball"
           else
-            npm publish
+            npm publish "$tarball"
           fi
