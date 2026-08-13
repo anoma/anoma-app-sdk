@@ -62,7 +62,10 @@ export class TransferBackendClient extends ApiClient {
   }
 
   async estimateFee(network: string, params: FeeRequest): Promise<FeeResponse> {
-    return this.post(ApiPaths.EstimateFee(network), params);
+    return this.post(ApiPaths.EstimateFee(network), {
+      ...params,
+      transaction: formatParameters(params.transaction),
+    });
   }
 
   async tokenPrices(tokens: string[]): Promise<TokenPriceResponse> {
