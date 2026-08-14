@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.1](https://github.com/anoma/anoma-app-sdk/compare/v0.17.0...v0.17.1) (2026-08-14)
+
+
+### Bug Fixes
+
+* send fee estimate resources as snake_case ([#58](https://github.com/anoma/anoma-app-sdk/issues/58)) ([4519022](https://github.com/anoma/anoma-app-sdk/commit/451902216a1ca22f7a6f964fe0c2a74b487fbfbd))
+
 ## [0.17.0](https://github.com/anoma/anoma-app-sdk/compare/v0.16.2...v0.17.0) (2026-08-13)
 
 
