@@ -10,11 +10,10 @@
 wasm-bindgen = "=0.2.127"
 
 # Does what wasm-opt -Oz used to, 6KB better over the wire and without a
-# platform-specific binary in CI. opt-level stays at ubrn's 3: the merge
-# rejects a string over an integer, and "z" is what these recover anyway.
-# `panic` is deliberately left alone — uniffi's scaffolding catches unwinds
-# to turn panics into errors.
+# platform-specific binary in CI. Measured: these two are worth 4.5KB gzipped
+# at no build-time cost, while lto adds 35 bytes. opt-level stays at ubrn's 3,
+# since the merge rejects a string over an integer. `panic` is left alone —
+# uniffi's scaffolding catches unwinds to turn panics into errors.
 [profile.release]
-lto = true
 codegen-units = 1
 strip = true

@@ -1,17 +1,11 @@
 name: setup-rust-toolchain
-description: Rust plus the extra tools each arm-bindings target shells out to.
-
-inputs:
-  platform:
-    description: web, android or ios. Selects the extra tooling and the cache key.
-    required: true
+description: Rust plus the tools the arm-bindings build shells out to.
 
 runs:
   using: composite
   steps:
-    # rust_modules holds ubrn's generated wrapper crate, where the expensive
-    # wasm build actually happens. Absent for the native targets; the cache
-    # action skips paths that do not exist.
+    # rust_modules holds ubrn's generated wrapper crate, where the wasm build
+    # actually happens.
     - name: Restore cargo cache
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
@@ -22,8 +16,8 @@ runs:
           ~/.cargo/git/db
           arm-bindings/rust/target
           arm-bindings/rust_modules/wasm/target
-        key: cargo-${{ inputs.platform }}-${{ hashFiles('arm-bindings/rust/Cargo.lock') }}
-        restore-keys: cargo-${{ inputs.platform }}-
+        key: cargo-${{ runner.os }}-${{ hashFiles('arm-bindings/rust/Cargo.lock') }}
+        restore-keys: cargo-${{ runner.os }}-
 
     # rust-toolchain.toml pins the channel and targets; fail here, not mid-build.
     - name: Install Rust toolchain
@@ -35,7 +29,6 @@ runs:
     # puts this on PATH. The version is read from the crate pin rather than
     # repeated here, so the CLI and the crate cannot drift apart.
     - name: Install wasm-bindgen CLI
-      if: inputs.platform == 'web'
       shell: bash
       run: |
         version=$(sed -n 's/^wasm-bindgen = "=\(.*\)"$/\1/p' arm-bindings/wasm-cargo-patch.toml)
@@ -48,10 +41,9 @@ runs:
         fi
 
     # `ubrn build android` runs `cargo ndk` per target rather than cargo itself.
-    # ANDROID_NDK_HOME is preset to r27.3 on both the ubuntu and macOS images,
-    # so it is left alone: ANDROID_NDK_LATEST_HOME differs per image and moves.
+    # ANDROID_NDK_HOME is preset by the image and left alone, since
+    # ANDROID_NDK_LATEST_HOME moves whenever the image is rebuilt.
     - name: Install cargo-ndk
-      if: inputs.platform == 'android'
       shell: bash
       env:
         CARGO_NDK_VERSION: "4.1.2"
@@ -59,5 +51,3 @@ runs:
         if ! cargo ndk --version 2>/dev/null | grep -qF "$CARGO_NDK_VERSION"; then
           cargo install cargo-ndk --locked --version "$CARGO_NDK_VERSION"
         fi
-
-    # ios needs nothing extra: ubrn drives xcodebuild and lipo, both preinstalled.

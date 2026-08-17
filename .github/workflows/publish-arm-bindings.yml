@@ -24,7 +24,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Cheaper to fail here than after three platform builds.
+  # Cheaper to fail here than after the build.
   guard:
     runs-on: ubuntu-latest
     steps:
@@ -50,10 +50,10 @@ jobs:
   publish:
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     permissions:
       contents: read
-      # npm provenance attestation. Scoped to this job so the builds cannot
+      # npm provenance attestation. Scoped here so the build job cannot
       # mint one.
       id-token: write
 

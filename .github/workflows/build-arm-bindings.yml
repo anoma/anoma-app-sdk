@@ -1,8 +1,7 @@
 name: build-arm-bindings
 
-# Builds every target and assembles them into one package. Called by
-# ci-arm-bindings on pull requests and by publish-arm-bindings on a release,
-# so the two cannot drift.
+# Builds every target and packs them. Called by ci-arm-bindings on pull
+# requests and by publish-arm-bindings on a release, so the two cannot drift.
 on:
   workflow_call:
 
@@ -10,35 +9,17 @@ permissions:
   contents: read
 
 jobs:
-  # One runner per target: ios needs xcodebuild, android needs the NDK. Each
-  # hands its output over as a tarball rather than raw paths, because
-  # upload-artifact rewrites the directory root and drops file permissions.
+  # macos-15 is the one image carrying both Xcode and the Android NDK, so all
+  # three targets build in one place and the package needs no reassembly.
   build:
-    name: ${{ matrix.platform }}
-    runs-on: ${{ matrix.os }}
-    # Cold risc0 builds are slow; the cache turns this into a few minutes.
-    timeout-minutes: 90
-    strategy:
-      # One platform's failure must not hide another's.
-      fail-fast: false
-      matrix:
-        include:
-          - platform: web
-            os: ubuntu-latest
-            paths: generated/web generated/index.web.ts
-          - platform: android
-            os: ubuntu-latest
-            paths: android cpp generated/native generated/index.native.ts generated/NativeArmBindings.ts
-          - platform: ios
-            os: macos-15
-            paths: ios AnomaorgArmBindingsFramework.xcframework ArmBindings.podspec
+    runs-on: macos-15
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # First, so a formatting slip fails in seconds and skips the build below.
       - name: Rustfmt
-        if: matrix.platform == 'web'
         working-directory: arm-bindings/rust
         run: cargo fmt --check
 
@@ -46,65 +27,17 @@ jobs:
       - uses: ./.github/actions/setup-js
 
       - uses: ./.github/actions/setup-rust-toolchain
-        with:
-          platform: ${{ matrix.platform }}
 
       # Host target: for wasm32 uniffi_core needs its
       # wasm-unstable-single-threaded feature, which only ubrn's wrapper enables.
       - name: Clippy
-        if: matrix.platform == 'web'
         working-directory: arm-bindings
         run: pnpm lint:rust
 
+      # android, then ios, then web, then the TypeScript bundle.
       - name: Build
         working-directory: arm-bindings
-        run: pnpm build:${{ matrix.platform }}
-
-      # Each target collects only the paths it owns, so the three unpack over
-      # one another without colliding. android/build and android/.cxx belong to
-      # gradle rather than ubrn and never reach the tarball.
-      - name: Collect
-        working-directory: arm-bindings
-        run: |
-          tar -czf "$RUNNER_TEMP/${{ matrix.platform }}.tar.gz" \
-            --exclude=android/build --exclude=android/.cxx \
-            ${{ matrix.paths }}
-
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: arm-bindings-${{ matrix.platform }}
-          path: ${{ runner.temp }}/${{ matrix.platform }}.tar.gz
-          retention-days: 1
-
-  # The only place all three targets exist at once, so everything that needs a
-  # whole package happens here.
-  package:
-    needs: build
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - uses: ./.github/actions/setup-js
-
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
-        with:
-          pattern: arm-bindings-*
-          path: ${{ runner.temp }}/artifacts
-          merge-multiple: true
-
-      - name: Restore build output
-        working-directory: arm-bindings
-        run: |
-          for archive in "$RUNNER_TEMP"/artifacts/*.tar.gz; do
-            tar -xzf "$archive"
-          done
-
-      # Not a platform target of its own, and it needs generated/web in place.
-      - name: Bundle
-        working-directory: arm-bindings
-        run: pnpm build:ts
+        run: pnpm build
 
       # Only possible once generated/ exists.
       - name: TypeScript (bindings)
@@ -116,26 +49,6 @@ jobs:
       - name: Smoke test
         working-directory: arm-bindings
         run: pnpm smoke
-
-      # npm would happily publish a package quietly missing a platform, so
-      # check one artefact from each.
-      - name: Verify every target arrived
-        working-directory: arm-bindings
-        run: |
-          for path in \
-            bundled/dist/index.js \
-            generated/web/wasm-bindgen/index_bg.wasm \
-            generated/native/arm_bindings.ts \
-            android/src/main/jniLibs/arm64-v8a/libarm_bindings.a \
-            AnomaorgArmBindingsFramework.xcframework \
-            ArmBindings.podspec
-          do
-            if [ ! -e "$path" ]; then
-              echo "missing from the package: $path"
-              exit 1
-            fi
-          done
-          echo "web, android and ios all present"
 
       # Publishing consumes this exact file, so what ships is what was checked.
       - name: Pack
