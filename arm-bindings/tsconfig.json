@@ -10,5 +10,6 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["src", "generated"]
+  "include": ["bundled", "generated"],
+  "exclude": ["bundled/dist"]
 }

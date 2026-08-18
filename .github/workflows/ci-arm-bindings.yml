@@ -5,6 +5,8 @@ on:
     paths:
       - "arm-bindings/**"
       - "patches/**"
+      - ".github/actions/setup-rust-toolchain/**"
+      - ".github/workflows/build-arm-bindings.yml"
       - ".github/workflows/ci-arm-bindings.yml"
   push:
     branches:
@@ -12,6 +14,8 @@ on:
     paths:
       - "arm-bindings/**"
       - "patches/**"
+      - ".github/actions/setup-rust-toolchain/**"
+      - ".github/workflows/build-arm-bindings.yml"
       - ".github/workflows/ci-arm-bindings.yml"
 
 permissions:
@@ -22,51 +26,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  web:
-    runs-on: ubuntu-latest
-    # Cold risc0 builds are slow; the cache turns this into a few minutes.
-    timeout-minutes: 90
-
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      # First, so a formatting slip fails in seconds and skips the build below.
-      - name: Rustfmt
-        working-directory: arm-bindings/rust
-        run: cargo fmt --check
-
-      - uses: ./.github/actions/setup-js
-
-      - uses: ./.github/actions/setup-wasm-toolchain
-
-      # Host target: for wasm32 uniffi_core needs its
-      # wasm-unstable-single-threaded feature, which only ubrn's wrapper enables.
-      - name: Clippy
-        working-directory: arm-bindings
-        run: pnpm lint:rust
-
-      - name: Build
-        working-directory: arm-bindings
-        run: pnpm build
-
-      # Only possible once generated/ exists.
-      - name: TypeScript (bindings)
-        working-directory: arm-bindings
-        run: pnpm typecheck
-
-      # Loads dist/ as a consumer would: covers the wasm lookup and files list.
-      - name: Smoke test
-        working-directory: arm-bindings
-        run: pnpm smoke
-
-      # Packs for real so the tarball can be downloaded and tried; also checks
-      # the files list resolves.
-      - name: Pack
-        working-directory: arm-bindings
-        run: npm pack
-
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: arm-bindings
-          path: arm-bindings/*.tgz
-          retention-days: 14
+  # Exactly what a release builds, so a green PR means a publishable package.
+  build:
+    uses: ./.github/workflows/build-arm-bindings.yml

@@ -10,18 +10,19 @@
     "url": "git+https://github.com/anoma/anoma-app-sdk.git"
   },
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./package.json": "./package.json"
-  },
+  "main": "./index",
+  "types": "./bundled/dist/index.d.ts",
   "files": [
-    "dist",
-    "generated/wasm/wasm-bindgen/index_bg.wasm",
+    "index.js",
+    "index.web.js",
+    "index.native.js",
+    "bundled/dist",
+    "generated",
+    "cpp",
+    "ios",
+    "android",
+    "ArmBindings.podspec",
+    "AnomaorgArmBindingsFramework.xcframework",
     "README.md",
     "LICENSE"
   ],
@@ -30,13 +31,16 @@
     "provenance": true
   },
   "scripts": {
-    "build": "pnpm clean && pnpm build:web && pnpm build:ts",
-    "build:dev": "pnpm clean && pnpm build:web:dev && pnpm build:ts",
-    "build:web": "ubrn build web --release && pnpm optimize:wasm",
+    "build": "pnpm clean && pnpm build:android && pnpm build:ios && pnpm build:web && pnpm build:ts",
+    "build:dev": "pnpm clean && pnpm build:ios:dev && pnpm build:android:dev && pnpm build:web:dev",
+    "build:android": "ubrn build android --and-generate --release",
+    "build:android:dev": "ubrn build android --and-generate",
+    "build:ios": "ubrn build ios --and-generate --release",
+    "build:ios:dev": "ubrn build ios --and-generate",
+    "build:web": "ubrn build web --release",
     "build:web:dev": "ubrn build web",
     "build:ts": "tsdown",
-    "optimize:wasm": "wasm-opt -Oz generated/wasm/wasm-bindgen/index_bg.wasm -o generated/wasm/wasm-bindgen/index_bg.opt.wasm && mv generated/wasm/wasm-bindgen/index_bg.opt.wasm generated/wasm/wasm-bindgen/index_bg.wasm",
-    "clean": "rm -rf generated dist",
+    "clean": "rm -rf generated bundled/dist cpp android ios *.podspec *.xcframework",
     "typecheck": "tsc --noEmit",
     "smoke": "node scripts/smoke.mjs",
     "lint:rust": "cargo clippy --manifest-path rust/Cargo.toml --all-targets -- -D warnings",
@@ -45,8 +49,27 @@
   "dependencies": {
     "@ubjs/core": "0.31.0-3"
   },
+  "peerDependencies": {
+    "react-native": ">=0.79"
+  },
+  "peerDependenciesMeta": {
+    "react-native": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "tsdown": "^0.21.5",
     "uniffi-bindgen-react-native": "0.31.0-3"
+  },
+  "codegenConfig": {
+    "name": "ArmBindingsSpec",
+    "type": "modules",
+    "jsSrcsDir": "generated",
+    "outputDir": {
+      "ios": "ios/generated"
+    },
+    "android": {
+      "javaPackageName": "net.anoma"
+    }
   }
 }

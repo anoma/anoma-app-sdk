@@ -5,5 +5,15 @@
 # ubrn's template leaves this as "*". rust_modules/ is gitignored and
 # regenerated on every CI run, so an unpinned crate can outrun the
 # wasm-bindgen CLI installed in the workflow and fail on a schema mismatch.
-# Bump this and the CLI version in .github/workflows/arm-bindings.yml together.
+# setup-rust-toolchain reads the CLI version from this line, so the two
+# cannot drift; bumping it here is enough.
 wasm-bindgen = "=0.2.127"
+
+# Does what wasm-opt -Oz used to, 6KB better over the wire and without a
+# platform-specific binary in CI. Measured: these two are worth 4.5KB gzipped
+# at no build-time cost, while lto adds 35 bytes. opt-level stays at ubrn's 3,
+# since the merge rejects a string over an integer. `panic` is left alone —
+# uniffi's scaffolding catches unwinds to turn panics into errors.
+[profile.release]
+codegen-units = 1
+strip = true

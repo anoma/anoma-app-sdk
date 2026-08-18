@@ -1,0 +1,62 @@
+name: build-arm-bindings
+
+# Builds every target and packs them. Called by ci-arm-bindings on pull
+# requests and by publish-arm-bindings on a release, so the two cannot drift.
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  # macos-15 is the one image carrying both Xcode and the Android NDK, so all
+  # three targets build in one place and the package needs no reassembly.
+  build:
+    runs-on: macos-15
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # First, so a formatting slip fails in seconds and skips the build below.
+      - name: Rustfmt
+        working-directory: arm-bindings/rust
+        run: cargo fmt --check
+
+      # Also applies the uniffi-bindgen-react-native patch the build depends on.
+      - uses: ./.github/actions/setup-js
+
+      - uses: ./.github/actions/setup-rust-toolchain
+
+      # Host target: for wasm32 uniffi_core needs its
+      # wasm-unstable-single-threaded feature, which only ubrn's wrapper enables.
+      - name: Clippy
+        working-directory: arm-bindings
+        run: pnpm lint:rust
+
+      # android, then ios, then web, then the TypeScript bundle.
+      - name: Build
+        working-directory: arm-bindings
+        run: pnpm build
+
+      # Only possible once generated/ exists.
+      - name: TypeScript (bindings)
+        working-directory: arm-bindings
+        run: pnpm typecheck
+
+      # Loads bundled/dist as a consumer would, so it fails here rather than in
+      # someone's app if the wasm lookup moves.
+      - name: Smoke test
+        working-directory: arm-bindings
+        run: pnpm smoke
+
+      # Publishing consumes this exact file, so what ships is what was checked.
+      - name: Pack
+        working-directory: arm-bindings
+        run: npm pack
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: arm-bindings-package
+          path: arm-bindings/*.tgz
+          retention-days: 14
