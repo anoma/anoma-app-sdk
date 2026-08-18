@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0](https://github.com/anoma/anoma-app-sdk/compare/arm-bindings-v0.2.0...arm-bindings-v0.3.0) (2026-08-18)
+
+
+### Features
+
+* export arm bindings to react-native ([#60](https://github.com/anoma/anoma-app-sdk/issues/60)) ([2c8c101](https://github.com/anoma/anoma-app-sdk/commit/2c8c101cb131dd214ca03cf996aab60b5673e1f6))
+* install arm-bindings from npm ([#55](https://github.com/anoma/anoma-app-sdk/issues/55)) ([961c9f1](https://github.com/anoma/anoma-app-sdk/commit/961c9f1ada53357376d7b4e852f6a9c6150f6573))
+
 ## [0.2.0](https://github.com/anoma/anoma-app-sdk/compare/arm-bindings-v0.1.0...arm-bindings-v0.2.0) (2026-08-13)
 
 
