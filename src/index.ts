@@ -7,3 +7,6 @@ export * from "./types";
 // Resolve NullifierKeyPair ambiguity between domain and arm-bindings
 export { NullifierKeyPair as ArmNullifierKeyPair } from "@anomaorg/arm-bindings";
 export { NullifierKeyPair } from "./domain";
+
+// The SDK's entry point; the bindings are all it initializes today.
+export { initArmBindings as initSdk } from "@anomaorg/arm-bindings";

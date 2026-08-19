@@ -1,7 +1,7 @@
 /// <reference types="node" />
-import { initSdk } from "@anomaorg/arm-bindings";
 import type { EvmCall, ResolvedParameters, SupportedChainConfig } from "types";
 import { beforeAll, describe, expect, it } from "vitest";
+import { initSdk } from "../../..";
 import {
   appendGenericCallLeg,
   calculateGenericCallLabelRef,
