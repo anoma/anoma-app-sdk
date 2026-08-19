@@ -24,12 +24,6 @@ importers:
       '@noble/secp256k1':
         specifier: 3.0.0
         version: 3.0.0
-      '@uniswap/permit2-sdk':
-        specifier: 1.4.0
-        version: 1.4.0
-      '@wagmi/core':
-        specifier: 3.5.2
-        version: 3.5.2(@types/react@19.2.18)(react@19.2.8)(typescript@6.0.3)(viem@2.53.1(typescript@6.0.3)(zod@4.1.13))
       bs58:
         specifier: 6.0.0
         version: 6.0.0
@@ -39,12 +33,6 @@ importers:
       crc-32:
         specifier: 1.2.2
         version: 1.2.2
-      viem:
-        specifier: 2.53.1
-        version: 2.53.1(typescript@6.0.3)(zod@4.1.13)
-      zod:
-        specifier: 4.1.13
-        version: 4.1.13
     devDependencies:
       '@commitlint/cli':
         specifier: ^20.5.0
@@ -58,6 +46,12 @@ importers:
       '@types/node':
         specifier: ^24.12.0
         version: 24.13.3
+      '@uniswap/permit2-sdk':
+        specifier: 1.4.0
+        version: 1.4.0
+      '@wagmi/core':
+        specifier: 3.5.2
+        version: 3.5.2(@types/react@19.2.18)(react@19.2.8)(typescript@6.0.3)(viem@2.53.1(typescript@6.0.3)(zod@4.1.13))
       eslint:
         specifier: ^9.36.0
         version: 9.39.5(jiti@2.6.1)
@@ -91,6 +85,9 @@ importers:
       typescript-eslint:
         specifier: ^8.58.0
         version: 8.66.0(eslint@9.39.5(jiti@2.6.1))(typescript@6.0.3)
+      viem:
+        specifier: 2.53.1
+        version: 2.53.1(typescript@6.0.3)(zod@4.1.13)
       vite:
         specifier: ^7.1.7
         version: 7.3.6(@types/node@24.13.3)(jiti@2.6.1)(lightningcss@1.33.0)(terser@5.50.0)(yaml@2.9.0)
@@ -100,6 +97,9 @@ importers:
       vitest:
         specifier: ^4.0.6
         version: 4.1.10(@types/node@24.13.3)(vite@7.3.6(@types/node@24.13.3)(jiti@2.6.1)(lightningcss@1.33.0)(terser@5.50.0)(yaml@2.9.0))
+      zod:
+        specifier: 4.1.13
+        version: 4.1.13
 
   arm-bindings:
     dependencies:
@@ -122,6 +122,9 @@ importers:
       '@anomaorg/anoma-app-sdk':
         specifier: workspace:*
         version: link:../..
+      viem:
+        specifier: 2.53.1
+        version: 2.53.1(typescript@6.0.3)(zod@4.1.13)
     devDependencies:
       typescript:
         specifier: ~6.0.2
