@@ -44,3 +44,7 @@ jobs:
           name: anoma-app-sdk
           path: package/*.tgz
           retention-days: 14
+
+      # Installable build per commit, so the app can test before a release.
+      - name: Preview release
+        run: npx pkg-pr-new publish './package/*.tgz'
