@@ -5,8 +5,10 @@ import {
   type IndexerAddKeysResponse,
   type IndexerCheckKeysSyncResponse,
   type IndexerContract,
+  type IndexerContractResourcesResponse,
   type IndexerHealthResponse,
-  type IndexerResourceResponse,
+  type IndexerResource,
+  type IndexerResourcesResponse,
   type NullifyingTransactionsResponse,
 } from "./types";
 
@@ -41,19 +43,20 @@ export class IndexerClient extends ApiClient {
     );
   }
 
-  async resources(
+  async contractResources(
     discoveryPrivateKey: Hex,
-    contracts: IndexerContract[]
-  ): Promise<IndexerResourceResponse> {
-    const responses = await Promise.all(
-      contracts.map(({ chain_id, contract_address }) =>
-        this.get<IndexerResourceResponse>(
-          `${IndexerPaths.Tags}/${chain_id}/${contract_address}/${discoveryPrivateKey}`
-        )
-      )
+    contract: IndexerContract
+  ): Promise<IndexerResource[]> {
+    const response = await this.get<IndexerContractResourcesResponse>(
+      `${IndexerPaths.Tags}/${contract.chain_id}/${contract.contract_address}/${discoveryPrivateKey}`
     );
-    return {
-      resources: responses.flatMap(r => r.resources),
-    };
+    return response.resources;
+  }
+
+  async resources(discoveryPrivateKey: Hex): Promise<IndexerResource[]> {
+    const response = await this.get<IndexerResourcesResponse>(
+      `${IndexerPaths.Tags}/${discoveryPrivateKey}`
+    );
+    return response.resources.flatMap(c => c.resources);
   }
 }
