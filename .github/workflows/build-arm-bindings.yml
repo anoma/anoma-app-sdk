@@ -4,6 +4,11 @@ name: build-arm-bindings
 # requests and by publish-arm-bindings on a release, so the two cannot drift.
 on:
   workflow_call:
+    inputs:
+      preview:
+        description: Publish an installable build for this commit.
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -60,3 +65,8 @@ jobs:
           name: arm-bindings-package
           path: arm-bindings/*.tgz
           retention-days: 14
+
+      # Installable build per commit; off for releases, which go to npm.
+      - name: Preview release
+        if: inputs.preview
+        run: npx pkg-pr-new publish './arm-bindings/*.tgz'

@@ -29,3 +29,5 @@ jobs:
   # Exactly what a release builds, so a green PR means a publishable package.
   build:
     uses: ./.github/workflows/build-arm-bindings.yml
+    with:
+      preview: true
