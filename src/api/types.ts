@@ -41,7 +41,7 @@ export class ResponseError extends Error {
  *  RESPONSES
  */
 export type IndexerId = `${number}_${Address}`; // {chainId}_{address}
-export type IndexerAddress = string; // Uppercase without prefix `0x`, like "0EA3B55B68A3F307C8FE3FE66E443247C95F0CFF"
+export type IndexerHex = Uppercase<string>; // Uppercase without prefix `0x`, like "0EA3B55B68A3F307C8FE3FE66E443247C95F0CFF"
 
 export type NullifierRecord = {
   id: IndexerId;
@@ -84,7 +84,7 @@ export type IndexerBlob = {
 
 export type IndexerResource = {
   resource_payload: IndexerBlob;
-  transaction_hash: IndexerAddress;
+  transaction_hash: IndexerHex;
 };
 
 export type IndexerContractResourcesResponse = {
@@ -94,7 +94,7 @@ export type IndexerContractResourcesResponse = {
 export type IndexerResourcesResponse = {
   resources: {
     chain: number;
-    contract: IndexerAddress;
+    contract: IndexerHex;
     resources: IndexerResource[];
   }[];
 };
