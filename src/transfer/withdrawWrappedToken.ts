@@ -19,6 +19,8 @@ const WRAPPED_NATIVE_BY_NETWORK: Record<
 > = {
   ethereum: { wrappedSymbol: "WETH", nativeSymbol: "ETH" },
   arbitrum: { wrappedSymbol: "WETH", nativeSymbol: "ETH" },
+  base: { wrappedSymbol: "WETH", nativeSymbol: "ETH" },
+  monad: { wrappedSymbol: "WMON", nativeSymbol: "MON" },
 };
 
 /**
