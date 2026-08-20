@@ -53,22 +53,18 @@ const toChainConfig = (
  * Fetches the user's own resources from the indexer. The indexer only scans for
  * a discovery key it knows, so an unknown key (404) is registered and retried.
  */
-const fetchResources = async (keyring: UserKeyring, chainIds: number[]) => {
-  const { indexed_contracts } = await indexer.config();
-  const contracts = indexed_contracts.filter(c =>
-    chainIds.includes(c.chain_id)
-  );
+const fetchResources = async (keyring: UserKeyring) => {
   const privateKey = toHex(keyring.discoveryKeyPair.privateKey);
 
   try {
-    return (await indexer.resources(privateKey, contracts)).resources;
+    return await indexer.resources(privateKey);
   } catch (error) {
     if (!(error instanceof ResponseError) || error.status !== 404) throw error;
     await indexer.addKeys({
       public_key: toHex(keyring.discoveryKeyPair.publicKey),
       secret_key: privateKey,
     });
-    return (await indexer.resources(privateKey, contracts)).resources;
+    return await indexer.resources(privateKey);
   }
 };
 
@@ -78,10 +74,7 @@ const getBalances = async (keyring: UserKeyring) => {
     .filter(config => config.enabled)
     .map(toChainConfig);
 
-  const indexerResources = await fetchResources(
-    keyring,
-    chains.map(chain => chain.chainId)
-  );
+  const indexerResources = await fetchResources(keyring);
 
   const decrypted = await deserializeResourcesPayload(
     keyring.encryptionKeyPair.privateKey,
