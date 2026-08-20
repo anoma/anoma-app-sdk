@@ -67,22 +67,16 @@ export function calculateGenericCallValueRef(calls: EvmCall[]): Digest {
 
 /**
  * Serializes raw EVM calls into the backend witness shape, base64-encoding the
- * calldata. `value` is narrowed to a JS number; swap calls always use 0 (wei),
- * so no precision is lost.
+ * calldata. `value` stays a bigint: native withdrawals forward whole token
+ * amounts in wei, which exceed `Number.MAX_SAFE_INTEGER`. `bigIntReplacer`
+ * encodes it as a decimal string on the wire.
  */
 export function serializeGenericCalls(calls: EvmCall[]): GenericCallInput[] {
-  return calls.map(({ to, value, data }) => {
-    if (value > BigInt(Number.MAX_SAFE_INTEGER)) {
-      throw new Error(
-        `Generic call value ${value} exceeds Number.MAX_SAFE_INTEGER; would lose precision.`
-      );
-    }
-    return {
-      to,
-      value: Number(value),
-      data: toBase64(fromHex(data)),
-    };
-  });
+  return calls.map(({ to, value, data }) => ({
+    to,
+    value,
+    data: toBase64(fromHex(data)),
+  }));
 }
 
 /**

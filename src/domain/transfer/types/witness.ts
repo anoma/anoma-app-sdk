@@ -51,10 +51,12 @@ type TokenTransferConsumedPersistent = {
  */
 // `generic_call::CallInput` — a single EVM call forwarded through the
 // `GenericCallForwarder`. `data` is base64-encoded calldata (the backend
-// decodes it as `Vec<u8>`); `value` is wei sent with the call (0 for ERC-20 swaps).
+// decodes it as `Vec<u8>`); `value` is wei sent with the call (0 for ERC-20
+// swaps, the full amount for a native withdrawal) and goes over the wire as a
+// decimal string, since wei amounts exceed `Number.MAX_SAFE_INTEGER`.
 export type GenericCallInput = {
   to: Address;
-  value: number;
+  value: bigint;
   data: string;
 };
 

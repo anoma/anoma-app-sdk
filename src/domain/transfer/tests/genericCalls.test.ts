@@ -1,4 +1,5 @@
 /// <reference types="node" />
+import { bigIntReplacer } from "lib/utils";
 import type { EvmCall, ResolvedParameters, SupportedChainConfig } from "types";
 import { beforeAll, describe, expect, it } from "vitest";
 import { initSdk } from "../../..";
@@ -84,20 +85,25 @@ describe("calculateGenericCallLabelRef / ValueRef", () => {
 describe("serializeGenericCalls", () => {
   it("base64-encodes calldata and passes through zero values", () => {
     expect(serializeGenericCalls(CALLS)).toEqual([
-      { to: CALLS[0].to, value: 0, data: "" },
-      { to: CALLS[1].to, value: 0, data: "3q2+7w==" }, // deadbeef
+      { to: CALLS[0].to, value: 0n, data: "" },
+      { to: CALLS[1].to, value: 0n, data: "3q2+7w==" }, // deadbeef
     ]);
   });
 
-  it("throws rather than silently corrupting values above 2^53", () => {
-    const big: EvmCall[] = [
+  it("keeps wei values above 2^53 lossless, as a decimal string on the wire", () => {
+    const calls: EvmCall[] = [
       {
         to: "0x1111111111111111111111111111111111111111",
-        value: BigInt(Number.MAX_SAFE_INTEGER) + 1n,
+        value: 30_000_000_000_000_000_000n, // 30 WETH
         data: "0x",
       },
     ];
-    expect(() => serializeGenericCalls(big)).toThrow(/exceeds/);
+    expect(serializeGenericCalls(calls)[0].value).toBe(
+      30_000_000_000_000_000_000n
+    );
+    expect(
+      JSON.stringify(serializeGenericCalls(calls), bigIntReplacer)
+    ).toContain('"value":"30000000000000000000"');
   });
 });
 
