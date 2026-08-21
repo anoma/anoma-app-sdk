@@ -18,6 +18,7 @@ export type NetworkAddress = `${Network}:${Address}`; // {network}:{address}
 export type UUID = `${string}-${string}-${string}-${string}-${string}`;
 
 export type AppResource = EncodedResource & {
+  chainId: number;
   network: Network;
   erc20TokenAddress: Address;
   forwarder: Address;

@@ -70,6 +70,7 @@ const makeResource = (
   forwarder: FORWARDER,
   erc20TokenAddress: "0x0000000000000000000000000000000000000001",
   transactionHash: "AABBCCDD",
+  chainId: CHAIN_ID,
   nullifierHex: "aa11",
   ...overrides,
 });
@@ -230,14 +231,10 @@ describe("buildAppResources", () => {
     expect(appResource.consumedIn?.txHash).toBe("0x01");
   });
 
-  it("drops resources whose forwarder has no configured chain", () => {
+  it("drops resources whose chain is not configured", () => {
     const result = buildAppResources(
       [chain],
-      [
-        makeResource({
-          forwarder: "0x000000000000000000000000000000000000dead",
-        }),
-      ],
+      [makeResource({ chainId: 1 })],
       buildTransactionLookup([])
     );
 
