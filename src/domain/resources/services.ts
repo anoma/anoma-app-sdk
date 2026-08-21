@@ -201,9 +201,7 @@ export const buildAppResources = (
   transactionLookup: TransactionLookup,
   onlyAvailableResources = true
 ): AppResource[] => {
-  const forwarderChainMap = new Map(
-    chainConfig.map(chain => [chain.chainId, chain])
-  );
+  const chainMap = new Map(chainConfig.map(chain => [chain.chainId, chain]));
   const updatedResources: AppResource[] = [];
 
   for (const deserializedResource of resources) {
@@ -216,7 +214,7 @@ export const buildAppResources = (
       nullifierHex,
     } = deserializedResource;
 
-    const chain = forwarderChainMap.get(chainId);
+    const chain = chainMap.get(chainId);
     if (!chain) continue;
 
     const consumedIn = transactionLookup.byNullifier.get(nullifierHex);
