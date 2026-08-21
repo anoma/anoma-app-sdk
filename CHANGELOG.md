@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.1](https://github.com/anoma/anoma-app-sdk/compare/v0.18.0...v0.18.1) (2026-08-21)
+
+
+### Bug Fixes
+
+* map resource chain by id ([#67](https://github.com/anoma/anoma-app-sdk/issues/67)) ([1a11d9d](https://github.com/anoma/anoma-app-sdk/commit/1a11d9df6935d6ced98a1567c114101af1d4b605))
+
 ## [0.18.0](https://github.com/anoma/anoma-app-sdk/compare/v0.17.1...v0.18.0) (2026-08-20)
 
 
