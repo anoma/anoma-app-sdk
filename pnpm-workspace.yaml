@@ -5,9 +5,6 @@ packages:
 allowBuilds:
   esbuild: false
 
-patchedDependencies:
-  uniffi-bindgen-react-native@0.31.0-3: patches/uniffi-bindgen-react-native@0.31.0-3.patch
-
 # permit2-sdk imports tslib without declaring it
 packageExtensions:
   "@uniswap/permit2-sdk":

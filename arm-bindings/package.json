@@ -47,8 +47,8 @@
     "format:check:rust": "cargo fmt --manifest-path rust/Cargo.toml --check"
   },
   "dependencies": {
-    "@ubjs/core": "0.31.0-3",
-    "uniffi-bindgen-react-native": "0.31.0-3"
+    "@ubjs/core": "0.31.0-5",
+    "uniffi-bindgen-react-native": "0.31.0-5"
   },
   "devDependencies": {
     "tsdown": "^0.21.5"

@@ -25,21 +25,6 @@ runs:
       shell: bash
       run: rustup show active-toolchain
 
-    # ubrn calls `wasm-bindgen` directly and never wasm-pack, so nothing else
-    # puts this on PATH. The version is read from the crate pin rather than
-    # repeated here, so the CLI and the crate cannot drift apart.
-    - name: Install wasm-bindgen CLI
-      shell: bash
-      run: |
-        version=$(sed -n 's/^wasm-bindgen = "=\(.*\)"$/\1/p' arm-bindings/wasm-cargo-patch.toml)
-        if [ -z "$version" ]; then
-          echo "no pinned wasm-bindgen version in arm-bindings/wasm-cargo-patch.toml"
-          exit 1
-        fi
-        if ! wasm-bindgen --version 2>/dev/null | grep -qF "$version"; then
-          cargo install wasm-bindgen-cli --locked --version "$version"
-        fi
-
     # `ubrn build android` runs `cargo ndk` per target rather than cargo itself.
     # ANDROID_NDK_HOME is preset by the image and left alone, since
     # ANDROID_NDK_LATEST_HOME moves whenever the image is rebuilt.
