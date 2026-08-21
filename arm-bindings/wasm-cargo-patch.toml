@@ -2,12 +2,11 @@
 # patch wins. See `wasm.manifestPatchFile` in ubrn.config.yaml.
 
 [dependencies]
-# ubrn's template leaves this as "*". rust_modules/ is gitignored and
-# regenerated on every CI run, so an unpinned crate can outrun the
-# wasm-bindgen CLI installed in the workflow and fail on a schema mismatch.
-# setup-rust-toolchain reads the CLI version from this line, so the two
-# cannot drift; bumping it here is enough.
-wasm-bindgen = "=0.2.127"
+# ubrn runs wasm-bindgen in-process, so the schema the CLI speaks is whatever
+# `wasm-bindgen-cli-support` uniffi-bindgen-react-native pins in its Cargo.toml.
+# ubrn's template leaves this "*", which resolves to latest and fails the schema
+# check; it must match that pin exactly.
+wasm-bindgen = "=0.2.100"
 
 # Does what wasm-opt -Oz used to, 6KB better over the wire and without a
 # platform-specific binary in CI. Measured: these two are worth 4.5KB gzipped
