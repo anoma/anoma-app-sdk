@@ -11,8 +11,8 @@ importers:
   .:
     dependencies:
       '@anomaorg/arm-bindings':
-        specifier: 0.3.0
-        version: 0.3.0(react-native@0.86.2(@babel/core@7.29.7)(@types/react@19.2.18)(react@19.2.8))
+        specifier: https://pkg.pr.new/@anomaorg/arm-bindings@e0492f7
+        version: https://pkg.pr.new/@anomaorg/arm-bindings@e0492f7(react-native@0.86.2(@babel/core@7.29.7)(@types/react@19.2.18)(react@19.2.8))
       '@noble/hashes':
         specifier: 1.8.0
         version: 1.8.0
@@ -161,8 +161,9 @@ packages:
   '@adraffy/ens-normalize@1.11.1':
     resolution: {integrity: sha512-nhCBV3quEgesuf7c7KYfperqSS14T8bYuvJ8PcLJp6znkZpFc0AuW4qBtr8eKVyPPe/8RSr7sglCWPU5eaxwKQ==}
 
-  '@anomaorg/arm-bindings@0.3.0':
-    resolution: {integrity: sha512-jydYFJaSxnpmFtVV19qjQKlnt0LwagHytaS5y8bCjHtQ0S0A2M0djwQ9Iak/IfDCD7PFIWd3JWLZ2XZBpFRiyg==}
+  '@anomaorg/arm-bindings@https://pkg.pr.new/@anomaorg/arm-bindings@e0492f7':
+    resolution: {integrity: sha512-dbSRaiwmw4x/Fs5kls5yDDJMYA+7mXgDMWRyHJZPWUTl6Nsr8HpYBqcAEIysLxAZQ6Jzq8eVrp13/mVWhWxA+g==, tarball: https://pkg.pr.new/@anomaorg/arm-bindings@e0492f7}
+    version: 0.3.0
     peerDependencies:
       react-native: '>=0.79'
     peerDependenciesMeta:
@@ -1731,9 +1732,6 @@ packages:
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [win32]
-
-  '@ubjs/core@0.31.0-3':
-    resolution: {integrity: sha512-39XrJgUZ2VVb561sSnkXPhczNoeBsNiSRArecsV0JE7CJq69ajFkcn9/tBAUS2NpgHkLIDU+z6Ks2+1wXnboxg==}
 
   '@ubjs/core@0.31.0-5':
     resolution: {integrity: sha512-oRBRtyYOhaodiOY3rLMZFgAHGFMmD44XefMpsAx4Ja0/rO+45kVdQB1VZsblQMLYxP965i3IHm56eymgo3I5eQ==}
@@ -4146,9 +4144,10 @@ snapshots:
 
   '@adraffy/ens-normalize@1.11.1': {}
 
-  '@anomaorg/arm-bindings@0.3.0(react-native@0.86.2(@babel/core@7.29.7)(@types/react@19.2.18)(react@19.2.8))':
+  '@anomaorg/arm-bindings@https://pkg.pr.new/@anomaorg/arm-bindings@e0492f7(react-native@0.86.2(@babel/core@7.29.7)(@types/react@19.2.18)(react@19.2.8))':
     dependencies:
-      '@ubjs/core': 0.31.0-3
+      '@ubjs/core': 0.31.0-5
+      uniffi-bindgen-react-native: 0.31.0-5
     optionalDependencies:
       react-native: 0.86.2(@babel/core@7.29.7)(@types/react@19.2.18)(react@19.2.8)
 
@@ -6037,8 +6036,6 @@ snapshots:
 
   '@typescript/typescript-win32-x64@7.0.2':
     optional: true
-
-  '@ubjs/core@0.31.0-3': {}
 
   '@ubjs/core@0.31.0-5': {}
 
