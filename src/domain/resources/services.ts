@@ -39,6 +39,8 @@ type TransactionLookup = {
   byTxHash: Map<Address, IndexerEVMTransaction>;
 };
 
+export type IndexerResourceWithChain = IndexerResource & { chainId: number };
+
 type ResourceWithDetails = {
   resource: Resource;
   /** Cached `resource.encode()` — encoding crosses the wasm boundary, so do it once. */
@@ -46,6 +48,7 @@ type ResourceWithDetails = {
   forwarder: Address;
   erc20TokenAddress: Address;
   transactionHash: string;
+  chainId: number;
 };
 
 export type ResourceWithNullifier = ResourceWithDetails & {
@@ -144,7 +147,7 @@ const tryToDeserializeResourcePayload = (
 /** Decrypts and deserializes indexer resource payloads using the user's encryption key. */
 export const deserializeResourcesPayload = async (
   encryptionPrivateKey: Uint8Array<ArrayBuffer>,
-  resourceResponseCollection: IndexerResource[]
+  resourceResponseCollection: IndexerResourceWithChain[]
 ): Promise<ResourceWithDetails[]> => {
   return resourceResponseCollection.flatMap(item => {
     const payload = tryToDeserializeResourcePayload(encryptionPrivateKey, item);
@@ -157,6 +160,7 @@ export const deserializeResourcesPayload = async (
       forwarder: payload.forwarder() as Address,
       erc20TokenAddress: payload.erc20TokenAddress() as Address,
       transactionHash: item.transaction_hash,
+      chainId: item.chainId,
     };
   });
 };
@@ -197,9 +201,7 @@ export const buildAppResources = (
   transactionLookup: TransactionLookup,
   onlyAvailableResources = true
 ): AppResource[] => {
-  const forwarderChainMap = new Map(
-    chainConfig.map(chain => [chain.forwarderAddress, chain])
-  );
+  const chainMap = new Map(chainConfig.map(chain => [chain.chainId, chain]));
   const updatedResources: AppResource[] = [];
 
   for (const deserializedResource of resources) {
@@ -207,11 +209,12 @@ export const buildAppResources = (
       encoded,
       erc20TokenAddress,
       forwarder,
+      chainId,
       transactionHash,
       nullifierHex,
     } = deserializedResource;
 
-    const chain = forwarderChainMap.get(forwarder);
+    const chain = chainMap.get(chainId);
     if (!chain) continue;
 
     const consumedIn = transactionLookup.byNullifier.get(nullifierHex);
@@ -223,10 +226,11 @@ export const buildAppResources = (
     const txHash: Address = `0x${normalizeHex(transactionHash)}`;
     const createdIn =
       transactionLookup.byTxHash.get(txHash) ??
-      buildEvmTransaction(chain.chainId, txHash, 0);
+      buildEvmTransaction(chainId, txHash, 0);
 
     updatedResources.push({
       ...encoded,
+      chainId,
       network: chain.network,
       erc20TokenAddress,
       forwarder,

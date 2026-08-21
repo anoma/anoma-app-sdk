@@ -7,7 +7,6 @@ import {
   type IndexerContract,
   type IndexerContractResourcesResponse,
   type IndexerHealthResponse,
-  type IndexerResource,
   type IndexerResourcesResponse,
   type NullifyingTransactionsResponse,
 } from "./types";
@@ -46,17 +45,13 @@ export class IndexerClient extends ApiClient {
   async contractResources(
     discoveryPrivateKey: Hex,
     contract: IndexerContract
-  ): Promise<IndexerResource[]> {
-    const response = await this.get<IndexerContractResourcesResponse>(
+  ): Promise<IndexerContractResourcesResponse> {
+    return this.get(
       `${IndexerPaths.Tags}/${contract.chain_id}/${contract.contract_address}/${discoveryPrivateKey}`
     );
-    return response.resources;
   }
 
-  async resources(discoveryPrivateKey: Hex): Promise<IndexerResource[]> {
-    const response = await this.get<IndexerResourcesResponse>(
-      `${IndexerPaths.Tags}/${discoveryPrivateKey}`
-    );
-    return response.resources.flatMap(c => c.resources);
+  async resources(discoveryPrivateKey: Hex): Promise<IndexerResourcesResponse> {
+    return this.get(`${IndexerPaths.Tags}/${discoveryPrivateKey}`);
   }
 }

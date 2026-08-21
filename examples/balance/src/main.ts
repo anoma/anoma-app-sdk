@@ -74,7 +74,13 @@ const getBalances = async (keyring: UserKeyring) => {
     .filter(config => config.enabled)
     .map(toChainConfig);
 
-  const indexerResources = await fetchResources(keyring);
+  const indexerResources = (await fetchResources(keyring)).resources.flatMap(
+    item =>
+      item.resources.map(r => ({
+        ...r,
+        chainId: item.chain,
+      }))
+  );
 
   const decrypted = await deserializeResourcesPayload(
     keyring.encryptionKeyPair.privateKey,
