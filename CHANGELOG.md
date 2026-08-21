@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.18.0](https://github.com/anoma/anoma-app-sdk/compare/v0.17.1...v0.18.0) (2026-08-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* consumers must install viem, @wagmi/core, zod and @uniswap/permit2-sdk themselves. They already resolve these today via the SDK, so in practice this surfaces as unmet peer warnings until they are declared.
+
+### Features
+
+* add all chain resources endpoint ([#63](https://github.com/anoma/anoma-app-sdk/issues/63)) ([906fa75](https://github.com/anoma/anoma-app-sdk/commit/906fa75a1b3ab6746d2b05e41a8aa7203050c21c))
+* export arm bindings to react-native ([#60](https://github.com/anoma/anoma-app-sdk/issues/60)) ([2c8c101](https://github.com/anoma/anoma-app-sdk/commit/2c8c101cb131dd214ca03cf996aab60b5673e1f6))
+* update sdk to support react-native ([#62](https://github.com/anoma/anoma-app-sdk/issues/62)) ([4bef2cb](https://github.com/anoma/anoma-app-sdk/commit/4bef2cb18a000763b4d2f0da3e7173f7fa9cec6b))
+
+
+### Bug Fixes
+
+* declare viem, @wagmi/core, zod and permit2 as peerDependencies ([#45](https://github.com/anoma/anoma-app-sdk/issues/45)) ([6cf4fe4](https://github.com/anoma/anoma-app-sdk/commit/6cf4fe47f88e997cddc23cf70ed29c7643e26c3f))
+
 ## [0.17.1](https://github.com/anoma/anoma-app-sdk/compare/v0.17.0...v0.17.1) (2026-08-14)
 
 
