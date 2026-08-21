@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.0](https://github.com/anoma/anoma-app-sdk/compare/v0.17.1...v1.0.0) (2026-08-20)
+## [0.18.0](https://github.com/anoma/anoma-app-sdk/compare/v0.17.1...v0.18.0) (2026-08-20)
 
 
 ### ⚠ BREAKING CHANGES
