@@ -27,25 +27,9 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
-    "./api": {
-      "import": "./dist/api.js",
-      "require": "./dist/api.cjs"
-    },
-    "./constants": {
-      "import": "./dist/lib-constants.js",
-      "require": "./dist/lib-constants.cjs"
-    },
-    "./domain": {
-      "import": "./dist/domain.js",
-      "require": "./dist/domain.cjs"
-    },
-    "./lib": {
-      "import": "./dist/lib.js",
-      "require": "./dist/lib.cjs"
-    },
-    "./types": {
-      "import": "./dist/types.js",
-      "require": "./dist/types.cjs"
+    "./primitives": {
+      "import": "./dist/primitives.js",
+      "require": "./dist/primitives.cjs"
     },
     "./package.json": "./package.json"
   },
@@ -59,7 +43,7 @@
     "build:docs": "typedoc --plugin typedoc-plugin-markdown --out ./docs src/index.ts",
     "dev": "tsdown --watch",
     "lint": "eslint .",
-    "tsc-check": "tsc --noEmit",
+    "tsc-check": "tsc --noEmit && tsc --noEmit -p tsconfig.tests.json",
     "format": "prettier --write \"{src,arm-bindings/bundled}/**/*.{ts,js,json,css,md}\" \"arm-bindings/*.{js,md,json,yaml}\"",
     "format:check": "prettier --check \"{src,arm-bindings/bundled}/**/*.{ts,js,json,css,md}\" \"arm-bindings/*.{js,md,json,yaml}\"",
     "test": "vitest",
@@ -86,8 +70,6 @@
     "crc-32": "1.2.2"
   },
   "peerDependencies": {
-    "@uniswap/permit2-sdk": "^1.4.0",
-    "@wagmi/core": "^3.5.2",
     "viem": "^2.53.1",
     "zod": "^4.1.13"
   },
@@ -96,8 +78,6 @@
     "@commitlint/config-conventional": "^20.5.0",
     "@eslint/js": "^9.36.0",
     "@types/node": "^24.12.0",
-    "@uniswap/permit2-sdk": "1.4.0",
-    "@wagmi/core": "3.5.2",
     "eslint": "^9.36.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",

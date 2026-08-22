@@ -3,8 +3,12 @@ import type {
   NullifierKey,
   Resource,
 } from "@anomaorg/arm-bindings";
-import type { IndexerId, NullifierRecord } from "indexer";
-import { parseNullifyingTransactions } from "api";
+import {
+  buildEvmTransaction,
+  buildNullifierRecord,
+  type IndexerId,
+  type NullifierRecord,
+} from "indexer";
 import type { SupportedChainConfig } from "types";
 import type { Address } from "viem";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -30,17 +34,12 @@ const nullifyingResponse = (
   nullifiers: { tag: string; txHash: string; timestamp: number }[],
   chainId = CHAIN_ID
 ): NullifierRecord[] =>
-  parseNullifyingTransactions([
-    {
-      chain_id: chainId,
-      contract_address: FORWARDER,
-      nullifiers: nullifiers.map(({ tag, txHash, timestamp }) => ({
-        tag: tag as Address,
-        transaction_hash: txHash as Address,
-        timestamp,
-      })),
-    },
-  ]);
+  nullifiers.map(({ tag, txHash, timestamp }) =>
+    buildNullifierRecord(
+      tag,
+      buildEvmTransaction(chainId, txHash as Address, timestamp)
+    )
+  );
 
 const optimisticRecord = (
   nullifier: string,

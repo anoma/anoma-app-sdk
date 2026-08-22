@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Tests run under Node (vitest environment: "node"), which supplies fetch
+    // and friends that the platform-neutral src config deliberately lacks.
+    "types": ["node", "vitest/globals"]
+  },
+  "include": ["src"],
+  // globals.d.ts fills the DOM-lib gap for the src config; with @types/node
+  // present it would collide with the real declaration.
+  "exclude": ["src/globals.d.ts"]
+}

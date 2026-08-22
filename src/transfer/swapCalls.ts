@@ -1,7 +1,11 @@
-import { PERMIT2_ADDRESS } from "@uniswap/permit2-sdk";
 import type { EvmCall } from "types";
 import { encodeFunctionData } from "viem";
 import type { SwapCall } from "./types/transfers";
+
+// Permit2 is deployed at the same deterministic address on every chain. Inlined
+// rather than imported so the SDK does not take a peer dependency on
+// @uniswap/permit2-sdk for a single constant.
+const PERMIT2_ADDRESS = "0x000000000022D473030F116dDEE9F6B43aC78BA3" as const;
 
 const ERC20_APPROVE_ABI = [
   {

@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import type { EvmCall, ResolvedParameters, SupportedChainConfig } from "types";
 import { beforeAll, describe, expect, it } from "vitest";
-import { initSdk } from "../../..";
+import { initSdk } from "../..";
 import {
   appendGenericCallLeg,
   calculateGenericCallLabelRef,
