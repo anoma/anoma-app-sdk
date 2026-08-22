@@ -2,8 +2,8 @@ import { gcm } from "@noble/ciphers/aes";
 import { hkdf } from "@noble/hashes/hkdf";
 import { sha256 } from "@noble/hashes/sha2";
 import { bytesToUtf8, randomBytes, utf8ToBytes } from "@noble/hashes/utils";
-import type { Hex } from "viem";
 import { fromHex, toHex } from "primitives";
+import type { Hex } from "viem";
 
 // Pure-JS crypto rather than WebCrypto: this package runs under React Native's
 // Hermes, which has no `crypto.subtle`. The derivation and the `iv || ciphertext

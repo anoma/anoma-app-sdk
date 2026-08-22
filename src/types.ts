@@ -1,7 +1,7 @@
 import type { EncodedResource } from "@anomaorg/arm-bindings";
 import type { IndexerEVMTransaction, IndexerId } from "indexer";
-import type { UserPublicKeys } from "./keys/types";
 import type { Address } from "viem";
+import type { UserPublicKeys } from "./keys/types";
 export * from "./keys/types";
 export * from "./transfer/types";
 

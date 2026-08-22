@@ -1,6 +1,6 @@
-import { decryptJson, encryptJson } from "../crypto";
 import { buildBigIntReviver } from "primitives";
 import type { Hex } from "viem";
+import { decryptJson, encryptJson } from "../crypto";
 import type {
   DecryptedPayroll,
   PayrollTransactionEntry,

@@ -4,10 +4,20 @@ import {
   type Resource,
   ResourceWithLabel,
 } from "@anomaorg/arm-bindings";
-import { buildEvmTransaction, type IndexerEVMTransaction, type IndexerResource, type NullifierRecord } from "indexer";
-import { getFiatAmount, getTokenByResource, tokenId } from "tokens";
-import { formatBalance, formatTokenAmount } from "tokens";
+import {
+  buildEvmTransaction,
+  type IndexerEVMTransaction,
+  type IndexerResource,
+  type NullifierRecord,
+} from "indexer";
 import { fromHex, normalizeHex } from "primitives";
+import {
+  formatBalance,
+  formatTokenAmount,
+  getFiatAmount,
+  getTokenByResource,
+  tokenId,
+} from "tokens";
 import type {
   AppResource,
   NetworkAddress,

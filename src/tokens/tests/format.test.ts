@@ -11,8 +11,6 @@ const mockToken: TokenRegistry = {
   feeEnabled: false,
 };
 
-
-
 describe("formatTokenAmount", () => {
   it("appends the uppercase token symbol", () => {
     expect(formatTokenAmount("1.23", mockToken)).toBe("1.23 USDC");

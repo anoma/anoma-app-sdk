@@ -1,11 +1,7 @@
 import { hkdf } from "@noble/hashes/hkdf";
 import { hmac } from "@noble/hashes/hmac";
 import { sha256 } from "@noble/hashes/sha2";
-import {
-  KeyPair,
-  KeyPairSerializer,
-  NullifierKeyPair,
-} from "keys/models";
+import { KeyPair, KeyPairSerializer, NullifierKeyPair } from "keys/models";
 import { fromHex, generateRandomBytes, invariant, toHex } from "primitives";
 import {
   PRFDomainMap,

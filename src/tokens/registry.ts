@@ -1,3 +1,4 @@
+import { normalizeEvmAddress } from "primitives";
 import type { AggregatedTokenBalance } from "resources/types";
 import type {
   AppResource,
@@ -9,7 +10,6 @@ import type {
   WalletBalance,
 } from "types";
 import { formatUnits, parseUnits, type Address } from "viem";
-import { normalizeEvmAddress } from "primitives";
 import { normalizeEvmNetworkAddress } from "./format";
 
 /** Creates a placeholder token registry entry for unknown or unresolved tokens. */

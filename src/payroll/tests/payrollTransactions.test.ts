@@ -1,6 +1,6 @@
-import { encryptJson } from "../../crypto";
 import type { Hex } from "viem";
 import { describe, expect, it } from "vitest";
+import { encryptJson } from "../../crypto";
 import {
   buildTxHashMap,
   decryptPayroll,

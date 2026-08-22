@@ -7,12 +7,12 @@ import {
   Resource,
   randomBytes,
 } from "@anomaorg/arm-bindings";
+import { toHex } from "primitives";
 import {
   calculateLabelRef,
   calculateValueRefFromAuth,
   calculateValueRefFromUserAddress,
 } from "transfer/services";
-import { toHex } from "primitives";
 import type { CreateMintProps, MintResources, UserPublicKeys } from "types";
 import type { Address } from "viem";
 import { Client, initClient } from "./client";

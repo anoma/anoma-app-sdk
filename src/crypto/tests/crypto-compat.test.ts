@@ -1,6 +1,6 @@
+import { fromHex } from "primitives";
 import { describe, expect, it } from "vitest";
 import { aesDecrypt, aesEncrypt } from "../aes";
-import { fromHex } from "primitives";
 import fixtures from "./crypto-fixtures.json";
 
 // These ciphertexts were produced by the previous WebCrypto (`crypto.subtle`)

@@ -1,6 +1,6 @@
-import { formatUnits } from "viem";
 import { normalizeEvmAddress } from "primitives";
 import type { NetworkAddress, TokenRegistry } from "types";
+import { formatUnits } from "viem";
 
 /**
  * Token amount formatting. This sits in the SDK rather than the app's utils

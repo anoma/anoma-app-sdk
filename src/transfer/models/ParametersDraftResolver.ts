@@ -1,7 +1,7 @@
 import { NullifierKey, Resource } from "@anomaorg/arm-bindings";
 import { selectTransferResources } from "resources";
-import type { TransferResourceWithAmount } from "resources/types";
 import { getResourcesForToken } from "resources/forToken";
+import type { TransferResourceWithAmount } from "resources/types";
 import { tokenId } from "tokens";
 import type {
   AppResource,

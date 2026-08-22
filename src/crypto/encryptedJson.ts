@@ -1,5 +1,5 @@
-import { aesDecrypt, aesEncrypt } from "./aes";
 import { bigIntReplacer } from "primitives";
+import { aesDecrypt, aesEncrypt } from "./aes";
 
 type JsonReviver = (key: string, value: unknown) => unknown;
 
