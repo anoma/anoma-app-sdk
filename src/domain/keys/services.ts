@@ -124,8 +124,19 @@ export const fromUserKeyringJson = (obj: UserKeyringJson): UserKeyring => ({
  * @param salt Domain-separation salt; distinct salts derive distinct keyrings from the same credential
  * @returns Derived {@link UserKeyring}
  */
+/**
+ * The slice of the browser's `PublicKeyCredential` this SDK actually reads.
+ * Declaring it structurally keeps the DOM lib out of a package that also runs
+ * on React Native; a real `PublicKeyCredential` satisfies it unchanged.
+ */
+export type PrfCredential = {
+  getClientExtensionResults: () => {
+    prf?: { results?: { first?: ArrayBuffer | ArrayBufferView } };
+  };
+};
+
 export const createUserKeyringFromPasskey = (
-  credential: PublicKeyCredential,
+  credential: PrfCredential,
   salt: string
 ) => {
   const prfResults = credential.getClientExtensionResults().prf?.results;
@@ -138,7 +149,9 @@ export const createUserKeyringFromPasskey = (
 
   const ikm =
     ArrayBuffer.isView(prfOutput) ?
-      new Uint8Array(prfOutput.buffer)
+      // Without the DOM lib a view's `buffer` widens to ArrayBufferLike; PRF
+      // output is always backed by a plain ArrayBuffer.
+      new Uint8Array(prfOutput.buffer as ArrayBuffer)
     : new Uint8Array(prfOutput);
 
   return createUserKeyringFromIkm(ikm, salt);

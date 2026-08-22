@@ -1,3 +1,5 @@
+import { randomBytes as nobleRandomBytes } from "@noble/hashes/utils";
+import { base64 } from "@scure/base";
 import { MAX_DECIMALS } from "lib-constants";
 import type { NetworkAddress, TokenRegistry } from "types";
 import {
@@ -149,12 +151,7 @@ export const formatBigIntFiatAmount = (balance: bigint) => {
  * @returns string
  */
 export function toBase64(bytes: Uint8Array): string {
-  let binary = "";
-  const len = bytes.length;
-  for (let i = 0; i < len; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary);
+  return base64.encode(bytes);
 }
 
 /**
@@ -162,13 +159,8 @@ export function toBase64(bytes: Uint8Array): string {
  * @param base64 - base64-encoded string
  * @returns Uint8Array
  */
-export function fromBase64(base64: string): Uint8Array<ArrayBuffer> {
-  const binaryString = atob(base64);
-  const bytes = new Uint8Array(binaryString.length);
-  for (let i = 0; i < binaryString.length; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-  return new Uint8Array(bytes.buffer);
+export function fromBase64(encoded: string): Uint8Array<ArrayBuffer> {
+  return base64.decode(encoded) as Uint8Array<ArrayBuffer>;
 }
 
 /**
@@ -224,11 +216,8 @@ export function validHexBytes(hex: string, byteLength: number) {
 export const validHexString = (hex: string) =>
   hex.replace(/^0x/, "").match(/^[0-9A-Fa-f]+$/);
 
-export const generateRandomBytes = (size = 32): Uint8Array<ArrayBuffer> => {
-  const uint8Array = new Uint8Array(size);
-  crypto.getRandomValues(uint8Array);
-  return uint8Array;
-};
+export const generateRandomBytes = (size = 32): Uint8Array<ArrayBuffer> =>
+  nobleRandomBytes(size) as Uint8Array<ArrayBuffer>;
 
 export const convertObjectToSnakeCase = (obj: object) => {
   const output: Record<string, unknown> = {};

@@ -1,53 +1,37 @@
-import { fromHex, toHex } from "lib/utils";
+import { gcm } from "@noble/ciphers/aes";
+import { hkdf } from "@noble/hashes/hkdf";
+import { sha256 } from "@noble/hashes/sha2";
+import { bytesToUtf8, randomBytes, utf8ToBytes } from "@noble/hashes/utils";
 import type { Hex } from "viem";
+import { fromHex, toHex } from "lib/utils";
+
+// Pure-JS crypto rather than WebCrypto: this package runs under React Native's
+// Hermes, which has no `crypto.subtle`. The derivation and the `iv || ciphertext
+// || tag` layout are unchanged from the WebCrypto implementation, so payloads
+// encrypted by earlier versions still decrypt — see tests/crypto-fixtures.json.
+const SALT = utf8ToBytes("anomapay-salt");
+const INFO = utf8ToBytes("anomapay-storage");
+const IV_BYTES = 12;
+
+/** Derives the AES-GCM key from a private key using HKDF-SHA256. */
+const deriveAesKey = (privateKey: Uint8Array<ArrayBuffer>): Uint8Array =>
+  hkdf(sha256, privateKey, SALT, INFO, 32);
 
 /**
- * Derives a CryptoKey from a private key using HKDF -> AES-GCM.
- */
-const deriveAesCryptoKey = async (
-  privateKey: Uint8Array<ArrayBuffer>
-): Promise<CryptoKey> => {
-  const keyMaterial = await crypto.subtle.importKey(
-    "raw",
-    privateKey,
-    "HKDF",
-    false,
-    ["deriveKey"]
-  );
-
-  return crypto.subtle.deriveKey(
-    {
-      name: "HKDF",
-      hash: "SHA-256",
-      salt: new TextEncoder().encode("anomapay-salt"),
-      info: new TextEncoder().encode("anomapay-storage"),
-    },
-    keyMaterial,
-    { name: "AES-GCM", length: 256 },
-    false,
-    ["encrypt", "decrypt"]
-  );
-};
-
-/**
- * Encrypts a plaintext string using AES-GCM derived from the private key.
+ * Encrypts a plaintext string using AES-GCM derived from a private key.
  * Returns a hex string of `iv || ciphertext`.
  */
 export const aesEncrypt = async (
   privateKey: Uint8Array<ArrayBuffer>,
   plaintext: string
 ): Promise<string> => {
-  const key = await deriveAesCryptoKey(privateKey);
-  const iv = crypto.getRandomValues(new Uint8Array(12));
-  const encoded = new TextEncoder().encode(plaintext);
-  const ciphertext = await crypto.subtle.encrypt(
-    { name: "AES-GCM", iv },
-    key,
-    encoded
+  const iv = randomBytes(IV_BYTES);
+  const ciphertext = gcm(deriveAesKey(privateKey), iv).encrypt(
+    utf8ToBytes(plaintext)
   );
-  const result = new Uint8Array(iv.length + ciphertext.byteLength);
+  const result = new Uint8Array(iv.length + ciphertext.length);
   result.set(iv);
-  result.set(new Uint8Array(ciphertext), iv.length);
+  result.set(ciphertext, iv.length);
   return toHex(result);
 };
 
@@ -58,14 +42,8 @@ export const aesDecrypt = async (
   privateKey: Uint8Array<ArrayBuffer>,
   encryptedHex: string
 ): Promise<string> => {
-  const key = await deriveAesCryptoKey(privateKey);
   const data = fromHex(encryptedHex as Hex);
-  const iv = data.slice(0, 12);
-  const ciphertext = data.slice(12);
-  const decrypted = await crypto.subtle.decrypt(
-    { name: "AES-GCM", iv },
-    key,
-    ciphertext
-  );
-  return new TextDecoder().decode(decrypted);
+  const iv = data.slice(0, IV_BYTES);
+  const ciphertext = data.slice(IV_BYTES);
+  return bytesToUtf8(gcm(deriveAesKey(privateKey), iv).decrypt(ciphertext));
 };
