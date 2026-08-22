@@ -2,7 +2,10 @@
   "compilerOptions": {
     "target": "ES2022",
     "useDefineForClassFields": true,
-    "lib": ["ES2022", "DOM"],
+    // No DOM lib on purpose: this SDK runs under React Native's Hermes as well
+    // as the browser, so a reference to window/document/crypto.subtle is a
+    // compile error here. Platform-specific code belongs in the consuming app.
+    "lib": ["ES2022"],
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "bundler",
@@ -15,17 +18,25 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
-    "types": ["vite/client"],
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "api": ["./src/api/index.ts"],
-      "api/*": ["./src/api/*"],
-      "domain/*": ["./src/domain/*"],
-      "lib": ["./src/lib/index.ts"],
-      "lib/*": ["./src/lib/*"],
-      "lib-constants": ["./src/lib-constants.ts"],
+      "history/*": ["./src/history/*"],
+      "indexer": ["./src/indexer.ts"],
+      "keys": ["./src/keys/index.ts"],
+      "keys/*": ["./src/keys/*"],
+      "payroll": ["./src/payroll/index.ts"],
+      "payroll/*": ["./src/payroll/*"],
+      "primitives": ["./src/primitives.ts"],
+      "resources": ["./src/resources/index.ts"],
+      "resources/*": ["./src/resources/*"],
+      "tokens": ["./src/tokens/index.ts"],
+      "tokens/*": ["./src/tokens/*"],
+      "transfer/*": ["./src/transfer/*"],
       "types": ["./src/types.ts"]
     }
   },
-  "include": ["src"]
+  "include": ["src"],
+  // Tests are checked by tsconfig.tests.json: they run in Node and need its
+  // globals, which must not be visible to the platform-neutral sources above.
+  "exclude": ["src/**/tests/**"]
 }

@@ -3,14 +3,11 @@ import { defineConfig } from "tsdown";
 export default defineConfig({
   entry: {
     index: "src/index.ts",
-    api: "src/api/index.ts",
-    domain: "src/domain/index.ts",
-    lib: "src/lib/index.ts",
-    types: "src/types.ts",
-    "lib-constants": "src/lib-constants.ts",
+    primitives: "src/primitives.ts",
   },
   format: ["esm", "cjs"],
-  platform: "browser",
+  // "neutral" not "browser": the SDK must also load under React Native.
+  platform: "neutral",
   dts: true,
   sourcemap: true,
 });

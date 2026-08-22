@@ -4,7 +4,10 @@ import { readFile } from "node:fs/promises";
 
 // Node's fetch refuses file: URLs, so hand wasm-bindgen the bytes directly.
 const realFetch = globalThis.fetch;
-globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+globalThis.fetch = (async (
+  input: Parameters<typeof fetch>[0],
+  init?: RequestInit
+) => {
   const url = input instanceof URL ? input : new URL(String(input));
   if (url.protocol !== "file:") return realFetch(input, init);
   return new Response(await readFile(url), {
