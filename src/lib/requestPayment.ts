@@ -1,5 +1,5 @@
 import bs58 from "bs58";
-import { PAY_ADDRESS_BYTE_LENGTH } from "lib/payAddress";
+import { PAY_ADDRESS_BYTE_LENGTH } from "keys/payAddress";
 import type { TokenId } from "types";
 
 export type RequestPaymentPayload = {

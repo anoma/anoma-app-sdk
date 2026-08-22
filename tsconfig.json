@@ -20,10 +20,21 @@
     "paths": {
       "api": ["./src/api/index.ts"],
       "api/*": ["./src/api/*"],
-      "domain/*": ["./src/domain/*"],
+      "history/*": ["./src/history/*"],
+      "indexer": ["./src/indexer.ts"],
+      "keys": ["./src/keys/index.ts"],
+      "keys/*": ["./src/keys/*"],
       "lib": ["./src/lib/index.ts"],
       "lib/*": ["./src/lib/*"],
       "lib-constants": ["./src/lib-constants.ts"],
+      "payroll": ["./src/payroll/index.ts"],
+      "payroll/*": ["./src/payroll/*"],
+      "primitives": ["./src/primitives.ts"],
+      "resources": ["./src/resources/index.ts"],
+      "resources/*": ["./src/resources/*"],
+      "tokens": ["./src/tokens/index.ts"],
+      "tokens/*": ["./src/tokens/*"],
+      "transfer/*": ["./src/transfer/*"],
       "types": ["./src/types.ts"]
     }
   },

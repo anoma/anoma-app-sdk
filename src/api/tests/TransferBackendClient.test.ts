@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { Parameters } from "../../domain/transfer/types/resources";
+import type { Parameters } from "../../transfer/types/resources";
 import { TransferBackendClient } from "../TransferBackendClient";
 
 const resource = { logicRef: "0x1", nkCommitment: "0x2", isEphemeral: false };
