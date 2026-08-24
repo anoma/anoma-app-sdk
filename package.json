@@ -77,7 +77,7 @@
     ]
   },
   "dependencies": {
-    "@anomaorg/arm-bindings": "0.3.0",
+    "@anomaorg/arm-bindings": "https://pkg.pr.new/@anomaorg/arm-bindings@e0492f7",
     "@noble/hashes": "1.8.0",
     "@noble/secp256k1": "3.0.0",
     "bs58": "6.0.0",
