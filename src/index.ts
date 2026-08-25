@@ -4,7 +4,6 @@ export * from "./crypto";
 export * from "./history/services";
 export * from "./indexer";
 export * from "./keys";
-export * from "./payroll";
 export * from "./resources";
 export * from "./tokens";
 export * from "./transfer/genericCalls";
