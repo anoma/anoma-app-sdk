@@ -1,15 +1,8 @@
 import type { EncodedResource } from "@anomaorg/arm-bindings";
-import type {
-  IndexerEVMTransaction,
-  IndexerId,
-  NetworkConfigurationResponse,
-} from "api";
-import type { UserPublicKeys } from "types";
 import type { Address } from "viem";
-export * from "domain/keys/types";
-export * from "domain/transfer/types";
-
-export type AuthType = "wallet" | "passkey";
+import type { UserPublicKeys } from "./keys/types";
+export * from "./keys/types";
+export * from "./transfer/types";
 
 export type Network = string;
 export type TokenId = `${string}:${string}`; // {network}:{symbol}
@@ -22,31 +15,6 @@ export type AppResource = EncodedResource & {
   network: Network;
   erc20TokenAddress: Address;
   forwarder: Address;
-  createdIn?: IndexerEVMTransaction;
-  consumedIn?: IndexerEVMTransaction;
-};
-
-export const TRANSACTION_STATUS = [
-  "sent",
-  "sending",
-  "waiting-receiver",
-  "received",
-  "receiving",
-  "deposited",
-  "depositing",
-  "withdraw",
-  "withdrawing",
-] as const;
-
-export type TransactionStatus = (typeof TRANSACTION_STATUS)[number];
-
-export type TransactionReceipt = {
-  id: IndexerId;
-  hash: Address;
-  status: TransactionStatus;
-  token: TokenRegistry;
-  quantity: bigint;
-  timestamp: number;
 };
 
 export type TokenBalance = {
@@ -69,23 +37,6 @@ export type TokenRegistry = {
   swapProviders?: SwapProvider[];
 };
 
-export type SupportedChainConfig = Omit<
-  NetworkConfigurationResponse,
-  | "chain"
-  | "feeDiscoveryPk"
-  | "feeEncryptionPk"
-  | "feeAuthorityPk"
-  | "feeNullifierKeyCommitment"
-  | "tokens"
-> & {
-  network: Network;
-  networkName?: string;
-  tokens: TokenRegistry[];
-  feePublicKeys: UserPublicKeys;
-  explorerUrl?: string;
-  explorerName?: string;
-};
-
 export interface WalletBalance {
   address: Address;
   network: Network;
@@ -93,3 +44,30 @@ export interface WalletBalance {
   decimals: number;
   symbol: string;
 }
+
+/**
+ * A chain the app supports, as the domain sees it. Spelled out rather than
+ * derived from the backend's NetworkConfigurationResponse: that response is a
+ * wire format owned by the api package, and the domain must not depend on it.
+ * The api package maps one into the other.
+ */
+export type SupportedChainConfig = {
+  chainId: number;
+  enabled: boolean;
+  testnet: boolean;
+  protocolAdapterAddress: Address;
+  trivialLogicVerifyingKey: string;
+  transferLogicVerifyingKey: string;
+  forwarderAddress: Address;
+  percentageFee: number;
+  baseFee: number;
+  resourceFee: number;
+  genericCallForwarderAddress: Address;
+  genericCallLogicVerifyingKey: string;
+  network: Network;
+  networkName?: string;
+  tokens: TokenRegistry[];
+  feePublicKeys: UserPublicKeys;
+  explorerUrl?: string;
+  explorerName?: string;
+};
