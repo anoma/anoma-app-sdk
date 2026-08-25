@@ -1,4 +1,8 @@
-import type { EncodedResource, NullifierKey, Resource } from "@anomaorg/arm-bindings";
+import type {
+  EncodedResource,
+  NullifierKey,
+  Resource,
+} from "@anomaorg/arm-bindings";
 import type { Address } from "viem";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { attachNullifiers, type ResourceWithNullifier } from "../services";
