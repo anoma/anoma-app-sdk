@@ -1,8 +1,6 @@
 export * from "@anomaorg/arm-bindings";
 
 export * from "./crypto";
-export * from "./history/services";
-export * from "./indexer";
 export * from "./keys";
 export * from "./resources";
 export * from "./tokens";

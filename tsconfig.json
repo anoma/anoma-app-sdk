@@ -20,12 +20,8 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "history/*": ["./src/history/*"],
-      "indexer": ["./src/indexer.ts"],
       "keys": ["./src/keys/index.ts"],
       "keys/*": ["./src/keys/*"],
-      "payroll": ["./src/payroll/index.ts"],
-      "payroll/*": ["./src/payroll/*"],
       "primitives": ["./src/primitives.ts"],
       "resources": ["./src/resources/index.ts"],
       "resources/*": ["./src/resources/*"],

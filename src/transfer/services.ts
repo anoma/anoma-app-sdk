@@ -3,17 +3,13 @@ import {
   Digest,
   hashBytes,
   MerkleTree,
-  NullifierKey,
   PublicKey,
-  Resource,
   type AuthoritySignature,
   type AuthorityVerifyingKey,
 } from "@anomaorg/arm-bindings";
-import type { IndexerEVMTransaction, NullifierRecord } from "indexer";
-import { buildNullifierRecord } from "indexer";
-import { fromBase64, fromHex, normalizeHex } from "primitives";
+import { fromHex, normalizeHex } from "primitives";
 import type { Address, Hex } from "viem";
-import type { ConsumedResource, CreatedResource } from "./types/resources";
+import type { CreatedResource } from "./types/resources";
 
 /** Domain separator for transfer authorization signatures. */
 export const AUTH_SIGNATURE_DOMAIN = "TokenTransferAuthorization";
@@ -78,17 +74,3 @@ export function getOwnedCreatedResources(
   );
 }
 
-/**
- * Nullifier records for a transaction's just-consumed resources, tagged with
- * the consuming transaction — to optimistically mask spent notes.
- */
-export function buildConsumedNullifierRecords(
-  consumedResources: ConsumedResource[],
-  evmTransaction: IndexerEVMTransaction
-): NullifierRecord[] {
-  return consumedResources.map(({ resource, nullifierKey }) => {
-    const decoded = Resource.decode(resource);
-    const key = new NullifierKey(fromBase64(nullifierKey));
-    return buildNullifierRecord(decoded.nullifier(key).toHex(), evmTransaction);
-  });
-}

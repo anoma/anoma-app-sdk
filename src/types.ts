@@ -1,5 +1,4 @@
 import type { EncodedResource } from "@anomaorg/arm-bindings";
-import type { IndexerEVMTransaction, IndexerId } from "indexer";
 import type { Address } from "viem";
 import type { UserPublicKeys } from "./keys/types";
 export * from "./keys/types";
@@ -16,31 +15,6 @@ export type AppResource = EncodedResource & {
   network: Network;
   erc20TokenAddress: Address;
   forwarder: Address;
-  createdIn?: IndexerEVMTransaction;
-  consumedIn?: IndexerEVMTransaction;
-};
-
-export const TRANSACTION_STATUS = [
-  "sent",
-  "sending",
-  "waiting-receiver",
-  "received",
-  "receiving",
-  "deposited",
-  "depositing",
-  "withdraw",
-  "withdrawing",
-] as const;
-
-export type TransactionStatus = (typeof TRANSACTION_STATUS)[number];
-
-export type TransactionReceipt = {
-  id: IndexerId;
-  hash: Address;
-  status: TransactionStatus;
-  token: TokenRegistry;
-  quantity: bigint;
-  timestamp: number;
 };
 
 export type TokenBalance = {
