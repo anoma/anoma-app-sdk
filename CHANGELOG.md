@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.0.0](https://github.com/anoma/anoma-app-sdk/compare/v0.18.1...v1.0.0) (2026-08-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* the ./api, ./lib, ./constants and ./domain subpath exports are gone. Two entrypoints remain — "." for the domain and "./primitives" for the encoding and assertion helpers.
+
+### Features
+
+* slim sdk role ([#69](https://github.com/anoma/anoma-app-sdk/issues/69)) ([245f4bd](https://github.com/anoma/anoma-app-sdk/commit/245f4bd44e7369eb09a9c6756e7c17a5ce6868c9))
+
+
+### Bug Fixes
+
+* improve install on expo apps ([#66](https://github.com/anoma/anoma-app-sdk/issues/66)) ([a7d38f9](https://github.com/anoma/anoma-app-sdk/commit/a7d38f94b3668a12c6304a971d03dc73a6a436c9))
+
 ## [0.18.1](https://github.com/anoma/anoma-app-sdk/compare/v0.18.0...v0.18.1) (2026-08-21)
 
 

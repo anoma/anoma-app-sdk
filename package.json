@@ -1,6 +1,6 @@
 {
   "name": "@anomaorg/anoma-app-sdk",
-  "version": "0.18.1",
+  "version": "1.0.0",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
