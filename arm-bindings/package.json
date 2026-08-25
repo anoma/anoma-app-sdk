@@ -1,6 +1,6 @@
 {
   "name": "@anomaorg/arm-bindings",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Wasm bindings for arm-risc0",
   "license": "Apache-2.0",
   "author": "Anoma",
@@ -47,7 +47,11 @@
     "format:check:rust": "cargo fmt --manifest-path rust/Cargo.toml --check"
   },
   "dependencies": {
-    "@ubjs/core": "0.31.0-3"
+    "@ubjs/core": "0.31.0-5",
+    "uniffi-bindgen-react-native": "0.31.0-5"
+  },
+  "devDependencies": {
+    "tsdown": "^0.21.5"
   },
   "peerDependencies": {
     "react-native": ">=0.79"
@@ -56,10 +60,6 @@
     "react-native": {
       "optional": true
     }
-  },
-  "devDependencies": {
-    "tsdown": "^0.21.5",
-    "uniffi-bindgen-react-native": "0.31.0-3"
   },
   "codegenConfig": {
     "name": "ArmBindingsSpec",

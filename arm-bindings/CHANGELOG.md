@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/anoma/anoma-app-sdk/compare/arm-bindings-v0.3.0...arm-bindings-v0.3.1) (2026-08-24)
+
+
+### Bug Fixes
+
+* improve install on expo apps ([#66](https://github.com/anoma/anoma-app-sdk/issues/66)) ([a7d38f9](https://github.com/anoma/anoma-app-sdk/commit/a7d38f94b3668a12c6304a971d03dc73a6a436c9))
+
 ## [0.3.0](https://github.com/anoma/anoma-app-sdk/compare/arm-bindings-v0.2.0...arm-bindings-v0.3.0) (2026-08-18)
 
 
