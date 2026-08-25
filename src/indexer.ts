@@ -60,17 +60,3 @@ export const buildNullifierRecord = (
   nullifier: `0x${normalizeHex(nullifier)}`,
   transaction: { id: evmTransaction.id, evmTransaction },
 });
-
-/** Uppercase hex without an `0x` prefix, e.g. "0EA3B55B68A3F307C8FE3FE66E443247C95F0CFF". */
-export type IndexerHex = Uppercase<string>;
-
-export type IndexerBlob = {
-  blob: Hex;
-  id: string;
-};
-
-/** A resource payload as the indexer returns it, before decoding. */
-export type IndexerResource = {
-  resource_payload: IndexerBlob;
-  transaction_hash: IndexerHex;
-};

@@ -7,7 +7,6 @@ import {
 import {
   buildEvmTransaction,
   type IndexerEVMTransaction,
-  type IndexerResource,
   type NullifierRecord,
 } from "indexer";
 import { fromHex, normalizeHex } from "primitives";
@@ -30,6 +29,7 @@ import { InsufficientResourcesError } from "./errors";
 import { selectUTXOs } from "./selectUTXOs";
 import type {
   AggregatedTokenBalance,
+  EncryptedResource,
   TransferResourceWithAmount,
 } from "./types";
 
@@ -39,8 +39,6 @@ type TransactionLookup = {
   /** Transaction hash → transaction, used to enrich a resource's `createdIn`. */
   byTxHash: Map<Address, IndexerEVMTransaction>;
 };
-
-export type IndexerResourceWithChain = IndexerResource & { chainId: number };
 
 type ResourceWithDetails = {
   resource: Resource;
@@ -133,11 +131,11 @@ function deserializeResourcePayload(
 
 const tryToDeserializeResourcePayload = (
   encryptionPrivateKey: Uint8Array<ArrayBuffer>,
-  indexerResource: IndexerResource
+  encryptedResource: EncryptedResource
 ) => {
   try {
     return deserializeResourcePayload(
-      indexerResource.resource_payload.blob,
+      encryptedResource.payload,
       encryptionPrivateKey
     );
   } catch {
@@ -148,7 +146,7 @@ const tryToDeserializeResourcePayload = (
 /** Decrypts and deserializes indexer resource payloads using the user's encryption key. */
 export const deserializeResourcesPayload = async (
   encryptionPrivateKey: Uint8Array<ArrayBuffer>,
-  resourceResponseCollection: IndexerResourceWithChain[]
+  resourceResponseCollection: EncryptedResource[]
 ): Promise<ResourceWithDetails[]> => {
   return resourceResponseCollection.flatMap(item => {
     const payload = tryToDeserializeResourcePayload(encryptionPrivateKey, item);
@@ -160,7 +158,7 @@ export const deserializeResourcesPayload = async (
       encoded: payload.resource().encode(),
       forwarder: payload.forwarder() as Address,
       erc20TokenAddress: payload.erc20TokenAddress() as Address,
-      transactionHash: item.transaction_hash,
+      transactionHash: item.transactionHash,
       chainId: item.chainId,
     };
   });

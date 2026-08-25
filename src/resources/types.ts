@@ -1,4 +1,5 @@
 import type { AppResource, TokenRegistry } from "types";
+import type { Hex } from "viem";
 
 /**
  * A collection of transfer resources with the amount to transfer.
@@ -17,4 +18,15 @@ export type AggregatedTokenBalance = {
   amountInUsd: number;
   token: TokenRegistry;
   resources: AppResource[];
+};
+
+/**
+ * An encrypted resource payload handed to {@link deserializeResourcesPayload},
+ * with the transaction it arrived in. Deliberately not the indexer's JSON
+ * shape: transports own their own wire formats and map into this.
+ */
+export type EncryptedResource = {
+  payload: Hex;
+  transactionHash: string;
+  chainId: number;
 };
