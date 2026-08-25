@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/anoma/anoma-app-sdk/compare/v1.0.0...v1.1.0) (2026-08-25)
+
+
+### Features
+
+* add Monad and Base and fix conversion error ([#65](https://github.com/anoma/anoma-app-sdk/issues/65)) ([006ed32](https://github.com/anoma/anoma-app-sdk/commit/006ed3297779a7a8a8e19b3bd3fb899c80dfdcad))
+
 ## [1.0.0](https://github.com/anoma/anoma-app-sdk/compare/v0.18.1...v1.0.0) (2026-08-25)
 
 
