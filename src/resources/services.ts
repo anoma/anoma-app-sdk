@@ -34,6 +34,7 @@ type ResourceWithDetails = {
   forwarder: Address;
   erc20TokenAddress: Address;
   transactionHash: string;
+  transactionTimestamp: number;
   chainId: number;
 };
 
@@ -80,6 +81,7 @@ export const deserializeResourcesPayload = async (
       forwarder: payload.forwarder() as Address,
       erc20TokenAddress: payload.erc20TokenAddress() as Address,
       transactionHash: item.transactionHash,
+      transactionTimestamp: item.transactionTimestamp,
       chainId: item.chainId,
     };
   });
