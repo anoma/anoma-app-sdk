@@ -28,6 +28,6 @@ export type AggregatedTokenBalance = {
 export type EncryptedResource = {
   payload: Hex;
   transactionHash: string;
-  transactionTimestamp: string;
+  transactionTimestamp: number;
   chainId: number;
 };

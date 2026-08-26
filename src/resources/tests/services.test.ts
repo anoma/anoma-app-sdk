@@ -21,6 +21,7 @@ const makeResource = (
   forwarder: FORWARDER,
   erc20TokenAddress: "0x0000000000000000000000000000000000000001",
   transactionHash: "AABBCCDD",
+  transactionTimestamp: 0,
   chainId: CHAIN_ID,
   nullifierHex: "aa11",
   ...overrides,
