@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/anoma/anoma-app-sdk/compare/v1.1.0...v1.2.0) (2026-08-27)
+
+
+### Features
+
+* add created resource timestamp ([#73](https://github.com/anoma/anoma-app-sdk/issues/73)) ([fd359a5](https://github.com/anoma/anoma-app-sdk/commit/fd359a5812bb682b60244f3b0ddc8639dfab8683))
+
 ## [1.1.0](https://github.com/anoma/anoma-app-sdk/compare/v1.0.0...v1.1.0) (2026-08-25)
 
 
