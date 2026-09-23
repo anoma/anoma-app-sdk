@@ -1,9 +1,12 @@
-use crate::arm::{
-    digest::Digest,
-    encryption::{Ciphertext, SecretKey},
-    nullifier_key::{NullifierKey, NullifierKeyCommitment},
-};
 use crate::error::BindingsError;
+use crate::{
+    arm::{
+        digest::Digest,
+        encryption::{Ciphertext, SecretKey},
+        nullifier_key::{NullifierKey, NullifierKeyCommitment},
+    },
+    utils::random_bytes,
+};
 use arm::{nullifier_key::NullifierKeyCommitment as NKC, resource::Resource as R};
 use base64::{Engine as _, engine::general_purpose::STANDARD as b64};
 use serde::{self, Deserialize, Serialize};
@@ -41,8 +44,9 @@ impl Resource {
 
 #[uniffi::export]
 impl Resource {
-    #[uniffi::constructor]
-    pub fn new(props: ResourceProps) -> Result<Resource, BindingsError> {
+    // Provides default TypeScript constructor
+    #[uniffi::constructor(default())]
+    pub fn new(props: ResourceProps) -> Result<Self, BindingsError> {
         let ResourceProps {
             is_ephemeral,
             quantity,
@@ -66,6 +70,7 @@ impl Resource {
         })
     }
 
+    // Instantiate Resource from Wasm struct instances
     #[uniffi::constructor]
     pub fn create(
         logic_ref: &Digest,
@@ -75,16 +80,24 @@ impl Resource {
         is_ephemeral: bool,
         nonce: &Digest,
         nk_cmt: &NullifierKeyCommitment,
-    ) -> Resource {
-        Resource(R::create(
-            logic_ref.0,
-            label_ref.0,
-            quantity.0,
-            value_ref.0,
+    ) -> Self {
+        // These should never fail, as DEFAULT_BYTES is fixed to size 32
+        let nonce: [u8; 32] = nonce.to_bytes().try_into().expect("Expected 32 bytes");
+        let rand_seed: [u8; 32] = random_bytes()
+            .expect("Should produce random bytes")
+            .try_into()
+            .expect("Expected 32 bytes");
+
+        Resource(R {
+            logic_ref: logic_ref.0,
+            label_ref: label_ref.0,
+            quantity: quantity.0,
+            value_ref: value_ref.0,
             is_ephemeral,
-            nonce.0,
-            nk_cmt.0,
-        ))
+            nonce,
+            nk_commitment: nk_cmt.0,
+            rand_seed,
+        })
     }
 
     // Support Resource encoding required by Anoma SDK
@@ -114,7 +127,7 @@ impl Resource {
 
     // Support decoding from Anoma SDK Resource
     #[uniffi::constructor]
-    pub fn decode(encoded: EncodedResource) -> Result<Resource, BindingsError> {
+    pub fn decode(encoded: EncodedResource) -> Result<Self, BindingsError> {
         let EncodedResource {
             logic_ref,
             label_ref,
@@ -134,7 +147,7 @@ impl Resource {
         let rand_seed_bytes = b64.decode(rand_seed)?;
         let rand_seed: [u8; 32] = rand_seed_bytes
             .try_into()
-            .map_err(|_| BindingsError::new("Invalid nonce"))?;
+            .map_err(|_| BindingsError::new("Invalid rand_seed"))?;
 
         Ok(Resource(R {
             logic_ref: Digest::from_bytes(&b64.decode(logic_ref)?)?.0,
@@ -157,7 +170,7 @@ impl Resource {
     }
 
     #[uniffi::constructor]
-    pub fn from_bytes(bytes: &[u8]) -> Result<Resource, BindingsError> {
+    pub fn from_bytes(bytes: &[u8]) -> Result<Self, BindingsError> {
         Ok(Resource(R::from_bytes(bytes)?))
     }
 }
