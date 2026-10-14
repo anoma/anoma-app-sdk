@@ -55,7 +55,7 @@ function buildForwarderWrapPermit2(expirationOffset: number): Permit2Data {
  *
  * The token-A leg (unwrap into the forwarder + Heliax fee + change) reuses the
  * standard {@link ParametersDraftResolver}; the generic-call (CU2) and
- * token-B wrap (CU3) legs are appended as additional balanced pairs. The
+ * token-B wrap (CU3) legs are appended to the same action. The
  * resulting `ResolvedParameters` is fed to a `PayloadBuilder` to authorize and
  * serialize into the backend `Parameters`.
  */
@@ -80,8 +80,8 @@ export class SwapResolver {
     const nk = this.senderKeyring.nullifierKeyPair.nk;
 
     // CU1 + fee + change: unwrap token A into the forwarder, pay the Heliax fee,
-    // and return any remainder to the user. Resource selection, fee/change
-    // receivers and padding are all handled by the standard resolver.
+    // and return any remainder to the user. Resource selection and fee/change
+    // receivers are handled by the standard resolver.
     const tokenAResolver = new ParametersDraftResolver(
       this.transferBuilder,
       senderPublicKeys,
@@ -104,8 +104,7 @@ export class SwapResolver {
     }
     const tokenALeg = tokenAResolver.build(input.senderResources);
 
-    // CU2: the generic-call resource carrying the swap calls, balanced by a
-    // padding resource.
+    // CU2: the quantity-0 generic-call resource carrying the swap calls.
     const genericCallResource = createGenericCallResource({
       logicVerifyingKey: this.chain.genericCallLogicVerifyingKey,
       forwarderAddress: this.chain.genericCallForwarderAddress,
@@ -117,13 +116,6 @@ export class SwapResolver {
       calls: input.calls,
       resource: genericCallResource,
       nullifierKey: NullifierKey.zero(),
-    };
-    const genericCallPadding: CreateIntent = {
-      resource: this.transferBuilder.client.createPaddingResource({
-        nullifierKey: NullifierKey.zero(),
-        resource: genericCallResource,
-      }),
-      receiver: undefined,
     };
 
     // CU3: wrap token B out of the forwarder into a persistent resource owned by
@@ -167,11 +159,7 @@ export class SwapResolver {
         genericCallConsume,
         wrapConsume,
       ],
-      createIntents: [
-        ...tokenALeg.createIntents,
-        genericCallPadding,
-        persistentBCreate,
-      ],
+      createIntents: [...tokenALeg.createIntents, persistentBCreate],
     };
   }
 }

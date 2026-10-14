@@ -1,6 +1,6 @@
 import type {
+  ActionTree,
   EncodedResource,
-  MerkleTree,
   NullifierKey,
   Resource,
 } from "@anomaorg/arm-bindings";
@@ -44,7 +44,7 @@ export type CreateFeeTransferProps = {
 };
 
 export type MintResources = {
-  actionTree: MerkleTree;
+  actionTree: ActionTree;
   consumedResource: Resource;
   createdResource: Resource;
 };
@@ -104,9 +104,6 @@ export type ConsumeIntent = {
       permit2Data: Permit2Data;
     }
   | {
-      type: "Padding";
-    }
-  | {
       type: "GenericCall";
       forwarderAddress: Address;
       calls: EvmCall[];
@@ -115,7 +112,7 @@ export type ConsumeIntent = {
 
 export type CreateIntent = {
   resource: Resource;
-  receiver?: Receiver;
+  receiver: Receiver;
 };
 
 export type ResolvedParameters = {

@@ -27,8 +27,8 @@ type TokenResourceWithAmount = {
 };
 
 /**
- * Orchestrates resource selection, creation, and padding for transfers
- * supporting multiple receivers and mixed address types.
+ * Orchestrates resource selection and creation for transfers supporting
+ * multiple receivers and mixed address types.
  */
 export class ParametersDraftResolver {
   protected chain: SupportedChainConfig;
@@ -149,17 +149,9 @@ export class ParametersDraftResolver {
     return consumeIntents;
   }
 
-  /**
-   * Creates transfer resources for each receiver, using the
-   * corresponding consumed resource as the input.
-   */
-  getCreateIntents(
-    consumeIntents: ConsumeIntent[],
-    receivers: Receiver[]
-  ): CreateIntent[] {
-    return receivers.map((receiver, i) => {
-      const { resource: consumedResource, nullifierKey } = consumeIntents[i];
-
+  /** Creates a transfer or burn resource for each receiver. */
+  getCreateIntents(receivers: Receiver[]): CreateIntent[] {
+    return receivers.map(receiver => {
       if (!receiver.token)
         throw new Error("Consumed resource is missing token information");
 
@@ -168,8 +160,6 @@ export class ParametersDraftResolver {
         forwarderAddress: this.chain.forwarderAddress,
         token: receiver.token.address,
         quantity: receiver.quantity,
-        resource: consumedResource,
-        nullifierKey,
       };
 
       // Resource destination -> Ethereum address
@@ -177,6 +167,7 @@ export class ParametersDraftResolver {
         return {
           resource: this.transferBuilder.client.createBurnResource({
             ...commonParams,
+            nullifierKey: new NullifierKey(this.senderNullifierKey),
             receiverAddress: receiver.address,
           }),
           receiver,
@@ -198,72 +189,20 @@ export class ParametersDraftResolver {
     });
   }
 
-  /** Creates a padding CreateIntent with a trivial resource. */
-  getCreateIntentPadding(consumedResource: ConsumeIntent): CreateIntent {
-    return {
-      resource: this.transferBuilder.client.createPaddingResource({
-        nullifierKey: consumedResource.nullifierKey,
-        resource: consumedResource.resource,
-      }),
-      receiver: undefined,
-    };
-  }
-
-  /** Creates a padding ConsumeIntent with a trivial resource. */
-  getConsumeIntentPadding(): ConsumeIntent {
-    return {
-      type: "Padding",
-      resource: this.transferBuilder.client.createPaddingResource(),
-      nullifierKey: NullifierKey.zero(),
-    };
-  }
-
   /**
-   * Builds the full transfer parameters by selecting resources, creating
-   * consumed/created entries, balancing with padding, authorizing, and
-   * serializing into the Parameters structure.
+   * Builds the full transfer parameters by selecting resources and creating
+   * the consumed/created entries for every receiver plus any change.
    */
   build(userResources: AppResource[]): ResolvedParameters {
-    // Select user resources
     const selectedResources = this.selectResources(userResources);
     const remainderReceivers = this.checkForRemainders(selectedResources);
-    const receivers = [...this.receivers, ...remainderReceivers];
-
-    // Create consume intents from selected user resources
-    const consumeIntents: ConsumeIntent[] = [
-      ...this.getConsumeIntents(selectedResources),
-    ];
-
-    // Pad consume intents so there is one per receiver before creating outputs
-    const consumedPaddingCount = Math.max(
-      0,
-      receivers.length - consumeIntents.length
-    );
-
-    for (let i = 0; i < consumedPaddingCount; i++) {
-      consumeIntents.push(this.getConsumeIntentPadding());
-    }
-
-    // Create intents using the (now padded) consume intents
-    const createIntents: CreateIntent[] = [
-      ...this.getCreateIntents(consumeIntents, receivers),
-    ];
-
-    // Pad create intents if consume intents still outnumber them
-    const createdPaddingCount = Math.max(
-      0,
-      consumeIntents.length - createIntents.length
-    );
-
-    for (let i = 0; i < createdPaddingCount; i++) {
-      const consumedIndex = createIntents.length;
-      const consumed = consumeIntents[consumedIndex];
-      createIntents.push(this.getCreateIntentPadding(consumed));
-    }
 
     return {
-      consumeIntents,
-      createIntents,
+      consumeIntents: this.getConsumeIntents(selectedResources),
+      createIntents: this.getCreateIntents([
+        ...this.receivers,
+        ...remainderReceivers,
+      ]),
     };
   }
 }

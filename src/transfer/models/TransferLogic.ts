@@ -1,11 +1,12 @@
 import {
+  ActionTree,
   AuthorityVerifyingKey,
+  deriveNonceFromNullifiers,
   Digest,
-  MerkleTree,
   NullifierKey,
   NullifierKeyCommitment,
-  Resource,
   randomBytes,
+  Resource,
 } from "@anomaorg/arm-bindings";
 import { toHex } from "primitives";
 import {
@@ -22,63 +23,31 @@ import { Client, initClient } from "./client";
  * Anoma Simple Transfer Application
  */
 export class TransferLogic extends Client {
-  trivialLogicVerifyingKey = "";
-
   static async init(
     transferLogicVerifyingKey: string,
-    trivialLogicVerifyingKey: string,
     wasmBytes?: Uint8Array
   ): Promise<TransferLogic> {
-    const client = await initClient(
-      TransferLogic,
-      transferLogicVerifyingKey,
-      wasmBytes
-    );
-    client.trivialLogicVerifyingKey = trivialLogicVerifyingKey;
-    return client;
+    return initClient(TransferLogic, transferLogicVerifyingKey, wasmBytes);
   }
 
-  createPaddingResource(props?: {
-    nullifierKey: NullifierKey;
-    resource: Resource;
-  }): Resource {
-    let nonce: Digest;
-    if (props) {
-      const { resource, nullifierKey } = props;
-      nonce = resource.nullifier(nullifierKey);
-    } else {
-      nonce = Digest.fromBytes(randomBytes());
-    }
-    return Resource.create(
-      Digest.fromHex(this.trivialLogicVerifyingKey),
-      Digest.zero(),
-      0n,
-      Digest.zero(),
-      true,
-      nonce,
-      NullifierKey.zero().commit()
-    );
-  }
-
-  /** Creates a transfer resource destined for an Anoma address receiver. */
+  /**
+   * Creates a transfer resource destined for an Anoma address receiver. Its
+   * nonce is a placeholder until `PayloadBuilder` derives it from the
+   * transaction's consumed nullifiers.
+   */
   createTransferResource({
     forwarderAddress,
-    nullifierKey,
     quantity,
     receiverPublicKeys,
-    resource,
     token,
   }: {
     forwarderAddress: Address;
-    nullifierKey: NullifierKey;
     quantity: bigint;
     receiverPublicKeys: UserPublicKeys;
-    resource: Resource;
     token: Address;
   }): Resource {
     const logicRef = Digest.fromHex(this.digest);
     const labelRef = calculateLabelRef(forwarderAddress, token);
-    const nonce = resource.nullifier(nullifierKey);
     const receiverAuthVerifyingKey = new AuthorityVerifyingKey(
       receiverPublicKeys.authorityPublicKey
     );
@@ -92,30 +61,30 @@ export class TransferLogic extends Client {
       quantity,
       valueRef,
       false,
-      nonce,
+      Digest.zero(),
       new NullifierKeyCommitment(receiverPublicKeys.nullifierKeyCommitment)
     );
   }
 
-  /** Creates a burn (unwrap) resource destined for an EVM wallet address. */
+  /**
+   * Creates a burn (unwrap) resource destined for an EVM wallet address. Its
+   * nonce is a placeholder until `PayloadBuilder` derives it.
+   */
   createBurnResource({
     forwarderAddress,
     nullifierKey,
     quantity,
     receiverAddress,
-    resource,
     token,
   }: {
     forwarderAddress: Address;
     nullifierKey: NullifierKey;
     quantity: bigint;
     receiverAddress: string;
-    resource: Resource;
     token: Address;
   }): Resource {
     const logicRef = Digest.fromHex(this.digest);
     const labelRef = calculateLabelRef(forwarderAddress, token);
-    const nonce = resource.nullifier(nullifierKey);
     const valueRef = calculateValueRefFromUserAddress(receiverAddress);
     return Resource.create(
       logicRef,
@@ -123,7 +92,7 @@ export class TransferLogic extends Client {
       quantity,
       valueRef,
       true,
-      nonce,
+      Digest.zero(),
       nullifierKey.commit()
     );
   }
@@ -161,12 +130,12 @@ export class TransferLogic extends Client {
         toHex(keyring.encryptionKeyPair.publicKey)
       ),
       false,
-      consumedResourceNullifier,
+      deriveNonceFromNullifiers(0, [consumedResourceNullifier]),
       nkCommitment
     );
 
     const createdResourceCommitment = createdResource.commitment();
-    const actionTree = new MerkleTree([
+    const actionTree = new ActionTree([
       consumedResourceNullifier,
       createdResourceCommitment,
     ]);

@@ -11,8 +11,8 @@ importers:
   .:
     dependencies:
       '@anomaorg/arm-bindings':
-        specifier: https://pkg.pr.new/@anomaorg/arm-bindings@e0492f7
-        version: https://pkg.pr.new/@anomaorg/arm-bindings@e0492f7(react-native@0.86.2(@babel/core@7.29.7)(@types/react@19.2.18)(react@19.2.8))
+        specifier: https://pkg.pr.new/@anomaorg/arm-bindings@ce6e5d6
+        version: https://pkg.pr.new/@anomaorg/arm-bindings@ce6e5d6(react-native@0.86.2(@babel/core@7.29.7)(@types/react@19.2.18)(react@19.2.8))
       '@noble/ciphers':
         specifier: 1.3.0
         version: 1.3.0
@@ -158,9 +158,9 @@ packages:
   '@adraffy/ens-normalize@1.11.1':
     resolution: {integrity: sha512-nhCBV3quEgesuf7c7KYfperqSS14T8bYuvJ8PcLJp6znkZpFc0AuW4qBtr8eKVyPPe/8RSr7sglCWPU5eaxwKQ==}
 
-  '@anomaorg/arm-bindings@https://pkg.pr.new/@anomaorg/arm-bindings@e0492f7':
-    resolution: {integrity: sha512-dbSRaiwmw4x/Fs5kls5yDDJMYA+7mXgDMWRyHJZPWUTl6Nsr8HpYBqcAEIysLxAZQ6Jzq8eVrp13/mVWhWxA+g==, tarball: https://pkg.pr.new/@anomaorg/arm-bindings@e0492f7}
-    version: 0.3.0
+  '@anomaorg/arm-bindings@https://pkg.pr.new/@anomaorg/arm-bindings@ce6e5d6':
+    resolution: {integrity: sha512-iyfw+ruLXCCJzxgN0EtYEEoVaJ6R9dm8UsMWreEhe43qsLjm2YIaKxD8U9bEaH2azjcG6ctjh79c089TvDGiXA==, tarball: https://pkg.pr.new/@anomaorg/arm-bindings@ce6e5d6}
+    version: 0.3.1
     peerDependencies:
       react-native: '>=0.79'
     peerDependenciesMeta:
@@ -3947,7 +3947,7 @@ snapshots:
 
   '@adraffy/ens-normalize@1.11.1': {}
 
-  '@anomaorg/arm-bindings@https://pkg.pr.new/@anomaorg/arm-bindings@e0492f7(react-native@0.86.2(@babel/core@7.29.7)(@types/react@19.2.18)(react@19.2.8))':
+  '@anomaorg/arm-bindings@https://pkg.pr.new/@anomaorg/arm-bindings@ce6e5d6(react-native@0.86.2(@babel/core@7.29.7)(@types/react@19.2.18)(react@19.2.8))':
     dependencies:
       '@ubjs/core': 0.31.0-5
       uniffi-bindgen-react-native: 0.31.0-5

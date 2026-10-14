@@ -7,6 +7,7 @@ use crate::error::BindingsError;
 use arm::{nullifier_key::NullifierKeyCommitment as NKC, resource::Resource as R};
 use base64::{Engine as _, engine::general_purpose::STANDARD as b64};
 use serde::{self, Deserialize, Serialize};
+use std::sync::Arc;
 
 /// u128 cannot cross the FFI boundary, so quantities travel as decimal strings.
 /// The bindings lift them back to `bigint` on the TypeScript side.
@@ -160,6 +161,24 @@ impl Resource {
     pub fn from_bytes(bytes: &[u8]) -> Result<Resource, BindingsError> {
         Ok(Resource(R::from_bytes(bytes)?))
     }
+
+    pub fn with_nonce(&self, nonce: &Digest) -> Resource {
+        let mut resource = self.0;
+        resource.set_nonce(nonce.0);
+        Resource(resource)
+    }
+}
+
+/// Nonce of the created resource at `index`, derived from every consumed
+/// nullifier of the action in order.
+#[uniffi::export]
+pub fn derive_nonce_from_nullifiers(
+    index: u32,
+    nullifiers: Vec<Arc<Digest>>,
+) -> Result<Digest, BindingsError> {
+    let nullifiers: Vec<_> = nullifiers.iter().map(|nf| nf.0).collect();
+    let nonce = R::derive_nonce_from_nullifiers(index, &nullifiers)?;
+    Ok(Digest(risc0_zkvm::Digest::from_bytes(nonce)))
 }
 
 #[derive(Debug, uniffi::Record)]

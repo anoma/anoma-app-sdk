@@ -10,8 +10,6 @@ import {
   encodeGenericCalls,
   serializeGenericCalls,
 } from "../genericCalls";
-import type { TransferBuilder } from "../models/TransferBuilder";
-import { TransferLogic } from "../models/TransferLogic";
 
 beforeAll(async () => {
   await initSdk();
@@ -114,45 +112,32 @@ describe("appendGenericCallLeg", () => {
       "de1d88738d93b2c67bcd7d2515e22a093bbf7f08ecd88ab24030c301a416621a",
   } as unknown as SupportedChainConfig;
 
-  // Only `client.createPaddingResource` is reached, and that needs nothing but
-  // the trivial logic key — `TransferLogic.init` would require wasm bootstrap.
-  const client = new TransferLogic(
-    "0000000000000000000000000000000000000000000000000000000000000001"
-  );
-  client.trivialLogicVerifyingKey =
-    "0000000000000000000000000000000000000000000000000000000000000002";
-  const transferBuilder = { client } as TransferBuilder;
-
   const existing: ResolvedParameters = {
     consumeIntents: [],
     createIntents: [],
   };
 
-  it("appends exactly one consume and one create intent", () => {
+  it("appends exactly one consume intent and no create intent", () => {
     const result = appendGenericCallLeg(existing, {
-      transferBuilder,
       chain,
       calls: CALLS,
     });
 
     expect(result.consumeIntents).toHaveLength(1);
-    expect(result.createIntents).toHaveLength(1);
+    expect(result.createIntents).toHaveLength(0);
     expect(result.consumeIntents[0]).toMatchObject({
       type: "GenericCall",
       forwarderAddress: chain.genericCallForwarderAddress,
       calls: CALLS,
     });
-    expect(result.createIntents[0].receiver).toBeUndefined();
   });
 
   it("preserves the input intents, in order, ahead of the new ones", () => {
     const first = appendGenericCallLeg(existing, {
-      transferBuilder,
       chain,
       calls: CALLS,
     });
     const second = appendGenericCallLeg(first, {
-      transferBuilder,
       chain,
       calls: CALLS,
     });
@@ -167,7 +152,6 @@ describe("appendGenericCallLeg", () => {
   it("throws when the backend did not supply the generic-call logic key", () => {
     expect(() =>
       appendGenericCallLeg(existing, {
-        transferBuilder,
         chain: { ...chain, genericCallLogicVerifyingKey: "" },
         calls: CALLS,
       })
