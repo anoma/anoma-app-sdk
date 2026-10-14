@@ -8,14 +8,12 @@ import {
 import { fromHex, invariant, toBase64 } from "primitives";
 import type {
   ConsumeIntent,
-  CreateIntent,
   EvmCall,
   GenericCallInput,
   ResolvedParameters,
   SupportedChainConfig,
 } from "types";
 import { encodeAbiParameters, type Address, type Hex } from "viem";
-import type { TransferBuilder } from "./models/TransferBuilder";
 
 /**
  * ABI tuple for the `Call { address to; uint256 value; bytes data }` struct
@@ -108,9 +106,8 @@ export function createGenericCallResource(params: {
 }
 
 /**
- * Appends the generic-call compliance unit to already-resolved parameters: an
- * ephemeral, quantity-0 resource carrying `calls`, balanced by a padding
- * resource so the unit nets to zero.
+ * Appends the generic-call leg to already-resolved parameters: an ephemeral,
+ * quantity-0 resource carrying `calls`, consumed with no created counterpart.
  *
  * Pair it with a transfer leg that sends the tokens to
  * `chain.genericCallForwarderAddress`, so the forwarder holds the funds the
@@ -120,12 +117,11 @@ export function createGenericCallResource(params: {
 export function appendGenericCallLeg(
   resolved: ResolvedParameters,
   params: {
-    transferBuilder: TransferBuilder;
     chain: SupportedChainConfig;
     calls: EvmCall[];
   }
 ): ResolvedParameters {
-  const { transferBuilder, chain, calls } = params;
+  const { chain, calls } = params;
   const { genericCallLogicVerifyingKey, genericCallForwarderAddress } = chain;
   invariant(
     genericCallLogicVerifyingKey,
@@ -145,16 +141,9 @@ export function appendGenericCallLeg(
     resource,
     nullifierKey: NullifierKey.zero(),
   };
-  const padding: CreateIntent = {
-    resource: transferBuilder.client.createPaddingResource({
-      nullifierKey: NullifierKey.zero(),
-      resource,
-    }),
-    receiver: undefined,
-  };
 
   return {
     consumeIntents: [...resolved.consumeIntents, consume],
-    createIntents: [...resolved.createIntents, padding],
+    createIntents: resolved.createIntents,
   };
 }

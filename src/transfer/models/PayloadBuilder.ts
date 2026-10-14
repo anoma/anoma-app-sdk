@@ -1,4 +1,5 @@
 import {
+  deriveNonceFromNullifiers,
   PublicKey,
   type AuthoritySignature,
   type Digest,
@@ -22,32 +23,40 @@ const formatPayloadKey = (key: Uint8Array<ArrayBufferLike>) =>
 
 /**
  * Constructs the backend-compatible Parameters payload from resolved
- * consumed/created resource items, handling witness data generation
- * and authorization signing.
+ * consumed/created resource items, handling nonce derivation, witness data
+ * generation and authorization signing.
+ *
+ * The whole transaction is a single compliance unit, so the order of
+ * `consumeIntents` and `createIntents` is the order the backend proves them in.
  */
 export class PayloadBuilder {
   consumeIntents: ConsumeIntent[];
   createIntents: CreateIntent[];
+  nullifiers: Digest[];
   authorizationSignature: AuthoritySignature | undefined;
 
   constructor(resolvedParameters: ResolvedParameters) {
     this.consumeIntents = resolvedParameters.consumeIntents;
-    this.createIntents = resolvedParameters.createIntents;
+    this.nullifiers = this.consumeIntents.map(({ resource, nullifierKey }) =>
+      resource.nullifier(nullifierKey)
+    );
+    // Created nonces commit to every consumed nullifier and to their own
+    // position, so they can only be set once the transaction is final.
+    this.createIntents = resolvedParameters.createIntents.map((intent, i) => ({
+      ...intent,
+      resource: intent.resource.withNonce(
+        deriveNonceFromNullifiers(i, this.nullifiers)
+      ),
+    }));
   }
 
-  /** Signs all consumed/created resource pairs and stores the authorization signature. */
+  /** Signs the action tree (all nullifiers, then all commitments) and stores the authorization signature. */
   withAuthorization(authorityPrivateKey: Uint8Array<ArrayBuffer>) {
-    const actions: Digest[] = [];
-    for (let i = 0; i < this.consumeIntents.length; i++) {
-      actions.push(
-        this.consumeIntents[i].resource.nullifier(
-          this.consumeIntents[i].nullifierKey
-        ),
-        this.createIntents[i].resource.commitment()
-      );
-    }
     this.authorizationSignature = authorizeActions(
-      actions,
+      [
+        ...this.nullifiers,
+        ...this.createIntents.map(({ resource }) => resource.commitment()),
+      ],
       authorityPrivateKey
     );
     return this;
@@ -103,11 +112,6 @@ export class PayloadBuilder {
       };
     }
 
-    // Padding resources don't require any witness data
-    if (item.type === "Padding") {
-      return this.getWitnessForPaddingResource();
-    }
-
     throw new Error("Unknown ConsumeIntent type");
   }
 
@@ -115,12 +119,6 @@ export class PayloadBuilder {
   getWitnessForCreatedResource(
     item: CreateIntent
   ): Partial<CreatedWitnessDataSchema> {
-    // Padding resources don't have a receiver or token address
-    if (!item.receiver) {
-      return this.getWitnessForPaddingResource();
-    }
-
-    // From now on, token is required
     if (!item.receiver.token) {
       throw new Error("Token information is required for created resources");
     }
@@ -154,13 +152,6 @@ export class PayloadBuilder {
     }
 
     throw new Error("Unknown CreateIntent type");
-  }
-
-  /** Returns trivial ephemeral witness data used for padding resources. */
-  getWitnessForPaddingResource() {
-    return {
-      TrivialEphemeral: {},
-    };
   }
 
   /** Encodes a consume intent into the serialized consumed resource payload. */

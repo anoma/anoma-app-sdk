@@ -1,4 +1,4 @@
-use crate::arm::{action_tree::MerkleTree, encryption::PublicKey};
+use crate::arm::{action_tree::ActionTree, encryption::PublicKey};
 use crate::error::BindingsError;
 use arm_gadgets::authority::{
     AuthoritySignature as AS, AuthoritySigningKey as ASK, AuthorityVerifyingKey as AVK,
@@ -29,7 +29,7 @@ impl AuthoritySigningKey {
     pub fn authorize(
         &self,
         domain: &str,
-        action_tree: &MerkleTree,
+        action_tree: &ActionTree,
     ) -> Result<AuthoritySignature, BindingsError> {
         Ok(self.sign(domain, &action_tree.root()?.to_bytes()))
     }

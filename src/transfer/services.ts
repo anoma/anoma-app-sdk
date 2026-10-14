@@ -1,8 +1,8 @@
 import {
+  ActionTree,
   AuthoritySigningKey,
   Digest,
   hashBytes,
-  MerkleTree,
   PublicKey,
   type AuthoritySignature,
   type AuthorityVerifyingKey,
@@ -52,14 +52,14 @@ export function authorizeActions(
   authorizationKeyBytes: Uint8Array
 ): AuthoritySignature {
   const authorizationKey = AuthoritySigningKey.fromBytes(authorizationKeyBytes);
-  const actionTree = new MerkleTree(actions);
+  const actionTree = new ActionTree(actions);
   return authorizationKey.authorize(AUTH_SIGNATURE_DOMAIN, actionTree);
 }
 
 /**
  * The user's own persistent created notes (a deposit mint or spend change) —
  * those encrypted back to their encryption key. Excludes receiver outputs and
- * ephemeral burn/padding notes.
+ * ephemeral burn notes.
  */
 export function getOwnedCreatedResources(
   createdResources: CreatedResource[],

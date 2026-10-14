@@ -16,12 +16,10 @@ export class TransferBuilder {
 
   static async init(
     transferLogicVerifyingKey: string,
-    trivialLogicVerifyingKey: string,
     wasmBytes?: Uint8Array
   ): Promise<TransferBuilder> {
     const client = await TransferLogic.init(
       transferLogicVerifyingKey,
-      trivialLogicVerifyingKey,
       wasmBytes ? new Uint8Array(wasmBytes) : undefined
     );
     return new TransferBuilder(client);
