@@ -4,7 +4,7 @@ import {
   type Resource,
   ResourceWithLabel,
 } from "@anomaorg/arm-bindings";
-import { fromHex, normalizeHex } from "primitives";
+import { fromHex, normalizeHex, toBase64 } from "primitives";
 import {
   formatBalance,
   formatTokenAmount,
@@ -116,6 +116,36 @@ export const attachNullifiers = (
   });
 };
 
+/** Logic ref of v1 transfer resources; the backend migrates them to v2 on consume. */
+export const LEGACY_TRANSFER_LOGIC_REF: Hex =
+  "0xbc12323668c37c3d381ca798f11116f35fb1639d12239b29da7810df3985e7ad";
+
+// EncodedResource carries logicRef as base64, so compare in that encoding.
+const LEGACY_TRANSFER_LOGIC_REF_BASE64 = toBase64(
+  fromHex(LEGACY_TRANSFER_LOGIC_REF)
+);
+
+export const isLegacyResource = (resource: AppResource): boolean =>
+  resource.logicRef === LEGACY_TRANSFER_LOGIC_REF_BASE64;
+
+/**
+ * Spends legacy resources before any v2 one, so each operation migrates as
+ * many as it can. v2 resources only cover what legacy can't. Legacy resources
+ * come first and the change-absorbing resource last.
+ */
+const selectPreferringLegacy = (
+  resources: AppResource[],
+  targetAmount: bigint
+): AppResource[] | undefined => {
+  const legacy = resources.filter(isLegacyResource);
+  const legacySum = legacy.reduce((sum, r) => sum + r.quantity, 0n);
+  if (legacySum >= targetAmount) return selectUTXOs(legacy, targetAmount);
+
+  const v2 = resources.filter(r => !isLegacyResource(r));
+  const v2Selected = selectUTXOs(v2, targetAmount - legacySum);
+  return v2Selected && [...legacy, ...v2Selected];
+};
+
 /** Resolves consumption status for each resource, returning enriched AppResource entries. */
 /**
  * Determine what resources are needed to fulfill a transfer, either by exact
@@ -132,7 +162,7 @@ export const selectTransferResources = (
     throw new Error("Must specify a quantity greater than 0");
   }
 
-  const selected = selectUTXOs(resources, targetAmount);
+  const selected = selectPreferringLegacy(resources, targetAmount);
 
   if (!selected) {
     const available = resources.reduce((sum, r) => sum + r.quantity, 0n);
@@ -142,7 +172,7 @@ export const selectTransferResources = (
   const selectedSum = selected.reduce((sum, r) => sum + r.quantity, 0n);
   const overage = selectedSum - targetAmount;
 
-  // selected is sorted descending; the last (smallest) resource absorbs the split
+  // the last resource is the smallest of its selection, so it absorbs the split
   return selected.map((r, i) => ({
     resource: r,
     targetAmount: i === selected.length - 1 ? r.quantity - overage : r.quantity,
