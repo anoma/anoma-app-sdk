@@ -9,7 +9,12 @@ import {
 } from "@anomaorg/arm-bindings";
 import { sha256 } from "@noble/hashes/sha2";
 import { fromBase64 } from "primitives";
-import type { ConsumeIntent, CreateIntent, TokenRegistry } from "types";
+import type {
+  ConsumeIntent,
+  CreateIntent,
+  ResolvedIntent,
+  TokenRegistry,
+} from "types";
 import { beforeAll, describe, expect, it } from "vitest";
 import { initSdk } from "../..";
 import { PayloadBuilder } from "../models/PayloadBuilder";
@@ -63,22 +68,36 @@ const expectedNonce = (index: number, nullifiers: Digest[]) => {
 describe("PayloadBuilder", () => {
   let consumeIntents: ConsumeIntent[];
   let createIntents: CreateIntent[];
+  // Interleaved, as a swap is: a created resource sits before a consumed one.
+  let intents: ResolvedIntent[];
 
   beforeAll(() => {
     const nk = new NullifierKey(randomBytes());
     consumeIntents = [consumeIntent(nk), consumeIntent(nk)];
-    // More created than consumed: no padding is needed to pair them up.
     createIntents = [createIntent(), createIntent(), createIntent()];
+    intents = [
+      { consume: consumeIntents[0] },
+      { create: createIntents[0] },
+      { consume: consumeIntents[1] },
+      { create: createIntents[1] },
+      { create: createIntents[2] },
+    ];
   });
 
-  it("derives each created nonce from all consumed nullifiers and its index", () => {
-    const builder = new PayloadBuilder({ consumeIntents, createIntents });
+  const createdOf = (builder: PayloadBuilder) =>
+    builder.intents.flatMap(i => ("create" in i ? [i.create] : []));
+
+  it("derives each created nonce from all consumed nullifiers and its created index", () => {
+    const builder = new PayloadBuilder({ intents });
     const nullifiers = consumeIntents.map(({ resource, nullifierKey }) =>
       resource.nullifier(nullifierKey)
     );
 
-    expect(builder.createIntents).toHaveLength(3);
-    builder.createIntents.forEach(({ resource }, i) => {
+    const hex = (digests: Digest[]) => digests.map(d => d.toHex());
+    expect(hex(builder.nullifiers)).toEqual(hex(nullifiers));
+    const created = createdOf(builder);
+    expect(created).toHaveLength(3);
+    created.forEach(({ resource }, i) => {
       expect(fromBase64(resource.encode().nonce)).toEqual(
         expectedNonce(i, nullifiers)
       );
@@ -86,23 +105,22 @@ describe("PayloadBuilder", () => {
   });
 
   it("keeps every other created resource field", () => {
-    const builder = new PayloadBuilder({ consumeIntents, createIntents });
+    const builder = new PayloadBuilder({ intents });
     const { nonce: _, ...before } = createIntents[1].resource.encode();
-    const { nonce: __, ...after } = builder.createIntents[1].resource.encode();
+    const { nonce: __, ...after } = createdOf(builder)[1].resource.encode();
     expect(after).toEqual(before);
   });
 
-  it("signs the action tree as all nullifiers, then all commitments", () => {
+  it("signs the action tree in list order", () => {
     const signingKey = new AuthoritySigningKey();
-    const builder = new PayloadBuilder({
-      consumeIntents,
-      createIntents,
-    }).withAuthorization(new Uint8Array(signingKey.toBytes()));
+    const builder = new PayloadBuilder({ intents }).withAuthorization(
+      new Uint8Array(signingKey.toBytes())
+    );
     const signature = builder.authorizationSignature;
     if (!signature) throw new Error("PayloadBuilder did not sign");
 
-    const nullifiers = builder.nullifiers;
-    const commitments = builder.createIntents.map(({ resource }) =>
+    const [nf0, nf1] = builder.nullifiers;
+    const [cm0, cm1, cm2] = createdOf(builder).map(({ resource }) =>
       resource.commitment()
     );
     const verify = (leaves: Digest[]) =>
@@ -112,16 +130,16 @@ describe("PayloadBuilder", () => {
         signature
       );
 
-    expect(() => verify([...nullifiers, ...commitments])).not.toThrow();
-    // v1 interleaved order must no longer match.
-    expect(() =>
-      verify([
-        nullifiers[0],
-        commitments[0],
-        nullifiers[1],
-        commitments[1],
-        commitments[2],
-      ])
-    ).toThrow();
+    expect(() => verify([nf0, cm0, nf1, cm1, cm2])).not.toThrow();
+    // Consumed-then-created no longer matches an interleaved action.
+    expect(() => verify([nf0, nf1, cm0, cm1, cm2])).toThrow();
+  });
+
+  it("builds the payload in the same order", () => {
+    const { resources } = new PayloadBuilder({ intents }).build();
+
+    expect(
+      resources.map(r => ("consumed" in r ? "consumed" : "created"))
+    ).toEqual(["consumed", "created", "consumed", "created", "created"]);
   });
 });

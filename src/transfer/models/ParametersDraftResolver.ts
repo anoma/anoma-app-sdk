@@ -197,12 +197,17 @@ export class ParametersDraftResolver {
     const selectedResources = this.selectResources(userResources);
     const remainderReceivers = this.checkForRemainders(selectedResources);
 
+    const consumeIntents = this.getConsumeIntents(selectedResources);
+    const createIntents = this.getCreateIntents([
+      ...this.receivers,
+      ...remainderReceivers,
+    ]);
+
     return {
-      consumeIntents: this.getConsumeIntents(selectedResources),
-      createIntents: this.getCreateIntents([
-        ...this.receivers,
-        ...remainderReceivers,
-      ]),
+      intents: [
+        ...consumeIntents.map(consume => ({ consume })),
+        ...createIntents.map(create => ({ create })),
+      ],
     };
   }
 }

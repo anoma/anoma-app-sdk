@@ -9,7 +9,11 @@ import {
 } from "@anomaorg/arm-bindings";
 import { fromHex, normalizeHex } from "primitives";
 import type { Address, Hex } from "viem";
-import type { CreatedResource } from "./types/resources";
+import type {
+  ConsumedResource,
+  CreatedResource,
+  Parameters,
+} from "./types/resources";
 
 /** Domain separator for transfer authorization signatures. */
 export const AUTH_SIGNATURE_DOMAIN = "TokenTransferAuthorization";
@@ -72,4 +76,18 @@ export function getOwnedCreatedResources(
       witnessData.TokenTransferPersistent?.receiverEncryptionPublicKey ===
         ownerEncryptionKey
   );
+}
+
+/** The consumed resources of `parameters`, in action order. */
+export function getConsumedResources(
+  parameters: Parameters
+): ConsumedResource[] {
+  return parameters.resources.flatMap(r =>
+    "consumed" in r ? [r.consumed] : []
+  );
+}
+
+/** The created resources of `parameters`, in action order. */
+export function getCreatedResources(parameters: Parameters): CreatedResource[] {
+  return parameters.resources.flatMap(r => ("created" in r ? [r.created] : []));
 }

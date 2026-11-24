@@ -13,6 +13,7 @@ import type {
   CreatedWitnessDataSchema,
   CreateIntent,
   Parameters,
+  ResolvedIntent,
   ResolvedParameters,
 } from "types";
 import { serializeGenericCalls } from "../genericCalls";
@@ -22,41 +23,53 @@ const formatPayloadKey = (key: Uint8Array<ArrayBufferLike>) =>
   new PublicKey(key).toBase64();
 
 /**
- * Constructs the backend-compatible Parameters payload from resolved
- * consumed/created resource items, handling nonce derivation, witness data
- * generation and authorization signing.
+ * Constructs the backend-compatible Parameters payload from resolved intents,
+ * handling nonce derivation, witness data generation and authorization signing.
  *
- * The whole transaction is a single compliance unit, so the order of
- * `consumeIntents` and `createIntents` is the order the backend proves them in.
+ * The whole transaction is a single action whose resources keep the order of
+ * `intents`: the backend builds the action tree, and the protocol adapter runs
+ * the forwarder calls, in that order.
  */
 export class PayloadBuilder {
-  consumeIntents: ConsumeIntent[];
-  createIntents: CreateIntent[];
+  intents: ResolvedIntent[];
   nullifiers: Digest[];
   authorizationSignature: AuthoritySignature | undefined;
 
   constructor(resolvedParameters: ResolvedParameters) {
-    this.consumeIntents = resolvedParameters.consumeIntents;
-    this.nullifiers = this.consumeIntents.map(({ resource, nullifierKey }) =>
-      resource.nullifier(nullifierKey)
+    this.nullifiers = resolvedParameters.intents.flatMap(intent =>
+      "consume" in intent ?
+        [intent.consume.resource.nullifier(intent.consume.nullifierKey)]
+      : []
     );
-    // Created nonces commit to every consumed nullifier and to their own
-    // position, so they can only be set once the transaction is final.
-    this.createIntents = resolvedParameters.createIntents.map((intent, i) => ({
-      ...intent,
-      resource: intent.resource.withNonce(
-        deriveNonceFromNullifiers(i, this.nullifiers)
-      ),
-    }));
+    // Created nonces commit to every consumed nullifier and to their index
+    // among the created resources, so they can only be set once the action is final.
+    let createdIndex = 0;
+    this.intents = resolvedParameters.intents.map(intent => {
+      if ("consume" in intent) return intent;
+      const nonce = deriveNonceFromNullifiers(createdIndex++, this.nullifiers);
+      return {
+        create: {
+          ...intent.create,
+          resource: intent.create.resource.withNonce(nonce),
+        },
+      };
+    });
   }
 
-  /** Signs the action tree (all nullifiers, then all commitments) and stores the authorization signature. */
+  /** Each resource's tag (nullifier or commitment), in action order. */
+  private tags(): Digest[] {
+    let consumedIndex = 0;
+    return this.intents.map(intent =>
+      "consume" in intent ?
+        this.nullifiers[consumedIndex++]
+      : intent.create.resource.commitment()
+    );
+  }
+
+  /** Signs the action tree and stores the authorization signature. */
   withAuthorization(authorityPrivateKey: Uint8Array<ArrayBuffer>) {
     this.authorizationSignature = authorizeActions(
-      [
-        ...this.nullifiers,
-        ...this.createIntents.map(({ resource }) => resource.commitment()),
-      ],
+      this.tags(),
       authorityPrivateKey
     );
     return this;
@@ -171,14 +184,13 @@ export class PayloadBuilder {
     };
   }
 
-  /** Builds the final Parameters object by encoding all consumed and created resources. */
+  /** Builds the final Parameters object, keeping the action order. */
   build(): Parameters {
     return {
-      consumedResources: this.consumeIntents.map(
-        this.getConsumedResourcePayload.bind(this)
-      ),
-      createdResources: this.createIntents.map(
-        this.getCreatedResourcesPayload.bind(this)
+      resources: this.intents.map(intent =>
+        "consume" in intent ?
+          { consumed: this.getConsumedResourcePayload(intent.consume) }
+        : { created: this.getCreatedResourcesPayload(intent.create) }
       ),
     };
   }

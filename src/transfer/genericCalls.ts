@@ -142,8 +142,6 @@ export function appendGenericCallLeg(
     nullifierKey: NullifierKey.zero(),
   };
 
-  return {
-    consumeIntents: [...resolved.consumeIntents, consume],
-    createIntents: resolved.createIntents,
-  };
+  // Last, so the calls run once the leg has funded the forwarder.
+  return { intents: [...resolved.intents, { consume }] };
 }

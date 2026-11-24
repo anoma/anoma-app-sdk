@@ -112,41 +112,42 @@ describe("appendGenericCallLeg", () => {
       "de1d88738d93b2c67bcd7d2515e22a093bbf7f08ecd88ab24030c301a416621a",
   } as unknown as SupportedChainConfig;
 
-  const existing: ResolvedParameters = {
-    consumeIntents: [],
-    createIntents: [],
-  };
+  const existing: ResolvedParameters = { intents: [] };
 
-  it("appends exactly one consume intent and no create intent", () => {
+  it("appends exactly one consume intent", () => {
     const result = appendGenericCallLeg(existing, {
       chain,
       calls: CALLS,
     });
 
-    expect(result.consumeIntents).toHaveLength(1);
-    expect(result.createIntents).toHaveLength(0);
-    expect(result.consumeIntents[0]).toMatchObject({
-      type: "GenericCall",
-      forwarderAddress: chain.genericCallForwarderAddress,
-      calls: CALLS,
+    expect(result.intents).toHaveLength(1);
+    expect(result.intents[0]).toMatchObject({
+      consume: {
+        type: "GenericCall",
+        forwarderAddress: chain.genericCallForwarderAddress,
+        calls: CALLS,
+      },
     });
   });
 
-  it("preserves the input intents, in order, ahead of the new ones", () => {
-    const first = appendGenericCallLeg(existing, {
-      chain,
-      calls: CALLS,
-    });
+  it("appends after every input intent, so the leg funds the forwarder first", () => {
+    const burnToForwarder = { create: {} } as ResolvedParameters["intents"][0];
+    const first = appendGenericCallLeg(
+      { intents: [burnToForwarder] },
+      { chain, calls: CALLS }
+    );
     const second = appendGenericCallLeg(first, {
       chain,
       calls: CALLS,
     });
 
-    expect(second.consumeIntents).toHaveLength(2);
-    expect(second.consumeIntents[0]).toBe(first.consumeIntents[0]);
+    expect(first.intents[0]).toBe(burnToForwarder);
+    expect("consume" in first.intents[1]).toBe(true);
+    expect(second.intents).toHaveLength(3);
+    expect(second.intents.slice(0, 2)).toEqual(first.intents);
     // The input is not mutated.
-    expect(first.consumeIntents).toHaveLength(1);
-    expect(existing.consumeIntents).toHaveLength(0);
+    expect(first.intents).toHaveLength(2);
+    expect(existing.intents).toHaveLength(0);
   });
 
   it("throws when the backend did not supply the generic-call logic key", () => {

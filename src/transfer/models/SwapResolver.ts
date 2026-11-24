@@ -153,13 +153,15 @@ export class SwapResolver {
       },
     };
 
+    // The swap calls spend what the token-A leg burned into the forwarder, and
+    // the wrap pulls what they bought, so each must follow the one before.
     return {
-      consumeIntents: [
-        ...tokenALeg.consumeIntents,
-        genericCallConsume,
-        wrapConsume,
+      intents: [
+        ...tokenALeg.intents,
+        { consume: genericCallConsume },
+        { consume: wrapConsume },
+        { create: persistentBCreate },
       ],
-      createIntents: [...tokenALeg.createIntents, persistentBCreate],
     };
   }
 }

@@ -39,34 +39,36 @@ export class TransferBuilder {
     const { createdResource, consumedResource } = mintResources;
 
     return {
-      consumedResources: [
+      resources: [
         {
-          resource: consumedResource.encode(),
-          nullifierKey: toBase64(keyring.nullifierKeyPair.nk),
-          witnessData: {
-            TokenTransferEphemeralWrap: {
-              permit2Data,
-              senderWalletAddress: evmAddress,
-              tokenContractAddress,
+          consumed: {
+            resource: consumedResource.encode(),
+            nullifierKey: toBase64(keyring.nullifierKeyPair.nk),
+            witnessData: {
+              TokenTransferEphemeralWrap: {
+                permit2Data,
+                senderWalletAddress: evmAddress,
+                tokenContractAddress,
+              },
             },
           },
         },
-      ],
-      createdResources: [
         {
-          resource: createdResource.encode(),
-          witnessData: {
-            TokenTransferPersistent: {
-              receiverDiscoveryPublicKey: new PublicKey(
-                keyring.discoveryKeyPair.publicKey
-              ).toBase64(),
-              receiverEncryptionPublicKey: new PublicKey(
-                keyring.encryptionKeyPair.publicKey
-              ).toBase64(),
-              receiverAuthorizationVerifyingKey: new PublicKey(
-                keyring.authorityKeyPair.publicKey
-              ).toBase64(),
-              tokenContractAddress,
+          created: {
+            resource: createdResource.encode(),
+            witnessData: {
+              TokenTransferPersistent: {
+                receiverDiscoveryPublicKey: new PublicKey(
+                  keyring.discoveryKeyPair.publicKey
+                ).toBase64(),
+                receiverEncryptionPublicKey: new PublicKey(
+                  keyring.encryptionKeyPair.publicKey
+                ).toBase64(),
+                receiverAuthorizationVerifyingKey: new PublicKey(
+                  keyring.authorityKeyPair.publicKey
+                ).toBase64(),
+                tokenContractAddress,
+              },
             },
           },
         },

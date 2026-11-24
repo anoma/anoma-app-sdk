@@ -71,11 +71,15 @@ export type Resources = {
 };
 
 /**
- * Parameters request
+ * Parameters request. The action is one ordered list: it fixes the action-tree
+ * leaves and the order the protocol adapter runs the forwarder calls in, so a
+ * call must come after the resource that funds it.
  */
+export type ParametersResource =
+  { consumed: ConsumedResource } | { created: CreatedResource };
+
 export type Parameters = {
-  createdResources: Resources["Created"][];
-  consumedResources: Resources["Consumed"][];
+  resources: ParametersResource[];
 };
 
 export type Receiver = { token: TokenRegistry; quantity: bigint } & (
@@ -115,9 +119,12 @@ export type CreateIntent = {
   receiver: Receiver;
 };
 
+export type ResolvedIntent =
+  { consume: ConsumeIntent } | { create: CreateIntent };
+
+/** Intents in action order; see {@link Parameters}. */
 export type ResolvedParameters = {
-  createIntents: CreateIntent[];
-  consumeIntents: ConsumeIntent[];
+  intents: ResolvedIntent[];
 };
 
 /**
