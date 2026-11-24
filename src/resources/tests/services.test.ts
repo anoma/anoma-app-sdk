@@ -11,6 +11,7 @@ import {
   attachNullifiers,
   isLegacyResource,
   LEGACY_TRANSFER_LOGIC_REF,
+  MAX_PREFERRED_LEGACY_RESOURCES,
   selectTransferResources,
   type ResourceWithNullifier,
 } from "../services";
@@ -137,6 +138,46 @@ describe("selectTransferResources", () => {
     expect(pick(resources, 50n)).toEqual([
       ["b", 30n],
       ["c", 20n],
+    ]);
+  });
+
+  it("prefers only the largest legacy resources up to the cap", () => {
+    const legacy = Array.from(
+      { length: MAX_PREFERRED_LEGACY_RESOURCES + 5 },
+      (_, i) => appResource(`legacy-${i}`, BigInt(i + 1), LEGACY)
+    );
+    const resources = [...legacy, appResource("v2", 1000n, V2)];
+
+    const picked = pick(resources, 500n).map(([nonce]) => nonce);
+
+    expect(picked).toHaveLength(MAX_PREFERRED_LEGACY_RESOURCES + 1);
+    expect(picked.slice(0, MAX_PREFERRED_LEGACY_RESOURCES)).toEqual(
+      legacy
+        .slice(-MAX_PREFERRED_LEGACY_RESOURCES)
+        .reverse()
+        .map(r => r.nonce)
+    );
+    expect(picked.at(-1)).toBe("v2");
+  });
+
+  it("lets a legacy resource beyond the cap compete by size", () => {
+    const legacy = Array.from(
+      { length: MAX_PREFERRED_LEGACY_RESOURCES + 1 },
+      (_, i) => appResource(`legacy-${i}`, 100n, LEGACY)
+    );
+    const resources = [
+      ...legacy,
+      appResource("v2-a", 30n, V2),
+      appResource("v2-b", 30n, V2),
+    ];
+    const capTotal = 100n * BigInt(MAX_PREFERRED_LEGACY_RESOURCES);
+
+    const picked = pick(resources, capTotal + 50n);
+
+    expect(picked).toHaveLength(MAX_PREFERRED_LEGACY_RESOURCES + 1);
+    expect(picked.at(-1)).toEqual([
+      `legacy-${MAX_PREFERRED_LEGACY_RESOURCES}`,
+      50n,
     ]);
   });
 

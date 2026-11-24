@@ -129,21 +129,38 @@ export const isLegacyResource = (resource: AppResource): boolean =>
   resource.logicRef === LEGACY_TRANSFER_LOGIC_REF_BASE64;
 
 /**
- * Spends legacy resources before any v2 one, so each operation migrates as
- * many as it can. v2 resources only cover what legacy can't. Legacy resources
- * come first and the change-absorbing resource last.
+ * Most legacy resources one transfer spends ahead of the rest. Each consumed
+ * resource costs gas, so spending every legacy one would make a small payment
+ * from a large legacy balance arbitrarily expensive.
+ */
+export const MAX_PREFERRED_LEGACY_RESOURCES = 10;
+
+const byQuantityDesc = (a: AppResource, b: AppResource) =>
+  a.quantity < b.quantity ? 1
+  : a.quantity > b.quantity ? -1
+  : 0;
+
+/**
+ * Spends the largest legacy resources (up to the cap) before anything else, so
+ * each operation migrates what it can. The rest, legacy and v2 alike, only
+ * covers what those can't. Preferred resources come first and the
+ * change-absorbing resource last.
  */
 const selectPreferringLegacy = (
   resources: AppResource[],
   targetAmount: bigint
 ): AppResource[] | undefined => {
-  const legacy = resources.filter(isLegacyResource);
-  const legacySum = legacy.reduce((sum, r) => sum + r.quantity, 0n);
-  if (legacySum >= targetAmount) return selectUTXOs(legacy, targetAmount);
+  const preferred = resources
+    .filter(isLegacyResource)
+    .sort(byQuantityDesc)
+    .slice(0, MAX_PREFERRED_LEGACY_RESOURCES);
+  const preferredSum = preferred.reduce((sum, r) => sum + r.quantity, 0n);
+  if (preferredSum >= targetAmount) return selectUTXOs(preferred, targetAmount);
 
-  const v2 = resources.filter(r => !isLegacyResource(r));
-  const v2Selected = selectUTXOs(v2, targetAmount - legacySum);
-  return v2Selected && [...legacy, ...v2Selected];
+  const preferredSet = new Set(preferred);
+  const rest = resources.filter(r => !preferredSet.has(r));
+  const restSelected = selectUTXOs(rest, targetAmount - preferredSum);
+  return restSelected && [...preferred, ...restSelected];
 };
 
 /** Resolves consumption status for each resource, returning enriched AppResource entries. */
