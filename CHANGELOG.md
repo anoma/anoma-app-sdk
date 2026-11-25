@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/anoma/anoma-app-sdk/compare/v2.0.0...v2.0.1) (2026-11-25)
+
+
+### Bug Fixes
+
+* depend on published arm-bindings 2.0.0 ([#85](https://github.com/anoma/anoma-app-sdk/issues/85)) ([ab0c1ba](https://github.com/anoma/anoma-app-sdk/commit/ab0c1bab189841cccc8da55809ed6ba51ea7f31b))
+
 ## [2.0.0](https://github.com/anoma/anoma-app-sdk/compare/v1.2.0...v2.0.0) (2026-11-25)
 
 
