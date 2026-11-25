@@ -1,15 +1,19 @@
 import {
+  ActionTree,
   AuthoritySigningKey,
   Digest,
   hashBytes,
-  MerkleTree,
   PublicKey,
   type AuthoritySignature,
   type AuthorityVerifyingKey,
 } from "@anomaorg/arm-bindings";
 import { fromHex, normalizeHex } from "primitives";
 import type { Address, Hex } from "viem";
-import type { CreatedResource } from "./types/resources";
+import type {
+  ConsumedResource,
+  CreatedResource,
+  Parameters,
+} from "./types/resources";
 
 /** Domain separator for transfer authorization signatures. */
 export const AUTH_SIGNATURE_DOMAIN = "TokenTransferAuthorization";
@@ -52,14 +56,14 @@ export function authorizeActions(
   authorizationKeyBytes: Uint8Array
 ): AuthoritySignature {
   const authorizationKey = AuthoritySigningKey.fromBytes(authorizationKeyBytes);
-  const actionTree = new MerkleTree(actions);
+  const actionTree = new ActionTree(actions);
   return authorizationKey.authorize(AUTH_SIGNATURE_DOMAIN, actionTree);
 }
 
 /**
  * The user's own persistent created notes (a deposit mint or spend change) —
  * those encrypted back to their encryption key. Excludes receiver outputs and
- * ephemeral burn/padding notes.
+ * ephemeral burn notes.
  */
 export function getOwnedCreatedResources(
   createdResources: CreatedResource[],
@@ -72,4 +76,18 @@ export function getOwnedCreatedResources(
       witnessData.TokenTransferPersistent?.receiverEncryptionPublicKey ===
         ownerEncryptionKey
   );
+}
+
+/** The consumed resources of `parameters`, in action order. */
+export function getConsumedResources(
+  parameters: Parameters
+): ConsumedResource[] {
+  return parameters.resources.flatMap(r =>
+    "consumed" in r ? [r.consumed] : []
+  );
+}
+
+/** The created resources of `parameters`, in action order. */
+export function getCreatedResources(parameters: Parameters): CreatedResource[] {
+  return parameters.resources.flatMap(r => ("created" in r ? [r.created] : []));
 }

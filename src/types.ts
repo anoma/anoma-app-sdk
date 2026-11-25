@@ -56,7 +56,6 @@ export type SupportedChainConfig = {
   enabled: boolean;
   testnet: boolean;
   protocolAdapterAddress: Address;
-  trivialLogicVerifyingKey: string;
   transferLogicVerifyingKey: string;
   forwarderAddress: Address;
   percentageFee: number;
