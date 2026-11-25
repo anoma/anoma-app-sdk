@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.0](https://github.com/anoma/anoma-app-sdk/compare/arm-bindings-v0.3.1...arm-bindings-v1.0.0) (2026-11-25)
+## [2.0.0](https://github.com/anoma/anoma-app-sdk/compare/arm-bindings-v0.3.1...arm-bindings-v2.0.0) (2026-11-25)
 
 
 ### ⚠ BREAKING CHANGES
