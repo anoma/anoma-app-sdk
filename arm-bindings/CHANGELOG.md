@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.0](https://github.com/anoma/anoma-app-sdk/compare/arm-bindings-v0.3.1...arm-bindings-v1.0.0) (2026-11-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* Parameters is now `{ resources }` and ResolvedParameters is `{ intents }`. Use getConsumedResources / getCreatedResources to read either side of a Parameters.
+
+### Features
+
+* upgrade sdk to v2 changes ([#80](https://github.com/anoma/anoma-app-sdk/issues/80)) ([a0e36d3](https://github.com/anoma/anoma-app-sdk/commit/a0e36d32873510ef391dfa527e55d11af5766490))
+
 ## [0.3.1](https://github.com/anoma/anoma-app-sdk/compare/arm-bindings-v0.3.0...arm-bindings-v0.3.1) (2026-08-24)
 
 
